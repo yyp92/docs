@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Description">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      name: 'myNotes',
+
+      // 在页面右上角显示一个到 GitHub 的链接
+      repo: 'https://github.com/yangyipeng001/note',
+
+      // 左边侧边栏
+      loadSidebar: true,
+      // subMaxLevel: 3
+      // coverpage: true
+
+      // 侧边栏目录的最大层数
+      // subMaxLevel: 4,  
+
+      // 切换显示的文档时，自动跳转到页面顶部
+      auto2top: true,
+
+      // 搜索框-即可在侧边栏上方显示一个搜索框，可对所有页面进行全文搜索：
+      search: {
+          paths: 'auto',
+          placeholder: '搜索',
+          noData: '找不到结果',
+          depth: 3,
+      },
+
+      // 外链打开方式
+      externalLinkTarget: '_blank',
+    }
+  </script>
+  <!-- Docsify v4 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+
+  <!-- 图片缩放 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+
+  <!-- 搜索框 -->
+  <script src="//unpkg.com/docsify/lib/plugins/search.js"></script>
+
+  <script src="//unpkg.com/prismjs/components/prism-bash.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-c.js"></script> 
+
+  <!-- 分页按钮 - 即可在每个页面的底部显示跳转到前一文件、后一文件的按钮 -->
+  <script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
+
+  <!-- 复制到剪贴板 -->
+  <!-- <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script> -->
+
+  <!-- 表情插件 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/emoji.min.js"></script>
+
+  <!-- 侧边栏扩展与折叠 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
+</body>
+</html>
