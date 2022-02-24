@@ -46,6 +46,15 @@
     - [脚手架](notes/脚手架/脚手架.md)
 
 
+- 浏览器
+    - [浏览器-Observer](notes/浏览器/浏览器-Observer.md)
+    - [输入URL的过程](notes/浏览器/输入URL的过程.md)
+
+
+- 源码学习
+    - [axios-手写简易版](notes/源码学习/axios-手写简易版.md)
+
+
 - nodejs
     - [包管理工具](notes/nodejs/包管理工具.md)
     - [nodejs](notes/nodejs/nodejs.md)
