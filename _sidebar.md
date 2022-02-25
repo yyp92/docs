@@ -53,6 +53,7 @@
 
 - 部署
     - [部署小结](notes/部署/部署小结.md)
+    - [docker](notes/部署/docker.md)
     - [linux](notes/部署/linux.md)
     - [ssh](notes/部署/ssh.md)
 
