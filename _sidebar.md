@@ -21,6 +21,7 @@
     - [hooks](notes/框架/hooks.md)
     - [react](notes/框架/react.md)
     - [react-状态管理](notes/框架/react-状态管理.md)
+    - [react-fiber](notes/框架/react-fiber.md)
 
 - 微前端
     - [微前端](notes/微前端/微前端.md)
