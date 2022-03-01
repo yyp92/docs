@@ -50,6 +50,8 @@
 
 - 构建工具
     - [前端模块化](notes/构建工具/前端模块化.md)
+    - [package.json](notes/构建工具/package.json.md)
+    - [package-入口文件](notes/构建工具/package-入口文件.md)
     - [打包工具简介](notes/构建工具/打包工具简介.md)
     - [vite](notes/构建工具/vite.md)
 
