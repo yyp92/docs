@@ -104,8 +104,8 @@ const test = require('test')
 
 ### node + ESM
 
-通过 `--experimental-modules` 可以让 node 执行 ESM 规范的脚本(必须是 mjs 文件后缀)  
-`node --experimental-modules test.mjs
+通过 `--experimental-modules` 可以让 node 执行 ESM 规范的脚本(必须是 mjs 文件后缀) 
+`node --experimental-modules test.mjs`
 
 ```
 import test from 'test'

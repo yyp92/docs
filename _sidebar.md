@@ -76,6 +76,7 @@
 
 - git
     - [git](notes/git/git.md)
+    - [git-hooks](notes/git/git-hooks.md)
 
 - 监控
     - [sentry](notes/监控/sentry.md)
