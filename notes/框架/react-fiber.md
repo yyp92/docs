@@ -1,7 +1,3 @@
-
-
-
-
 # 从react代码库的三种模式说起
 
 目前React代码库(v17.0.2)已经全面使用 Fiber 架构重构，并同时存在三种模式：
@@ -86,6 +82,7 @@
    ![](../../imgs/react-fiber-3.png)
 
 2. 从编码角度来看，一个 fiber 就是一个 `JavaScript` 对象，是一种数据结构
+   
    - React目前的做法是使用链表, 每个 VirtualDOM 节点内部表示为一个Fiber
    
    - 从顶点开始遍历
@@ -325,8 +322,6 @@ commitRoot：提交阶段执行
    
    ![](../../imgs/react-fiber-4.png)
 
-
-
 3. 根据当前的父 Fiber 和虚拟 DOM 通过深度优先遍历（先序遍历）构建 Fiber树
    
    ```js
@@ -473,8 +468,6 @@ React应用的根节点通过使current指针在不同Fiber树的rootFiber间切
 
 那已经渲染的 `current Fiber` 和 `workInProgress vdom` 做对比（diff），更新节点，然后把`vdom` 转化成 `fiber`，意思是一边 `diff` 一边构建新 `fiber`。
 
-
-
 ## 参考
 
 [React Fiber 源码解析](https://segmentfault.com/a/1190000023573713)
@@ -484,23 +477,3 @@ React应用的根节点通过使current指针在不同Fiber树的rootFiber间切
 [React Fiber架构](http://kmanong.top/kmn/qxw/form/article?id=72482&cate=85)
 
 [React 技术揭秘](https://react.iamkasong.com/)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

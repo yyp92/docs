@@ -29,6 +29,7 @@
     - [magic](notes/微前端/magic.md)
     - [qainkun](notes/微前端/qainkun.md)
     - [single-spa](notes/微前端/single-spa.md)
+    - [手写迷你版微前端](notes/微前端/手写迷你版微前端.md)
 
 - 移动端
     - [移动端调试](notes/移动端/移动端调试.md)

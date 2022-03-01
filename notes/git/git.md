@@ -86,7 +86,10 @@ git pull origin master --allow-unrelated-histories
 ```bash
 # 在本地仓库的目录下调用命令行删除根目录下的.git文件夹
 find . -name ".git" | xargs rm -Rf
+# 或者手动删除.git文件
 
+
+# 删除GitHub上的Git远程仓库
 # 在命令行中输入rm -rf + github仓库地址
 rm -rf https://github.com/NeroSolomon/VLearning.git
 ```
