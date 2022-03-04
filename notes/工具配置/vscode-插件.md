@@ -72,6 +72,8 @@ command + p  --> 输入 >create  --> 选择如下图所示
 
 ## viscose-icons
 
+### Material Icon Theme（更好）
+
 ```js
 // 文件图标
 ```
