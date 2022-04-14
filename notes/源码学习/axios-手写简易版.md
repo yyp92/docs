@@ -1,5 +1,3 @@
-
-
 # axios-手写简易版
 
 由于axios源码中有很多不是很重要的方法，而且很多方法为了考虑兼容性，并没有考虑到用es6 的语法去写。本篇主要是带你去梳理axios的主要流程，并用es6重写简易版axios
@@ -9,8 +7,6 @@
 - 适配器
 
 - 取消请求
-
-
 
 ## 拦截器
 
@@ -52,7 +48,7 @@ export class InterceptorManager {
       fulfilled,
       rejected,
     })
-    
+
     //返回id 便于取消
     return this.handlers.length - 1
   }
@@ -77,10 +73,6 @@ export class InterceptorManager {
 ```
 
 拦截器这个类我们已经初步实现了，现在我们去实现axios 这个类，还是先看下官方文档，先看用法，再去分析。
-
-
-
-
 
 ## axios(config)
 
@@ -174,10 +166,6 @@ class Axios {
 
 然后遍历整个栈结构，每次出栈都是一对出栈， 因为promise 的then 就是 一个成功，一个失败嘛。遍历结束后，返回经过所有处理的promise，然后你就可以拿到最终的值了。
 
-
-
-
-
 ## adapter
 
 Adapter: 英文解释是适配器的意思。看一下源码。adapter 做了一件事非常简单，就是根据不同的环境 使用不同的请求。如果用户自定义了adapter，就用config.adapter。否则就是默认是default.adpter。
@@ -207,10 +195,6 @@ function getDefaultAdapter() {
 
 其实就是做个选择：如果是浏览器环境：就是用xhr 否则就是node 环境。判断process是否存在。从写代码的角度来说，axios源码的这里的设计可扩展性非常好。有点像设计模式中的适配器模式， 因为浏览器端和node 端 发送请求其实并不一样， 但是我们不重要，我们不去管他的内部实现，用promise包一层做到对外统一。所以 我们用axios 自定义adapter 器的时候, 一定是返回一个promise。
 
-
-
-
-
 ## cancleToken
 
 取消请求原生浏览器是怎么做到的？有一个abort 方法。可以取消请求。那么axios源码肯定也是运用了这一点去取消请求。现在浏览器其实也支持fetch请求， fetch可以取消请求？很多同学说是不可以的，其实不是？fetch 结合 abortController 可以实现取消fetch请求。我们看下例子：
@@ -226,7 +210,6 @@ fetch("http://localhost:8000", { signal }).then(response => {
 });
 // Wait 2 seconds to abort both requests
 setTimeout(() => controller.abort(), 2000);
-
 ```
 
 但是这是个实验性功能，可恶的ie。所以我们这次还是用原生的浏览器xhr基于promise简单的封装一下。代码如下：
@@ -323,7 +306,7 @@ export class cancelToken {
             resolvePromise = resolve;
         })
         this.reason = undefined;
-        
+
         const cancel  = (message) => {
             if(this.reason) {
                 return;
@@ -339,7 +322,7 @@ export class cancelToken {
             throw this.reason
         }
     }
-    
+
     // source 其实本质上是一个语法糖 里面做了封装
     static source() {
         const cancel;
@@ -355,36 +338,4 @@ export class cancelToken {
 }
 ```
 
-
-
 ## 源码待梳理？？
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
