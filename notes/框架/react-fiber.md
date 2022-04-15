@@ -477,3 +477,5 @@ React应用的根节点通过使current指针在不同Fiber树的rootFiber间切
 [React Fiber架构](http://kmanong.top/kmn/qxw/form/article?id=72482&cate=85)
 
 [React 技术揭秘](https://react.iamkasong.com/)
+
+[React-hooks 数据结构](https://juejin.cn/post/6968820472431509535)

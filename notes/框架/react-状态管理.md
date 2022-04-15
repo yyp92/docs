@@ -20,6 +20,12 @@ https://mu-xue.github.io/2019/08/11/front/mobx-react-lite/
 
 https://www.recoiljs.cn/
 
+# Jotai
+
+https://juejin.cn/post/6981236856541151262
+
+
+
 # constate
 
 https://www.npmjs.com/package/constate
