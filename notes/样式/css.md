@@ -33,13 +33,7 @@ body {
 }
 ```
 
-
-
-
-
 ## 属性
-
-
 
 ### clip-path
 
@@ -48,14 +42,6 @@ body {
 [clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)
 
 [基本语法](https://segmentfault.com/a/1190000010936207)
-
-
-
-
-
-
-
-
 
 # Css Module
 
