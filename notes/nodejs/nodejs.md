@@ -74,4 +74,8 @@ process.memoryUsage()
 # rss(resident set size)：表示驻留集大小，是给这个node进程分配了多少物理内存，这些物理内存中包含堆，栈和代码片段。对象，闭包等存于堆内存，变量存于栈内存，实际的JavaScript源代码存于代码段内存。使用Worker线程时，rss将会是一个对整个进程有效的值，而其他字段则只针对当前线程。
 ```
 
-# 
+# zlib 压缩模块
+
+https://mp.weixin.qq.com/s/sAKrGitJgO76ua57nLK52w
+
+[一文搞定 Node.js 流 （Stream） - 掘金](https://juejin.cn/post/6854573219060400141)

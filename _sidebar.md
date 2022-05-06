@@ -5,6 +5,7 @@
   - [promise原理](notes/js/promise原理.md)
   - [创建Object区别](notes/js/创建Object区别.md)
   - [forIn-forof-区别](notes/js/forIn-forof-区别.md)
+  - [proxy和reflect](notes/js/proxy和reflect.md)
   - [练习题](notes/js/练习题.md)
 
 - js-设计模式
@@ -41,6 +42,10 @@
 - webGL
   
   - [资料](notes/webGL/资料.md)
+
+- 音视频
+  
+  - [资料](notes/音视频/音视频介绍.md)
 
 - 移动端
   
