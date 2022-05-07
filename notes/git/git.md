@@ -162,3 +162,7 @@ git rebase -i HEAD~4
 #### rebase-after:
 
 ![](../../imgs/git-rebase-2.jpeg)
+
+## git 解决冲突
+
+<img title="" src="../../imgs/vscode-git-chongtu.png" alt="" data-align="inline">
