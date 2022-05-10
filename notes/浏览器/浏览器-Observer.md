@@ -49,13 +49,9 @@ intersectionObserver.observe( document.querySelector('#box2'));
 
 可以看到元素 box1 和 box2 在可视范围达到一半（0.5）和全部（1）的时候分别触发了回调。
 
-
-
 我们在做一些数据采集的时候，希望知道某个元素是否是可见的，什么时候可见的，就可以用这个 api 来监听，还有做图片的懒加载的时候，可以当可视比例达到某个比例再触发加载。
 
 除了可以监听元素可见性，还可以监听元素的属性和子节点的改变。
-
-
 
 ## MutationObserver
 
@@ -115,8 +111,6 @@ mutationObserver.observe(box, {
 
 除了监听元素的可见性、属性和子节点的变化，还可以监听大小变化。
 
-
-
 ## ResizeObserver
 
 窗口我们可以用 addEventListener 监听 resize 事件，那元素呢？
@@ -157,8 +151,6 @@ resizeObserver.observe(box);
 这样我们就实现了对元素的 resize 的监听。
 
 除了元素的大小、可见性、属性子节点等变化的监听外，还支持对 performance 录制行为的监听。
-
-
 
 ## PerformanceObserver
 
@@ -221,8 +213,6 @@ performance.measure('button clicked', 'from', 'to');
 
 当这些记录行为发生的时候，希望能触发回调，在里面可以上报。
 
-
-
 ## ReportingObserver
 
 - 当浏览器运行到过时（deprecation）的 api 的时候，会在控制台打印一个过时的报告。
@@ -249,14 +239,9 @@ const reportingObserver = new ReportingObserver((reports, observer) => {
 }, {types: ['intervention', 'deprecation']});
 
 reportingObserver.observe();
-
 ```
 
 **ReportingObserver 可以监听过时的 api、浏览器干预等报告等的打印，在回调里上报，这些是错误监听无法监听到但对了解网页运行情况很有用的数据。**
-
-
-
-
 
 ## 总结
 
@@ -275,5 +260,3 @@ reportingObserver.observe();
 - PerformanceObserver：监听 performance 记录的行为，来上报数据
 
 - ReportingObserver：监听过时的 api、浏览器的一些干预行为的报告，可以让我们更全面的了解网页 app 的运行情况
-
-

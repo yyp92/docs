@@ -368,3 +368,13 @@ const numB: A<number> = { name: 101 };
 // 在条件类型表达式中，我们通常还会结合 infer 关键字，
 T extends U ? X : Y
 ```
+
+## 其他
+
+[对比理解Typescript中的as、问号与叹号 - 掘金](https://juejin.cn/post/6844904068951834632)
+
+https://mp.weixin.qq.com/s/VUUoUkQNt_3g6YOWJtTDDg
+
+[type 与 interface 的区别，你真的懂了吗？](https://mp.weixin.qq.com/s/J6xHq9g91_TLgQLE6P_Teg)
+
+[TypeScript中implements与extends的区别 - 掘金](https://juejin.cn/post/6914213447169376263)

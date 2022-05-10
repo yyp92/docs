@@ -1,5 +1,3 @@
-
-
 # HTTP Header 中的 Content-Type
 
 ## 规范
@@ -84,7 +82,6 @@ Content-Type: image/png
 
 ... (png binary data) ....
 ------WebKitFormBoundaryujecLxDFPt6acCab--
-
 ```
 
 ### application/json
@@ -120,8 +117,6 @@ Content-Type: image/png
 | `image/png`     | PNG 图片                  |
 | `image/svg+xml` | SVG图片 (矢量图)             |
 
-
-
 ### [音频与视频类型](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_types#%E9%9F%B3%E9%A2%91%E4%B8%8E%E8%A7%86%E9%A2%91%E7%B1%BB%E5%9E%8B "Permalink to 音频与视频类型")
 
 | MIME 类型                                                 | 音频或视频类型                                                                                                                                                                             |
@@ -133,5 +128,3 @@ Content-Type: image/png
 | `video/ogg`                                             | 采用OGG多媒体文件格式的音视频文件。常用的视频解码器是 Theora；音频解码器为Vorbis 。                                                                                                                                  |
 | `application/ogg`                                       | 采用OGG多媒体文件格式的音视频文件。常用的视频解码器是 Theora；音频解码器为Vorbis 。                                                                                                                                  |
 | `application/json`                                      | application/json (MIME_type)<br>[Media type - Wikipedia](https://en.wikipedia.org/wiki/Media_type#Common_examples)<br>https://www.iana.org/assignments/media-types/application/json |
-
-
