@@ -110,10 +110,13 @@
   
   - [sentry](notes/监控/sentry.md)
 
+- rust
+  
+  - [rust](notes/rust/rust.md)
+
 - 其他语言
   
   - [python](notes/其他语言/python.md)
-  - [rust](notes/其他语言/rust.md)
 
 - 工具配置
   
