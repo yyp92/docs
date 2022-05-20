@@ -20,6 +20,8 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 #### cargo-edit
 
+[cargo-edit 命令](https://github.com/killercup/cargo-edit)
+
 该工具扩展了[Cargo](http://doc.crates.io/)，允许您通过`Cargo.toml`从命令行修改文件来添加、删除和升级依赖项。
 
 ```bash
@@ -73,3 +75,29 @@ cargo install cargo-expand
 ```
 
 > 注意：`cargo expand`接受一个名称，不是一个文件路径。`cargo expand main`命令不是展开`src/main.rs`，而是展开项目的根目录中的`main()`函数。通常来说，展开`src/some_module/another`文件中的模块，可以运行`cargo expand some_module::another`。 不用担心，后面会继续深入介绍。
+
+### 常用命令
+
+```bash
+# 初始化项目
+cargo new <文件名>
+
+
+# cargo-edit
+# 将新的依赖项添加到您的Cargo.toml. 未指定版本时，
+# cargo add会尝试从crates.io查询最新版本号。
+# -D, --dev 添加为开发依赖项； -B, --build 添加为构建依赖项
+# cargo add
+cargo-add add <包名> <参数>  
+# 🌰
+cargo-add add regex@0.1.41 --dev
+
+
+# 删除依赖
+cargo-rm rm <包名> <参数>
+# 🌰
+cargo-rm rm regex --dev
+
+
+# cargo upgrade
+```
