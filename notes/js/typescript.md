@@ -369,6 +369,42 @@ const numB: A<number> = { name: 101 };
 T extends U ? X : Y
 ```
 
+## 操作符
+
+
+
+### 非空断言操作符
+
+它会排除掉变量中的 null 和 undefeind。
+
+在变量后面添加一个 ! 就会忽略 undefined 和 null。
+
+[TypeScript 中的代码清道夫：非空断言操作符 - 掘金](https://juejin.cn/post/6844904149897723917)
+
+忽略变量的 `undefined | null`：
+
+```ts
+function myFunc(maybeString: string | undefined | null) {
+    // compilation error: string | undefined | null is not assignable to string
+    const onlyString: string = maybeString;
+    // no problem
+    const ignoreUndefinedAndNull: string = maybeString!; 
+}
+```
+
+当函数执行时忽略 `undefined`：
+
+```ts
+type NumGenerator = () => number;
+
+function myFunc(numGenerator: NumGenerator | undefined) {
+   const num1 = numGenerator(); //compilation error: cannot invoke an object which is possibly undefined
+   const num2 = numGenerator!(); //no problem
+}
+```
+
+> 请注意：这个操作符只有在 `strictNullChecks` 打开的时候才会有效果。反之，编译器将不会检查 `undefined` 和 `null`
+
 ## 其他
 
 [对比理解Typescript中的as、问号与叹号 - 掘金](https://juejin.cn/post/6844904068951834632)

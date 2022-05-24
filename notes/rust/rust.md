@@ -87,17 +87,27 @@ cargo new <文件名>
 # 将新的依赖项添加到您的Cargo.toml. 未指定版本时，
 # cargo add会尝试从crates.io查询最新版本号。
 # -D, --dev 添加为开发依赖项； -B, --build 添加为构建依赖项
-# cargo add
+# cargo-add
 cargo-add add <包名> <参数>  
 # 🌰
+cargo-add add --help
 cargo-add add regex@0.1.41 --dev
 
 
+# cargo-rm
 # 删除依赖
 cargo-rm rm <包名> <参数>
 # 🌰
+cargo-rm rm --help
 cargo-rm rm regex --dev
 
 
-# cargo upgrade
+# cargo-upgrade
+# 将您的依赖项升级Cargo.toml到最新版本。
+cargo-upgrade upgrade --help
+
+
+# cargo-set-version
+# 在您的Cargo.toml.
+cargo-set-version set-version --help
 ```
