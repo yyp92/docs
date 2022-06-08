@@ -7,6 +7,7 @@
   - [forIn-forof-区别](notes/js/forIn-forof-区别.md)
   - [proxy和reflect](notes/js/proxy和reflect.md)
   - [练习题](notes/js/练习题.md)
+  - [js-基础知识](notes/js/js-基础知识.md)
 
 - js-设计模式
   
