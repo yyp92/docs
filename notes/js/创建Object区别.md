@@ -19,8 +19,6 @@ console.log(objA.__proto__ === Object.prototype); // true
 console.log(objA instanceof Object); // true
 ```
 
-
-
 ## new关键字创建
 
 ```js
@@ -66,8 +64,6 @@ else {
 ```
 
 > 其实字面量创建和new关键字创建并没有区别，创建的新对象的`__proto__`都指向`Object.prototype`，只是字面量创建更高效一些，少了`__proto__`指向赋值和`this`。
-
-
 
 ## Object.create()
 
@@ -143,7 +139,6 @@ me.printIntroduction(); // My name is Matthew. Am I human? true
   console.log(cc.__proto__ === Object.protorype);
   // true cc是对象，原型链上肯定会出现Object
   console.log(cc instanceof Object);
-  
   ```
   
   > `Object.create()`创建的对象的原型指向传入的对象。跟字面量和`new`关键字创建有区别。
@@ -164,10 +159,7 @@ me.printIntroduction(); // My name is Matthew. Am I human? true
   
   var hh = Object.mycreate({a: 11}, {mm: {value: 10}});
   console.dir(hh);
-  
   ```
-
-
 
 ## 总结
 

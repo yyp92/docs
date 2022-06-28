@@ -4,6 +4,26 @@
 
 https://juejin.cn/post/6972893133243695141
 
+### 解决闭包陷阱的方案
+
+- 使用 useRef 解决闭包陷阱的问题
+
+- 更新 State 时的回调函数
+  
+  ```ts
+  // 回调函数的最新值
+  setValue(value => value + 1)
+  ```
+
+### 闭包陷阱和 Hooks 依赖
+
+**useEffect**、**useLayoutEffect**、**useCallback**、**useMemo** 的第二个参数为依赖数组，依·赖数组中任意一个依赖变化（浅比较）会有如下效果：
+
+1. **useEffect**、**useLayoutEffect** 内部的副作用函数会执行，并且副作用函数可以获取到当前所有依赖的最新值。
+2. **useCallback**、**useMemo** 会返回新的函数或对象，并缺内部的函数也能获取到当前所有依赖的最新值。
+
+### 总结
+
 - **React Hooks** 存在“闭包渲染”的问题，每次 render 都会闭包缓存当前render对应的 state
 
 - 可以通过 **useRef**、**state 更新时的回调函数**来解决这个问题
