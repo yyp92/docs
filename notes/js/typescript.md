@@ -371,8 +371,6 @@ T extends U ? X : Y
 
 ## 操作符
 
-
-
 ### 非空断言操作符
 
 它会排除掉变量中的 null 和 undefeind。
