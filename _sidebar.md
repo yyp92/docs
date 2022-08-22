@@ -75,10 +75,9 @@
 - 构建工具
   
   - [前端模块化](notes/构建工具/前端模块化.md)
-  - [package.json](notes/构建工具/package.json.md)
-  - [package-入口文件](notes/构建工具/package-入口文件.md)
   - [打包工具简介](notes/构建工具/打包工具简介.md)
   - [vite](notes/构建工具/vite.md)
+  - [vite](notes/构建工具/webpack-dev-server运行原理.md)
 
 - 部署
   
@@ -90,8 +89,11 @@
 - 包管理工具
   
   - [包管理工具](notes/包管理工具/包管理工具.md)
-  - [npm-常用包](notes/包管理工具/npm-常用包.md)
   - [lerna](notes/包管理工具/lerna.md)
+  - [npm-常用包](notes/包管理工具/npm-常用包.md)
+  - [package.json](notes/包管理工具/package.json.md)
+  - [package-入口文件](notes/包管理工具/package-入口文件.md)
+  - [npm-install 安装机制](notes/包管理工具/npm-install安装机制.md)
 
 - nodejs
   
