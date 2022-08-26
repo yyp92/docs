@@ -110,6 +110,7 @@
   - [git](notes/git/git.md)
   - [git-hooks](notes/git/git-hooks.md)
   - [git-subtree](notes/git/git-subtree.md)
+  - [同时链接gitee和github](notes/git/同时链接gitee和github.md)
 
 - 监控
   
