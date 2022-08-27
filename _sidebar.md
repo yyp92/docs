@@ -14,6 +14,10 @@
   - [发布订阅](notes/js-设计模式/发布订阅.md)
   - [观察者模式](notes/js-设计模式/观察者模式.md)
 
+- 网页效果实现
+  
+  - [发布订阅](notes/网页效果实现/使用Intersection Observer API实现视频队列自动播放.md)
+
 - 样式
   
   - [css](notes/样式/css.md)
