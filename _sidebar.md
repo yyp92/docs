@@ -67,6 +67,7 @@
   - [http-contentType](notes/浏览器/http-contentType.md)
   - [content-type](notes/浏览器/content-type.md)
   - [浏览器知识点](notes/浏览器/浏览器知识点.md)
+  - [前端缓存](notes/浏览器/前端缓存.md)
 
 - 源码学习
   

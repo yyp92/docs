@@ -6,7 +6,7 @@
 
 什么是单页面应用？
 
-个人理解，单页面应用是使用一个html下，一次性加载js, css等资源，所有页面都在一个容器页面下，页面切换实质是组件的切换。![](C:\Users\Administrator\Desktop\docs\imgs\react-router-1.jpg)
+个人理解，单页面应用是使用一个html下，一次性加载js, css等资源，所有页面都在一个容器页面下，页面切换实质是组件的切换。![](../../imgs/react-router-1.jpg)
 
 ### react-router初探，揭露路由原理面纱
 
@@ -46,7 +46,7 @@ const menusList = [
 const index = () => {
   return <div >
     <div >
-     
+
       <Router  >
       <div>{
         /* link 路由跳转 */
@@ -152,13 +152,13 @@ function createBrowserHistory(){
     const transitionManager = createTransitionManager()
     /* 改变location对象，通知组件更新 */
     const setState = () => { /* ... */ }
-    
+
     /* 处理当path改变后，处理popstate变化的回调函数 */
     const handlePopState = () => { /* ... */ }
-   
+
     /* history.push方法，改变路由，通过全局对象history.pushState改变url, 通知router触发更新，替换组件 */
     const push=() => { /*...*/ }
-    
+
     /* 底层应用事件监听器，监听popstate事件 */
     const listen=()=>{ /*...*/ } 
     return {
@@ -439,7 +439,6 @@ class Switch extends React.Component {
     );
   }
 }
-
 ```
 
 找到与当前path,匹配的组件进行渲染。通过`pathname`和组件的`path`进行匹配。找到符合path的router组件。
@@ -593,7 +592,6 @@ function Redirect({ computedMatch, to, push = false }) {
     </RouterContext.Consumer>
   );
 }
-
 ```
 
 初始化的时候进行路由跳转，当初始化的时候，`mounted`执行`push`方法，当组件更新的时候，如果`location`不相等。同样会执行`history`方法重定向。
@@ -617,5 +615,3 @@ function Redirect({ computedMatch, to, push = false }) {
 ### 我们用一幅图来表示各个路由组件之间的关系。
 
 ![](../../imgs/react-router-4.jpg)
-
-
