@@ -86,6 +86,7 @@
   - [打包工具简介](notes/构建工具/打包工具简介.md)
   - [vite](notes/构建工具/vite.md)
   - [vite](notes/构建工具/webpack-dev-server运行原理.md)
+  - [编译ts代码用tsc还是babel](notes/构建工具/编译ts代码用tsc还是babel.md)
 
 - 部署
   
