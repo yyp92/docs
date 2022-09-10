@@ -88,6 +88,8 @@
   - [vite](notes/构建工具/vite.md)
   - [webpack-dev-server运行原理](notes/构建工具/webpack-dev-server运行原理.md)
   - [编译ts代码用tsc还是babel](notes/构建工具/编译ts代码用tsc还是babel.md)
+  - [sourceMap](notes/构建工具/sourceMap.md)
+
 
 - 部署
   
