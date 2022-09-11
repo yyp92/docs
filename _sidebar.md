@@ -130,6 +130,10 @@
   
   - [sentry](notes/监控/sentry.md)
 
+- 性能优化
+  
+  - [前端性能优化知识体系](notes/性能优化/前端性能优化知识体系.md)
+
 - rust
   
   - [rust](notes/rust/rust.md)
