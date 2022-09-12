@@ -119,6 +119,7 @@
   - [CDN加速原理](notes/网络/CDN加速原理.md)
   - [http](notes/网络/http.md)
   - [跨域的请求在服务端会不会真正执行](notes/网络/跨域的请求在服务端会不会真正执行.md)
+  - [websocket](notes/网络/websocket.md)
 
 - git
   
