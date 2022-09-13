@@ -1,18 +1,10 @@
-
-
 # docker
 
 https://yeasy.gitbook.io/docker_practice/
 
-
-
 ## docker简介
 
 **Docker** 在容器的基础上，进行了进一步的封装，从文件系统、网络互联到进程隔离等等，极大的简化了容器的创建和维护。使得 `Docker` 技术比虚拟机技术更为轻便、快捷。
-
-
-
-
 
 ### 为什么要用 Docker
 
@@ -37,10 +29,6 @@ https://yeasy.gitbook.io/docker_practice/
   | 性能    | 接近原生      | 弱于     |
   | 系统支持量 | 单机支持上千个容器 | 一般几十个  |
 
-
-
-
-
 ## 基本概念
 
 **Docker** 包括三个基本概念
@@ -56,39 +44,3 @@ https://yeasy.gitbook.io/docker_practice/
 - **仓库**（`Repository`）
   
   - 类似于代码仓库，这里是镜像仓库，是Docker用来集中存放镜像文件的地方。
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
