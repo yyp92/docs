@@ -6,8 +6,6 @@
 
 ## npm install（不带参数）安装机制
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-install-1.jpg)
-
 ### 确定首层依赖
 
 先检查package.json，通过dependencies和devDependencies属性中直接指定的模块。

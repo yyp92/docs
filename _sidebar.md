@@ -69,8 +69,6 @@
   
   - [浏览器-Observer](notes/浏览器/浏览器-Observer.md)
   - [输入URL的过程](notes/浏览器/输入URL的过程.md)
-  - [http-contentType](notes/浏览器/http-contentType.md)
-  - [content-type](notes/浏览器/content-type.md)
   - [浏览器知识点](notes/浏览器/浏览器知识点.md)
   - [前端缓存](notes/浏览器/前端缓存.md)
 
@@ -123,6 +121,8 @@
   
   - [CDN加速原理](notes/网络/CDN加速原理.md)
   - [http](notes/网络/http.md)
+  - [http-contentType](notes/网络/http-contentType.md)
+  - [content-type](notes/网络/content-type.md)
   - [跨域的请求在服务端会不会真正执行](notes/网络/跨域的请求在服务端会不会真正执行.md)
   - [websocket](notes/网络/websocket.md)
 
