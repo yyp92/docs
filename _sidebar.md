@@ -1,13 +1,17 @@
 - js
   
   - [js-正则学习](notes/js/js-正则学习.md)
-  - [typescript](notes/js/typescript.md)
   - [promise原理](notes/js/promise原理.md)
   - [创建Object区别](notes/js/创建Object区别.md)
   - [forIn-forof-区别](notes/js/forIn-forof-区别.md)
   - [proxy和reflect](notes/js/proxy和reflect.md)
   - [练习题](notes/js/练习题.md)
   - [js-基础知识](notes/js/js-基础知识.md)
+
+- ts
+  
+  - [typescript](notes/js/typescript.md)
+  - [ts类型操作](notes/js/TS类型操作.md)
 
 - js-设计模式
   
