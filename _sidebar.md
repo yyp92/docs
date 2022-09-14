@@ -78,6 +78,7 @@
   - [react-router路由原理](notes/源码学习/react-router路由原理.md)
   - [react-router(v6)](notes/源码学习/react-router(v6).md)
   - [react-事件原理](notes/源码学习/react-事件原理.md)
+  - [react-requestIdleCallback调度能力](notes/源码学习/react-requestIdleCallback调度能力.md)
 
 
 - 脚手架
@@ -116,6 +117,7 @@
   
   - [nodejs](notes/nodejs/nodejs.md)
   - [nodejs流源码解读之可读流](notes/nodejs/nodejs流源码解读之可读流.md)
+  - [nodejs异步IO和事件循环](notes/nodejs/nodejs异步IO和事件循环.md)
   - [nodemon-pm2](notes/nodejs/nodemon-pm2.md)
   - [数据库](notes/nodejs/数据库.md)
 
