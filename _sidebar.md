@@ -114,6 +114,7 @@
 - nodejs
   
   - [nodejs](notes/nodejs/nodejs.md)
+  - [nodejs流源码解读之可读流](notes/nodejs/nodejs流源码解读之可读流.md)
   - [nodemon-pm2](notes/nodejs/nodemon-pm2.md)
   - [数据库](notes/nodejs/数据库.md)
 
