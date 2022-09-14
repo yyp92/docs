@@ -107,9 +107,10 @@
   - [包管理工具](notes/包管理工具/包管理工具.md)
   - [lerna](notes/包管理工具/lerna.md)
   - [npm-常用包](notes/包管理工具/npm-常用包.md)
+  - [npm-install 安装机制](notes/包管理工具/npm-install安装机制.md)
+  - [npm包的发布流程](notes/包管理工具/npm包的发布流程.md)
   - [package.json](notes/包管理工具/package.json.md)
   - [package-入口文件](notes/包管理工具/package-入口文件.md)
-  - [npm-install 安装机制](notes/包管理工具/npm-install安装机制.md)
 
 - nodejs
   
@@ -133,6 +134,7 @@
   - [git-hooks](notes/git/git-hooks.md)
   - [git-subtree](notes/git/git-subtree.md)
   - [同时链接gitee和github](notes/git/同时链接gitee和github.md)
+  - [git-commit规范](notes/git/git-commit规范.md)
 
 - 监控
   
