@@ -138,6 +138,7 @@
   - [git-subtree](notes/git/git-subtree.md)
   - [同时链接gitee和github](notes/git/同时链接gitee和github.md)
   - [git-commit规范](notes/git/git-commit规范.md)
+  - [git设置别名](notes/git/git设置别名.md)
 
 - 监控
   
