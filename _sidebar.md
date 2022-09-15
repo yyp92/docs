@@ -128,6 +128,7 @@
 
 - 网络
   
+  - [DNS](notes/网络/dns.md)
   - [CDN加速原理](notes/网络/CDN加速原理.md)
   - [http](notes/网络/http.md)
   - [http-contentType](notes/网络/http-contentType.md)
