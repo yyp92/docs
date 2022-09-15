@@ -20,7 +20,8 @@
 
 - 网页效果实现
   
-  - [发布订阅](notes/网页效果实现/使用Intersection Observer API实现视频队列自动播放.md)
+  - [使用Intersection Observer API实现视频队列自动播放](notes/网页效果实现/使用Intersection Observer API实现视频队列自动播放.md)
+  - [前端实现文件预览](notes/网页效果实现/前端实现文件预览.md)
 
 - 样式
   
@@ -71,6 +72,7 @@
   - [输入URL的过程](notes/浏览器/输入URL的过程.md)
   - [浏览器知识点](notes/浏览器/浏览器知识点.md)
   - [前端缓存](notes/浏览器/前端缓存.md)
+  - [浏览器渲染原理及流程](notes/浏览器/浏览器渲染原理及流程.md)
 
 - 源码学习
   
