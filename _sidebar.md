@@ -20,8 +20,9 @@
 
 - 网页效果实现
   
-  - [使用Intersection Observer API实现视频队列自动播放](notes/网页效果实现/使用Intersection Observer API实现视频队列自动播放.md)
+  - [使用Intersection-Observer-API实现视频队列自动播放](notes/网页效果实现/使用Intersection-Observer-API实现视频队列自动播放.md)
   - [前端实现文件预览](notes/网页效果实现/前端实现文件预览.md)
+  - [大文件的分片上传](notes/网页效果实现/大文件的分片上传.md)
 
 - 样式
   
