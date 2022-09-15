@@ -41,6 +41,7 @@
   - [react](notes/框架/react.md)
   - [react-状态管理](notes/框架/react-状态管理.md)
   - [react-fiber](notes/框架/react-fiber.md)
+  - [react-5大富文本编辑器](notes/框架/react-5大富文本编辑器.md)
 
 - 微前端
   
@@ -71,6 +72,7 @@
   
   - [浏览器-Observer](notes/浏览器/浏览器-Observer.md)
   - [输入URL的过程](notes/浏览器/输入URL的过程.md)
+  - [输入URL的详细过程](notes/浏览器/输入URL的详细过程.md)
   - [浏览器知识点](notes/浏览器/浏览器知识点.md)
   - [前端缓存](notes/浏览器/前端缓存.md)
   - [浏览器渲染原理及流程](notes/浏览器/浏览器渲染原理及流程.md)
@@ -105,6 +107,7 @@
   - [docker部署](notes/部署/docker部署.md)
   - [linux](notes/部署/linux.md)
   - [ssh](notes/部署/ssh.md)
+  - [使用CI-CD优化前端构建的五种策略](notes/部署/使用CI-CD优化前端构建的五种策略.md)
 
 - 包管理工具
   

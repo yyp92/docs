@@ -531,8 +531,6 @@ div {width: 100px;height: 100px;}
 
 ![](../../imgs/chrome-url-17.png)
 
-
-
 如果没有打开Layers,按下图打开：
 
 ![](../../imgs/chrome-url-18.png)
@@ -637,27 +635,3 @@ div {width: 100px;height: 100px;}
 ### 为什么TIME_WAIT状态需要经过2MSL（最大报文生存时间）才能返回到CLOSE状态？
 
 理论上，四个报文都发送完毕，就可以直接进入CLOSE状态了，但是可能网络是不可靠的，有可能最后一个ACK丢失。所以TIME_WAIT状态就是用来重发可能丢失的ACK报文。1 个 MSL 确保四次挥手中主动关闭方最后的 ACK 报文最终能达到对端；1 个 MSL 确保对端没有收到 ACK 重传的 FIN 报文可以到达。
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
