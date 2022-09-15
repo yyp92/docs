@@ -172,6 +172,7 @@
   - [mac-github-img-no-show](notes/工具配置/mac-github-img-no-show.md)
   - [mac工具](notes/工具配置/mac工具.md)
   - [vscode-插件](notes/工具配置/vscode-插件.md)
+  - [前端项目一键自动添加eslint和prettier的支持](notes/工具配置/前端项目一键自动添加eslint和prettier的支持.md)
 
 - 其他
   
