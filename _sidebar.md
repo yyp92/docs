@@ -7,6 +7,7 @@
   - [proxy和reflect](notes/js/proxy和reflect.md)
   - [练习题](notes/js/练习题.md)
   - [js-基础知识](notes/js/js-基础知识.md)
+  - [js工具函数助力高效开发](notes/js/js工具函数助力高效开发.md)
 
 - ts
   
