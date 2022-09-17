@@ -528,6 +528,6 @@ console.log(getQueryByName('name')) // 前端胖头鱼
 
 # 
 
-### 资料
+## 资料
 
 [JavaScript 正则表达式的匹配规则](https://juejin.cn/post/6978401478201311240#heading-11)
