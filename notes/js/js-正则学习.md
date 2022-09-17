@@ -20,8 +20,6 @@ x(?!y)
 (?<!y)x
 ```
 
-### 
-
 ### 零宽肯定先行断言
 
 ```js
@@ -80,11 +78,13 @@ x(?!y)
 ?
 ```
 
-# 脱敏处理
+## 常用的正则片段
 
-## 手机号脱敏处理
+### 脱敏处理
 
-```JS
+#### 手机号脱敏处理
+
+```js
 // 正则
 phone.replace(/(\d{3})\d*(\d{4})/, '$1****$2')
 
@@ -92,7 +92,7 @@ phone.replace(/(\d{3})\d*(\d{4})/, '$1****$2')
 // 177****6717
 ```
 
-## 身份证号脱敏
+#### 身份证号脱敏
 
 ```js
 // 正则
@@ -102,16 +102,14 @@ card.replace(/^(.{4})(?:\w+)(.{4})$/, '$1****$2')
 // '5123****5645'
 ```
 
-## 只包含汉字，字母，数字
+#### 只包含汉字，字母，数字
 
 ```js
 // 只含有汉字、数字、字母
 const reg = /[^\u4E00-\u9FA5a-zA-Z0-9]+$/
 ```
 
-# 常用的正则片段
-
-## 数字价格千分位分割
+### 数字价格千分位分割
 
 ```js
 // 123456789变成123,456,789
@@ -131,7 +129,7 @@ const reg = /[^\u4E00-\u9FA5a-zA-Z0-9]+$/
 // /(?!^)(?=(\d{3})+$)/g
 ```
 
-## 手机号3-4-4分割
+### 手机号3-4-4分割
 
 ```js
 // 18379836654转化为183-7983-6654
@@ -142,7 +140,7 @@ console.log(mobile.replace(mobileReg, '-'))
 // 183-7983-6654
 ```
 
-## 手机号3-4-4分割扩展
+### 手机号3-4-4分割扩展
 
 其实是我们经常遇到的用户输入手机号的过程中，需要不断格式化。
 
@@ -198,7 +196,7 @@ const formatMobile = (mobile) => {
 // console.log(formatMobile(12345678911)) // 123-4567-8911
 ```
 
-## 验证密码的合法性
+### 验证密码的合法性
 
 > （小数点）默认匹配除换行符之外的任何单个字符。
 > 
@@ -246,9 +244,9 @@ console.log(reg.test('1aA1aA1aA')) // true
 // 4.数字、小写字母、大写字母一起组合（但其实前面三种已经覆盖了第四种了）
 ```
 
-## 提取连续重复的字符
+### 提取连续重复的字符
 
-### 反向引用：调用捕获到的值
+#### 反向引用：调用捕获到的值
 
 反向引用的作用通常是用来查找或限定重复、查找或限定指定标识配对出现等等。
 
@@ -306,9 +304,9 @@ console.log(collectRepeatStr('12323')) // ["23"]
 console.log(collectRepeatStr('12323454545666')) // ["23", "45", "6"]
 ```
 
-## 实现一个trim函数
+### 实现一个trim函数
 
-### replace
+#### replace
 
 ```js
 // 使用replace()方法来转换字符串中的单词。
@@ -342,7 +340,7 @@ console.log(trim('  前端胖头鱼  ')) // 前端胖头鱼
 console.log(trim('  前端 胖头鱼  ')) // 前端 胖头鱼
 ```
 
-## HTML转义
+### HTML转义
 
 > 防止XSS攻击的方式之一就是做HTML转义，转义规则如下，要求将对应字符转换成等值的实体。而反转义则是将转义后的实体转换为对应的字符。
 
@@ -377,7 +375,7 @@ console.log(escape(`
 `))
 ```
 
-## HTML反转义
+### HTML反转义
 
 ```js
 const unescape = (string) => {
@@ -405,7 +403,7 @@ console.log(unescape(`
 */
 ```
 
-## 将字符串驼峰化
+### 将字符串驼峰化
 
 - 每个单词的前面都有 **0个或者多个** `-` `空格` `_` 如(`Foo`、`--foo`、`__FOO`、`_BAR`、`Bar`)
 
@@ -431,7 +429,7 @@ console.log(camelCase('foo-bar--')) // fooBar
 console.log(camelCase('foo_bar__')) // fooBar
 ```
 
-## 将字符串首字母转化为大写，剩下为小写
+### 将字符串首字母转化为大写，剩下为小写
 
 ```js
 // 例如 hello world 转为为Hello World
@@ -448,17 +446,17 @@ console.log(capitalize('hello world')) // Hello World
 console.log(capitalize('hello WORLD')) // Hello World
 ```
 
-## 获取网页中所有img标签的图片地址
+### 获取网页中所有img标签的图片地址
 
 >  例如 `https://xxx.juejin.com/a.jpg`、`http://xxx.juejin.com/a.jpg`、`//xxx.juejjin.com/a.jpg`
 
-### 题目中限定了
+#### 题目中限定了
 
 - 图片标签`img`
 
 - 需要是在线链接形式，一些base64的图片需要过滤掉
 
-### 代码
+#### 代码
 
 ```js
 const matchImgs = (sHtml) => {
@@ -473,7 +471,7 @@ const matchImgs = (sHtml) => {
 }
 ```
 
-### 分析
+#### 分析
 
 - img标签到src之间的部分，只要不是>，其他的啥都可以
 
@@ -489,9 +487,9 @@ const matchImgs = (sHtml) => {
 
 - 接着就是"到img结束标签>之间的部分了，除了>之外，啥都可以 `[^>]*?`
 
-## 通过name获取url query参数
+### 通过name获取url query参数
 
-### 分析
+#### 分析
 
 > url query上的参数 `name=前端胖头鱼` 所处的位置可能是
 > 
@@ -530,6 +528,6 @@ console.log(getQueryByName('name')) // 前端胖头鱼
 
 # 
 
-# 资料
+### 资料
 
 [JavaScript 正则表达式的匹配规则](https://juejin.cn/post/6978401478201311240#heading-11)
