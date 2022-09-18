@@ -30,10 +30,11 @@ const debounce = (func, wait = 50) => {
   // 如果已经设定过定时器了就清空上一次的定时器
   // 开始一个新的定时器，延迟执行用户传入的方法
   return function(...args) {
+    let _this = this
     if (timer) clearTimeout(timer) 
 
     timer = setTimeout(() => {
-      func.apply(this, args)
+      func.apply(_this, args)
     }, wait)
   }
 }
@@ -44,6 +45,682 @@ const debounce = (func, wait = 50) => {
 - 文本输入的验证，连续输入文字后发送 AJAX 请求进行验证，验证一次就好
 - 按钮提交场景：防止多次提交按钮，只执行最后提交的一次
 - 服务端验证场景：表单验证需要服务端配合，只执行一段连续的输入事件的最后一次，还有搜索联想词功能类似
+
+## 实现节流函数（throttle）
+
+> 节流函数原理:指频繁触发事件时，只会在指定的时间段内执行事件回调，即触发事件间隔大于等于指定的时间才会执行回调函数。总结起来就是：**事件，按照一段时间的间隔来进行触发**。
+
+![](../../\imgs\handwriting-js-2.png)
+
+> 像dom的拖拽，如果用消抖的话，就会出现卡顿的感觉，因为只在停止的时候执行了一次，这个时候就应该用节流，在一定时间内多次执行，会流畅很多
+
+**手写简版**
+
+使用时间戳的节流函数会在第一次触发事件时立即执行，以后每过 wait 秒之后才执行一次，并且最后一次触发事件不会被执行
+
+**时间戳方式：**
+
+```js
+// func是用户传入需要防抖的函数
+// wait是等待时间
+const throttle = (func, wait = 50) => {
+  // 上一次执行该函数的时间
+  let lastTime = 0 
+
+  return function(...args) {
+    // 当前时间
+    let now = +new Date()
+    // 将当前时间和上一次执行函数时间对比
+    // 如果差值大于设置的等待时间就执行函数
+    if (now - lastTime > wait) {
+      lastTime = now
+      func.apply(this, args)
+    }
+  }
+}
+
+// 测试
+setInterval(
+  throttle(() => {
+    console.log(1)
+  }, 500),
+  1
+)
+```
+
+**定时器方式：**
+
+> 使用定时器的节流函数在第一次触发时不会执行，而是在 delay 秒之后才执行，当最后一次停止触发后，还会再执行一次函数
+
+```js
+function throttle(func, delay){
+  var timer = null; 
+
+  return function() {
+    var context = this;
+    var args = arguments; 
+
+    if (!timer) {
+      timer = setTimeout(function(){
+        func.apply(context, args);
+        timer = null;
+      }, delay);
+    }
+  }
+}
+```
+
+**适用场景：**
+
+- `DOM` 元素的拖拽功能实现（`mousemove`）
+- 搜索联想（`keyup`）
+- 计算鼠标移动的距离（`mousemove`）
+- `Canvas` 模拟画板功能（`mousemove`）
+- 监听滚动事件判断是否到页面底部自动加载更多
+- 拖拽场景：固定时间内只执行一次，防止超高频次触发位置变动
+- 缩放场景：监控浏览器`resize`
+- 动画场景：避免短时间内多次触发动画引起性能问题
+
+**总结**
+
+- **函数防抖**：将几次操作合并为一次操作进行。原理是维护一个计时器，规定在delay时间后触发函数，但是在delay时间内再次触发的话，就会取消之前的计时器而重新设置。这样一来，只有最后一次操作能被触发。
+- **函数节流**：使得一定时间内只触发一次函数。原理是通过判断是否到达一定时间来触发函数。
+
+## 实现instanceOf
+
+思路：
+
+- 步骤1：先取得当前类的原型，当前实例对象的原型链
+- ​步骤2：一直循环（执行原型链的查找机制）
+  - 取得当前实例对象原型链的原型链（`proto = proto.__proto__`，沿着原型链一直向上查找）
+  - 如果 当前实例的原型链`__proto__`上找到了当前类的原型`prototype`，则返回 `true`
+  - 如果 一直找到`Object.prototype.__proto__ == null`，`Object`的基类(`null`)上面都没找到，则返回 `false`
+
+```js
+// 实例.__ptoto__ === 类.prototype
+function _instanceof(example, classFunc) {
+    // 由于instance要检测的是某对象，需要有一个前置判断条件
+    // 基本数据类型直接返回false
+    if (typeof example !== 'object' || example === null) return false;
+
+    let proto = Object.getPrototypeOf(example);
+
+    while(true) {
+        if(proto == null) return false;
+
+        // 在当前实例对象的原型链上，找到了当前类
+        if(proto == classFunc.prototype) return true;
+
+        // 沿着原型链__ptoto__一层一层向上查
+        proto = Object.getPrototypeof(proto); // 等于proto.__ptoto__
+    }
+}
+
+console.log('test', _instanceof(null, Array)) // false
+console.log('test', _instanceof([], Array)) // true
+console.log('test', _instanceof('', Array)) // false
+console.log('test', _instanceof({}, Object)) // true
+```
+
+## 实现new的过程
+
+**new操作符做了这些事：**
+
+- 创建一个全新的对象
+- 这个对象的`__proto__`要指向构造函数的原型prototype
+- 执行构造函数，使用 `call/apply` 改变 this 的指向
+- 返回值为`object`类型则作为`new`方法的返回值返回，否则返回上述全新对象
+
+```js
+function myNew(fn, ...args) {
+  // 基于原型链 创建一个新对象
+  let newObj = Object.create(fn.prototype); 
+
+  // 添加属性到新对象上 并获取obj函数的结果
+  let res = fn.apply(newObj, args); // 改变this指向
+
+  // 如果执行结果有返回值并且是一个对象, 返回执行的结果, 否则, 返回新创建的对象
+  return typeof res === 'object' ? res: newObj;
+}
+ 
+```
+
+```js
+// 用法
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+Person.prototype.say = function() {
+  console.log(this.age);
+};
+let p1 = myNew(Person, "poety", 18);
+console.log(p1.name);
+console.log(p1);
+p1.say();
+```
+
+## 实现call方法
+
+**call做了什么:**
+
+- 将函数设为对象的属性
+- 执行和删除这个函数
+- 指定`this`到函数并传入给定参数执行函数
+- 如果不传入参数，默认指向为 `window`
+
+```js
+// 模拟 call bar.mycall(null);
+// 实现一个call方法：
+// 原理：利用 context.xxx = self obj.xx = func-->obj.xx()
+Function.prototype.myCall = function(context = window, ...args) {
+  if (typeof this !== "function") {
+    throw new Error('type error')
+  }
+  // this-->func  context--> obj  args--> 传递过来的参数
+
+  // 在context上加一个唯一值不影响context上的属性
+  let key = Symbol('key')
+  context[key] = this; // context为调用的上下文,this此处为函数，将这个函数作为context的方法
+  // let args = [...arguments].slice(1)   //第一个参数为obj所以删除,伪数组转为数组
+  
+  // 绑定参数 并执行函数
+  let result = context[key](...args);
+  // 清除定义的this 不删除会导致context属性越来越多
+  delete context[key];
+
+  // 返回结果 
+  return result;
+};
+```
+
+```js
+// 用法：f.call(obj,arg1)
+function f(a, b){
+    console.log(a + b)
+    console.log(this.name)
+}
+let obj = {
+    name: 1
+}
+f.myCall(obj, 1, 2) // 否则this指向window
+```
+
+## 实现apply方法
+
+> 思路: 利用`this`的上下文特性。`apply`其实就是改一下参数的问题
+
+```js
+Function.prototype.myApply = function(context = window, args) {
+  // this-->func  context--> obj  args--> 传递过来的参数
+
+  // 在context上加一个唯一值不影响context上的属性
+  let key = Symbol('key')
+  context[key] = this; // context为调用的上下文,this此处为函数，将这个函数作为context的方法
+  // let args = [...arguments].slice(1)   //第一个参数为obj所以删除,伪数组转为数组
+  
+  let result = context[key](...args); // 这里和call传参不一样
+
+  // 清除定义的this 不删除会导致context属性越来越多
+  delete context[key]; 
+
+  // 返回结果
+  return result;
+}
+```
+
+```js
+function f(a, b){
+    console.log(a + b)
+    console.log(this.name)
+}
+let obj = {
+    name: 1
+}
+f.myApply (obj, 1, 2) // 否则this指向window
+```
+
+## 实现bind方法
+
+> `bind` 的实现对比其他两个函数略微地复杂了一点，涉及到参数合并(类似函数柯里化)，因为 `bind` 需要返回一个函数，需要判断一些边界问题，以下是 `bind` 的实现
+
+- `bind` 返回了一个函数，对于函数来说有两种方式调用，一种是直接调用，一种是通过 `new` 的方式，我们先来说直接调用的方式
+- 对于直接调用来说，这里选择了 `apply` 的方式实现，但是对于参数需要注意以下情况：因为 `bind` 可以实现类似这样的代码 `f.bind(obj, 1)(2)`，所以我们需要将两边的参数拼接起来
+- 最后来说通过 `new` 的方式，对于 `new` 的情况来说，不会被任何方式改变 `this`，所以对于这种情况我们需要忽略传入的 `this`
+
+**简洁版本**
+
+- 对于普通函数，绑定`this`指向
+- 对于构造函数，要保证原函数的原型对象上的属性不能丢失
+
+```js
+Function.prototype.myBind = function(context = window, ...args) {
+  // this表示调用bind的函数
+  let self = this;
+
+  // 返回了一个函数，...innerArgs为实际调用时传入的参数
+  let fBound = function(...innerArgs) { 
+      // this instanceof fBound为true表示构造函数的情况。如new func.bind(obj)
+      // 当作为构造函数时，this 指向实例，此时 this instanceof fBound 结果为 true，可以让实例获得来自绑定函数的值
+      // 当作为普通函数时，this 指向 window，此时结果为 false，将绑定函数的 this 指向 context
+      return self.apply(
+        this instanceof fBound ? this : context, 
+        args.concat(innerArgs)
+      );
+  }
+
+  // 如果绑定的是构造函数，那么需要继承构造函数原型属性和方法：保证原函数的原型对象上的属性不丢失
+  // 实现继承的方式: 使用Object.create
+  fBound.prototype = Object.create(this.prototype);
+  return fBound;
+}
+```
+
+```js
+// 测试用例
+
+function Person(name, age) {
+  console.log('Person name：', name);
+  console.log('Person age：', age);
+  console.log('Person this：', this); // 构造函数this指向实例对象
+}
+
+// 构造函数原型的方法
+Person.prototype.say = function() {
+  console.log('person say');
+}
+
+// 普通函数
+function normalFun(name, age) {
+  console.log('普通函数 name：', name); 
+  console.log('普通函数 age：', age); 
+  console.log('普通函数 this：', this);  // 普通函数this指向绑定bind的第一个参数 也就是例子中的obj
+}
+
+
+var obj = {
+  name: 'poetries',
+  age: 18
+}
+
+// 先测试作为构造函数调用
+var bindFun = Person.myBind(obj, 'poetry1') // undefined
+var a = new bindFun(10) // Person name: poetry1、Person age: 10、Person this: fBound {}
+a.say() // person say
+
+// 再测试作为普通函数调用
+var bindNormalFun = normalFun.myBind(obj, 'poetry2') // undefined
+bindNormalFun(12) // 普通函数name: poetry2 普通函数 age: 12 普通函数 this: {name: 'poetries', age: 18}
+```
+
+> 注意： `bind`之后不能再次修改`this`的指向，`bind`多次后执行，函数`this`还是指向第一次`bind`的对象
+
+## 实现深拷贝
+
+### 简洁版本
+
+**简单版：**
+
+```js
+const newObj = JSON.parse(JSON.stringify(oldObj));
+```
+
+**局限性：**
+
+- 他无法实现对函数 、RegExp等特殊对象的克隆
+- 会抛弃对象的`constructor`,所有的构造函数会指向`Object`
+- 对象有循环引用,会报错
+
+**面试简版**
+
+```js
+function deepClone(obj) {
+    // 如果是 值类型 或 null，则直接return
+    if(typeof obj !== 'object' || obj === null) {
+      return obj
+    }
+    
+    // 定义结果对象
+    let copy = {}
+    
+    // 如果对象是数组，则定义结果数组
+    if(obj.constructor === Array) {
+      copy = []
+    }
+    
+    // 遍历对象的key
+    for (let key in obj) {
+        // 如果key是对象的自有属性
+        if(obj.hasOwnProperty(key)) {
+          // 递归调用深拷贝方法
+          copy[key] = deepClone(obj[key])
+        }
+    }
+    
+    return copy
+} 
+```
+
+> 调用深拷贝方法，若属性为值类型，则直接返回；若属性为引用类型，则递归遍历。这就是我们在解这一类题时的核心的方法。
+
+**进阶版**
+
+- 解决拷贝循环引用问题
+- 解决拷贝对应原型问题
+
+```js
+// 递归拷贝 (类型判断)
+function deepClone(value, hash = new WeakMap){ // 弱引用，不用map，weakMap更合适一点
+  // null 和 undefiend 是不需要拷贝的
+  if (value == null) { return value;}
+  if (value instanceof RegExp) { return new RegExp(value) }
+  if (value instanceof Date) { return new Date(value) } 
+
+  // 函数是不需要拷贝
+  if (typeof value != 'object') return value; 
+
+  let obj = new value.constructor(); // [] {}
+
+  // 说明是一个对象类型
+  if (hash.get(value)) {
+    return hash.get(value)
+  }
+  hash.set(value, obj);
+
+  for (let key in value) { // in 会遍历当前对象上的属性 和 __proto__指代的属性
+    // 补拷贝 对象的__proto__上的属性
+    if (value.hasOwnProperty(key)) {
+      // 如果值还有可能是对象 就继续拷贝
+      obj[key] = deepClone(value[key], hash);
+    }
+  }
+
+  return obj
+  // 区分对象和数组 Object.prototype.toString.call
+}
+```
+
+```js
+// test
+var o = {};
+o.x = o;
+var o1 = deepClone(o); // 如果这个对象拷贝过了 就返回那个拷贝的结果就可以了
+console.log(o1);
+```
+
+### 实现完整的深拷贝
+
+**简易版及问题**
+
+```js
+JSON.parse(JSON.stringify());
+```
+
+> 估计这个api能覆盖大多数的应用场景，没错，谈到深拷贝，我第一个想到的也是它。但是实际上，对于某些严格的场景来说，这个方法是有巨大的坑的。问题如下：
+
+1. 无法解决`循环引用`的问题。举个例子：
+
+```js
+const a = {val: 2};
+a.target = a;
+```
+
+> 拷贝`a`会出现系统栈溢出，因为出现了无限递归的情况。
+
+2. 无法拷贝一些特殊的对象，诸如 `RegExp, Date, Set, Map`等
+3. 无法拷贝`函数`(划重点)。
+
+因此这个api先pass掉，我们重新写一个深拷贝，简易版如下:
+
+```js
+const deepClone = (target) => {
+  if (typeof target === 'object' && target !== null) {
+    const cloneTarget = Array.isArray(target) ? []: {};
+    for (let prop in target) {
+      if (target.hasOwnProperty(prop)) {
+          cloneTarget[prop] = deepClone(target[prop]);
+      }
+    }
+    return cloneTarget;
+  } else {
+    return target;
+  }
+}
+```
+
+现在，我们以刚刚发现的三个问题为导向，一步步来完善、优化我们的深拷贝代码。
+
+**2. 解决循环引用**
+
+现在问题如下:
+
+```js
+let obj = {val : 100};
+obj.target = obj;
+
+deepClone(obj); // 报错: RangeError: Maximum call stack size exceeded
+```
+
+这就是循环引用。我们怎么来解决这个问题呢？
+
+> 创建一个Map。记录下已经拷贝过的对象，如果说已经拷贝过，那直接返回它行了。
+
+```js
+const isObject = (target) => (typeof target === 'object' || typeof target === 'function') && target !== null;
+
+const deepClone = (target, map = new Map()) => { 
+  if(map.get(target))  
+    return target; 
+ 
+ 
+  if (isObject(target)) { 
+    map.set(target, true); 
+    const cloneTarget = Array.isArray(target) ? []: {}; 
+    for (let prop in target) { 
+      if (target.hasOwnProperty(prop)) { 
+          cloneTarget[prop] = deepClone(target[prop],map); 
+      } 
+    } 
+    return cloneTarget; 
+  } else { 
+    return target; 
+  } 
+}
+```
+
+现在来试一试：
+
+```js
+const a = {val:2};
+a.target = a;
+let newA = deepClone(a);
+console.log(newA)//{ val: 2, target: { val: 2, target: [Circular] } }
+```
+
+> 好像是没有问题了, 拷贝也完成了。但还是有一个潜在的坑, 就是map 上的 key 和 map 构成了强引用关系，这是相当危险的。我给你解释一下与之相对的弱引用的概念你就明白了
+
+在计算机程序设计中，弱引用与强引用相对，
+
+> 被弱引用的对象可以在任何时候被回收，而对于强引用来说，只要这个强引用还在，那么对象无法被回收。拿上面的例子说，map 和 a一直是强引用的关系， 在程序结束之前，a 所占的内存空间一直不会被释放。
+
+**怎么解决这个问题？**
+
+> 很简单，让 map 的 key 和 map 构成弱引用即可。ES6给我们提供了这样的数据结构，它的名字叫WeakMap，它是一种特殊的Map, 其中的键是弱引用的。其键必须是对象，而值可以是任意的
+
+稍微改造一下即可:
+
+```js
+const deepClone = (target, map = new WeakMap()) => {
+  //...
+}
+```
+
+**3. 拷贝特殊对象**
+
+**可继续遍历**
+
+对于特殊的对象，我们使用以下方式来鉴别:
+
+```js
+Object.prototype.toString.call(obj);
+```
+
+梳理一下对于可遍历对象会有什么结果：
+
+```js
+["object Map"]
+["object Set"]
+["object Array"]
+["object Object"]
+["object Arguments"]
+```
+
+以这些不同的字符串为依据，我们就可以成功地鉴别这些对象。
+
+```js
+const getType = Object.prototype.toString.call(obj);
+
+const canTraverse = {
+  '[object Map]': true,
+  '[object Set]': true,
+  '[object Array]': true,
+  '[object Object]': true,
+  '[object Arguments]': true,
+};
+
+const deepClone = (target, map = new Map()) => {
+  if(!isObject(target)) 
+    return target;
+  let type = getType(target);
+  let cloneTarget;
+  if(!canTraverse[type]) {
+    // 处理不能遍历的对象
+    return;
+  }else {
+    // 这波操作相当关键，可以保证对象的原型不丢失！
+    let ctor = target.prototype;
+    cloneTarget = new ctor();
+  }
+
+  if(map.get(target)) 
+    return target;
+  map.put(target, true);
+
+  if(type === mapTag) {
+    //处理Map
+    target.forEach((item, key) => {
+      cloneTarget.set(deepClone(key), deepClone(item));
+    })
+  }
+  
+  if(type === setTag) {
+    //处理Set
+    target.forEach(item => {
+      target.add(deepClone(item));
+    })
+  }
+
+  // 处理数组和对象
+  for (let prop in target) {
+    if (target.hasOwnProperty(prop)) {
+        cloneTarget[prop] = deepClone(target[prop]);
+    }
+  }
+  return cloneTarget;
+}
+```
+
+**不可遍历的对象**
+
+```js
+const boolTag = '[object Boolean]';
+const numberTag = '[object Number]';
+const stringTag = '[object String]';
+const dateTag = '[object Date]';
+const errorTag = '[object Error]';
+const regexpTag = '[object RegExp]';
+const funcTag = '[object Function]';
+```
+
+对于不可遍历的对象，不同的对象有不同的处理。
+
+```js
+const handleRegExp = (target) => {
+  const { source, flags } = target;
+  return new target.constructor(source, flags);
+}
+
+const handleFunc = (target) => {
+  // 待会的重点部分
+}
+
+const handleNotTraverse = (target, tag) => {
+  const Ctor = targe.constructor;
+  switch(tag) {
+    case boolTag:
+    case numberTag:
+    case stringTag:
+    case errorTag: 
+    case dateTag:
+      return new Ctor(target);
+    case regexpTag:
+      return handleRegExp(target);
+    case funcTag:
+      return handleFunc(target);
+    default:
+      return new Ctor(target);
+  }
+}
+```
+
+**4. 拷贝函数**
+
+- 虽然函数也是对象，但是它过于特殊，我们单独把它拿出来拆解。
+- 提到函数，在JS种有两种函数，一种是普通函数，另一种是箭头函数。每个普通函数都是
+- Function的实例，而箭头函数不是任何类的实例，每次调用都是不一样的引用。那我们只需要
+- 处理普通函数的情况，箭头函数直接返回它本身就好了。
+
+那么如何来区分两者呢？
+
+> 答案是: 利用原型。箭头函数是不存在原型的。
+
+```js
+const handleFunc = (func) => {
+  // 箭头函数直接返回自身
+  if(!func.prototype) return func;
+  const bodyReg = /(?<={)(.|\n)+(?=})/m;
+  const paramReg = /(?<=\().+(?=\)\s+{)/;
+  const funcString = func.toString();
+  // 分别匹配 函数参数 和 函数体
+  const param = paramReg.exec(funcString);
+  const body = bodyReg.exec(funcString);
+  if(!body) return null;
+  if (param) {
+    const paramArr = param[0].split(',');
+    return new Function(...paramArr, body[0]);
+  } else {
+    return new Function(body[0]);
+  }
+}
+```
+
+**5. 完整代码展示**
+
+```js
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 实现Promise相关方法
 
