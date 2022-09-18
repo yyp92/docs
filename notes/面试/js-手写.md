@@ -182,7 +182,6 @@ function myNew(fn, ...args) {
   // 如果执行结果有返回值并且是一个对象, 返回执行的结果, 否则, 返回新创建的对象
   return typeof res === 'object' ? res: newObj;
 }
- 
 ```
 
 ```js
@@ -223,7 +222,7 @@ Function.prototype.myCall = function(context = window, ...args) {
   let key = Symbol('key')
   context[key] = this; // context为调用的上下文,this此处为函数，将这个函数作为context的方法
   // let args = [...arguments].slice(1)   //第一个参数为obj所以删除,伪数组转为数组
-  
+
   // 绑定参数 并执行函数
   let result = context[key](...args);
   // 清除定义的this 不删除会导致context属性越来越多
@@ -258,7 +257,7 @@ Function.prototype.myApply = function(context = window, args) {
   let key = Symbol('key')
   context[key] = this; // context为调用的上下文,this此处为函数，将这个函数作为context的方法
   // let args = [...arguments].slice(1)   //第一个参数为obj所以删除,伪数组转为数组
-  
+
   let result = context[key](...args); // 这里和call传参不一样
 
   // 清除定义的this 不删除会导致context属性越来越多
@@ -379,15 +378,15 @@ function deepClone(obj) {
     if(typeof obj !== 'object' || obj === null) {
       return obj
     }
-    
+
     // 定义结果对象
     let copy = {}
-    
+
     // 如果对象是数组，则定义结果数组
     if(obj.constructor === Array) {
       copy = []
     }
-    
+
     // 遍历对象的key
     for (let key in obj) {
         // 如果key是对象的自有属性
@@ -396,7 +395,7 @@ function deepClone(obj) {
           copy[key] = deepClone(obj[key])
         }
     }
-    
+
     return copy
 } 
 ```
@@ -511,8 +510,8 @@ const isObject = (target) => (typeof target === 'object' || typeof target === 'f
 const deepClone = (target, map = new Map()) => { 
   if(map.get(target))  
     return target; 
- 
- 
+
+
   if (isObject(target)) { 
     map.set(target, true); 
     const cloneTarget = Array.isArray(target) ? []: {}; 
@@ -612,7 +611,7 @@ const deepClone = (target, map = new Map()) => {
       cloneTarget.set(deepClone(key), deepClone(item));
     })
   }
-  
+
   if(type === setTag) {
     //处理Set
     target.forEach(item => {
@@ -707,20 +706,269 @@ const handleFunc = (func) => {
 **5. 完整代码展示**
 
 ```js
+const getType = obj => Object.prototype.toString.call(obj);
 
+const isObject = (target) => (typeof target === 'object' || typeof target === 'function') && target !== null;
+
+const canTraverse = {
+  '[object Map]': true,
+  '[object Set]': true,
+  '[object Array]': true,
+  '[object Object]': true,
+  '[object Arguments]': true,
+};
+const mapTag = '[object Map]';
+const setTag = '[object Set]';
+const boolTag = '[object Boolean]';
+const numberTag = '[object Number]';
+const stringTag = '[object String]';
+const symbolTag = '[object Symbol]';
+const dateTag = '[object Date]';
+const errorTag = '[object Error]';
+const regexpTag = '[object RegExp]';
+const funcTag = '[object Function]';
+
+const handleRegExp = (target) => {
+  const { source, flags } = target;
+  return new target.constructor(source, flags);
+}
+
+const handleFunc = (func) => {
+  // 箭头函数直接返回自身
+  if(!func.prototype) return func;
+  const bodyReg = /(?<={)(.|\n)+(?=})/m;
+  const paramReg = /(?<=\().+(?=\)\s+{)/;
+  const funcString = func.toString();
+  // 分别匹配 函数参数 和 函数体
+  const param = paramReg.exec(funcString);
+  const body = bodyReg.exec(funcString);
+  if(!body) return null;
+  if (param) {
+    const paramArr = param[0].split(',');
+    return new Function(...paramArr, body[0]);
+  } else {
+    return new Function(body[0]);
+  }
+}
+
+const handleNotTraverse = (target, tag) => {
+  const Ctor = target.constructor;
+  switch(tag) {
+    case boolTag:
+      return new Object(Boolean.prototype.valueOf.call(target));
+    case numberTag:
+      return new Object(Number.prototype.valueOf.call(target));
+    case stringTag:
+      return new Object(String.prototype.valueOf.call(target));
+    case symbolTag:
+      return new Object(Symbol.prototype.valueOf.call(target));
+    case errorTag: 
+    case dateTag:
+      return new Ctor(target);
+    case regexpTag:
+      return handleRegExp(target);
+    case funcTag:
+      return handleFunc(target);
+    default:
+      return new Ctor(target);
+  }
+}
+
+const deepClone = (target, map = new WeakMap()) => {
+  if(!isObject(target)) 
+    return target;
+  let type = getType(target);
+  let cloneTarget;
+  if(!canTraverse[type]) {
+    // 处理不能遍历的对象
+    return handleNotTraverse(target, type);
+  }else {
+    // 这波操作相当关键，可以保证对象的原型不丢失！
+    let ctor = target.constructor;
+    cloneTarget = new ctor();
+  }
+
+  if(map.get(target)) 
+    return target;
+  map.set(target, true);
+
+  if(type === mapTag) {
+    //处理Map
+    target.forEach((item, key) => {
+      cloneTarget.set(deepClone(key, map), deepClone(item, map));
+    })
+  }
+
+  if(type === setTag) {
+    //处理Set
+    target.forEach(item => {
+      cloneTarget.add(deepClone(item, map));
+    })
+  }
+
+  // 处理数组和对象
+  for (let prop in target) {
+    if (target.hasOwnProperty(prop)) {
+        cloneTarget[prop] = deepClone(target[prop], map);
+    }
+  }
+  return cloneTarget;
+}
 ```
 
+## 实现类的继承
 
+### 实现类的继承-简版
 
+> 类的继承在几年前是重点内容，有n种继承方式各有优劣，es6普及后越来越不重要，那么多种写法有点『回字有四样写法』的意思，如果还想深入理解的去看红宝书即可，我们目前只实现一种最理想的继承方式。
 
+```js
+// 寄生组合继承
+function Parent(name) {
+  this.name = name
+}
+Parent.prototype.say = function() {
+  console.log(this.name + ` say`);
+}
+Parent.prototype.play = function() {
+  console.log(this.name + ` play`);
+}
 
+function Child(name, parent) {
+  // 将父类的构造函数绑定在子类上
+  Parent.call(this, parent)
+  this.name = name
+}
 
+/** 
+ 1. 这一步不用Child.prototype = Parent.prototype的原因是怕共享内存，修改父类原型对象就会影响子类
+ 2. 不用Child.prototype = new Parent()的原因是会调用2次父类的构造方法（另一次是call），会存在一份多余的父类实例属性
+3. Object.create是创建了父类原型的副本，与父类原型完全隔离
+*/
+Child.prototype = Object.create(Parent.prototype);
+Child.prototype.say = function() {
+  console.log(this.name + ` say`);
+}
 
+// 注意记得把子类的构造指向子类本身
+Child.prototype.constructor = Child;
+```
 
+```js
+// 测试
+var parent = new Parent('parent');
+parent.say() 
 
+var child = new Child('child');
+child.say() 
+child.play(); // 继承父类的方法
+```
 
+### ES5实现继承-详细
 
+**第一种方式是借助call实现继承**
 
+```js
+function Parent1(){
+    this.name = 'parent1';
+}
+function Child1(){
+    Parent1.call(this);
+    this.type = 'child1'    
+}
+console.log(new Child1);
+```
+
+> 这样写的时候子类虽然能够拿到父类的属性值，但是问题是父类中一旦存在方法那么子类无法继承。那么引出下面的方法
+
+**第二种方式借助原型链实现继承：**
+
+```js
+function Parent2() {
+    this.name = 'parent2';
+    this.play = [1, 2, 3]
+}
+function Child2() {
+    this.type = 'child2';
+}
+Child2.prototype = new Parent2();
+
+console.log(new Child2());
+```
+
+看似没有问题，父类的方法和属性都能够访问，但实际上有一个潜在的不足。举个例子：
+
+```js
+var s1 = new Child2();
+var s2 = new Child2();
+s1.play.push(4);
+console.log(s1.play, s2.play); // [1,2,3,4] [1,2,3,4]
+```
+
+明明我只改变了s1的play属性，为什么s2也跟着变了呢？很简单，因为两个实例使用的是同一个原型对象
+
+**第三种方式：将前两种组合：**
+
+```js
+function Parent3 () {
+    this.name = 'parent3';
+    this.play = [1, 2, 3];
+}
+function Child3() {
+    Parent3.call(this);
+    this.type = 'child3';
+}
+Child3.prototype = new Parent3();
+var s3 = new Child3();
+var s4 = new Child3();
+s3.play.push(4);
+console.log(s3.play, s4.play); // [1,2,3,4] [1,2,3]
+```
+
+> 之前的问题都得以解决。但是这里又徒增了一个新问题，那就是Parent3的构造函数会多执行了一次（`Child3.prototype = new Parent3()`;）。这是我们不愿看到的。那么如何解决这个问题？
+
+**第四种方式: 组合继承的优化1**
+
+```js
+function Parent4 () {
+    this.name = 'parent4';
+    this.play = [1, 2 3];
+}
+function Child4() {
+    Parent4.call(this);
+    this.type = 'child4';
+}
+Child4.prototype = Parent4.prototype;
+```
+
+> 这里让将父类原型对象直接给到子类，父类构造函数只执行一次，而且父类属性和方法均能访问，但是我们来测试一下
+
+```js
+var s3 = new Child4();
+var s4 = new Child4();
+console.log(s3)
+```
+
+> 子类实例的构造函数是Parent4，显然这是不对的，应该是Child4。
+
+**第五种方式(最推荐使用)：优化2**
+
+```js
+function Parent5 () {
+    this.name = 'parent5';
+    this.play = [1, 2, 3];
+}
+function Child5() {
+    // 继承属性
+    Parent5.call(this);
+    this.type = 'child5';
+}
+// 继承方法
+Child5.prototype = Object.create(Parent5.prototype);
+Child5.prototype.constructor = Child5;
+```
+
+> 这是最推荐的一种方式，接近完美的继承。
 
 ## 实现Promise相关方法
 
@@ -1779,4 +2027,238 @@ myPromise.defer = myPromise.deferred = function () {
 // })
 
 module.exports = myPromise
+```
+
+## 实现发布订阅模式
+
+**简介：**
+
+发布订阅者模式，一种对象间一对多的依赖关系，但一个对象的状态发生改变时，所依赖它的对象都将得到状态改变的通知。
+
+**主要的作用(优点)：**
+
+1. 广泛应用于异步编程中(替代了传递回调函数)
+2. 对象之间松散耦合的编写代码
+
+**缺点：**
+
+- 创建订阅者本身要消耗一定的时间和内存
+- 多个发布者和订阅者嵌套一起的时候，程序难以跟踪维护
+
+**实现的思路：**
+
+- 创建一个对象(缓存列表)
+- `on`方法用来把回调函数`fn`都加到缓存列表中
+- `emit` 根据`key`值去执行对应缓存列表中的函数
+- `off`方法可以根据`key`值取消订阅
+
+```js
+class EventEmiter {
+  constructor() {
+    // 事件对象，存放订阅的名字和事件
+    this._events = {}
+  } 
+
+  // 订阅事件的方法
+  on(eventName, callback) {
+    if (!this._events) {
+      this._events = {}
+    } 
+
+    // 合并之前订阅的cb
+    this._events[eventName] = [...(this._events[eventName] || []), callback]
+  } 
+
+  // 触发事件的方法
+  emit(eventName, ...args) {
+    if (!this._events[eventName]) {
+      return
+    } 
+
+    // 遍历执行所有订阅的事件
+    this._events[eventName].forEach(fn => fn(...args))
+  } 
+
+  off(eventName, cb) {
+    if (!this._events[eventName]) {
+      return
+    } 
+
+    // 删除订阅的事件
+    this._events[eventName] = this._events[eventName].filter(fn => fn != cb && fn.l != cb)
+  } 
+
+  // 绑定一次 触发后将绑定的移除掉 再次触发掉
+  once(eventName, callback) {
+    const one = (...args) => {
+      // 等callback执行完毕在删除
+      callback(args)
+      this.off(eventName, one)
+    } 
+
+    one.l = callback // 自定义属性
+    this.on(eventName, one)
+  }
+}
+```
+
+**测试用例**
+
+```js
+let event = new EventEmiter()
+
+let login1 = function(...args) {
+  console.log('login success1', args)
+}
+let login2 = function(...args) {
+  console.log('login success2', args)
+}
+// event.on('login',login1)
+event.once('login',login2)
+event.off('login',login1) // 解除订阅
+event.emit('login', 1,2,3,4,5)
+event.emit('login', 6,7,8,9)
+event.emit('login', 10,11,12)  
+```
+
+**发布订阅者模式和观察者模式的区别？**
+
+- 发布/订阅模式是观察者模式的一种变形，两者区别在于，**发布/订阅模式在观察者模式的基础上，在目标和观察者之间增加一个调度中心。**
+- **观察者模式**是由具体目标调度，比如当事件触发，`Subject` 就会去调用观察者的方法，所以观察者模式的订阅者与发布者之间是存在依赖的。
+- **发布/订阅模式**由统一调度中心调用，因此发布者和订阅者不需要知道对方的存在。
+
+## 实现观察者模式
+
+> 观察者模式（基于发布订阅模式） 有观察者，也有被观察者
+
+**观察者需要放到被观察者中，被观察者的状态变化需要通知观察者** 我变化了 内部也是基于发布订阅模式，收集观察者，状态变化后要主动通知观察者
+
+```js
+class Subject { // 被观察者 学生
+  constructor(name) {
+    this.state = 'happy'
+    this.observers = []; // 存储所有的观察者
+  }
+
+  // 收集所有的观察者
+  attach(o){ // Subject. prototype. attch
+    this.observers.push(o)
+  }
+
+  // 更新被观察者 状态的方法
+  setState(newState) {
+    this.state = newState; // 更新状态
+    // this 指被观察者 学生
+    this.observers.forEach(o => o.update(this)) // 通知观察者 更新它们的状态
+  }
+}
+
+class Observer{ // 观察者 父母和老师
+  constructor(name) {
+    this.name = name
+  }
+
+  update(student) {
+    console.log('当前' + this.name + '被通知了', '当前学生的状态是' + student.state)
+  }
+}
+
+let student = new Subject('学生'); 
+
+let parent = new Observer('父母'); 
+let teacher = new Observer('老师'); 
+
+// 被观察者存储观察者的前提，需要先接纳观察者
+student.attach(parent); 
+student.attach(teacher); 
+student.setState('被欺负了');
+```
+
+## 实现单例模式
+
+> 核心要点: 用闭包和`Proxy`属性拦截
+
+```js
+function proxy(func) {
+    let instance;
+    let handler = {
+        constructor(target, args) {
+            if (!instance) {
+                instance = Reflect.constructor(fun, args);
+            } 
+
+            return instance;
+        }
+    } 
+
+    return new Proxy(func, handler);
+}
+```
+
+## 实现Ajax
+
+**步骤**
+
+- 创建 `XMLHttpRequest` 实例
+- 发出 HTTP 请求
+- 服务器返回 XML 格式的字符串
+- JS 解析 XML，并更新局部页面
+- 不过随着历史进程的推进，XML 已经被淘汰，取而代之的是 JSON。
+
+了解了属性和方法之后，根据 AJAX 的步骤，手写最简单的 GET 请求。
+
+### 原生实现
+
+```js
+function ajax() {
+  let xhr = new XMLHttpRequest() // 实例化，以调用方法
+  xhr.open('get', 'https://www.google.com')  // 参数2，url。参数三：异步
+  xhr.onreadystatechange = () => {  // 每当 readyState 属性改变时，就会调用该函数。
+    if (xhr.readyState === 4) {  // XMLHttpRequest 代理当前所处状态。
+      if (xhr.status >= 200 && xhr.status < 300) {  // 200-300请求成功
+        let string = request.responseText
+        // JSON.parse() 方法用来解析JSON字符串，构造由字符串描述的JavaScript值或对象
+        let object = JSON.parse(string)
+      }
+    }
+  }
+  request.send() // 用于实际发出 HTTP 请求。不带参数为GET请求
+}
+```
+
+### Promise实现
+
+基于`Promise`封装`Ajax`
+
+- 返回一个新的`Promise`实例
+- 创建`HMLHttpRequest`异步对象
+- 调用`open`方法，打开`url`，与服务器建立链接（发送前的一些处理）
+- 监听`Ajax`状态信息
+- 如果`xhr.readyState == 4`（表示服务器响应完成，可以获取使用服务器的响应了）
+  - `xhr.status == 200`，返回`resolve`状态
+  - `xhr.status == 404`，返回`reject`状态
+- `xhr.readyState !== 4`，把请求主体的信息基于`send`发送给服务器
+
+```js
+function ajax(url) {
+  return new Promise((resolve, reject) => {
+    let xhr = new XMLHttpRequest()
+    xhr.open('get', url)
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState == 4) {
+        if (xhr.status >= 200 && xhr.status <= 300) {
+          resolve(JSON.parse(xhr.responseText))
+        } else {
+          reject('请求出错')
+        }
+      }
+    }
+    xhr.send()  //发送hppt请求
+  })
+}
+
+// 测试
+let url = '/data.json'
+ajax(url).then(res => console.log(res))
+  .catch(reason => console.log(reason))
 ```
