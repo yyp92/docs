@@ -196,6 +196,7 @@
 - 面试
   
   - [大纲](notes/面试/大纲.md)
+  - [js](notes/面试/js.md)
   - [js-手写](notes/面试/js-手写.md)
   - [css](notes/面试/css.md)
   - [性能](notes/面试/性能.md)

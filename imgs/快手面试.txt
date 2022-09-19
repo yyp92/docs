@@ -1,0 +1,11 @@
+css 布局
+左右两列 - 各占一半
+盒子的宽高比为16：9
+解法：vw/vh, padding/margin, aspect-ratio
+资料：https://juejin.cn/post/6844904070679887886
+
+
+
+promise.all
+promise.race
+promise.allSettled
