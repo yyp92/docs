@@ -2478,13 +2478,13 @@ function asyncToGenerator(generatorFunc) {
     // var test = asyncToGenerator(testG)
     // test().then(res => console.log(res))
     return new Promise((resolve, reject) => {
-    
+
       // 内部定义一个step函数 用来一步一步的跨过yield的阻碍
       // key有next和throw两种取值，分别对应了gen的next和throw方法
       // arg参数则是用来把promise resolve出来的值交给下一个yield
       function step(key, arg) {
         let generatorResult
-        
+
         // 这个方法需要包裹在try catch中
         // 如果报错了 就把promise给reject掉 外部通过.catch可以获取到错误
         try {
@@ -2557,7 +2557,7 @@ function asyncFunc(generator) {
   // data为第一次执行之后的返回结果，用于传给第二次执行
   const next = (data) => {
         let { value, done } = iterator.next(data); // 第二次执行，并接收第一次的请求结果 data
-    
+
     if (done) return; // 执行完毕(到第三次)直接返回
     // 第一次执行next时，yield返回的 promise实例 赋值给了 value
     value.then(data => {
@@ -2573,4 +2573,84 @@ asyncFunc(function* () {
   data = yield readFile(data + 'b.js');
   return data;
 })
+```
+
+## 实现ES6的extends
+
+```js
+function B(name){
+  this.name = name;
+};
+function A(name, age){
+  // 1.将A的原型指向B
+  Object.setPrototypeOf(A, B);
+  // 2.用A的实例作为this调用B,得到继承B之后的实例，这一步相当于调用super
+  Object.getPrototypeOf(A).call(this, name)
+  // 3.将A原有的属性添加到新实例上
+  this.age = age; 
+  // 4.返回新实例对象
+  return this;
+};
+var a = new A('poetry',22);
+console.log(a);
+```
+
+## 实现Object.create
+
+> `Object.create()`方法创建一个新对象，使用现有的对象来提供新创建的对象的 `__proto__`
+
+```js
+// 模拟 Object.create
+function create(proto) {
+    function F() {}
+    F.prototype = proto;
+
+    return new F();
+}
+```
+
+## 实现Object.freeze
+
+> `Object.freeze`冻结一个对象，让其不能再添加/删除属性，也不能修改该对象已有属性的可枚举性、可配置可写性，也不能修改已有属性的值和它的原型属性，最后返回一个和传入参数相同的对象
+
+```js
+function myFreeze(obj){
+  // 判断参数是否为Object类型，如果是就封闭对象，循环遍历对象。去掉原型属性，将其writable特性设置为false
+  if (obj instanceof Object) {
+    Object.seal(obj);  // 封闭对象 
+
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        Object.defineProperty(obj, key, {
+          writable: false   // 设置只读
+        }) 
+
+        // 如果属性值依然为对象，要通过递归来进行进一步的冻结
+        myFreeze(obj[key]);  
+      }
+    }
+  }
+}
+```
+
+## 实现Object.is
+
+`Object.is`不会转换被比较的两个值的类型，这点和`===`更为相似，他们之间也存在一些区别
+
+- `NaN`在`===`中是不相等的，而在`Object.is`中是相等的
+- `+0`和`-`0在`===`中是相等的，而在`Object.is`中是不相等的
+
+```js
+Object.is = function(x, y) {
+  if (x === y) {
+    // 当前情况下，只有一种情况是特殊的，即 +0 -0
+    // 如果 x !== 0，则返回true
+    // 如果 x === 0，则需要判断+0和-0，则可以直接使用 1/+0 === Infinity 和 1/-0 === -Infinity来进行判断
+    return x !== 0 || 1 / x === 1 / y;
+  }
+
+  // x !== y 的情况下，只需要判断是否为NaN，如果x!==x，则说明x是NaN，同理y也一样
+  // x和y同时为NaN时，返回true
+  return x !== x && y !== y;
+};
 ```

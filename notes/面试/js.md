@@ -1446,3 +1446,639 @@ const prototype = Object.prototype
 - 每个函数都有 `prototype` 属性，除了 `Function.prototype.bind()`，该属性指向原型。
 - 每个对象都有 `__proto__` 属性，指向了创建该对象的构造函数的原型。其实这个属性指向了 `[[prototype]]`，但是 `[[prototype]]`是内部属性，我们并不能访问到，所以使用 `_proto_`来访问。
 - 对象可以通过 `__proto__` 来寻找不属于该对象的属性，`__proto__` 将对象连接起来组成了原型链。
+
+## 继承
+
+![](../../\imgs\interview-js-14.png)
+
+> 涉及面试题：原型如何实现继承？`Class` 如何实现继承？`Class` 本质是什么？
+
+首先先来讲下 `class`，其实在 `JS`中并不存在类，`class` 只是语法糖，本质还是函数
+
+```js
+class Person {}
+Person instanceof Function // true
+```
+
+**组合继承**
+
+> 组合继承是最常用的继承方式
+
+```js
+function Parent(value) {
+  this.val = value
+}
+Parent.prototype.getValue = function() {
+  console.log(this.val)
+}
+function Child(value) {
+  Parent.call(this, value)
+}
+Child.prototype = new Parent()
+
+const child = new Child(1)
+
+child.getValue() // 1
+child instanceof Parent // true
+```
+
+- 以上继承的方式核心是在子类的构造函数中通过 `Parent.call(this)` 继承父类的属性，然后改变子类的原型为 `new Parent()` 来继承父类的函数。
+- 这种继承方式优点在于构造函数可以传参，不会与父类引用属性共享，可以复用父类的函数，但是也存在一个缺点就是在继承父类函数的时候调用了父类构造函数，导致子类的原型上多了不需要的父类属性，存在内存上的浪费
+
+**寄生组合继承**
+
+> 这种继承方式对组合继承进行了优化，组合继承缺点在于继承父类函数时调用了构造函数，我们只需要优化掉这点就行了
+
+```js
+function Parent(value) {
+  this.val = value
+}
+Parent.prototype.getValue = function() {
+  console.log(this.val)
+}
+
+function Child(value) {
+  Parent.call(this, value)
+}
+Child.prototype = Object.create(Parent.prototype, {
+  constructor: {
+    value: Child,
+    enumerable: false,
+    writable: true,
+    configurable: true
+  }
+})
+
+const child = new Child(1)
+
+child.getValue() // 1
+child instanceof Parent // true
+```
+
+> 以上继承实现的核心就是将父类的原型赋值给了子类，并且将构造函数设置为子类，这样既解决了无用的父类属性问题，还能正确的找到子类的构造函数。
+
+**Class 继承**
+
+> 以上两种继承方式都是通过原型去解决的，在 ES6 中，我们可以使用 class 去实现继承，并且实现起来很简单
+
+```js
+class Parent {
+  constructor(value) {
+    this.val = value
+  }
+  getValue() {
+    console.log(this.val)
+  }
+}
+class Child extends Parent {
+  constructor(value) {
+    super(value)
+    this.val = value
+  }
+}
+let child = new Child(1)
+child.getValue() // 1
+child instanceof Parent // true
+```
+
+> `class` 实现继承的核心在于使用 `extends` 表明继承自哪个父类，并且在子类构造函数中必须调用 `super`，因为这段代码可以看成 `Parent.call(this, value)`。
+
+**ES5 和 ES6 继承的区别：**
+
+- ES6 继承的子类需要调用 `super()` 才能拿到子类，ES5 的话是通过 `apply` 这种绑定的方式
+- 类声明不会提升，和 `let` 这些一致
+
+```js
+function Super() {}
+Super.prototype.getNumber = function() {
+  return 1
+}
+
+function Sub() {}
+Sub.prototype = Object.create(Super.prototype, {
+  constructor: {
+    value: Sub,
+    enumerable: false,
+    writable: true,
+    configurable: true
+  }
+})
+let s = new Sub()
+s.getNumber()
+```
+
+> 以下详细讲解几种常见的继承方式
+
+**1. 方式1: 借助call**
+
+```js
+function Parent1(){
+    this.name = 'parent1';
+}
+function Child1(){
+    Parent1.call(this);
+    this.type = 'child1'
+}
+console.log(new Child1);
+```
+
+> 这样写的时候子类虽然能够拿到父类的属性值，但是问题是父类原型对象中一旦存在方法那么子类无法继承。那么引出下面的方法。
+
+**2. 方式2: 借助原型链**
+
+```js
+function Parent2() {
+    this.name = 'parent2';
+    this.play = [1, 2, 3]
+}
+function Child2() {
+    this.type = 'child2';
+}
+Child2.prototype = new Parent2();
+
+console.log(new Child2());
+```
+
+看似没有问题，父类的方法和属性都能够访问，但实际上有一个潜在的不足。举个例子：
+
+```js
+var s1 = new Child2();
+var s2 = new Child2();
+s1.play.push(4);
+console.log(s1.play, s2.play);
+```
+
+可以看到控制台：
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-15.png)
+
+> 明明我只改变了s1的play属性，为什么s2也跟着变了呢？很简单，因为两个实例使用的是同一个原型对象。
+
+那么还有更好的方式么？
+
+**3. 方式3：将前两种组合**
+
+```js
+function Parent3 () {
+    this.name = 'parent3';
+    this.play = [1, 2, 3];
+}
+function Child3() {
+    Parent3.call(this);
+    this.type = 'child3';
+}
+Child3.prototype = new Parent3();
+var s3 = new Child3();
+var s4 = new Child3();
+s3.play.push(4);
+console.log(s3.play, s4.play);
+```
+
+可以看到控制台：
+
+![](../../\imgs\interview-js-16.png)
+
+> 之前的问题都得以解决。但是这里又徒增了一个新问题，那就是`Parent3`的构造函数会多执行了一次（`Child3.prototype = new Parent3();`）。这是我们不愿看到的。那么如何解决这个问题？
+
+**4. 方式4: 组合继承的优化1**
+
+```js
+function Parent4 () {
+    this.name = 'parent4';
+    this.play = [1, 2, 3];
+}
+function Child4() {
+    Parent4.call(this);
+    this.type = 'child4';
+}
+Child4.prototype = Parent4.prototype;
+```
+
+这里让将父类原型对象直接给到子类，父类构造函数只执行一次，而且父类属性和方法均能访问，但是我们来测试一下：
+
+```js
+var s3 = new Child4();
+var s4 = new Child4();
+console.log(s3)
+```
+
+![](../../\imgs\interview-js-17.png)
+
+> 子类实例的构造函数是Parent4，显然这是不对的，应该是Child4。
+
+**5. 方式5(最推荐使用): 组合继承的优化2**
+
+```js
+function Parent5 () {
+    this.name = 'parent5';
+    this.play = [1, 2, 3];
+}
+function Child5() {
+    Parent5.call(this);
+    this.type = 'child5';
+}
+Child5.prototype = Object.create(Parent5.prototype);
+Child5.prototype.constructor = Child5;
+```
+
+这是最推荐的一种方式，接近完美的继承，它的名字也叫做寄生组合继承。
+
+**6. ES6的extends被编译后的JavaScript代码**
+
+> ES6的代码最后都是要在浏览器上能够跑起来的，这中间就利用了babel这个编译工具，将ES6的代码编译成ES5让一些不支持新语法的浏览器也能运行。
+
+那最后编译成了什么样子呢？
+
+```js
+function _possibleConstructorReturn(self, call) {
+    // ...
+    return call && (typeof call === 'object' || typeof call === 'function') ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    // ...
+    //看到没有
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+        constructor: {
+            value: subClass,
+            enumerable: false,
+            writable: true,
+            configurable: true
+        }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+
+var Parent = function Parent() {
+    // 验证是否是 Parent 构造出来的 this
+    _classCallCheck(this, Parent);
+};
+
+var Child = (function (_Parent) {
+    _inherits(Child, _Parent);
+
+    function Child() {
+        _classCallCheck(this, Child);
+
+        return _possibleConstructorReturn(this, (Child.__proto__ || Object.getPrototypeOf(Child)).apply(this, arguments));
+    }
+
+    return Child;
+}(Parent));
+```
+
+> 核心是`_inherits`函数，可以看到它采用的依然也是第五种方式————寄生组合继承方式，同时证明了这种方式的成功。不过这里加了一个`Object.setPrototypeOf(subClass, superClass)`，这是用来干啥的呢？
+
+答案是用来继承父类的静态方法。这也是原来的继承方式疏忽掉的地方。
+
+**追问: 面向对象的设计一定是好的设计吗？**
+
+> 不一定。从继承的角度说，这一设计是存在巨大隐患的
+
+## 面向对象
+
+**编程思想**
+
+- 基本思想是使用对象，类，继承，封装等基本概念来进行程序设计
+- 优点
+  - 易维护
+    - 采用面向对象思想设计的结构，可读性高，由于继承的存在，即使改变需求，那么维护也只是在局部模块，所以维护起来是非常方便和较低成本的
+  - 易扩展
+  - 开发工作的重用性、继承性高，降低重复工作量。
+  - 缩短了开发周期
+
+> 一般面向对象包含：继承，封装，多态，抽象
+
+**1. 对象形式的继承**
+
+浅拷贝
+
+```js
+var Person = {
+    name: 'poetry',
+    age: 18,
+    address: {
+        home: 'home',
+        office: 'office',
+    }
+    sclools: ['x','z'],
+};
+
+var programer = {
+    language: 'js',
+};
+
+function extend(p, c){
+    var c = c || {};
+    for( var prop in p){
+        c[prop] = p[prop];
+    }
+}
+extend(Person, programer);
+programer.name;  // poetry
+programer.address.home;  // home
+programer.address.home = 'house';  //house
+Person.address.home;  // house
+```
+
+> 从上面的结果看出，浅拷贝的缺陷在于修改了子对象中引用类型的值，会影响到父对象中的值，因为在浅拷贝中对引用类型的拷贝只是拷贝了地址，指向了内存中同一个副本
+
+深拷贝
+
+```js
+function extendDeeply(p, c){
+    var c = c || {};
+    for (var prop in p){
+        if(typeof p[prop] === "object"){
+            c[prop] = (p[prop].constructor === Array)?[]:{};
+            extendDeeply(p[prop], c[prop]);
+        }else{
+            c[prop] = p[prop];
+        }
+    }
+}
+```
+
+> 利用递归进行深拷贝，这样子对象的修改就不会影响到父对象
+
+```js
+extendDeeply(Person, programer);
+programer.address.home = 'poetry';
+Person.address.home; // home
+```
+
+**利用call和apply继承**
+
+```js
+function Parent(){
+    this.name = "abc";
+    this.address = {home: "home"};
+}
+function Child(){
+    Parent.call(this);
+    this.language = "js"; 
+}
+```
+
+**ES5中的Object.create()**
+
+```js
+var p = { name : 'poetry'};
+var obj = Object.create(p);
+obj.name; // poetry
+```
+
+> `Object.create()`作为new操作符的替代方案是ES5之后才出来的。我们也可以自己模拟该方法：
+
+```js
+// 模拟Object.create()方法
+function myCreate(o){
+    function F(){};
+    F.prototype = o;
+    o = new F();
+    return o;
+}
+var p = { name : 'poetry'};
+var obj = myCreate(p);
+obj.name; // poetry
+```
+
+目前，各大浏览器的最新版本（包括IE9）都部署了这个方法。如果遇到老式浏览器，可以用下面的代码自行部署
+
+```js
+if (!Object.create) {
+　　　　Object.create = function (o) {
+　　　　　　function F() {}
+　　　　　　F.prototype = o;
+　　　　　　return new F();
+　　　　};
+}
+```
+
+**2. 类的继承**
+
+> `Object.create()`
+
+```js
+function Person(name, age){}
+Person.prototype.headCount = 1;
+Person.prototype.eat = function(){
+    console.log('eating...');
+}
+function Programmer(name, age, title){}
+
+Programmer.prototype = Object.create(Person.prototype); // 建立继承关系
+Programmer.prototype.constructor = Programmer;  // 修改constructor的指向
+```
+
+**调用父类方法**
+
+```js
+function Person(name, age){
+    this.name = name;
+    this.age = age;
+}
+Person.prototype.headCount = 1;
+Person.prototype.eat = function(){
+    console.log('eating...');
+}
+
+function Programmer(name, age, title){
+    Person.apply(this, arguments); // 调用父类的构造器
+}
+
+
+Programmer.prototype = Object.create(Person.prototype);
+Programmer.prototype.constructor = Programmer;
+
+Programmer.prototype.language = "js";
+Programmer.prototype.work = function(){
+    console.log('i am working code in '+ this.language);
+    Person.prototype.eat.apply(this, arguments); // 调用父类上的方法
+}
+```
+
+**3. 封装**
+
+- 命名空间
+  - js是没有命名空间的，因此可以用对象模拟
+
+```js
+var app = {};  // 命名空间app
+// 模块1
+app.module1 = {
+    name: 'poetry',
+    f: function(){
+        console.log('hi robot');
+    }
+};
+app.module1.name; // "poetry"
+app.module1.f();  // hi robot
+```
+
+> 对象的属性外界是可读可写 如何来达到封装的额目的？答：可通过`闭包+局部变量`来完成
+
+- 在构造函数内部声明局部变量 和普通方法
+- 因为作用域的关系 只有构造函数内的方法
+- 才能访问局部变量 而方法对于外界是开放的
+- 因此可以通过方法来访问 原本外界访问不到的局部变量 达到函数封装的目的
+
+```js
+function Girl(name,age){
+	var love = '小明';//love 是局部变量 准确说不属于对象 属于这个函数的额激活对象 函数调用时必将产生一个激活对象 love在激活对象身上   激活对象有作用域的关系 有办法访问  加一个函数提供外界访问
+	this.name = name;
+	this.age = age;
+	this.say = function () {
+		return love;
+	};
+
+	this.movelove = function (){
+		love = '小轩'; //35
+	}
+
+} 
+
+var g = new Girl('yinghong',22);
+
+console.log(g);
+console.log(g.say());//小明
+console.log(g.movelove());//undefined  因为35行没有返回
+console.log(g.say());//小轩
+
+
+
+function fn(){
+	function t(){
+		//var age = 22;//声明age变量 在t的激活对象上
+		age = 22;//赋值操作 t的激活对象上找age属性 ，找不到 找fn的激活对象....再找到 最终找到window.age = 22;
+				//不加var就是操作window全局属性
+	
+	}
+	t();
+}
+console.log(fn());//undefined
+```
+
+**静态成员**
+
+> 面向对象中的静态方法-静态属性：没有new对象 也能引用静态方法属性
+
+```js
+function Person(name){
+    var age = 100;
+    this.name = name;
+}
+// 静态成员
+Person.walk = function(){
+    console.log('static');
+};
+Person.walk();  // static
+```
+
+**5. 私有与公有**
+
+```js
+function Person(id){
+    // 私有属性与方法
+    var name = 'poetry';
+    var work = function(){
+        console.log(this.id);
+    };
+    // 公有属性与方法
+    this.id = id;
+    this.say = function(){
+        console.log('say hello');
+        work.call(this);
+    };
+};
+var p1 = new Person(123);
+p1.name; // undefined
+p1.id;  // 123
+p1.say();  // say hello 123
+```
+
+**6. 模块化**
+
+```js
+var moduleA;
+moduleA = function() {
+    var prop = 1;
+
+    function func() {}
+
+    return {
+        func: func,
+        prop: prop
+    };
+}(); // 立即执行匿名函数
+```
+
+**7. 多态**
+
+> 多态:同一个父类继承出来的子类各有各的形态
+
+```js
+function Cat(){
+	this.eat = '肉';
+}
+
+function Tiger(){
+	this.color = '黑黄相间';
+}
+
+function Cheetah(){
+	this.color = '报文';
+}
+
+function Lion(){
+	this.color = '土黄色';
+}
+
+Tiger.prototype =  Cheetah.prototype = Lion.prototype = new Cat();//共享一个祖先 Cat
+
+var T = new Tiger();
+var C = new Cheetah();
+var L = new Lion();
+
+console.log(T.color);
+console.log(C.color);
+console.log(L.color);
+
+
+console.log(T.eat);
+console.log(C.eat);
+console.log(L.eat);
+```
+
+**8. 抽象类**
+
+> 在构造器中 `throw new Error('')`; 抛异常。这样防止这个类被直接调用
+
+```js
+function DetectorBase() {
+    throw new Error('Abstract class can not be invoked directly!');
+}
+
+DetectorBase.prototype.detect = function() {
+    console.log('Detection starting...');
+};
+DetectorBase.prototype.stop = function() {
+    console.log('Detection stopped.');
+};
+DetectorBase.prototype.init = function() {
+    throw new Error('Error');
+};
+
+// var d = new DetectorBase();
+// Uncaught Error: Abstract class can not be invoked directly!
+
+function LinkDetector() {}
+LinkDetector.prototype = Object.create(DetectorBase.prototype);
+LinkDetector.prototype.constructor = LinkDetector;
+
+var l = new LinkDetector();
+console.log(l); // LinkDetector {}__proto__: LinkDetector
+l.detect(); // Detection starting...
+l.init(); // Uncaught Error: Error
+```
