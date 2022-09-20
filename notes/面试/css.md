@@ -124,3 +124,1468 @@
   aspect-ratio: 16/9;
 }
 ```
+
+## 盒模型
+
+> content（元素内容） + padding（内边距） + border（边框） + margin（外边距）
+
+延伸：`box-sizing`
+
+- `content-box`：默认值，总宽度 = `margin` + `border` + `padding` + `width`
+- `border-box`：盒子宽度包含 `padding` 和 `border`，`总宽度 = margin + width`
+- `inherit`：从父元素继承 `box-sizing` 属性
+
+## BFC
+
+> 块级格式化上下文，是一个独立的渲染区域，让处于 `BFC` 内部的元素与外部的元素相互隔离，使内外元素的定位不会相互影响。
+
+> IE下为 `Layout`，可通过 `zoom:1` 触发
+
+**触发条件:**
+
+- 根元素
+- `position: absolute/fixed`
+- `display: inline-block / table`
+- `float` 元素
+- `ovevflow !== visible`
+
+**规则:**
+
+- 属于同一个 `BFC` 的两个相邻 `Box` 垂直排列
+- 属于同一个 `BFC` 的两个相邻 `Box` 的 `margin` 会发生重叠
+- `BFC` 中子元素的 `margin box` 的左边， 与包含块 (BFC) `border box`的左边相接触 (子元素 `absolute` 除外)
+- `BFC` 的区域不会与 `float` 的元素区域重叠
+- 计算 `BFC` 的高度时，浮动子元素也参与计算
+- 文字层不会被浮动层覆盖，环绕于周围
+
+**应用:**
+
+- 阻止`margin`重叠
+- 可以包含浮动元素 —— 清除内部浮动(清除浮动的原理是两个`div`都位于同一个 `BFC` 区域之中)
+- 自适应两栏布局
+- 可以阻止元素被浮动元素覆盖
+
+## 层叠上下文
+
+> 元素提升为一个比较特殊的图层，在三维空间中 (z轴) 高出普通元素一等。
+
+**触发条件**
+
+- 根层叠上下文(`html`)
+- `position`
+- `css3`属性
+  - `flex`
+  - `transform`
+  - `opacity`
+  - `filter`
+  - `will-change`
+  - `webkit-overflow-scrolling`
+
+**层叠等级：层叠上下文在z轴上的排序**
+
+- 在同一层叠上下文中，层叠等级才有意义
+- `z-index`的优先级最高
+
+![](../../\imgs\interview-css-1.png)
+
+## 居中布局
+
+### 元素水平垂直居中的方法有哪些？如果元素不定宽高呢？
+
+1. **利用绝对定位+transform**，设置 `left: 50%` 和 `top: 50%` 现将子元素左上角移到父元素中心位置，然后再通过 `translate` 来调整子元素的中心点到父元素的中心。该方法可以**不定宽高**
+
+```css
+.father {
+  position: relative;
+}
+.son {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+```
+
+2. **利用绝对定位+margin:auto**，子元素所有方向都为 `0` ，将 `margin` 设置为 `auto` ，由于宽高固定，对应方向实现平分，该方法必须**盒子有宽高**
+
+```css
+.father {
+  position: relative;
+}
+.son {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0px;
+  margin: auto;
+  height: 100px;
+  width: 100px;
+}
+```
+
+3. **利用绝对定位+margin:负值**，设置 `left: 50%` 和 `top: 50%` 现将子元素左上角移到父元素中心位置，然后再通过 `margin-left` 和 `margin-top` 以子元素自己的一半宽高进行负值赋值。该方法必须定宽高
+
+```css
+.father {
+  position: relative;
+}
+.son {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200px;
+  height: 200px;
+  margin-left: -100px;
+  margin-top: -100px;
+}
+```
+
+4. **利用 flex** ，最经典最方便的一种了，不用解释，**定不定宽高无所谓**
+
+```html
+<style>
+    .father {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 200px;
+        height: 200px;
+        background: skyblue;
+    }
+    .son {
+        width: 100px;
+        height: 100px;
+        background: red;
+    }
+</style>
+<div class="father">
+    <div class="son"></div>
+</div>
+```
+
+5. **grid网格布局**
+
+```html
+<style>
+.father {
+  display: grid;
+  align-items:center;
+  justify-content: center;
+  width: 200px;
+  height: 200px;
+  background: skyblue;
+
+}
+.son {
+  width: 10px;
+  height: 10px;
+  border: 1px solid red
+}
+</style>
+<div class="father">
+  <div class="son"></div>
+</div>
+```
+
+6. **table布局**
+
+设置父元素为`display:table-cell`，子元素设置 `display: inline-block`。利用`vertical`和`text-align`可以让所有的行内块级元素水平垂直居中
+
+```html
+<style>
+    .father {
+        display: table-cell;
+        width: 200px;
+        height: 200px;
+        background: skyblue;
+        vertical-align: middle;
+        text-align: center;
+    }
+    .son {
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        background: red;
+    }
+</style>
+<div class="father">
+    <div class="son"></div>
+</div>
+```
+
+**小结**
+
+不知道元素宽高大小仍能实现水平垂直居中的方法有：
+
+- `利用定位+margin:auto`
+- `利用定位+transform`
+- `flex`布局
+- `grid`布局
+
+**根据元素标签的性质，可以分为：**
+
+- 内联元素居中布局
+- 块级元素居中布局
+
+**内联元素居中布局**
+
+- 水平居中
+  - 行内元素可设置：`text-align: center`
+  - `flex`布局设置父元素：`display: flex; justify-content: center`
+- 垂直居中
+  - 单行文本父元素确认高度：`height === line-height`
+  - 多行文本父元素确认高度：`display: table-cell; vertical-align: middle`
+
+**块级元素居中布局**
+
+- 水平居中
+  - 定宽: `margin: 0 auto`
+  - `绝对定位+left:50%+margin:负自身一半`
+- 垂直居中
+  - `position: absolute`设置`left`、`top`、`margin-left`、`margin-top`(定高)
+  - `display: table-cell`
+  - `transform: translate(x, y)`
+  - `flex`(不定高，不定宽)
+  - `grid`(不定高，不定宽)，兼容性相对比较差
+
+### 左右居中
+
+- 行内元素: `text-align: center`
+- 定宽块状元素: 左右 `margin` 值为 `auto`
+- 不定宽块状元素: `table`布局，`position + transform`
+
+```css
+/* 方案1 */
+.wrap {
+  text-align: center
+}
+.center {
+  display: inline;
+  /* or */
+  /* display: inline-block; */
+}
+/* 方案2 */
+.center {
+  width: 100px;
+  margin: 0 auto;
+}
+/* 方案3 */
+.wrap {
+  position: relative;
+}
+.center {
+  position: absulote;
+  left: 50%;
+  transform: translateX(-50%);
+}
+```
+
+### 上下居中
+
+- 定高：`margin`，`position + margin`(负值)
+- 不定高：`position` + `transform`，`flex`，`IFC + vertical-align:middle`
+
+```css
+* 定高方案1 */
+.center {
+  height: 100px;
+  margin: 50px 0;   
+}
+/* 定高方案2 */
+.center {
+  height: 100px;
+  position: absolute;
+  top: 50%;
+  margin-top: -25px;
+}
+/* 不定高方案1 */
+.center {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+/* 不定高方案2 */
+.wrap {
+  display: flex;
+  align-items: center;
+}
+.center {
+  width: 100%;
+}
+/* 不定高方案3 */
+/* 设置 inline-block 则会在外层产生 IFC，高度设为 100% 撑开 wrap 的高度 */
+.wrap::before {
+  content: '';
+  height: 100%;
+  display: inline-block;
+  vertical-align: middle;
+}
+.wrap {
+  text-align: center;
+}
+.center {
+  display: inline-block;  
+  vertical-align: middle;
+}
+```
+
+## 选择器权重计算方式
+
+> !important > 内联样式 = 外联样式 > ID选择器 > 类选择器 = 伪类选择器 = 属性选择器 > 元素选择器 = 伪元素选择器 > 通配选择器 = 后代选择器 = 兄弟选择器
+
+1. 属性后面加`!import`会覆盖页面内任何位置定义的元素样式
+2. 作为`style`属性写在元素内的样式
+3. `id`选择器
+4. 类选择器
+5. 标签选择器
+6. 通配符选择器（`*`）
+7. 浏览器自定义或继承
+
+**同一级别：后写的会覆盖先写的**
+
+> css选择器的解析原则：选择器定位DOM元素是从右往左的方向，这样可以尽早的过滤掉一些不必要的样式规则和元素
+
+## 清除浮动
+
+1. 在浮动元素后面添加 `clear:both`的空 `div` 元素
+
+```html
+<div class="container">
+    <div class="left"></div>
+    <div class="right"></div>
+    <div style="clear:both"></div>
+</div>
+```
+
+2. 给父元素添加 `overflow:hidden` 或者 `auto` 样式，触发`BFC`
+
+```html
+<div class="container">
+    <div class="left"></div>
+    <div class="right"></div>
+</div>
+```
+
+```css
+.container{
+    width: 300px;
+    background-color: #aaa;
+    overflow: hidden;
+    zoom: 1;   /*IE6*/
+}
+```
+
+3. 使用伪元素，也是在元素末尾添加一个点并带有 `clear: both` 属性的元素实现的。
+
+```html
+<div class="container clearfix">
+    <div class="left"></div>
+    <div class="right"></div>
+</div>
+```
+
+```css
+.clearfix{
+    zoom: 1; /*IE6*/
+}
+.clearfix:after{
+    content: ".";
+    height: 0;
+    clear: both;
+    display: block;
+    visibility: hidden;
+}
+```
+
+> 推荐使用第三种方法，不会在页面新增div，文档结构更加清晰
+
+## link 与 @import 的区别
+
+- `link`功能较多，可以定义 `RSS`，定义 `Rel` 等作用，而`@import`只能用于加载 `css`
+- 当解析到`link`时，页面会同步加载所引的 `css`，而`@import`所引用的 `css` 会等到页面加载完才被加载
+- `@import`需要 `IE5` 以上才能使用
+- `link`可以使用 `js` 动态引入，`@import`不行
+
+## CSS3的新特性
+
+![](../../\imgs\interview-css-2.png)
+
+**1. 是什么**
+
+css，即层叠样式表（Cascading Style Sheets）的简称，是一种标记语言，由浏览器解释执行用来使页面变得更美观
+
+`css3`是css的最新标准，是向后兼容的，`CSS1/2`的特性在 `CSS3` 里都是可以使用的
+
+而 `CSS3` 也增加了很多新特性，为开发带来了更佳的开发体验
+
+**2. 选择器**
+
+`css3`中新增了一些选择器，主要为如下图所示：
+
+![](../../\imgs\interview-css-3.png)
+
+**新样式**
+
+- **边框** `css3`新增了三个边框属性，分别是：
+  - `border-radius`：创建圆角边框
+  - `box-shadow`：为元素添加阴影
+  - `border-image`：使用图片来绘制边框
+- **box-shadow** 设置元素阴影，设置属性如下（其中水平阴影和垂直阴影是必须设置的）
+  - 水平阴影
+  - 垂直阴影
+  - 模糊距离(虚实)
+  - 阴影尺寸(影子大小)
+  - 阴影颜色
+  - 内/外阴影
+- **背景** 新增了几个关于背景的属性，分别是`background-clip`、`background-origin`、`background-size`和`background-break`
+  - **`background-clip`** 用于确定背景画区，有以下几种可能的属性：通常情况，背景都是覆盖整个元素的，利用这个属性可以设定背景颜色或图片的覆盖范围
+    - `background-clip: border-box`; 背景从`border`开始显示
+    - `background-clip: padding-box`; 背景从`padding`开始显示
+    - `background-clip: content-box`; 背景显`content`区域开始显示
+    - `background-clip: no-clip`; 默认属性，等同于b`order-box`
+  - **`background-origin`** 当我们设置背景图片时，图片是会以左上角对齐，但是是以`border`的左上角对齐还是以`padding`的左上角或者`content`的左上角对齐? `border-origin`正是用来设置这个的
+    - `background-origin: border-box`; 从`border`开始计算`background-position`
+    - `background-origin: padding-box`; 从`padding`开始计算`background-position`
+    - `background-origin: content-box`; 从`content`开始计算`background-position`
+    - 默认情况是`padding-box`，即以`padding`的左上角为原点
+  - **`background-size`** 常用来调整背景图片的大小，主要用于设定图片本身。有以下可能的属性：
+    - `background-size: contain`; 缩小图片以适合元素（维持像素长宽比）
+    - `background-size: cover`; 扩展元素以填补元素（维持像素长宽比）
+    - `background-size: 100px 100px`; 缩小图片至指定的大小
+    - `background-size: 50% 100%`; 缩小图片至指定的大小，百分比是相对包 含元素的尺寸
+  - **`background-break`** 元素可以被分成几个独立的盒子（如使内联元素`span`跨越多行），`background-break` 属性用来控制背景怎样在这些不同的盒子中显示
+    - `background-break: continuous`; 默认值。忽略盒之间的距离（也就是像元素没有分成多个盒子，依然是一个整体一样）
+    - `background-break: bounding-box`; 把盒之间的距离计算在内；
+    - `background-break: each-box`; 为每个盒子单独重绘背景
+- **文字**
+  - **`word-wrap: normal|break-word`**
+    - `normal`：使用浏览器默认的换行
+    - `break-word`l`：允许在单词内换行
+  - **`text-overflow`** 设置或检索当当前行超过指定容器的边界时如何显示，属性有两个值选择
+    - `clip`：修剪文本
+    - `ellipsis`：显示省略符号来代表被修剪的文本
+  - **`text-shadow`** 可向文本应用阴影。能够规定水平阴影、垂直阴影、模糊距离，以及阴影的颜色
+  - **`text-decoration`** CSS3里面开始支持对文字的更深层次的渲染，具体有三个属性可供设置：
+    - `text-fill-color`: 设置文字内部填充颜色
+    - `text-stroke-color`: 设置文字边界填充颜色
+    - `text-stroke-width`: 设置文字边界宽度
+- **颜色**
+  - `css3`新增了新的颜色表示方式`rgba`与`hsla`
+  - `rgba`分为两部分，`rgb`为颜色值，`a`为透明度
+  - `hsla`分为四部分，`h`为色相，`s`为饱和度，`l`为亮度，`a`为透明度
+
+**4. transition 过渡**
+
+`transition`属性可以被指定为一个或多个CSS属性的过渡效果，多个属性之间用逗号进行分隔，必须规定两项内容：
+
+- 过度效果
+- 持续时间
+
+```css
+transition： CSS属性，花费时间，效果曲线(默认ease)，延迟时间(默认0)
+```
+
+上面为简写模式，也可以分开写各个属性
+
+```css
+transition-property: width; 
+transition-duration: 1s;
+transition-timing-function: linear;
+transition-delay: 2s;
+```
+
+**transform 转换**
+
+- `transform`属性允许你旋转，缩放，倾斜或平移给定元素
+- `transform-origin`：转换元素的位置（围绕那个点进行转换），默认值为`(x,y,z):(50%,50%,0)`
+
+使用方式：
+
+- `transform: translate(120px, 50%)`：位移
+- `transform: scale(2, 0.5)`：缩放
+- `transform: rotate(0.5turn)`：旋转
+- `transform: skew(30deg, 20deg)`：倾斜
+
+**6. animation 动画**
+
+动画这个平常用的也很多，主要是做一个预设的动画。和一些页面交互的动画效果，结果和过渡应该一样，让页面不会那么生硬
+
+`animation`也有很多的属性
+
+- `animation-name`：动画名称
+- `animation-duration`：动画持续时间
+- `animation-timing-function`：动画时间函数
+- `animation-delay`：动画延迟时间
+- `animation-iteration-count`：动画执行次数，可以设置为一个整数，也可以设置为infinite，意思是无限循环
+- `animation-direction`：动画执行方向
+- `animation-paly-state`：动画播放状态
+- `animation-fill-mode`：动画填充模式
+
+**7. 渐变**
+
+颜色渐变是指在两个颜色之间平稳的过渡，`css3`渐变包括
+
+- `linear-gradient`：线性渐变 `background-image: linear-gradient(direction, color-stop1, color-stop2, ...)`;
+- `radial-gradient`：径向渐变 `linear-gradient(0deg, red, green)`
+
+**8. 其他**
+
+- `Flex`弹性布局
+- `Grid`栅格布局
+- 媒体查询 `@media screen and (max-width: 960px) {}`还有打印`print`
+
+**transition和animation的区别**
+
+> `Animation`和`transition`大部分属性是相同的，他们都是随时间改变元素的属性值，他们的主要区别是`transition`需要触发一个事件才能改变属性，而`animation`不需要触发任何事件的情况下才会随时间改变属性值，并且`transition`为2帧，从`from .... to`，而`animation`可以一帧一帧的
+
+## CSS动画和过渡
+
+常见的动画效果有很多，如`平移`、`旋转`、`缩放`等等，复杂动画则是多个简单动画的组合
+
+**css实现动画的方式，有如下几种：**
+
+- `transition` 实现渐变动画
+- `transform` 转变动画
+- `animation` 实现自定义动画
+
+### transition 实现渐变动画
+
+**transition的属性如下：**
+
+- `transition-property:填写需要变化的css属性`
+- `transition-duration:完成过渡效果需要的时间单位(s或者ms)默认是 0`
+- `transition-timing-function:完成效果的速度曲线`
+- `transition-delay: （规定过渡效果何时开始。默认是`0`）`
+
+> 一般情况下，我们都是写一起的，比如：`transition： width 2s ease 1s`
+
+其中`timing-function`的值有如下：
+
+| 值                               | 描述                                               |
+| ------------------------------- | ------------------------------------------------ |
+| `linear`                        | 匀速（等于 `cubic-bezier(0,0,1,1)`）                   |
+| `ease`                          | 从慢到快再到慢（`cubic-bezier(0.25,0.1,0.25,1)`）         |
+| `ease-in`                       | 慢慢变快（等于 `cubic-bezier(0.42,0,1,1)`）              |
+| `ease-out`                      | 慢慢变慢（等于 `cubic-bezier(0,0,0.58,1)`）              |
+| `ease-in-out`                   | 先变快再到慢（等于 cubic-bezier(0.42,0,0.58,1)`），渐显渐隐效果   |
+| `cubic-bezier(*n*,*n*,*n*,*n*)` | 在 `cubic-bezier` 函数中定义自己的值。可能的值是 `0` 至 `1` 之间的数值 |
+
+注意：并不是所有的属性都能使用过渡的，如`display:none<->display:block`
+
+举个例子，实现鼠标移动上去发生变化动画效果
+
+```html
+<style>
+  .base {
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    background-color: #0EA9FF;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #5daf34;
+    transition-property: width, height, background-color, border-width;
+    transition-duration: 2s;
+    transition-timing-function: ease-in;
+    transition-delay: 500ms;
+  }
+
+  /*简写*/
+  /*transition: all 2s ease-in 500ms;*/
+  .base:hover {
+    width: 200px;
+    height: 200px;
+    background-color: #5daf34;
+    border-width: 10px;
+    border-color: #3a8ee6;
+  }
+</style>
+<div class="base"></div>
+```
+
+### transform 转变动画
+
+包含四个常用的功能：
+
+- `translate(x,y)`：位移
+- `scale`：缩放
+- `rotate`：旋转
+- `skew`：倾斜
+
+一般配合`transition`过度使用
+
+> 注意的是，`transform`不支持`inline元`素，使用前把它变成`block`
+
+举个例子
+
+```html
+<style>
+.base {
+  width: 100px;
+  height: 100px;
+  display: inline-block;
+  background-color: #0EA9FF;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #5daf34;
+  transition-property: width, height, background-color, border-width;
+  transition-duration: 2s;
+  transition-timing-function: ease-in;
+  transition-delay: 500ms;
+}
+.base2 {
+  transform: none;
+  transition-property: transform;
+  transition-delay: 5ms;
+}
+.base2:hover {
+  transform: scale(0.8, 1.5) rotate(35deg) skew(5deg) translate(15px, 25px);
+}
+</style>
+<div class="base base2"></div>
+```
+
+可以看到盒子发生了旋转，倾斜，平移，放大。
+
+### animation 实现自定义动画
+
+> 一个关键帧动画，最少包含两部分，`animation` 属性及属性值（动画的名称和运行方式运行时间等）`@keyframes`（规定动画的具体实现过程）
+
+`animation`是由 8 个属性的简写，分别如下：
+
+| 属性                              | 描述                                        | 属性值                                                |
+| ------------------------------- | ----------------------------------------- | -------------------------------------------------- |
+| `animation-duration`            | 指定动画完成一个周期所需要时间，单位秒（`s`）或毫秒（`ms`），默认是 `0` |                                                    |
+| `animation-timing-function`     | 指定动画计时函数，即动画的速度曲线，默认是 "`ease`"            | `linear`、`ease`、`ease-in`、`ease-out`、`ease-in-out` |
+| `animation-delay`               | 指定动画延迟时间，即动画何时开始，默认是 `0`                  |                                                    |
+| `animation-iteration-count`     | 指定动画播放的次数，默认是 `1`。但我们一般用`infinite`，一直播放   |                                                    |
+| `animation-direction` 指定动画播放的方向 | 默认是 `normal`                              | `normal`、`reverse`、`alternate`、`alternate-reverse` |
+| `animation-fill-mode`           | 指定动画填充模式。默认是 `none`                       | `forwards`、`backwards`、`both`                      |
+| `animation-play-state`          | 指定动画播放状态，正在运行或暂停。默认是 `running`            | `running`、`pauser`                                 |
+| `animation-name`                | 指定 `@keyframes` 动画的名称                     |                                                    |
+
+`CSS` 动画只需要定义一些关键的帧，而其余的帧，浏览器会根据计时函数插值计算出来，
+
+> `@keyframes`定义关键帧，可以是`from->to`（等同于`0%`和`100%`），也可以是从`0%->100%`之间任意个的分层设置
+
+因此，如果我们想要让元素旋转一圈，只需要定义开始和结束两帧即可：
+
+```css
+@keyframes rotate{
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+```
+
+> `from` 表示最开始的那一帧，`to` 表示结束时的那一帧
+
+**也可以使用百分比刻画生命周期**
+
+```css
+@keyframes rotate{
+  0%{
+    transform: rotate(0deg);
+  }
+  50%{
+    transform: rotate(180deg);
+  }
+  100%{
+    transform: rotate(360deg);
+  }
+}
+```
+
+定义好了关键帧后，下来就可以直接用它了：
+
+```css
+animation: rotate 2s;
+```
+
+**总结**
+
+| 属性               | 含义                                                       |
+| ---------------- | -------------------------------------------------------- |
+| `transition（过度）` | 用于设置元素的样式过度，和`animation`有着类似的效果，但细节上有很大的不同               |
+| `transform（变形）`  | 用于元素进行旋转、缩放、移动或倾斜，和设置样式的动画并没有什么关系，就相当于color一样用来设置元素的“外表” |
+| `translate（移动）`  | 只是`transform`的一个属性值，即移动                                  |
+| `animation（动画）`  | 用于设置动画属性，他是一个简写的属性，包含`6`个属性                              |
+
+### 用css3动画使一个图片旋转总结
+
+| 属性               | 含义                                                       |
+| ---------------- | -------------------------------------------------------- |
+| `transition（过度）` | 用于设置元素的样式过度，和`animation`有着类似的效果，但细节上有很大的不同               |
+| `transform（变形）`  | 用于元素进行旋转、缩放、移动或倾斜，和设置样式的动画并没有什么关系，就相当于color一样用来设置元素的“外表” |
+| `translate（移动）`  | 只是`transform`的一个属性值，即移动                                  |
+| `animation（动画）`  | 用于设置动画属性，他是一个简写的属性，包含`6`个属性                              |
+
+```css
+#loader {
+  display: block;
+  position: relative;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0%   {
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0%   {
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+```
+
+## 有哪些方式（CSS）可以隐藏页面元素
+
+- `opacity:0`：本质上是将元素的透明度将为`0`，就看起来隐藏了，但是依然占据空间且可以交互
+- `visibility:hidden`: 与上一个方法类似的效果，占据空间，但是不可以交互了
+- `overflow:hidden`: 这个只隐藏元素溢出的部分，但是占据空间且不可交互
+- `display:none`: 这个是彻底隐藏了元素，元素从文档流中消失，既不占据空间也不交互，也不影响布局
+- `z-index:-9999`: 原理是将层级放到底部，这样就被覆盖了，看起来隐藏了
+- `transform: scale(0,0)`: 平面变换，将元素缩放为`0`，但是依然占据空间，但不可交互
+
+## 说说em/px/rem/vh/vw区别
+
+传统的项目开发中，我们只会用到`px`、`%`、`em`这几个单位，它可以适用于大部分的项目开发，且拥有比较良好的兼容性
+
+从CSS3开始，浏览器对计量单位的支持又提升到了另外一个境界，新增了`rem`、`vh`、`vw`、`vm`等一些新的计量单位
+
+利用这些新的单位开发出比较良好的响应式页面，适应多种不同分辨率的终端，包括移动设备等
+
+在`css`单位中，可以分为长度单位、绝对单位，如下表所指示
+
+| CSS单位  |                                |
+| ------ | ------------------------------ |
+| 相对长度单位 | em、ex、ch、rem、vw、vh、vmin、vmax、% |
+| 绝对长度单位 | cm、mm、in、px、pt、pc              |
+
+这里我们主要讲述`px`、`em`、`rem`、`vh`、`vw`
+
+**px**
+
+`px`，表示像素，所谓像素就是呈现在我们显示器上的一个个小点，每个像素点都是大小等同的，所以像素为计量单位被分在了绝对长度单位中
+
+有些人会把`px`认为是相对长度，原因在于在移动端中存在设备像素比，`px`实际显示的大小是不确定的
+
+这里之所以认为`px`为绝对单位，在于`px`的大小和元素的其他属性无关
+
+**em**
+
+em是相对长度单位。相对于当前对象内文本的字体尺寸。如当前对行内文本的字体尺寸未被人为设置，则相对于浏览器的默认字体尺寸（`1em = 16px`）
+
+为了简化 `font-size` 的换算，我们需要在`css`中的 `body` 选择器中声明`font-size`= `62.5%`，这就使 em 值变为 `16px*62.5% = 10px`
+
+这样 `12px = 1.2em`, `10px = 1em`, 也就是说只需要将你的原来的`px` 数值除以 10，然后换上 `em`作为单位就行了
+
+特点：
+
+- `em` 的值并不是固定的
+- `em` 会继承父级元素的字体大小
+- `em` 是相对长度单位。相对于当前对象内文本的字体尺寸。如当前对行内文本的字体尺寸未被人为设置，则相对于浏览器的默认字体尺寸
+- 任意浏览器的默认字体高都是 `16px`
+
+举个例子
+
+```html
+<style>
+    html {font-size: 10px;  } /*  公式16px*62.5%=10px  */  
+    .big{font-size: 1.4rem}
+    .small{font-size: 1.2rem}
+</style>
+
+<div class="big">
+    我是14px=1.4rem<div class="small">我是12px=1.2rem</div>
+</div>
+```
+
+这时候`.big`元素的`font-size`为14px，而`.small`元素的`font-size`为12px
+
+**rem(常用)**
+
+- 根据屏幕的分辨率动态设置`html`的文字大小，达到等比缩放的功能
+- 保证`html`最终算出来的字体大小，不能小于`12px`
+- 在不同的移动端显示不同的元素比例效果
+- 如果`html`的`font-size:20px`的时候，那么此时的`1rem = 20px`
+- 把设计图的宽度分成多少分之一，根据实际情况
+- `rem`做盒子的宽度，`viewport`缩放
+
+`head`加入常见的`meta`属性
+
+```html
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<!--这个是关键-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0，minimum-scale=1.0">
+```
+
+把这段代码加入`head`中的`script`预先加载
+
+```js
+// rem适配用这段代码动态计算html的font-size大小
+(function(win) {
+    var docEl = win.document.documentElement;
+    var timer = '';
+
+    function changeRem() {
+        var width = docEl.getBoundingClientRect().width;
+        if (width > 750) { // 750是设计稿大小
+            width = 750;
+        }
+        var fontS = width / 10; // 把设备宽度十等分 1rem=10px
+        docEl.style.fontSize = fontS + "px";
+    }
+    win.addEventListener("resize", function() {
+        clearTimeout(timer);
+        timer = setTimeout(changeRem, 30);
+    }, false);
+    win.addEventListener("pageshow", function(e) {
+        if (e.persisted) { // 清除缓存
+            clearTimeout(timer);
+            timer = setTimeout(changeRem, 30);
+        }
+    }, false);
+    changeRem();
+})(window)
+```
+
+- 或者使用淘宝提供的库 [https://github.com/amfe/lib-flexible(opens new window)](https://github.com/amfe/lib-flexible)
+
+**vh、vw**
+
+`vw` ，就是根据窗口的宽度，分成`100`等份，`100vw`就表示满宽，`50vw`就表示一半宽。（`vw` 始终是针对窗口的宽），同理，`vh`则为窗口的高度
+
+这里的窗口分成几种情况：
+
+- 在桌面端，指的是浏览器的可视区域
+- 移动端指的就是布局视口
+
+像`vw`、`vh`，比较容易混淆的一个单位是`%`，不过百分比宽泛的讲是相对于父元素：
+
+- 对于普通定位元素就是我们理解的父元素
+- 对于`position: absolute;`的元素是相对于已定位的父元素
+- 对于`position: fixed;`的元素是相对于 `ViewPort`（可视窗口）
+
+**总结**
+
+- **px**：绝对单位，页面按精确像素展示
+- **em**：相对单位，基准点为父节点字体的大小，如果自身定义了`font-size`按自身来计算（浏览器默认字体是`16px`），整个页面内`1em`不是一个固定的值
+- **rem**：相对单位，可理解为`root em`, 相对根节点`html`的字体大小来计算
+- **vh、vw**：主要用于页面视口大小布局，在页面布局上更加方便简单
+
+## flex布局
+
+很多时候我们会用到 `flex: 1` ，它具体包含了以下的意思
+
+- `flex-grow: 1` ：该属性默认为 `0` ，如果存在剩余空间，元素也不放大。设置为 `1`  代表会放大。
+- `flex-shrink: 1` ：该属性默认为 `1 ，如果空间不足，元素缩小。
+- `flex-basis: 0%` ：该属性定义在分配多余空间之前，元素占据的主轴空间。浏览器就是根据这个属性来计算是否有多余空间的。默认值为 `auto` ，即项目本身大小。设置为 `0%`  之后，因为有 `flex-grow`  和 `flex-shrink` 的设置会自动放大或缩小。在做两栏布局时，如果右边的自适应元素 `flex-basis`  设为`auto`  的话，其本身大小将会是 `0`
+
+## 关于伪类 LVHA 的解释
+
+> a标签有四种状态：链接访问前、链接访问后、鼠标滑过、激活，分别对应四种伪类:`link`、`:visited`、`:hover`、`:active`；
+
+**当链接未访问过时：**
+
+- 当鼠标滑过a链接时，满足`:link`和`:hover`两种状态，要改变a标签的颜色，就必须将`:hover`伪类在`:link`伪 类后面声明；
+- 当鼠标点击激活a链接时，同时满足`:link`、`:hover`、`:active`三种状态，要显示a标签激活时的样式（`:active`）， 必须将`:active`声明放到`:link`和`:hover`之后。因此得出`LVHA`这个顺序。
+- 当链接访问过时，情况基本同上，只不过需要将`:link`换成`:visited`。
+
+> 这个顺序能不能变？可以，但也只有`:link`和`:visited`可以交换位置，因为一个链接要么访问过要么没访问过，不可能同时满足，也就不存在覆盖的问题。
+
+## calc函数
+
+> calc函数是css3新增的功能，可以使用`calc()`计算`border、margin、pading、font-size`和width等属性设置动态值
+
+```css
+#div1 {
+    position: absolute;
+    left: 50px;
+    width: calc( 100% / (100px * 2) );
+    /* 兼容写法 */
+    width: -moz-calc( 100% / (100px * 2) );
+    width: -webkit-calc( 100% / (100px * 2) );
+    border: 1px solid black;
+}
+```
+
+**注意点：**
+
+- 需要注意的是，运算符前后都需要保留一个空格，例如：`width: calc(100% - 10px)`;
+- `calc()`函数支持 `"+"`, "`-"`, `"*"`, `"/"` 运算;
+- 对于不支持 `calc()`的浏览器，整个属性值表达式将被忽略。不过我们可以对那些不支持`calc()`的浏览器，使用一个固定值作为回退。
+
+## 伪类和伪元素
+
+> `css`引入伪类和伪元素概念是为了格式化文档树以外的信息。也就是说，伪类和伪元素都是用来修饰不在文档树中的部分
+
+**伪类**
+
+> 伪类存在的意义是为了通过选择器找到那些不存在DOM树中的信息以及不能被常规CSS选择器获取到的信息
+
+1. 获取不存在与DOM树中的信息。比如a标签的`:link`、`visited`等，这些信息不存在与DOM树结构中，只能通过CSS选择器来获取；
+2. 获取不能被常规CSS选择器获取的信息。比如：要获取第一个子元素，我们无法用常规的CSS选择器获取，但可以通过 `:first-child` 来获取到。
+
+![](../../\imgs\interview-css-4.png)
+
+**伪元素**
+
+> 伪元素用于创建一些不在文档树中的元素，并为其添加样式。比如说，我们可以通过`:before`来在一个元素前增加一些文本，并为这些文本添加样式。虽然用户可以看到这些文本，但是这些文本实际上不在文档树中。常见的伪元素有：`::before`，`::after`，`::first-line`，`::first-letter`，`::selection`、`::placeholder`等
+
+> 因此，伪类与伪元素的区别在于：有没有创建一个文档树之外的元素
+
+**::after和:after的区别**
+
+- 在实际的开发工作中，我们会看到有人把伪元素写成`:after`，这实际是 `CSS2` 与`CSS3`新旧标准的规定不同而导致的。
+- `CSS2` 中的伪元素使用1个冒号，在 `CSS3` 中，为了区分伪类和伪元素，规定伪元素使用2个冒号。所以，对于 CSS2 标准的老伪元素，比如`:first-line`，`:first-letter`，`:before`，`:after`，写一个冒号浏览器也能识别，但对于 CSS3 标准的新伪元素，比如`::selection`，就必须写2个冒号了
+
+**CSS3新增伪类有那些？**
+
+- `p:first-of-type` 选择属于其父元素的首个`<p>`元素的每个`<p>` 元素。
+- `p:last-of-type` 选择属于其父元素的最后 `<p>` 元素的每个`<p>` 元素。
+- `p:only-of-type` 选择属于其父元素唯一的 `<p>`元素的每个 `<p>` 元素。
+- `p:only-child` 选择属于其父元素的唯一子元素的每个 `<p>` 元素。
+- `p:nth-child(2)` 选择属于其父元素的第二个子元素的每个 `<p>` 元素。
+- `:after` 在元素之前添加内容,也可以用来做清除浮动。
+- `:before` 在元素之后添加内容
+- `:enabled`
+- `:disabled` 控制表单控件的禁用状态。
+- `:checked` 单选框或复选框被选中
+
+## 浏览器是怎样解析 CSS 选择器的
+
+- 样式系统从关键选择器开始匹配，然后左移查找规则选择器的祖先元素。只要选择器的子树一直在工作，样式系统就会持续左移，直到和规则匹配，或者是因为不匹配而放弃该规则。
+- 试想一下，如果采用从左至右的方式读取CSS规则，那么大多数规则读到最后（最右）才会发现是不匹配的，这样做会费时耗能， 最后有很多都是无用的；而如果采取从右向左的方式，那么只要发现最右边选择器不匹配，就可以直接舍弃了，避免了许多无效匹配。
+
+## 浏览器如何判断是否支持 webp 格式图片
+
+- 宽高判断法。通过创建`image`对象，将其`src`属性设置为`webp`格式的图片，然后在`onload`事件中获取图片的宽高，如果能够获取，则说明浏览器支持`webp`格式图片。如果不能获取或者触发了`onerror`函数，那么就说明浏览器不支持webp格 式的图片
+- canvas判断方法。我们可以动态的创建一个`canvas`对象，通过`canvas`的`toDataURL`将设置为webp格式，然后判断 返回值中是否含有`image/webp`字段，如果包含则说明支持`WebP`，反之则不支持
+
+## CSS加载问题
+
+根据页面渲染流程可得知：
+
+- `css`加载不会阻塞DOM树的解析;
+- `css`加载会阻塞DOM树的渲染；
+- `css`加载会阻塞后面js语句的执行
+
+## 文字单超出显示省略号
+
+```css
+div {
+    width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+```
+
+**文字多行超出显示省略号**
+
+```css
+div {
+    width: 200px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+```
+
+该方法适用于WebKit浏览器及移动端。
+
+**跨浏览器兼容方案：**
+
+```css
+p {
+    position: relative;
+    line-height: 1.4em;
+    /* 3 times the line-height to show 3 lines */
+    height: 4.2em;
+    overflow: hidden;
+}
+p::after {
+    content: "...";
+    font-weight: bold;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 0 20px 1px 45px;
+}
+```
+
+## 页面变灰
+
+```css
+body {
+    filter: grayscale(100%); /* 百分比或者 0~1 */
+}
+```
+
+## CSS中可继承的属性
+
+> 可继承的只有：`颜色`、`文字`、`字体间距`、`行高对齐方式`，`列表样式`。
+
+所有元素可继承：`visibility`和`cursor`。
+
+- 内联元素可继承：
+  - `letter-spacing`
+  - `word-spacing`
+  - `white-space`
+  - `line-height`
+  - `color`
+  - `font`
+  - `font-family`
+  - `font-size`
+  - `font-style`
+  - `font-variant`
+  - `font-weight`
+  - `text-decoration`
+  - `text-transform`
+  - `direction`
+- 块状：`text-indent`和`text-align`。
+- 列表元素可继承：`list-style`、`list-style-type`、`list-style-position`、`list-style-image`
+
+## 常规流(文档流)是个怎样的排列关系
+
+将窗体自上而下分成一行一行,并在每行中按从左至右的挨次排放元素。
+
+## inline-block的使用场景
+
+1. 要设置某些子元素在一行或者多行内显示，尤其是排列方向一致的情况下，应尽量用`inline-block`。
+2. 希望若干个元素平行排列，且在父元素中居中排列，此时可以用`inline-block`，且给父元素设`text-align: center`。
+3. `inline-block`可以用一排`a {display: inline-block}`实现横向导航栏，无论是居左的导航栏还是居右的都适用。
+
+对于第一种和第三种情况虽然都可以使用`float`来实现，不过`inline-block`会比它好一些，原因如下：
+
+- 浮动会脱离文档流，导致父元素高度塌陷
+
+## position: fixed什么时候会失效？
+
+我们知道，设置了`position: fixed`固定定位属性的元素会脱离文档流，达到“超然脱俗”的境界。
+
+> 也就是说此时给这种元素设置`top, left, right, bottom`等属性是根据**浏览器窗口**定位的，与其上级元素的位置无关。
+
+但是有一种情况例外：
+
+- 若是设置了`position: fixed`属性的元素，它的祖先元素设置了`transform`属性则会导致固定定位属性失效。
+- 只要你的`transform`设置的不是`none`，都会影响到`position: fixed`，因为此时就会相对于祖先元素指定坐标，而不是浏览器窗口。
+
+注意，这个特性表现，目前只在Chrome浏览器/FireFox浏览器下有。IE浏览器，包括IE11, `fixed`还是`fixed`的表现。
+
+## 回流（reflow）和重绘（repaint）的理解
+
+### 分析
+
+在`HTML`中，每个元素都可以理解成一个盒子，在浏览器解析过程中，会涉及到回流与重绘：
+
+- **回流**：布局引擎会根据各种样式计算每个盒子在页面上的大小与位置
+- **重绘**：当计算好盒模型的位置、大小及其他属性后，浏览器根据每个盒子特性进行绘制
+
+具体的浏览器解析渲染机制如下所示：
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-5.png)
+
+- 解析HTML，生成`DOM`树，解析`CSS`，生成`CSSOM`树
+- 将`DOM`树和`CSSOM`树结合，生成渲染树(`Render Tree`)
+- `Layout`(回流):根据生成的渲染树，进行回流(`Layout`)，得到节点的几何信息（位置，大小）
+- `Painting`(重绘):根据渲染树以及回流得到的几何信息，得到节点的绝对像素
+- `Display`:将像素发送给`GPU`，展示在页面上
+
+> - 在页面初始渲染阶段，回流不可避免的触发，可以理解成页面一开始是空白的元素，后面添加了新的元素使页面布局发生改变
+> - 当我们对 `DOM` 的修改引发了 `DOM`几何尺寸的变化（比如修改元素的宽、高或隐藏元素等）时，浏览器需要重新计算元素的几何属性，然后再将计算的结果绘制出来
+> - 当我们对 `DOM`的修改导致了样式的变化（`color`或`background-color`），却并未影响其几何属性时，浏览器不需重新计算元素的几何属性、直接为该元素绘制新的样式，这里就仅仅触发了重绘
+
+### 如何触发
+
+要想减少回流和重绘的次数，首先要了解回流和重绘是如何触发的
+
+**回流触发时机**
+
+> 回流这一阶段主要是计算节点的位置和几何信息，那么**当页面布局和几何信息发生变化的时候，就需要回流**，如下面情况：
+
+- 添加或删除可见的DOM元素
+- 元素的位置发生变化
+- 元素的尺寸发生变化（包括外边距、内边框、边框大小、高度和宽度等）
+- 内容发生变化，比如文本变化或图片被另一个不同尺寸的图片所替代
+- 页面一开始渲染的时候（这避免不了）
+- 浏览器的窗口尺寸变化（因为回流是根据视口的大小来计算元素的位置和大小的）
+- 还有一些容易被忽略的操作：获取一些特定属性的值。浏览器为了获取这些值，需要进行回流操作
+  - `offsetTop`
+  - `offsetLeft`
+  - `offsetWidth`
+  - `offsetHeight`
+  - `scrollTop`
+  - `scrollLeft`
+  - `scrollWidth`
+  - `scrollHeight`
+  - `clientTop`
+  - `clientLeft`
+  - `clientWidth`
+  - `clientHeight`
+  - 这些属性有一个共性，就是需要通过即时计算得到。因此浏览器为了获取这些值，也会进行回流
+- 除此还包括`getComputedStyle`方法，原理是一样的
+
+> **回流过程**：由于DOM的结构发生了改变，所以需要从生成DOM这一步开始，重新经过`样式计算`、`生成布局树`、`建立图层树`、再到`生成绘制列表`以及之后的显示器显示这整一个渲染过程走一遍，开销是非常大的
+
+**重绘触发时机**
+
+> 通过构造渲染树和重排（回流）阶段，我们知道了哪些节点是可见的，以及可见节点的样式和具体的几何信息(元素在视口内的位置和尺寸大小)，接下来就可以将渲染树的每个节点都转换为屏幕上的实际像素，这个阶段就叫做重绘
+
+触发回流一定会触发重绘
+
+- 当 **`DOM` 的修改导致了样式的变化**，并且没有影响几何属性的时候，会导致`重绘`(`repaint`)。
+- 重绘过程：由于没有导致 `DOM` 几何属性的变化，因此元素的位置信息不需要更新，所以当发生重绘的时候，会跳过`生存布局树`和`建立图层树`的阶段，直接到`生成绘制列表`，然后继续进行分块、生成位图等后面一系列操作。
+
+**浏览器优化机制**
+
+- 由于每次重排都会造成额外的计算消耗，因此大多数浏览器都会通过队列化修改并批量执行来优化重排过程。浏览器会将修改操作放入到队列里，直到过了一段时间或者操作达到了一个阈值，才清空队列
+- 当你获取布局信息的操作的时候，会强制队列刷新，包括前面讲到的`offsetTop`等方法都会返回最新的数据
+- 因此浏览器不得不清空队列，触发回流重绘来返回正确的值
+
+### 如何避免
+
+1. 避免频繁使用 `style`，而是采用修改`class`的方式。
+2. 将动画效果应用到`position`属性为`absolute`或`fixed`的元素上。
+3. 批量操作 `DOM`，比如读取某元素 `offsetWidth` 属性存到一个临时变量，再去使用，而不是频繁使用这个计算属性；又比如利用 `document.createDocumentFragment()` 来添加要被添加的节点，处理完之后再插入到实际 DOM 中
+4. 也可以先为元素设置`display: none`，操作结束后再把它显示出来。因为在`display`属性为`none`的元素上进行的DOM操作不会引发回流和重绘
+5. 对于 `resize`、`scroll` 等进行防抖/节流处理。
+6. 避免频繁读取会引发回流/重绘的属性，如果确实需要多次使用，就用一个变量缓存起来。
+7. 利用 CSS3 的`transform`、`opacity`、`filter`这些属性可以实现合成的效果，也就是`CPU`加速。
+
+**以下举例分析**
+
+例如，多次修改一个把元素布局的时候，我们很可能会如下操作
+
+```js
+const el = document.getElementById('el')
+for(let i=0;i<10;i++) {
+    el.style.top  = el.offsetTop  + 10 + "px";
+    el.style.left = el.offsetLeft + 10 + "px";
+}
+```
+
+每次循环都需要获取多次`offset`属性，比较糟糕，可以使用变量的形式缓存起来，待计算完毕再提交给浏览器发出重计算请求
+
+```js
+// 缓存offsetLeft与offsetTop的值
+const el = document.getElementById('el')
+let offLeft = el.offsetLeft, offTop = el.offsetTop
+
+// 在JS层面进行计算
+for(let i=0;i<10;i++) {
+  offLeft += 10
+  offTop  += 10
+}
+
+// 一次性将计算结果应用到DOM上
+el.style.left = offLeft + "px"
+el.style.top = offTop  + "px"
+```
+
+我们还可避免改变样式，使用类名去合并样式
+
+```js
+const container = document.getElementById('container')
+container.style.width = '100px'
+container.style.height = '200px'
+container.style.border = '10px solid red'
+container.style.color = 'red'
+```
+
+使用类名去合并样式
+
+```html
+<style>
+  .basic_style {
+    width: 100px;
+    height: 200px;
+    border: 10px solid red;
+    color: red;
+  }
+</style>
+<script>
+  const container = document.getElementById('container')
+  container.classList.add('basic_style')
+</script>
+```
+
+- 前者每次单独操作，都去触发一次渲染树更改（新浏览器不会），
+- 都去触发一次渲染树更改，从而导致相应的回流与重绘过程
+- 合并之后，等于我们将所有的更改一次性发出
+- 我们还可以通过通过设置元素属性`display: none`，将其从页面上去掉，然后再进行后续操作，这些后续操作也不会触发回流与重绘，这个过程称为**离线操作**
+
+```js
+const container = document.getElementById('container')
+container.style.width = '100px'
+container.style.height = '200px'
+container.style.border = '10px solid red'
+container.style.color = 'red'
+```
+
+离线操作后
+
+```js
+let container = document.getElementById('container')
+container.style.display = 'none'
+container.style.width = '100px'
+container.style.height = '200px'
+container.style.border = '10px solid red'
+container.style.color = 'red'
+...（省略了许多类似的后续操作）
+container.style.display = 'block'
+```
+
+## GPU加速的原因
+
+> 在合成的情况下，会直接跳过布局和绘制流程，直接进入`非主线程`处理的部分，即直接交给`合成线程`处理。交给它处理有两大好处:
+
+1. 能够充分发挥`GPU`的优势。合成线程生成位图的过程中会调用线程池，并在其中使用`GPU`进行加速生成，而 `GPU` 是擅长处理位图数据的。
+2. 没有占用主线程的资源，即使主线程卡住了，效果依然能够流畅地展示。
+
+## 说说will-change
+
+> `will-change`是`CSS3`新增的标准属性，它的作用很单纯，就是`"增强页面渲染性能"`，当我们在通过某些行为触发页面进行大面积绘制的时候，浏览器往往是没有准备，只能被动的使用CUP去计算和重绘，由于事先没有准备，对于一些复杂的渲染可能会出现掉帧、卡顿等情况。而`will-change`则是在真正的行为触发之前告诉浏览器可能要进行重绘了，相当于浏览器把CUP拉上了，能从容的面对接下来的变形。
+
+**常用的语法主要有：**
+
+- `whil-change: scroll-position;` 即将开始滚动
+- `will-change: contents;` 内容要动画或者变化了
+- `will-transform;` transform相关的属性要变化了(常用)
+
+**注意：**
+
+- `will-change`虽然可以开启加速，但是一定要适度使用
+- 开启加速的代价为手机的耗电量会增加
+- 使用时遵循最小化影响原则，可以对伪元素开启加速，独立渲染
+- 可以写在伪类中，例如`hover`中，这样移出元素的时候就会自动`remove`掉`will-change`了
+- 如果使用`JS`添加了`will-change`，注意要及时`remove`掉，方式就是`style.willChange = 'auto'`
+
+## z-index和background的覆盖关系
+
+![](../../\imgs\interview-css-6.png)
+
+## 移动端中css你是使用什么单位
+
+**比较常用的**：
+
+- `em`：定义字体大小时以父级的字体大小为基准；定义长度单位时以当前字体大小为基准。例父级`font-size: 14px`，则子级`font-size: 1em;`为`font-size: 14px;`；若定义长度时，子级的字体大小如果为`14px`，则子级`width: 2em;`为`width: 24px`。
+- `rem`：以根元素的字体大小为基准。例如`html`的`font-size: 14px`，则子级`1rem = 14px`。
+- `%`：以父级的宽度为基准。例父级`width: 200px`，则子级`width: 50%;height:50%;`为`width: 100px;height: 100px;`
+- `vw和vh`：基于视口的宽度和高度(视口不包括浏览器的地址栏工具栏和状态栏)。例如视口宽度为`1000px`，则`60vw = 600px;`
+- `vmin和vmax`：`vmin`为当前`vw` 和`vh`中较小的一个值；`vmax`为较大的一个值。例如视口宽度`375px`，视口高度`812px`，则`100vmin = 375px;`，`100vmax = 812px;`
+
+**不常用的：**
+
+- `ex和ch`：`ex`以字符`"x"`的高度为基准；例如`1ex`表示和字符`"x"`一样长。`ch`以数字`"0"`的宽度为基准；例如`2ch`表示和2个数字`"0"`一样长。
+
+**移动端布局总结**：
+
+1. 移动端布局的方式主要使用rem和flex，可以结合各自的优点，比如flex布局很灵活，但是字体的大小不好控制，我们可以使用rem和媒体查询控制字体的大小，媒体查询视口的大小，然后不同的上视口大小下设置设置`html`的`font-size`。
+2. 可单独制作移动端页面也可响应式pc端移动端共用一个页面。没有好坏，视情况而定，因势利导
+
+## 说说设备像素、css像素、设备独立像素、dpr、ppi 之间的区别
+
+**1. 背景**
+
+在`css`中我们通常使用`px`作为单位，在`PC`浏览器中`css`的`1`个像素都是对应着电脑屏幕的`1`个物理像素
+
+这会造成一种错觉，我们会认为`css`中的像素就是设备的物理像素
+
+但实际情况却并非如此，`css`中的像素只是一个抽象的单位，在不同的设备或不同的环境中，`css`中的`1px`所代表的设备物理像素是不同的
+
+当我们做移动端开发时，同为`1px`的设置，在不同分辨率的移动设备上显示效果却有很大差异
+
+这背后就涉及了`css`像素、设备像素、设备独立像素、`dpr`、`ppi`的概念
+
+**2. 介绍**
+
+**CSS像素**
+
+CSS像素（`css pixel`,`px`）: 适用于`web`编程，在 CSS 中以 `px` 为后缀，是一个长度单位
+
+在 CSS 规范中，长度单位可以分为两类，绝对单位以及相对单位
+
+`px`是一个相对单位，相对的是设备像素（`device pixel`）
+
+一般情况，页面缩放比为`1`，`1`个CSS像素等于`1`个设备独立像素
+
+`CSS`像素又具有两个方面的相对性：
+
+- 在同一个设备上，每`1`个 `CSS` 像素所代表的设备像素是可以变化的（比如调整屏幕的分辨率）
+- 在不同的设备之间，每`1`个 `CSS` 像素所代表的设备像素是可以变化的（比如两个不同型号的手机）
+
+在页面进行缩放操作也会引起`css`中`px`的变化，假设页面放大一倍，原来的 `1px` 的东西变成 `2px`，在实际宽度不变的情况下`1px` 变得跟原来的 `2px` 的长度（长宽）一样了（元素会占据更多的设备像素）
+
+假设原来需要 `320px` 才能填满的宽度现在只需要 `160px`
+
+`px`会受到下面的因素的影响而变化：
+
+- 每英寸像素（`PPI`）
+- 设备像素比（`DPR`）
+
+**设备像素**
+
+设备像素（`device pixels`），又称为物理像素
+
+指设备能控制显示的最小物理单位，不一定是一个小正方形区块，也没有标准的宽高，只是用于显示丰富色彩的一个“点”而已
+
+可以参考公园里的景观变色彩灯，一个彩灯(物理像素)由红、蓝、绿小灯组成，三盏小灯不同的亮度混合出各种色彩
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-7.png)
+
+从屏幕在工厂生产出的那天起，它上面设备像素点就固定不变了，单位为`pt`
+
+**设备独立像素**
+
+设备独立像素（Device Independent Pixel）：与设备无关的逻辑像素，代表可以通过程序控制使用的虚拟像素，是一个总体概念，包括了CSS像素
+
+在`javaScript`中可以通过`window.screen.width/ window.screen.height` 查看
+
+比如我们会说“电脑屏幕在 `2560x1600` 分辨率下不适合玩游戏，我们把它调为 `1440x900`”，这里的“分辨率”（非严谨说法）指的就是设备独立像素
+
+一个设备独立像素里可能包含`1`个或者多个物理像素点，包含的越多则屏幕看起来越清晰
+
+至于为什么出现设备独立像素这种虚拟像素单位概念，下面举个例子：
+
+iPhone 3GS 和 iPhone 4/4s 的尺寸都是 3.5 寸，但 iPhone 3GS 的分辨率是 320x480，iPhone 4/4s 的分辨率是 640x960
+
+这意味着，iPhone 3GS 有 320 个物理像素，iPhone 4/4s 有 640 个物理像素
+
+如果我们按照真实的物理像素进行布局，比如说我们按照 320 物理像素进行布局，到了 640 物理像素的手机上就会有一半的空白，为了避免这种问题，就产生了虚拟像素单位
+
+我们统一 iPhone 3GS 和 iPhone 4/4s 都是 320 个虚拟像素，只是在 iPhone 3GS 上，最终 1 个虚拟像素换算成 1 个物理像素，在 iphone 4s 中，1 个虚拟像素最终换算成 2 个物理像素
+
+至于 1 个虚拟像素被换算成几个物理像素，这个数值我们称之为设备像素比，也就是下面介绍的`dpr`
+
+**dpr**
+
+`dpr`（device pixel ratio），设备像素比，代表设备独立像素到设备像素的转换关系，在`JavaScript`中可以通过 `window.devicePixelRatio` 获取
+
+计算公式如下：
+
+![](../../\imgs\interview-css-8.png)
+
+当设备像素比为`1:1`时，使用1（`1×1`）个设备像素显示1个CSS像素
+
+当设备像素比为`2:1`时，使用4（`2×2`）个设备像素显示1个CSS像素
+
+当设备像素比为`3:1`时，使用9（`3×3`）个设备像素显示1个CSS像素
+
+如下图所示：
+
+![](../../\imgs\interview-css-9.png)
+
+当`dpr`为3，那么`1px`的`CSS`像素宽度对应`3px`的物理像素的宽度，1px的`CSS`像素高度对应`3px`的物理像素高度
+
+**ppi**
+
+`ppi` （pixel per inch），每英寸像素，表示每英寸所包含的像素点数目，更确切的说法应该是像素密度。数值越高，说明屏幕能以更高密度显示图像
+
+计算公式如下：
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-10.png)
+
+**3. 总结**
+
+- 无缩放情况下，1个CSS像素等于1个设备独立像素
+- 设备像素由屏幕生产之后就不发生改变，而设备独立像素是一个虚拟单位会发生改变
+- PC端中，1个设备独立像素 = 1个设备像素 （在`100%`，未缩放的情况下）
+- 在移动端中，标准屏幕（`160ppi`）下 1个设备独立像素 = 1个设备像素
+- 设备像素比（`dpr`） = `设备像素 / 设备独立像素`
+- 每英寸像素（`ppi`），值越大，图像越清晰
+
+## 在移动端中怎样初始化根元素的字体大小
+
+一个简易版的初始化根元素字体大小。
+
+页面开头处引入下面这段代码，用于动态计算`font-size`：
+
+(假设你需要的`1rem = 20px`)
+
+```js
+(function () {
+  var html = document.documentElement;
+  function onWindowResize() {
+    html.style.fontSize = html.getBoundingClientRect().width / 20 + 'px';
+  }
+  window.addEventListener('resize', onWindowResize);
+  onWindowResize();
+})();
+```
+
+- `document.documentElement`：获取`document`的根元素
+- `html.getBoundingClientRect().width`：获取`html`的宽度(窗口的宽度)
+- 监听`window`的`resize`事件
+
+一般还需要配合一个`meta`头：
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-sacle=1.0, maximum-scale=1.0, user-scalable=no" />
+```
+
+## 移动端中不同手机html默认的字体大小都是一样的吗
+
+> 如果没有人为取改变根元素字体大小的话，默认是`1rem = 16px`；根元素默认的字体大小是`16px`。
+
+## line-height 如何继承
+
+- 父元素的 `line-height` 写了具体数值，比如 `30px`，则子元素 `line-height` 继承该值。
+- 父元素的 `line-height` 写了比例，比如 `1.5`或 `2`，则子元素 `line-height` 也是继承该比例。
+- 父元素的 `line-height` 写了百分比，比如 `200%`，则子元素 `line-height` 继承的是父元素 `font-size * 200%` 计算出来的值
+
+## css 怎么开启硬件加速(GPU 加速)
+
+浏览器在处理下面的 `css` 的时候，会使用 `GPU` 渲染
+
+- `transform`（当 `3D` 变换的样式出现时会使用 `GPU` 加速）
+- `opacity`
+- `filter`
+- `will-change`
+
+> - 采用 `transform: translateZ(0)`
+> - 采用 `transform: translate3d(0, 0, 0)`
+> - 使用 `CSS` 的 `will-change`属性。 `will-change` 可以设置为`opacity`、`transform`、`top`、`left`、`bottom`、`right`
+
+> 注意！层爆炸，由于某些原因可能导致产生大量不在预期内的合成层，虽然有浏览器的层压缩机制，但是也有很多无法进行压缩的情况，这就可能出现层爆炸的现象（简单理解就是，很多不需要提升为合成层的元素因为某些不当操作成为了合成层）。解决层爆炸的问题，最佳方案是打破 `overlap` 的条件，也就是说让其他元素不要和合成层元素重叠。简单直接的方式：使用 `3D` 硬件加速提升动画性能时，最好给元素增加一个 `z-index` 属性，人为干扰合成的排序，可以有效减少创建不必要的合成层，提升渲染性能，移动端优化效果尤为明显。
+
+## flex:1 是哪些属性组成的
+
+- `flex` 实际上是 `flex-grow`、`flex-shrink` 和 `flex-basis` 三个属性的缩写。
+- `flex-grow`：定义项目的的放大比例；
+  - 默认为`0`，即 即使存在剩余空间，也不会放大；
+  - 所有项目的`flex-grow`为`1`：等分剩余空间（自动放大占位）；
+  - `flex-grow`为`n`的项目，占据的空间（放大的比例）是`flex-grow`为`1`的`n`倍
+- `flex-shrink`：定义项目的缩小比例；
+  - 默认为`1`，即 如果空间不足，该项目将缩小；
+  - 所有项目的`flex-shrink`为`1`：当空间不足时，缩小的比例相同；
+  - `flex-shrink`为`0`：空间不足时，该项目不会缩小；
+  - `flex-shrink`为`n`的项目，空间不足时缩小的比例是`flex-shrink`为`1`的`n`倍。
+- `flex-basis`： 定义在分配多余空间之前，项目占据的主轴空间（`main size`），浏览器根据此属性计算主轴是否有多余空间
+  - 默认值为`auto`，即 项目原本大小；
+  - 设置后项目将占据固定空间。
