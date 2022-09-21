@@ -1589,3 +1589,710 @@ iPhone 3GS 和 iPhone 4/4s 的尺寸都是 3.5 寸，但 iPhone 3GS 的分辨率
 - `flex-basis`： 定义在分配多余空间之前，项目占据的主轴空间（`main size`），浏览器根据此属性计算主轴是否有多余空间
   - 默认值为`auto`，即 项目原本大小；
   - 设置后项目将占据固定空间。
+
+## css选择器有哪些？优先级？哪些属性可以继承？
+
+关于`css`属性选择器常用的有：
+
+- `id`选择器（`#box`），选择id为box的元素
+- 类选择器（`.one`），选择类名为one的所有元素
+- 标签选择器（`div`），选择标签为div的所有元素
+- 后代选择器（`#box div`），选择id为box元素内部所有的div元素
+- 子选择器（`.one>one_1`），选择父元素为.one的所有.one_1的元素
+- 相邻同胞选择器（`.one+.two`），选择紧接在.one之后的所有.two元素
+- 群组选择器（`div,p`），选择div、p的所有元素
+
+还有一些使用频率相对没那么多的选择器：
+
+- 伪类选择器
+
+```css
+:link：选择未被访问的链接
+:visited：选取已被访问的链接
+:active：选择活动链接
+:hover：鼠标指针浮动在上面的元素
+:focus：选择具有焦点的
+:first-child：父元素的首个子元素
+```
+
+- 伪元素选择器
+
+```css
+:first-letter：用于选取指定选择器的首字母
+:first-line：选取指定选择器的首行
+:before: 选择器在被选元素的内容前面插入内容
+:after: 选择器在被选元素的内容后面插入内容
+```
+
+- 属性选择器
+
+```css
+[attribute] 选择带有attribute属性的元素
+[attribute=value] 选择所有使用attribute=value的元素
+[attribute~=value] 选择attribute属性包含value的元素
+[attribute|=value]：选择attribute属性以value开头的元素·
+```
+
+在`CSS3`中新增的选择器有如下：
+
+- 层次选择器（`p~ul`），选择前面有`p`元素的每个`ul`元素
+- 伪类选择器
+
+```css
+:first-of-type 表示一组同级元素中其类型的第一个元素
+:last-of-type 表示一组同级元素中其类型的最后一个元素
+:only-of-type 表示没有同类型兄弟元素的元素
+:only-child 表示没有任何兄弟的元素
+:nth-child(n) 根据元素在一组同级中的位置匹配元素
+:nth-last-of-type(n) 匹配给定类型的元素，基于它们在一组兄弟元素中的位置，从末尾开始计数
+:last-child 表示一组兄弟元素中的最后一个元素
+:root 设置HTML文档
+:empty 指定空的元素
+:enabled 选择可用元素
+:disabled 选择被禁用元素
+:checked 选择选中的元素
+:not(selector) 选择与 <selector> 不匹配的所有元素
+```
+
+- 属性选择器
+
+```
+[attribute*=value]：选择attribute属性值包含value的所有元素
+[attribute^=value]：选择attribute属性开头为value的所有元素
+[attribute$=value]：选择attribute属性结尾为value的所有元素
+```
+
+**继承属性**
+
+在`css`中，继承是指的是给父元素设置一些属性，后代元素会自动拥有这些属性
+
+关于继承属性，可以分成：
+
+- 字体系列属性
+
+```css
+font: 组合字体
+font-family: 规定元素的字体系列
+font-weight: 设置字体的粗细
+font-size: 设置字体的尺寸
+font-style: 定义字体的风格
+font-variant: 偏大或偏小的字体
+```
+
+- 文本系列属性
+
+```css
+text-indent：文本缩进
+text-align：文本水平对刘
+line-height：行高
+word-spacing：增加或减少单词间的空白
+letter-spacing：增加或减少字符间的空白
+text-transform：控制文本大小写
+direction：规定文本的书写方向
+color：文本颜色
+```
+
+- 元素可见性
+
+```
+visibility
+```
+
+- 表格布局属性
+
+```
+caption-side：定位表格标题位置
+border-collapse：合并表格边框
+border-spacing：设置相邻单元格的边框间的距离
+empty-cells：单元格的边框的出现与消失
+table-layout：表格的宽度由什么决定
+```
+
+- 列表属性
+
+```
+list-style-type：文字前面的小点点样式
+list-style-position：小点点位置
+list-style：以上的属性可通过这属性集合
+```
+
+- 引用
+
+```
+quotes：设置嵌套引用的引号类型
+```
+
+- 光标属性
+
+```
+cursor：箭头可以变成需要的形状
+```
+
+继承中比较特殊的几点：
+
+- `a` 标签的字体颜色不能被继承
+- `h1-h6`标签字体的大下也是不能被继承的
+
+**无继承的属性**
+
+- `display`
+- 文本属性：`vertical-align`、`text-decoration`
+- 盒子模型的属性：宽度、高度、内外边距、边框等
+- 背景属性：背景图片、颜色、位置等
+- 定位属性：浮动、清除浮动、定位`position`等
+- 生成内容属性：`content`、`counter-reset`、`counter-increment`
+- 轮廓样式属性：`outline-style`、`outline-width`、`outline-color`、`outline`
+- 页面样式属性：`size`、`page-break-before`、`page-break-after`
+
+## flex弹性盒布局模型及适用场景？
+
+- 采用`Flex`布局的元素，称为`flex`容器`container`
+- 它的所有子元素自动成为容器成员，称为`flex`项目`item`
+
+![](../../\imgs\interview-css-11.png)
+
+容器中默认存在两条轴，主轴和交叉轴，呈90度关系。项目默认沿主轴排列，通过`flex-direction`来决定主轴的方向
+
+每根轴都有起点和终点，这对于元素的对齐非常重要
+
+关于flex常用的属性，我们可以划分为容器属性和容器成员属性
+
+**容器属性有：**
+
+- `flex-direction: row | row-reverse | column | column-reverse;` 决定主轴的方向(即项目的排列方向)
+  
+  - `row`（默认值）：主轴为水平方向，起点在左端
+  - `row-reverse`：主轴为水平方向，起点在右端
+  - `column`：主轴为垂直方向，起点在上沿。
+  - `column-reverse`：主轴为垂直方向，起点在下沿
+  
+  ![](../../\imgs\interview-css-12.png)
+
+- `flex-wrap: nowrap | wrap | wrap-reverse;` 弹性元素永远沿主轴排列，那么如果主轴排不下，通过`flex-wrap`决定容器内项目是否可换行
+  
+  - `nowrap`（默认值）：默认情况是不换行，但这里也不会任由元素直接溢出容器，会涉及到元素的弹性伸缩
+  - `wrap`：换行，第一行在上方
+  - `wrap-reverse`：换行，第一行在下方
+
+- `flex-flow: <flex-direction> || <flex-wrap>;` 是`flex-direction`属性和`flex-wrap`属性的简写形式，默认值为`row nowrap`
+
+- `justify-content: flex-start | flex-end | center | space-between | space-around;` 定义了项目在主轴上的对齐方式
+  
+  - `flex-start`（默认值）：左对齐
+  - `flex-end`：右对齐
+  - `center`：居中
+  - `space-between`：两端对齐，项目之间的间隔都相等
+  - `space-around`：两个项目两侧间隔相等
+  
+  ![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-13.png)
+  
+  `align-items: flex-start | flex-end | center | baseline | stretch;` 定义项目在交叉轴上如何对齐
+  
+  - `flex-start`：交叉轴的起点对齐
+  - `flex-end`：交叉轴的终点对齐
+  - `center`：交叉轴的中点对齐
+  - `baseline`: 项目的第一行文字的基线对齐
+  - `stretch`（默认值）：如果项目未设置高度或设为auto，将占满整个容器的高度
+
+- `align-content: flex-start | flex-end | center | space-between | space-around | stretch;` 定义了多根轴线的对齐方式。如果项目只有一根轴线，该属性不起作用
+  
+  - `flex-start`：与交叉轴的起点对齐
+  - `flex-end`：与交叉轴的终点对齐
+  - `center`：与交叉轴的中点对齐
+  - `space-between`：与交叉轴两端对齐，轴线之间的间隔平均分布
+  - `space-around`：每根轴线两侧的间隔都相等。所以，轴线之间的间隔比轴线与边框的间隔大一倍
+  - `stretch`（默认值）：轴线占满整个交叉轴
+  
+  ![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-14.png)
+
+**容器成员属性如下：**
+
+- `order: <integer>;` 定义项目的排列顺序。数值越小，排列越靠前，默认为`0`
+
+- `flex-grow: <number>;` 上面讲到当容器设为`flex-wrap: nowrap;`不换行的时候，容器宽度有不够分的情况，弹性元素会根据`flex-grow`来决定
+  
+  - 定义项目的放大比例（容器宽度>元素总宽度时如何伸展）
+  - 默认为`0`，即如果存在剩余空间，也不放大
+  - 如果所有项目的`flex-grow`属性都为`1`，则它们将等分剩余空间（如果有的话）
+  
+  ![](../../\imgs\interview-css-15.png)
+  
+  - 如果一个项目的`flex-grow`属性为`2`，其他项目都为`1`，则前者占据的剩余空间将比其他项多一倍
+  
+  ![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-16.png)
+  
+  - 弹性容器的宽度正好等于元素宽度总和，无多余宽度，此时无论`flex-grow`是什么值都不会生效
+
+- `flex-shrink: <number>; /* default 1 */` 定义了项目的缩小比例（容器宽度<元素总宽度时如何收缩），默认为`1`，即如果空间不足，该项目将缩小
+  
+  - 如果所有项目的`flex-shrink`属性都为`1`，当空间不足时，都将等比例缩小
+  - 如果一个项目的`flex-shrink`属性为`0`，其他项目都为`1`，则空间不足时，前者不缩小
+  - 在容器宽度有剩余时，`flex-shrink`也是不会生效的
+  
+  ![](../../\imgs\interview-css-17.png)
+
+- `flex-basis: <length> | auto; /* default auto */` 设置的是元素在主轴上的初始尺寸，所谓的初始尺寸就是元素在`flex-grow`和`flex-shrink`生效前的尺寸
+  
+  - 浏览器根据这个属性，计算主轴是否有多余空间，默认值为`auto`，即项目的本来大小，如设置了`width`则元素尺寸由`width/height`决定（主轴方向），没有设置则由内容决定
+  - 当设置为`0`的是，会根据内容撑开
+  - 它可以设为跟`width`或`height`属性一样的值（比如`350px`），则项目将占据固定空间
+
+- `flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]` 属性是`flex-grow`, `flex-shrink` 和 `flex-basis`的简写，默认值为`0 1 auto`，也是比较难懂的一个复合属性
+  
+  - `flex: 1 = flex: 1 1 0%`
+  - `flex: 2 = flex: 2 1 0%`
+  - `flex: auto = flex: 1 1 auto`
+  - `flex: none = flex: 0 0 auto`，常用于固定尺寸不伸缩
+  - `flex:1` 和 `flex:auto` 的区别，可以归结于`flex-basis:0`和`flex-basis:auto`的区别
+  - 当设置为`0`时（绝对弹性元素），此时相当于告诉`flex-grow`和`flex-shrink`在伸缩的时候不需要考虑我的尺寸
+  - 当设置为`auto`时（相对弹性元素），此时则需要在伸缩时将元素尺寸纳入考虑
+  - 注意：建议优先使用这个属性，而不是单独写三个分离的属性，因为浏览器会推算相关值
+
+- `align-self: auto | flex-start | flex-end | center | baseline | stretch;` 允许单个项目有与其他项目不一样的对齐方式，可覆盖`align-items`属性
+  
+  - 默认值为`auto`，表示继承父元素的`align-items`属性，如果没有父元素，则等同于`stretch`
+  
+  ![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-18.png)
+
+**应用场景**
+
+- `flex`简单粗暴的实现元素水平垂直方向的居中，以及在两栏三栏自适应布局中通过`flex`完成
+- 在移动端、小程序这边的开发，都建议使用`flex`进行布局
+
+## 介绍一下grid网格布局
+
+`Grid` 布局即网格布局，是一个二维的布局方式，由纵横相交的两组网格线形成的框架性布局结构，能够同时处理行与列
+
+擅长将一个页面划分为几个主要区域，以及定义这些区域的大小、位置、层次等关系
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-19.png)
+
+这与`flex`一维布局不相同
+
+设置`display:grid/inline-grid`的元素就是网格布局容器，这样就能出发浏览器渲染引擎的网格布局算法
+
+```html
+<div class="container">
+    <div class="item item-1">
+        <p class="sub-item"></p>
+    </div>
+    <div class="item item-2"></div>
+    <div class="item item-3"></div>
+</div> 
+```
+
+上述代码实例中，`.container`元素就是网格布局容器，`.item`元素就是网格的项目，由于网格元素只能是容器的顶层子元素，所以`p`元素并不是网格元素
+
+这里提一下，网格线概念，有助于下面对`grid-column`系列属性的理解
+
+网格线，即划分网格的线，如下图所示：
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-20.png)
+
+上图是一个 `2 x 3` 的网格，共有`3`根水平网格线和`4`根垂直网格线
+
+**Grid 布局属性可以分为两大类**
+
+- 容器属性
+- 项目属性
+
+**关于容器属性有如下：**
+
+- `display` 在元素上设置`display：grid` 或 `display：inline-grid` 来创建一个网格容器
+  
+  - `display：grid` 则该容器是一个块级元素
+  - `display: inline-grid` 则容器元素为行内元素
+
+- `grid-template-columns` 属性，`grid-template-rows` 属性
+  
+  - `grid-template-columns` 属性设置列宽，`grid-template-rows` 属性设置行高
+  
+  ```css
+  .wrapper {
+    display: grid;
+    /*  声明了三列，宽度分别为 200px 200px 200px */
+    grid-template-columns: 200px 200px 200px;
+    grid-gap: 5px;
+    /*  声明了两行，行高分别为 50px 50px  */
+    grid-template-rows: 50px 50px;
+  }
+  ```
+
+- 以上表示固定列宽为 `200px 200px 200px`，行高为 `50px 50px`
+
+- 上述代码可以看到重复写单元格宽高，通过使用`repeat()`函数，可以简写重复的值
+  
+  - 第一个参数是重复的次数
+  - 第二个参数是重复的值
+
+- 所以上述代码可以简写成
+
+```css
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(3,200px);
+    grid-gap: 5px;
+    grid-template-rows:repeat(2,50px);
+  }
+```
+
+- 除了上述的`repeat`关键字，还有：
+  
+  - `auto-fill`：示自动填充，让一行（或者一列）中尽可能的容纳更多的单元格
+    
+    - `grid-template-columns: repeat(auto-fill, 200px)` 表示列宽是 `200 px`，但列的数量是不固定的，只要浏览器能够容纳得下，就可以放置元素
+  
+  - `fr`：片段，为了方便表示比例关系
+    
+    - `grid-template-columns: 200px 1fr 2fr` 表示第一个列宽设置为 `200px`，后面剩余的宽度分为两部分，宽度分别为剩余宽度的 `1/3` 和 `2/3`
+  
+  - `minmax`：产生一个长度范围，表示长度就在这个范围之中都可以应用到网格项目中。第一个参数就是最小值，第二个参数就是最大值
+    
+    - `minmax(100px, 1fr)`表示列宽不小于`100px`，不大于`1fr`
+  
+  - `auto`：由浏览器自己决定长度
+    
+    - `grid-template-columns: 100px auto 100px` 表示第一第三列为 `100px`，中间由浏览器决定长度
+
+- `grid-row-gap` 属性， `grid-column-gap` 属性， `grid-gap` 属性
+  
+  - `grid-row-gap` 属性、`grid-column-gap` 属性分别设置行间距和列间距。`grid-gap` 属性是两者的简写形式
+  - `grid-row-gap: 10px` 表示行间距是 `10px`
+  - `grid-column-gap: 20px` 表示列间距是 `20px`
+  - `grid-gap: 10px 20px` 等同上述两个属性
+
+- `grid-template-areas` 属性：用于定义区域，一个区域由一个或者多个单元格组成
+  
+  ```css
+  .container {
+      display: grid;
+      grid-template-columns: 100px 100px 100px;
+      grid-template-rows: 100px 100px 100px;
+      grid-template-areas: 'a b c'
+                          'd e f'
+                          'g h i';
+    }
+  ```
+
+- 上面代码先划分出`9`个单元格，然后将其定名为`a`到`i`的九个区域，分别对应这九个单元格。
+
+- 多个单元格合并成一个区域的写法如下
+
+```css
+grid-template-areas: 'a a a'
+                   'b b b'
+                   'c c c';
+```
+
+- 上面代码将`9`个单元格分成`a、b、c`三个区域
+- 如果某些区域不需要利用，则使用"点"（`.`）表示
+
+`grid-auto-flow` 属性
+
+- 划分网格以后，容器的子元素会按照顺序，自动放置在每一个网格。
+- 顺序就是由`grid-auto-flow`决定，默认为行，代表"先行后列"，即先填满第一行，再开始放入第二行
+
+![](../../\imgs\interview-css-21.png)
+
+当修改成`column`后，放置变为如下
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-22.png)
+
+`justify-items` 属性， `align-items` 属性， `place-items` 属性
+
+- `justify-items` 属性设置单元格内容的水平位置（左中右），`align-items` 属性设置单元格的垂直位置（上中下）
+- 两者属性的值完成相同
+
+```css
+.container {
+  justify-items: start | end | center | stretch;
+  align-items: start | end | center | stretch;
+}
+```
+
+- 属性对应如下：
+  - `start`：对齐单元格的起始边缘
+  - `end`：对齐单元格的结束边缘
+  - `center`：单元格内部居中
+  - `stretch`：拉伸，占满单元格的整个宽度（默认值）
+  - `place-items`属性是`align-items`属性和`justify-items`属性的合并简写形式
+
+`justify-content` 属性， `align-content` 属性， `place-content` 属性
+
+- `justify-content`属性是整个内容区域在容器里面的水平位置（左中右），`align-content`属性是整个内容区域的垂直位置（上中下）
+
+```css
+.container {
+  justify-content: start | end | center | stretch | space-around | space-between | space-evenly;
+  align-content: start | end | center | stretch | space-around | space-between | space-evenly;  
+}
+```
+
+- 两个属性的写法完全相同，都可以取下面这些值：
+- `start` - 对齐容器的起始边框
+- `end` - 对齐容器的结束边框
+- `center` - 容器内部居中
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-23.png)
+
+- `space-around` - 每个项目两侧的间隔相等。所以，项目之间的间隔比项目与容器边框的间隔大一倍
+- `space-between` - 项目与项目的间隔相等，项目与容器边框之间没有间隔
+- `space-evenly` - 项目与项目的间隔相等，项目与容器边框之间也是同样长度的间隔
+- `stretch` - 项目大小没有指定时，拉伸占据整个网格容器
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-24.png)
+
+- `grid-auto-columns` 属性和 `grid-auto-rows` 属性
+  - 有时候，一些项目的指定位置，在现有网格的外部，就会产生显示网格和隐式网格
+  - 比如网格只有`3`列，但是某一个项目指定在第`5`行。这时，浏览器会自动生成多余的网格，以便放置项目。超出的部分就是隐式网格
+  - 而`grid-auto-rows`与`grid-auto-columns`就是专门用于指定隐式网格的宽高
+
+**关于项目属性，有如下：**
+
+- `grid-column-start` 属性、`grid-column-end` 属性、`grid-row-start` 属性以及`grid-row-end` 属性
+  
+  - 指定网格项目所在的四个边框，分别定位在哪根网格线，从而指定项目的位置
+  - `grid-column-start` 属性：左边框所在的垂直网格线
+  - `grid-column-end` 属性：右边框所在的垂直网格线
+  - `grid-row-start` 属性：上边框所在的水平网格线
+  - `grid-row-end` 属性：下边框所在的水平网格线
+  
+  ```html
+   <style>
+      #container{
+          display: grid;
+          grid-template-columns: 100px 100px 100px;
+          grid-template-rows: 100px 100px 100px;
+      }
+      .item-1 {
+          grid-column-start: 2;
+          grid-column-end: 4;
+      }
+    </style>
+  
+    <div id="container">
+        <div class="item item-1">1</div>
+        <div class="item item-2">2</div>
+        <div class="item item-3">3</div>
+    </div>
+  ```
+  
+  - 通过设置`grid-column`属性，指定`1`号项目的左边框是第二根垂直网格线，右边框是第四根垂直网格线
+  
+  ![](../../\imgs\interview-css-25.png)
+
+- `grid-area` 属性
+  
+  - `grid-area` 属性指定项目放在哪一个区域
+  
+  ```css
+  item-1 {
+    grid-area: e;
+  }
+  ```
+  
+  - 意思为将`1`号项目位于`e`区域
+
+- `justify-self` 属性、`align-self` 属性以及 `place-self` 属性
+  
+  - `justify-self`属性设置单元格内容的水平位置（左中右），跟`justify-items属性的用法完全一致，但只作用于单个项目。
+  - `align-self`属性设置单元格内容的垂直位置（上中下），跟`align-items`属性的用法完全一致，也是只作用于单个项目
+  
+  ```css
+  .item {
+    justify-self: start | end | center | stretch;
+    align-self: start | end | center | stretch;
+  }
+  ```
+  
+  - 这两个属性都可以取下面四个值。
+    - `start`：对齐单元格的起始边缘。
+    - `end`：对齐单元格的结束边缘。
+    - `center`：单元格内部居中。
+    - `stretch`：拉伸，占满单元格的整个宽度（默认值）
+
+**应用场景**
+
+Grid是一个强大的布局，如一些常见的 `CSS 布局`，如`居中`，`两列布局`，`三列布局`等等是很容易实现的
+
+![](../../\imgs\interview-css-26.png)
+
+总体兼容性还不错，但在 `IE 10` 以下不支持
+
+目前，`Grid`布局在手机端支持还不算太友好
+
+## 什么是响应式设计？响应式设计的基本原理是什么
+
+> 响应式网站设计（`Responsive Web design`）是一种网络页面设计布局，页面的设计与开发应当根据用户行为以及设备环境(系统平台、屏幕尺寸、屏幕定向等)进行相应的响应和调整
+
+**响应式网站常见特点：**
+
+- 同时适配PC + 平板 + 手机等
+- 标签导航在接近手持终端设备时改变为经典的抽屉式导航
+- 网站的布局会根据视口来调整模块的大小和位置
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-27.png)
+
+**实现方式**
+
+响应式设计的基本原理是通过媒体查询检测不同的设备屏幕尺寸做处理，为了处理移动端，页面头部必须有`meta`声明`viewport`
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no” />
+```
+
+属性对应如下：
+
+- `width=device-width`: 是自适应手机屏幕的尺寸宽度
+- `maximum-scale`:是缩放比例的最大值
+- `inital-scale`:是缩放的初始化
+- `user-scalable`:是用户的可以缩放的操作
+
+实现响应式布局的方式有如下：
+
+- **媒体查询**
+  
+  - CSS3中的增加了更多的媒体查询，就像if条件表达式一样，我们可以设置不同类型的媒体条件，并根据对应的条件，给相应符合条件的媒体调用相对应的样式表
+  - 使用`@Media`查询，可以针对不同的媒体类型定义不同的样式，如： `@media screen and (max-width: 1920px) { ... }`
+  - 当视口在`375px - 600px`之间，设置特定字体大小`18px` `@media screen (min-width: 375px) and (max-width: 600px) {body: {font-size: 18px}}`
+  - 通过媒体查询，可以通过给不同分辨率的设备编写不同的样式来实现响应式的布局，比如我们为不同分辨率的屏幕，设置不同的背景图片
+  - 比如给小屏幕手机设置`@2x`图，为大屏幕手机设置`@3x`图，通过媒体查询就能很方便的实现
+
+- **百分比**
+  
+  - 通过百分比单位 " `%` " 来实现响应式的效果
+  - 比如当浏览器的宽度或者高度发生变化时，通过百分比单位，可以使得浏览器中的组件的宽和高随着浏览器的变化而变化，从而实现响应式的效果
+  - `height`、`width`属性的百分比依托于父标签的宽高，但是其他盒子属性则不完全依赖父元素
+    - 子元素的`top/left`和`bottom/right`如果设置百分比，则相对于直接非`static`定位(默认定位)的父元素的高度/宽度
+    - 子元素的`padding`如果设置百分比，不论是垂直方向或者是水平方向，都相对于直接父亲元素的`width`，而与父元素的`height`无关
+    - 子元素的`margin`如果设置成百分比，不论是垂直方向还是水平方向，都相对于直接父元素的`width`
+    - `border-radius`不一样，如果设置`border-radius`为百分比，则是相对于自身的宽度
+  - 可以看到每个属性都使用百分比，会照成布局的复杂度，所以`不建议使用百分比来实现响应式`
+
+- **vw/vh**
+  
+  - `vw`表示相对于视图窗口的宽度，`vh`表示相对于视图窗口高度。 任意层级元素，在使用`vw`单位的情况下，`1vw`都等于视图宽度的百分之一
+
+- **rem**
+  
+  - `rem`是相对于根元素`html`的`font-size`属性，默认情况下浏览器字体大小为`16px`，此时`1rem = 16px`
+  - 可以利用前面提到的媒体查询，针对不同设备分辨率改变`font-size`的值，如下：
+  
+  ```css
+  @media screen and (max-width: 414px) {
+     html {
+       font-size: 18px
+     }
+   }
+  
+   @media screen and (max-width: 375px) {
+     html {
+       font-size: 16px
+     }
+   }
+  
+   @media screen and (max-width: 320px) {
+     html {
+       font-size: 12px
+     }
+   }
+  ```
+  
+  - 为了更准确监听设备可视窗口变化，我们可以在`css`之前插入`script`标签，内容如下：
+  
+  ```js
+  // 动态为根元素设置字体大小
+  function init () {
+      // 获取屏幕宽度
+      var width = document.documentElement.clientWidth
+      // 设置根元素字体大小。此时为宽的10等分
+      document.documentElement.style.fontSize = width / 10 + 'px'
+  }
+  
+  // 首次加载应用，设置一次
+  init()
+  // 监听手机旋转的事件的时机，重新设置
+  window.addEventListener('orientationchange', init)
+  // 监听手机窗口变化，重新设置
+  window.addEventListener('resize', init)
+  ```
+  
+  - 无论设备可视窗口如何变化，始终设置`rem`为`width`的`1/10`，实现了百分比布
+  
+  - 除此之外，我们还可以利用主流UI框架，如：`element ui`、`antd`提供的栅格布局实现响应式
+
+**总结**
+
+- 响应式布局优点可以看到：
+- 面对不同分辨率设备灵活性强
+- 能够快捷解决多设备显示适应问题
+- 缺点：
+- 仅适用布局、信息、框架并不复杂的部门类型网站
+- 兼容各种设备工作量大，效率低下
+- 代码累赘，会出现隐藏无用的元素，加载时间加长
+- 其实这是一种折中性质的设计解决方案，多方面因素影响而达不到最佳效果
+- 一定程度上改变了网站原有的布局结构，会出现用户混淆的情况
+
+## 如果要做优化，CSS提高性能的方法有哪些？
+
+实现方式有很多种，主要有如下：
+
+- **内联首屏关键CSS**
+  - 在打开一个页面，页面首要内容出现在屏幕的时间影响着用户的体验，而通过内联`css`关键代码能够使浏览器在下载完html后就能立刻渲染
+  - 而如果外部引用`css`代码，在解析`html`结构过程中遇到外部`css`文件，才会开始下载`css`代码，再渲染
+  - 所以，CSS内联使用使渲染时间提前
+  - 注意：但是较大的`css`代码并不合适内联（初始拥塞窗口、没有缓存），而其余代码则采取外部引用方式
+- **异步加载CSS**
+  - 在CSS文件请求、下载、解析完成之前，CSS会阻塞渲染，浏览器将不会渲染任何已处理的内容
+  
+  - 前面加载内联代码后，后面的外部引用css则没必要阻塞浏览器渲染。这时候就可以采取异步加载的方案，主要有如下：
+    
+    - 使用javascript将`link`标签插到`head`标签最后
+    
+    ```js
+    // 创建link标签
+    const myCSS = document.createElement( "link" );
+    myCSS.rel = "stylesheet";
+    myCSS.href = "mystyles.css";
+    // 插入到header的最后位置
+    document.head.insertBefore( myCSS, document.head.childNodes[ document.head.childNodes.length - 1 ].nextSibling )
+    ```
+    
+    - 设置`link`标签`media`属性为`noexis`，浏览器会认为当前样式表不适用当前类型，会在不阻塞页面渲染的情况下再进行下载。加载完成后，将media的值设为`screen`或`all`，从而让浏览器开始解析CSS
+    
+    ```html
+    <link rel="stylesheet" href="mystyles.css" media="noexist" onload="this.media='all'">    
+    ```
+    
+    - 通过`rel`属性将`link`元素标记为`alternate`可选样式表，也能实现浏览器异步加载。同样别忘了加载完成之后，将`rel`设回`stylesheet`
+    
+    ```html
+    <link rel="alternate stylesheet" href="mystyles.css" onload="this.rel='stylesheet'">
+    ```
+
+- **资源压缩**
+  - 利用`webpack`、`gulp/grunt`、`rollup`等模块化工具，将`css`代码进行压缩，使文件变小，大大降低了浏览器的加载时间
+- **合理使用选择器**
+  - css匹配的规则是从右往左开始匹配，例如`#markdown .content h3`匹配规则如下：
+    - 先找到`h3`标签元素
+    - 然后去除祖先不是`.content`的元素
+    - 最后去除祖先不是`#markdown`的元素
+  - 如果嵌套的层级更多，页面中的元素更多，那么匹配所要花费的时间代价自然更高
+  - 所以我们在编写选择器的时候，可以遵循以下规则：
+    - 不要嵌套使用过多复杂选择器，最好不要三层以上
+    - 使用id选择器就没必要再进行嵌套
+    - 通配符和属性选择器效率最低，避免使用
+- **减少使用昂贵的属性**
+  - 在页面发生重绘的时候，昂贵属性如`box-shadow/border-radius/filter/透明度/:nth-child`等，会降低浏览器的渲染性能
+- **不要使用@import**
+  - css样式文件有两种引入方式，一种是`link`元素，另一种是`@import`
+  - `@import`会影响浏览器的并行下载，使得页面在加载时增加额外的延迟，增添了额外的往返耗时
+  - 而且多个`@import`可能会导致下载顺序紊乱
+  - 比如一个css文件`index.css`包含了以下内容：`@import url("reset.css")`
+  - 那么浏览器就必须先把`index.css`下载、解析和执行后，才下载、解析和执行第二个文件`reset.css`
+- **其他**
+  - 减少重排操作，以及减少不必要的重绘
+  - 了解哪些属性可以继承而来，避免对这些属性重复编写
+  - `css Sprite`，合成所有`icon`图片，用宽高加上`backgroud-position`的背景图方式显现出我们要的`icon`图，减少了`http`请求
+  - 把小的`icon`图片转成`base64`编码
+  - CSS3动画或者过渡尽量使用`transform`和`opacity`来实现动画，不要使用`left`和`top`属性
