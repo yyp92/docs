@@ -1,5 +1,3 @@
-# 
-
 # css面试题
 
 ## CSS之宽高比例布局
@@ -123,6 +121,331 @@
   height: auto;
   aspect-ratio: 16/9;
 }
+```
+
+## 编程题
+
+### 画一条 0.5px 的线
+
+- 采用 meta viewport 的方式 `<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />`
+- 采用 `border-image` 的方式
+- 采用 `transform: scale()` 的方式
+
+### 如何画一个三角形
+
+三角形原理:边框的均分原理
+
+```css
+div {
+  width:0px;
+  height:0px;
+  border-top:10px solid red; 
+  border-right:10px solid transparent; 
+  border-bottom:10px solid transparent; 
+  border-left:10px solid transparent;
+}
+```
+
+### 圆？半圆？椭圆？
+
+```css
+div {
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  margin-top: 20px;
+}
+.box1 { /* 圆 */
+  /* border-radius: 50%; */
+  border-radius: 50px;
+}
+.box2 { /* 半圆 */
+  height: 50px;
+  border-radius: 50px 50px 0 0;
+}
+.box3 { /* 椭圆 */
+  height: 50px;
+  border-radius: 50px/25px; /* x轴/y轴 */
+}
+```
+
+### CSS画圆半圆扇形三角梯形
+
+```css
+div{
+    margin: 50px;
+    width: 100px;
+    height: 100px;
+    background: red;
+}
+/* 半圆 */
+.half-circle{
+    height: 50px;
+    border-radius: 50px 50px 0 0;
+}
+/* 扇形 */
+.sector{
+    border-radius: 100px 0 0;
+}
+/* 三角 */
+.triangle{
+    width: 0px;
+    height: 0px;
+    background: none;
+    border: 50px solid red;
+    border-color: red transparent transparent transparent;
+}
+/* 梯形 */
+.ladder{
+    width: 50px;
+    height: 0px;
+    background: none;
+    border: 50px solid red;
+    border-color: red transparent transparent transparent;
+}
+```
+
+### 两栏布局：左边定宽，右边自适应方案
+
+```html
+<div class="box">
+  <div class="box-left"></div>
+  <div class="box-right"></div>
+</div>
+```
+
+**利用float + margin实现**
+
+```css
+.box {
+ height: 200px;
+}
+
+.box > div {
+  height: 100%;
+}
+
+.box-left {
+  width: 200px;
+  float: left;
+  background-color: blue;
+}
+
+.box-right {
+  margin-left: 200px;
+  background-color: red;
+}
+```
+
+**利用calc计算宽度**
+
+```css
+.box {
+ height: 200px;
+}
+
+.box > div {
+  height: 100%;
+}
+
+.box-left {
+  width: 200px;
+  float: left;
+  background-color: blue;
+}
+
+.box-right {
+  width: calc(100% - 200px);
+  float: right;
+  background-color: red;
+}
+```
+
+**利用float + overflow实现**
+
+```css
+.box {
+ height: 200px;
+}
+
+.box > div {
+  height: 100%;
+}
+
+.box-left {
+  width: 200px;
+  float: left;
+  background-color: blue;
+}
+
+.box-right {
+  overflow: hidden;
+  background-color: red;
+}
+```
+
+**利用flex实现**
+
+```css
+.box {
+  height: 200px;
+  display: flex;
+}
+
+.box > div {
+  height: 100%;
+}
+
+.box-left {
+  width: 200px;
+  background-color: blue;
+}
+
+.box-right {
+  flex: 1; // 设置flex-grow属性为1，默认为0
+  overflow: hidden;
+  background-color: red;
+}
+```
+
+### 三栏布局：左右两边宽度固定中间自适应
+
+> float，float + calc, 圣杯布局（设置BFC，margin负值法），flex
+
+```css
+.wrap {
+  width: 100%;
+  height: 200px;
+}
+.wrap > div {
+  height: 100%;
+}
+/* 方案1：两边使用 float，中间使用 margin */
+.left {
+  width: 120px;
+  float: left;
+}
+.right {
+  float: right;
+  width: 120px;
+}
+.center {
+  margin: 0 120px; 
+}
+/* 方案2：两边使用 float，中间使用 calc */
+.left {
+  width: 120px;
+  float: left;
+}
+.right {
+  float: right;
+  width: 120px;
+}
+.center {
+  width: calc(100% - 240px);
+  margin-left: 120px;
+}
+/* 方案3：flex实现 */
+.wrap {
+  display: flex;
+}
+.left {
+  width: 120px;
+}
+.right {
+  width: 120px;
+}
+.center {
+  flex: 1;
+}
+/* 方案4：grid网格布局 */
+.wrap {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 300px auto 300px;
+}
+.left {
+  background: coral;
+}
+.right {
+  background: lightblue;
+}
+.center {
+  background: #555;
+}
+.left,.right,.center {
+  height: 100px;
+}
+```
+
+> 圣杯布局和双飞翼布局是前端工程师需要日常掌握的重要布局方式。两者的功能相同，都是为了实现一个两侧宽度固定，中间宽度自适应的三栏布局。
+
+**圣杯布局**
+
+```html
+<style>
+body{
+    min-width: 550px;
+}
+#container{
+    padding-left: 200px;
+    padding-right: 150px;
+}
+#container .column{
+    float: left;
+}
+#center{
+    width: 100%;
+}
+#left{
+    width: 200px;
+    margin-left: -100%;
+    position: relative;
+    right: 200px;
+}
+#right{
+    width: 150px;
+    margin-right: -150px;
+}
+</style>
+<div id="container">
+    <div id="center" class="column">center</div>
+    <div id="left" class="column">left</div>
+    <div id="right" class="column">right</div>
+</div>
+```
+
+**双飞翼布局**
+
+```html
+<style>
+body {
+    min-width: 500px;
+}
+#container {
+    width: 100%;
+}
+.column {
+    float: left;
+}
+#center {
+    margin-left: 200px;
+    margin-right: 150px;
+}
+#left {
+    width: 200px;
+    margin-left: -100%;
+}
+#right {
+    width: 150px;
+    margin-left: -150px;
+}
+</style>
+<div id="container" class="column">
+    <div id="center">center</div>
+</div>
+<div id="left" class="column">left</div>
+<div id="right" class="column">right</div>
 ```
 
 ## 盒模型
@@ -2238,11 +2561,14 @@ Grid是一个强大的布局，如一些常见的 `CSS 布局`，如`居中`，
 实现方式有很多种，主要有如下：
 
 - **内联首屏关键CSS**
+  
   - 在打开一个页面，页面首要内容出现在屏幕的时间影响着用户的体验，而通过内联`css`关键代码能够使浏览器在下载完html后就能立刻渲染
   - 而如果外部引用`css`代码，在解析`html`结构过程中遇到外部`css`文件，才会开始下载`css`代码，再渲染
   - 所以，CSS内联使用使渲染时间提前
   - 注意：但是较大的`css`代码并不合适内联（初始拥塞窗口、没有缓存），而其余代码则采取外部引用方式
+
 - **异步加载CSS**
+  
   - 在CSS文件请求、下载、解析完成之前，CSS会阻塞渲染，浏览器将不会渲染任何已处理的内容
   
   - 前面加载内联代码后，后面的外部引用css则没必要阻塞浏览器渲染。这时候就可以采取异步加载的方案，主要有如下：
@@ -2271,8 +2597,11 @@ Grid是一个强大的布局，如一些常见的 `CSS 布局`，如`居中`，
     ```
 
 - **资源压缩**
+  
   - 利用`webpack`、`gulp/grunt`、`rollup`等模块化工具，将`css`代码进行压缩，使文件变小，大大降低了浏览器的加载时间
+
 - **合理使用选择器**
+  
   - css匹配的规则是从右往左开始匹配，例如`#markdown .content h3`匹配规则如下：
     - 先找到`h3`标签元素
     - 然后去除祖先不是`.content`的元素
@@ -2282,17 +2611,510 @@ Grid是一个强大的布局，如一些常见的 `CSS 布局`，如`居中`，
     - 不要嵌套使用过多复杂选择器，最好不要三层以上
     - 使用id选择器就没必要再进行嵌套
     - 通配符和属性选择器效率最低，避免使用
+
 - **减少使用昂贵的属性**
+  
   - 在页面发生重绘的时候，昂贵属性如`box-shadow/border-radius/filter/透明度/:nth-child`等，会降低浏览器的渲染性能
+
 - **不要使用@import**
+  
   - css样式文件有两种引入方式，一种是`link`元素，另一种是`@import`
   - `@import`会影响浏览器的并行下载，使得页面在加载时增加额外的延迟，增添了额外的往返耗时
   - 而且多个`@import`可能会导致下载顺序紊乱
   - 比如一个css文件`index.css`包含了以下内容：`@import url("reset.css")`
   - 那么浏览器就必须先把`index.css`下载、解析和执行后，才下载、解析和执行第二个文件`reset.css`
+
 - **其他**
+  
   - 减少重排操作，以及减少不必要的重绘
   - 了解哪些属性可以继承而来，避免对这些属性重复编写
   - `css Sprite`，合成所有`icon`图片，用宽高加上`backgroud-position`的背景图方式显现出我们要的`icon`图，减少了`http`请求
   - 把小的`icon`图片转成`base64`编码
   - CSS3动画或者过渡尽量使用`transform`和`opacity`来实现动画，不要使用`left`和`top`属性
+
+## 如何实现单行／多行文本溢出的省略样式？
+
+对于文本的溢出，我们可以分成两种形式：
+
+- 单行文本溢出
+  - 涉及的css属性有：
+    - `text-overflow`：规定当文本溢出时，显示省略符号来代表被修剪的文本
+    - `white-space`：设置文字在一行显示，不能换行
+    - `overflow`：文字长度超出限定宽度，则隐藏超出的内容
+  - `overflow`设为`hidden`，普通情况用在块级元素的外层隐藏内部溢出元素，或者配合下面两个属性实现文本溢出省略
+  - `white-space:nowrap`，作用是设置文本不换行，是`overflow:hidden`和`text-overflow：ellipsis`生效的基础
+  - `text-overflow` 属性值有如下
+    - `clip`：当对象内文本溢出部分裁切掉
+    - `ellipsis`：当对象内文本溢出时显示省略标记（...）
+  - `text-overflow`只有在设置了`overflow:hidden`和`white-space:nowrap`才能够生效的
+
+```html
+<style>
+    p{
+        overflow: hidden;
+        line-height: 40px;
+        width:400px;
+        height:40px;
+        border:1px solid red;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+<p 这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本</p >
+```
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-css-28.png)
+
+多行文本溢出：多行文本溢出的时候，我们可以分为两种情况：
+
+- 基于高度截断
+  
+  - 伪元素 + 定位：核心的css代码结构如下：
+    
+    - `position: relative`：为伪元素绝对定位
+    - `overflow: hidden`：文本溢出限定的宽度就隐藏内容）
+    - `position: absolute`：给省略号绝对定位
+    - `line-height: 20px`：结合元素高度,高度固定的情况下,设定行高, 控制显示行数
+    - `height: 40px`：设定当前元素高度
+    - `::after {}` ：设置省略号样式
+    
+    ```html
+    <style>
+          .demo {
+              position: relative;
+              line-height: 20px;
+              height: 40px;
+              overflow: hidden;
+          }
+          .demo::after {
+              content: "...";
+              position: absolute;
+              bottom: 0;
+              right: 0;
+              padding: 0 20px 0 10px;
+          }
+      </style>
+    
+      <body>
+          <div class='demo'>这是一段很长的文本</div>
+      </body>
+    ```
+  
+  - 实现原理很好理解，就是通过伪元素绝对定位到行尾并遮住文字，再通过 `overflow: hidden` 隐藏多余文字
+  
+  - 这种实现具有以下优点：
+    
+    - 兼容性好，对各大主流浏览器有好的支持
+    - 响应式截断，根据不同宽度做出调整
+  
+  - 一般文本存在英文的时候，可以设置`word-break: break-all`使一个单词能够在换行时进行拆分
+
+- 基于行数截断：纯css实现也非常简单，核心的css代码如下：
+  
+  - `-webkit-line-clamp: 2`：用来限制在一个块元素显示的文本的行数，为了实现该效果，它需要组合其他的`WebKit`属性）
+  
+  - `display: -webkit-box`：和1结合使用，将对象作为弹性伸缩盒子模型显示
+  
+  - `-webkit-box-orient: vertical`：和1结合使用 ，设置或检索伸缩盒对象的子元素的排列方式
+  
+  - `overflow: hidden`：文本溢出限定的宽度就隐藏内容
+  
+  - `text-overflow: ellipsis`：多行文本的情况下，用省略号“…”隐藏溢出范围的文本
+  
+  ```html
+  <style>
+      p {
+          width: 400px;
+          border-radius: 1px solid red;
+          -webkit-line-clamp: 2;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+      }
+  </style>
+  <p>
+      这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本
+      这是一些文本这是一些文本这是一些文本这是一些文本这是一些文本
+  </p >
+  ```
+  
+  - 可以看到，上述使用了`webkit`的CSS属性扩展，所以兼容浏览器范围是PC端的`webkit`内核的浏览器，由于移动端大多数是使用`webkit`，所以移动端常用该形式
+  
+  - 需要注意的是，如果文本为一段很长的英文或者数字，则需要添加`word-wrap: break-word`
+  
+  - 还能通过使用javascript实现配合css，实现代码如下所示：
+  
+  ```css
+  p {
+        position: relative;
+        width: 400px;
+        line-height: 20px;
+        overflow: hidden;
+  
+  }
+  .p-after:after{
+        content: "..."; 
+        position: absolute; 
+        bottom: 0; 
+        right: 0; 
+        padding-left: 40px;
+        background: -webkit-linear-gradient(left, transparent, #fff 55%);
+        background: -moz-linear-gradient(left, transparent, #fff 55%);
+        background: -o-linear-gradient(left, transparent, #fff 55%);
+        background: linear-gradient(to right, transparent, #fff 55%);
+  } 
+  ```
+  
+  ```js
+  $(function(){
+    // 获取文本的行高，并获取文本的高度，假设我们规定的行数是五行，那么对超过行数的部分进行限制高度，并加上省略号
+      $('p').each(function(i, obj){
+            var lineHeight = parseInt($(this).css("line-height"));
+            var height = parseInt($(this).height());
+            if((height / lineHeight) >3 ){
+                $(this).addClass("p-after")
+                $(this).css("height","60px");
+            }else{
+                $(this).removeClass("p-after");
+            }
+      });
+  })
+  ```
+
+## 让Chrome支持小于12px 的文字方式有哪些
+
+- **背景**
+  
+  - Chrome 中文版浏览器会默认设定页面的最小字号是`12px`，英文版没有限制
+  - 原由 Chrome 团队认为汉字小于`12px`就会增加识别难度
+  - 中文版浏览器
+    - 与网页语言无关，取决于用户在Chrome的设置里（`chrome://settings/languages`）把哪种语言设置为默认显示语言
+  - 系统级最小字号
+    - 浏览器默认设定页面的最小字号，用户可以前往 `chrome://settings/fonts` 根据需求更改
+    - 而我们在实际项目中，不能奢求用户更改浏览器设置
+    - 对于文本需要以更小的字号来显示，就需要用到一些小技巧
+
+- **常见的解决方案**
+  
+  - **zoom** 非标属性，有兼容问题，缩放会改变了元素占据的空间大小，触发重排
+    
+    - `zoom` 的字面意思是“变焦”，可以改变页面上元素的尺寸，属于真实尺寸
+    - 其支持的值类型有：
+      - `zoom:50%`，表示缩小到原来的一半
+      - `zoom:0.5`，表示缩小到原来的一半
+    - 使用 `zoom` 来”支持“ `12px` 以下的字体
+    
+    ```html
+    <style type="text/css">
+    .span1{
+        font-size: 12px;
+        display: inline-block;
+        zoom: 0.8;
+    }
+    .span2{
+        display: inline-block;
+        font-size: 12px;
+    }
+    </style>
+    ```
+    
+    - 需要注意的是，`Zoom` 并不是标准属性，需要考虑其兼容性
+    
+    ![](../../\imgs\interview-css-29.png)
+  
+  - **-webkit-transform:scale()** 大部分现代浏览器支持，并且对英文、数字、中文也能够生效，缩放不会改变了元素占据的空间大小，页面布局不会发生变化
+    
+    - 针对`chrome`浏览器,加`webkit`前缀，用`transform:scale()`这个属性进行放缩
+    - 注意的是，使用`scale`属性**只对可以定义宽高的元素生效**，所以，下面代码中将`span`元素转为行内块元素
+    
+    ```html
+    <style type="text/css">
+      .span1{
+        font-size: 12px;
+        display: inline-block;
+        -webkit-transform:scale(0.8);
+      }
+      .span2{
+        display: inline-block;
+        font-size: 12px;
+      }
+    </style>
+    <body>
+      <span class="span1">测试10px</span>
+      <span class="span2">测试12px</span>
+    </body>
+    ```
+  
+  - **-webkit-text-size-adjust:none** 对谷歌浏览器有版本要求，在`27`之后，就取消了该属性的支持，并且只对英文、数字生效
+    
+    - 该属性用来设定文字大小是否根据设备(浏览器)来自动调整显示大小
+    
+    - 属性值：
+      
+      - `percentage`：字体显示的大小；
+      - `auto`：默认，字体大小会根据设备/浏览器来自动调整；
+      - `none`:字体大小不会自动调整
+      
+      ```css
+      html { -webkit-text-size-adjust: none; }
+      ```
+    
+    - 这样设置之后会有一个问题，就是当你放大网页时，一般情况下字体也会随着变大，而设置了以上代码后，字体只会显示你当前设置的字体大小，不会随着网页放大而变大了
+    
+    - 所以，我们不建议全局应用该属性，而是单独对某一属性使用
+    
+    - 需要注意的是，自从`chrome 27`之后，就取消了对这个属性的支持。同时，该属性只对英文、数字生效，对中文不生效
+
+## 说说对CSS预编语言的理解？有哪些区别?
+
+- **前言**
+  
+  - Css 作为一门标记性语言，语法相对简单，对使用者的要求较低，但同时也带来一些问题
+  - 需要书写大量看似没有逻辑的代码，不方便维护及扩展，不利于复用，尤其对于非前端开发工程师来讲，往往会因为缺少 Css 编写经验而很难写出组织良好且易于维护的 Css 代码
+  - Css预处理器便是针对上述问题的解决方案
+  - 预处理语言
+    - 扩充了 Css 语言，增加了诸如变量、混合（mixin）、函数等功能，让 Css 更易维护、方便
+    - 本质上，预处理是Css的超集
+    - 包含一套自定义的语法及一个解析器，根据这些语法定义自己的样式规则，这些规则最终会通过解析器，编译生成对应的 Css 文件
+
+- **Css预编译语言在前端里面有三大优秀的预编处理器，分别是**
+  
+  - **sass**
+    - 2007 年诞生，最早也是最成熟的 Css预处理器，拥有 `Ruby` 社区的支持和 `Compass` 这一最强大的 `Css`框架，目前受 `LESS` 影响，已经进化到了全面兼容 `Css` 的 `Scss`
+    - 文件后缀名为`.sass`与`.scss`，可以严格按照 `sass` 的缩进方式省去大括号和分号
+  - **less**
+    - 2009年出现，受`SASS`的影响较大，但又使用 `Css` 的语法，让大部分开发者和设计师更容易上手，在 `Ruby`社区之外支持者远超过 `SASS`
+    - 其缺点是比起 `SASS`来，可编程功能不够，不过优点是简单和兼容 `Css`，反过来也影响了 `SASS`演变到了`Scss` 的时代
+  - **stylus**
+    - `Stylus`是一个`Css`的预处理框架，`2010` 年产生，来自 `Node.js`社区，主要用来给 `Node` 项目进行 `Css` 预处理支持
+    - 所以`Stylus` 是一种新型语言，可以创建健壮的、动态的、富有表现力的`Css`。比较年轻，其本质上做的事情与`SASS/LESS`等类似
+
+- **区别**
+  
+  - 虽然各种预处理器功能强大，但使用最多的，还是以下特性：
+    
+    - 变量（`variables`）
+    - 作用域（`scope`）
+    - 代码混合（`mixins`）
+    - 嵌套（`nested rules`）
+    - 代码模块化（`Modules`）
+  
+  - **基本使用**
+    
+    - less和scss
+      
+      ```less
+      .box {
+        display: block;
+      }
+      ```
+    
+    - sass
+      
+      ```sass
+      .box 
+          display: block
+      ```
+    
+    - stylus
+      
+      ```stylus
+      .box
+        display: block
+      ```
+  
+  - **嵌套**
+    
+    - 三者的嵌套语法都是一致的，甚至连引用父级选择器的标记 `&` 也相同
+    
+    - 区别只是 `Sass` 和 `Stylus` 可以用没有大括号的方式书写
+    
+    - less
+      
+      ```less
+      .a {
+        &.b {
+          color: red;
+        }
+      }
+      ```
+  
+  - **变量**
+    
+    - 变量无疑为 `Css` 增加了一种有效的复用方式，减少了原来在 `Css` 中无法避免的重复「硬编码」
+    
+    - `less`声明的变量必须以`@`开头，后面紧跟变量名和变量值，而且变量名和变量值需要`使用冒号:分隔开`
+      
+      ```less
+      @red: #c00;
+      
+      strong {
+        color: @red;
+      }
+      ```
+    
+    - `sass`声明的变量跟`less`十分的相似，只是变量名前面使用`$`开头
+      
+      ```sass
+      $red: #c00;
+      
+      strong {
+        color: $red;
+      }
+      ```
+    
+    - `stylus`声明的变量没有任何的限定，可以使用`$`开头，结尾的分号;可有可无，但变量与变量值之间需要使用`=`。在`stylus`中我们不建议使用`@`符号开头声明变量
+      
+      ```stylus
+      red = #c00
+      
+      strong
+        color: red
+      ```
+  
+  - **作用域**
+    
+    - Css 预编译器把变量赋予作用域，也就是存在生命周期。就像 js一样，它会先从局部作用域查找变量，依次向上级作用域查找
+    
+    - `sass`中不存在全局变量
+      
+      ```sass
+      $color: black;
+      .scoped {
+        $bg: blue;
+        $color: white;
+        color: $color;
+        background-color:$bg;
+      }
+      .unscoped {
+        color:$color;
+      } 
+      ```
+      
+      ```css
+      /**编译后 */
+      .scoped {
+        color:white;/*是白色*/
+        background-color:blue;
+      }
+      .unscoped {
+        color:white;/*白色（无全局变量概念）*/
+      } 
+      ```
+      
+      - 所以，在`sass`中最好不要定义相同的变量名
+    
+    - `less`与`stylus`的作用域跟javascript十分的相似，首先会查找局部定义的变量，如果没有找到，会像冒泡一样，一级一级往下查找，直到根为止
+      
+      ```less
+      @color: black;
+      .scoped {
+        @bg: blue;
+        @color: white;
+        color: @color;
+        background-color:@bg;
+      }
+      .unscoped {
+        color:@color;
+      }
+      ```
+      
+      ```css
+      /**编译后 */
+      .scoped {
+        color:white;/*白色（调用了局部变量）*/
+        background-color:blue;
+      }
+      .unscoped {
+        color:black;/*黑色（调用了全局变量）*/
+      } 
+      ```
+  
+  - **混入**
+    
+    - 混入（`mixin`）应该说是预处理器最精髓的功
+    
+    - 可以在`Mixins`中定义变量或者默认参数
+    
+    - 在`less`中，混合的用法是指将定义好的`ClassA`中引入另一个已经定义的`Class`，也能使用够传递参数，参数变量为`@`声明
+      
+      ```less
+      .alert {
+        font-weight: 700;
+      }
+      
+      .highlight(@color: red) {
+        font-size: 1.2em;
+        color: @color;
+      }
+      
+      .heads-up {
+        .alert;
+        .highlight(red);
+      }
+      ```
+      
+      ```css
+      /**编译后 */
+      .alert {
+        font-weight: 700;
+      }
+      .heads-up {
+        font-weight: 700;
+        font-size: 1.2em;
+        color: red;
+      }
+      ```
+    
+    - `Sass`声明`mixins`时需要使用`@mixin`，后面紧跟`mixin`的名，也可以设置参数，参数名为变量`$`声明的形式
+      
+      ```sass
+        @mixin large-text {
+          font: {
+            family: Arial;
+            size: 20px;
+            weight: bold;
+          }
+          color: #ff0000;
+        }
+      
+        .page-title {
+          @include large-text;
+          padding: 4px;
+          margin-top: 10px;
+        }
+      ```
+    
+    - `stylus`中的混合和前两款Css预处理器语言的混合略有不同，他可以不使用任何符号，就是直接声明`Mixins`名，然后在定义参数和默认值之间用等号（`=`）来连接
+      
+      ```stylus
+      error(borderWidth= 2px) {
+        border: borderWidth solid #F00;
+        color: #F00;
+      }
+      .generic-error {
+        padding: 20px;
+        margin: 4px;
+        error(); /* 调用error mixins */
+      }
+      .login-error {
+        left: 12px;
+        position: absolute;
+        top: 20px;
+        error(5px); /* 调用error mixins，并将参数$borderWidth的值指定为5px */
+      } 
+      ```
+  
+  - **代码模块化**
+    
+    - 模块化就是将Css代码分成一个个模块
+    
+    - `scss、less、stylus`三者的使用方法都如下所示
+      
+      ```less
+      @import './common';
+      @import './github-markdown';
+      @import './mixin';
+      @import './variables';
+      ```

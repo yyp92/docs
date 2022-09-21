@@ -1107,6 +1107,16 @@ Promise.prototype.finally = function (callback) {
 }
 ```
 
+### Promise.all、Promise.any 和 Promise.allSettled 中计数器使用对比
+
+这三个方法均使用了计数器来进行异步流程控制，下面表格横向对比不同方法中计数器的用途，来加强理解：
+
+| 方法名                | 用途                              |
+| ------------------ | ------------------------------- |
+| Promise.all        | 标记 fulfilled 的实例个数              |
+| Promise.any        | 标记 rejected 的实例个数               |
+| Promise.allSettled | 标记所有实例（fulfilled 和 rejected）的个数 |
+
 ### 实现 Promise.all
 
 > 对于 all 方法而言，需要完成下面的核心功能:
@@ -1114,6 +1124,23 @@ Promise.prototype.finally = function (callback) {
 > - 传入参数为一个空的可迭代对象，则直接进行`resolve`。
 > - 如果参数中有一个`promise`失败，那么`Promise.all`返回的`promise`对象失败。
 > - 在任何情况下，`Promise.all` 返回的 `promise` 的完成状态的结果都是一个数组
+
+**过程**
+
+`Promise.all(iterators)`返回一个新的 Promise 实例。iterators 中包含外界传入的多个 promise 实例。
+
+对于返回的新的 Promise 实例，有以下两种情况：
+
+- 如果传入的所有 promise 实例的状态均变为`fulfilled`，那么返回的 promise 实例的状态就是`fulfilled`，并且其 value 是 传入的所有 promise 的 value 组成的数组。
+- 如果有一个 promise 实例状态变为了`rejected`，那么返回的 promise 实例的状态立即变为`rejected`。
+
+**实现**
+
+实现思路：
+
+- 传入的参数不一定是数组对象，可以是”遍历器”
+- 传入的每个实例不一定是 promise，需要用`Promise.resolve()`包装
+- 借助”计数器”，标记是否所有的实例状态均变为`fulfilled`
 
 ```js
 return new Promise((resolve, reject) => {
@@ -1137,6 +1164,42 @@ return new Promise((resolve, reject) => {
       })
     }
   })
+```
+
+### 实现 promise.any
+
+**过程**
+
+`Promise.any(iterators)`的传参和返回值与`Promise.all`相同。
+
+如果传入的实例中，有任一实例变为`fulfilled`，那么它返回的 promise 实例状态立即变为`fulfilled`；如果所有实例均变为`rejected`，那么它返回的 promise 实例状态为`rejected`。
+
+⚠️`Promise.all`与`Promise.any`的关系，类似于，`Array.prototype.every`和`Array.prototype.some`的关系。
+
+**实现**
+
+实现思路和`Promise.all`及其类似。不过由于对异步过程的处理逻辑不同，**因此这里的计数器用来标识是否所有的实例均 rejected**。
+
+```js
+Promise.any = function(iterators) {
+    const promises = Array.from(iterators);
+    const num = promises.length;
+    const rejectedList = new Array(num);
+    let rejectedNum = 0;
+
+    return new Promise((resolve, reject) => {
+        promises.forEach((promise, index) => {
+            Promise.resolve(promise)
+                .then(value => resolve(value))
+                .catch(error => {
+                    rejectedList[index] = error;
+                    if (++rejectedNum === num) {
+                        reject(rejectedList);
+                    }
+                });
+        });
+    });
+};
 ```
 
 ### 实现 promise.allsettle
@@ -1189,7 +1252,24 @@ let getAge = fs.readFile('./age.txt', 'utf8');
 */
 ```
 
+**过程**
+
+`Promise.allSettled(iterators)`的传参和返回值与`Promise.all`相同。
+
+根据[ES2020](https://github.com/tc39/proposal-promise-allSettled)，此返回的 promise 实例的状态只能是`fulfilled`。对于传入的所有 promise 实例，会等待每个 promise 实例结束，并且返回规定的数据格式。
+
+如果传入 a、b 两个 promise 实例：a 变为 rejected，错误是 error1；b 变为 fulfilled，value 是 1。那么`Promise.allSettled`返回的 promise 实例的 value 就是：
+
+```javascript
+[
+    { status: "rejected", value: error1 },
+    { status: "fulfilled", value: 1 }
+];
+```
+
 **实现**
+
+实现中的计数器，用于统计所有传入的 promise 实例。
 
 ```js
 function isPromise (val) {
@@ -1229,6 +1309,17 @@ Promise.allSettled = function(promises) {
 ### 实现 Promise.race
 
 > race 的实现相比之下就简单一些，只要有一个 promise 执行完，直接 resolve 并停止执行
+
+**过程**
+
+`Promise.race(iterators)`的传参和返回值与`Promise.all`相同。但其返回的 promise 的实例的状态和 value，完全取决于：传入的所有 promise 实例中，最先改变状态那个（不论是`fulfilled`还是`rejected`）。
+
+**实现**
+
+实现思路：
+
+- 某传入实例`pending -> fulfilled`时，其 value 就是`Promise.race`返回的 promise 实例的 value
+- 某传入实例`pending -> rejected`时，其 error 就是`Promise.race`返回的 promise 实例的 error
 
 ```js
 Promise.race = function(promises) {
