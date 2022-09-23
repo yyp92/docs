@@ -204,3 +204,4 @@
   - [css](notes/面试/css.md)
   - [浏览器](notes/面试/浏览器.md)
   - [性能](notes/面试/性能.md)
+  - [性能优化](notes/面试/性能优化.md)
