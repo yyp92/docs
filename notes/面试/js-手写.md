@@ -2790,3 +2790,69 @@ function compose(...funcs) {
 
 - 更换`Api`接口：把`reduce`改为`reduceRight`
 - 交互包裹位置：把`a(b(...args))`改为`b(a(...args))`
+
+## 综合
+
+### 实现一个 sleep 函数，比如 sleep(1000) 意味着等待1000毫秒
+
+```js
+// 使用 promise来实现 sleep
+const sleep = (time) => {
+  return new Promise(resolve => setTimeout(resolve, time))
+}
+
+sleep(1000).then(() => {
+  // 这里写你的骚操作
+})
+```
+
+### 给定两个数组，写一个方法来计算它们的交集
+
+> 例如：给定 nums1 = [1, 2, 2, 1]，nums2 = [2, 2]，返回 [2, 2]。
+
+```js
+function union (arr1, arr2) {
+  return arr1.filter(item => {
+      return arr2.indexOf(item) > - 1;
+  })
+}
+ const a = [1, 2, 2, 1];
+ const b = [2, 3, 2];
+ console.log(union(a, b)); // [2, 2]
+```
+
+### 异步并发数限制
+
+```js
+/** 
+    * 关键点 
+    * 1. new promise 一经创建，立即执行 
+    * 2. 使用 Promise.resolve().then 可以把任务加到微任务队列，防止立即执行迭代方法 
+    * 3. 微任务处理过程中，产生的新的微任务，会在同一事件循环内，追加到微任务队列里 
+    * 4. 使用 race 在某个任务完成时，继续添加任务，保持任务按照最大并发数进行执行 
+    * 5. 任务完成后，需要从 doingTasks 中移出 
+*/
+function limit(count, array, iterateFunc) {
+  const tasks = []
+  const doingTasks = []
+  let i = 0
+  const enqueue = () => {
+    if (i === array.length) {
+      return Promise.resolve()
+    }
+    const task = Promise.resolve().then(() => iterateFunc(array[i++]))
+    tasks.push(task)
+    const doing = task.then(() => doingTasks.splice(doingTasks.indexOf(doing), 1))
+    doingTasks.push(doing)
+    const res = doingTasks.length >= count ? Promise.race(doingTasks) : Promise.resolve()
+    return res.then(enqueue)
+  };
+  return enqueue().then(() => Promise.all(tasks))
+}
+
+// test
+const timeout = i => new Promise(resolve => setTimeout(() => resolve(i), i))
+limit(2, [1000, 1000, 1000, 1000], timeout).then((res) => {
+  console.log(res)
+})
+```
