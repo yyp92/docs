@@ -1926,16 +1926,16 @@ app.module1.f();  // hi robot
 
 ```js
 function Girl(name,age){
-	var love = '小明';//love 是局部变量 准确说不属于对象 属于这个函数的额激活对象 函数调用时必将产生一个激活对象 love在激活对象身上   激活对象有作用域的关系 有办法访问  加一个函数提供外界访问
-	this.name = name;
-	this.age = age;
-	this.say = function () {
-		return love;
-	};
+    var love = '小明';//love 是局部变量 准确说不属于对象 属于这个函数的额激活对象 函数调用时必将产生一个激活对象 love在激活对象身上   激活对象有作用域的关系 有办法访问  加一个函数提供外界访问
+    this.name = name;
+    this.age = age;
+    this.say = function () {
+        return love;
+    };
 
-	this.movelove = function (){
-		love = '小轩'; //35
-	}
+    this.movelove = function (){
+        love = '小轩'; //35
+    }
 
 } 
 
@@ -1949,13 +1949,13 @@ console.log(g.say());//小轩
 
 
 function fn(){
-	function t(){
-		//var age = 22;//声明age变量 在t的激活对象上
-		age = 22;//赋值操作 t的激活对象上找age属性 ，找不到 找fn的激活对象....再找到 最终找到window.age = 22;
-				//不加var就是操作window全局属性
-	
-	}
-	t();
+    function t(){
+        //var age = 22;//声明age变量 在t的激活对象上
+        age = 22;//赋值操作 t的激活对象上找age属性 ，找不到 找fn的激活对象....再找到 最终找到window.age = 22;
+                //不加var就是操作window全局属性
+
+    }
+    t();
 }
 console.log(fn());//undefined
 ```
@@ -2020,19 +2020,19 @@ moduleA = function() {
 
 ```js
 function Cat(){
-	this.eat = '肉';
+    this.eat = '肉';
 }
 
 function Tiger(){
-	this.color = '黑黄相间';
+    this.color = '黑黄相间';
 }
 
 function Cheetah(){
-	this.color = '报文';
+    this.color = '报文';
 }
 
 function Lion(){
-	this.color = '土黄色';
+    this.color = '土黄色';
 }
 
 Tiger.prototype =  Cheetah.prototype = Lion.prototype = new Cat();//共享一个祖先 Cat
@@ -2082,3 +2082,1095 @@ console.log(l); // LinkDetector {}__proto__: LinkDetector
 l.detect(); // Detection starting...
 l.init(); // Uncaught Error: Error
 ```
+
+## 事件机制
+
+> 涉及面试题：事件的触发过程是怎么样的？知道什么是事件代理嘛？
+
+**1. 简介**
+
+> 事件流是一个事件沿着特定数据结构传播的过程。冒泡和捕获是事件流在`DOM`中两种不同的传播方法
+
+**事件流有三个阶段**
+
+- 事件捕获阶段
+- 处于目标阶段
+- 事件冒泡阶段
+
+**事件捕获**
+
+> 事件捕获（`event capturing`）：通俗的理解就是，当鼠标点击或者触发`dom`事件时，浏览器会从根节点开始由外到内进行事件传播，即点击了子元素，如果父元素通过事件捕获方式注册了对应的事件的话，会先触发父元素绑定的事件
+
+**事件冒泡**
+
+> 事件冒泡（dubbed bubbling）：与事件捕获恰恰相反，事件冒泡顺序是由内到外进行事件传播，直到根节点
+
+无论是事件捕获还是事件冒泡，它们都有一个共同的行为，就是事件传播
+
+![](../..\imgs\interview-js-18.png)
+
+**捕获和冒泡**
+
+```html
+<div id="div1">
+  <div id="div2"></div>
+</div>
+
+<script>
+    let div1 = document.getElementById('div1');
+    let div2 = document.getElementById('div2');
+        div1.onClick = function(){
+        alert('1')
+    }
+        div2.onClick = function(){
+        alert('2');
+    }
+
+</script>
+```
+
+> 当点击 `div2`时，会弹出两个弹出框。在 `ie8/9/10`、`chrome`浏览器，会先弹出”2”再弹出“1”，这就是事件冒泡：事件从最底层的节点向上冒泡传播。事件捕获则跟事件冒泡相反
+
+> W3C的标准是先捕获再冒泡， `addEventListener`的第三个参数决定把事件注册在捕获（`true`）还是冒泡(`false`)
+
+**事件对象**
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-19.png)
+
+**事件流阻止**
+
+> 在一些情况下需要阻止事件流的传播，阻止默认动作的发生
+
+- `event.preventDefault()`：取消事件对象的默认动作以及继续传播。
+- `event.stopPropagation()/ event.cancelBubble = true`：阻止事件冒泡。
+
+**事件的阻止在不同浏览器有不同处理**
+
+- 在`IE`下使用 `event.returnValue= false`，
+- 在非`IE`下则使用 `event.preventDefault()`进行阻止
+
+**preventDefault与stopPropagation的区别**
+
+- `preventDefault`告诉浏览器不用执行与事件相关联的默认动作（如表单提交）
+- `stopPropagation`是停止事件继续冒泡，但是对IE9以下的浏览器无效
+
+**事件注册**
+
+- 通常我们使用 `addEventListener` 注册事件，该函数的第三个参数可以是布尔值，也可以是对象。对于布尔值 `useCapture` 参数来说，该参数默认值为 `false`。`useCapture` 决定了注册的事件是捕获事件还是冒泡事件
+- 一般来说，我们只希望事件只触发在目标上，这时候可以使用 `stopPropagation` 来阻止事件的进一步传播。通常我们认为 `stopPropagation` 是用来阻止事件冒泡的，其实该函数也可以阻止捕获事件。`stopImmediatePropagation`（`DOM3`级新增事件） 同样也能实现阻止事件冒泡和捕获，但是还能阻止该事件目标执行别的注册事件
+
+**`stopImmediatePropagation()` 和 `stopPropagation()`的区别在哪儿呢**？后者只会阻止冒泡或者是捕获。 但是前者除此之外还会阻止该元素的其他事件发生，但是后者就不会阻止其他事件的发生。
+
+```js
+node.addEventListener('click',(event) =>{
+    event.stopImmediatePropagation()
+    console.log('冒泡')
+},false);
+node.addEventListener('click',(event) => {
+    console.log('冒泡2 ')
+},false)
+```
+
+**事件委托**
+
+- 在`js`中性能优化的其中一个主要思想是减少`dom`操作。
+- 节省内存
+- 不需要给子节点注销事件
+
+> 假设有`100`个`li`，每个`li`有相同的点击事件。如果为每`个Li`都添加事件，则会造成`dom`访问次数过多，引起浏览器重绘与重排的次数过多，性能则会降低。 使用事件委托则可以解决这样的问题
+
+**原理**
+
+> 实现事件委托是利用了事件的冒泡原理实现的。当我们为最外层的节点添加点击事件，那么里面的`ul`、`li`、`a`的点击事件都会冒泡到最外层节点上，委托它代为执行事件
+
+```html
+<ul id="ul">
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+</ul>
+<script>
+  window.onload = function(){
+    var ulEle = document.getElementById('ul');
+    ul.onclick = function(ev){
+        //兼容IE
+        ev = ev || window.event;
+        var target = ev.target || ev.srcElement;
+                if(target.nodeName.toLowerCase() == 'li'){
+            alert( target.innerHTML);
+        }
+            }
+  }
+</script>
+```
+
+## 模块化
+
+> js 中现在比较成熟的有四种模块加载方案：
+
+- 第一种是 CommonJS 方案，它通过 require 来引入模块，通过 module.exports 定义模块的输出接口。这种模块加载方案是服务器端的解决方案，它是以同步的方式来引入模块的，因为在服务端文件都存储在本地磁盘，所以读取非常快，所以以同步的方式加载没有问题。但如果是在浏览器端，由于模块的加载是使用网络请求，因此使用异步加载的方式更加合适。
+- 第二种是 AMD 方案，这种方案采用异步加载的方式来加载模块，模块的加载不影响后面语句的执行，所有依赖这个模块的语句都定义在一个回调函数里，等到加载完成后再执行回调函数。require.js 实现了 AMD 规范
+- 第三种是 CMD 方案，这种方案和 AMD 方案都是为了解决异步模块加载的问题，sea.js 实现了 CMD 规范。它和require.js的区别在于模块定义时对依赖的处理不同和对依赖模块的执行时机的处理不同。
+- 第四种方案是 ES6 提出的方案，使用 import 和 export 的形式来导入导出模块
+
+> 在有 `Babel` 的情况下，我们可以直接使用 `ES6`的模块化
+
+```js
+// file a.js
+export function a() {}
+export function b() {}
+// file b.js
+export default function() {}
+
+import {a, b} from './a.js'
+import XXX from './b.js'
+```
+
+**CommonJS**
+
+> `CommonJs` 是 `Node` 独有的规范，浏览器中使用就需要用到 `Browserify`解析了。
+
+```js
+// a.js
+module.exports = {
+    a: 1
+}
+// or
+exports.a = 1
+
+// b.js
+var module = require('./a.js')
+module.a // -> log 1
+```
+
+> 在上述代码中，`module.exports` 和 `exports` 很容易混淆，让我们来看看大致内部实现
+
+```js
+var module = require('./a.js')
+module.a
+// 这里其实就是包装了一层立即执行函数，这样就不会污染全局变量了，
+// 重要的是 module 这里，module 是 Node 独有的一个变量
+module.exports = {
+    a: 1
+}
+// 基本实现
+var module = {
+  exports: {} // exports 就是个空对象
+}
+// 这个是为什么 exports 和 module.exports 用法相似的原因
+var exports = module.exports
+var load = function (module) {
+    // 导出的东西
+    var a = 1
+    module.exports = a
+    return module.exports
+};
+```
+
+> 再来说说 `module.exports` 和`exports`，用法其实是相似的，但是不能对 `exports` 直接赋值，不会有任何效果。
+
+> 对于 `CommonJS` 和 `ES6` 中的模块化的两者区别是：
+
+- 前者支持动态导入，也就是 `require(${path}/xx.js)`，后者目前不支持，但是已有提案,前者是同步导入，因为用于服务端，文件都在本地，同步导入即使卡住主线程影响也不大。
+- 而后者是异步导入，因为用于浏览器，需要下载文件，如果也采用同步导入会对渲染有很大影响
+- 前者在导出时都是值拷贝，就算导出的值变了，导入的值也不会改变，所以如果想更新值，必须重新导入一次。
+- 但是后者采用实时绑定的方式，导入导出的值都指向同一个内存地址，所以导入值会跟随导出值变化
+- 后者会编译成 `require/exports` 来执行的
+
+**AMD**
+
+> `AMD` 是由 `RequireJS` 提出的
+
+**AMD 和 CMD 规范的区别？**
+
+- 第一个方面是在模块定义时对依赖的处理不同。AMD推崇依赖前置，在定义模块的时候就要声明其依赖的模块。而 CMD 推崇就近依赖，只有在用到某个模块的时候再去 require。
+- 第二个方面是对依赖模块的执行时机处理不同。首先 AMD 和 CMD 对于模块的加载方式都是异步加载，不过它们的区别在于模块的执行时机，AMD 在依赖模块加载完成后就直接执行依赖模块，依赖模块的执行顺序和我们书写的顺序不一定一致。而 CMD在依赖模块加载完成后并不执行，只是下载而已，等到所有的依赖模块都加载好后，进入回调函数逻辑，遇到 require 语句的时候才执行对应的模块，这样模块的执行顺序就和我们书写的顺序保持一致了。
+
+```js
+// CMD
+define(function(require, exports, module) {
+  var a = require("./a");
+  a.doSomething();
+  // 此处略去 100 行
+  var b = require("./b"); // 依赖可以就近书写
+  b.doSomething();
+  // ...
+});
+
+// AMD 默认推荐
+define(["./a", "./b"], function(a, b) {
+  // 依赖必须一开始就写好
+  a.doSomething();
+  // 此处略去 100 行
+  b.doSomething();
+  // ...
+})
+```
+
+- **AMD**：`requirejs` 在推广过程中对模块定义的规范化产出，提前执行，推崇依赖前置
+- **CMD**：`seajs` 在推广过程中对模块定义的规范化产出，延迟执行，推崇依赖就近
+- **CommonJs**：模块输出的是一个值的 `copy`，运行时加载，加载的是一个对象（`module.exports` 属性），该对象只有在脚本运行完才会生成
+- **ES6 Module**：模块输出的是一个值的引用，编译时输出接口，`ES6`模块不是对象，它对外接口只是一种静态定义，在代码静态解析阶段就会生成。
+
+**谈谈对模块化开发的理解**
+
+- 我对模块的理解是，一个模块是实现一个特定功能的一组方法。在最开始的时候，js 只实现一些简单的功能，所以并没有模块的概念，但随着程序越来越复杂，代码的模块化开发变得越来越重要。
+- 由于函数具有独立作用域的特点，最原始的写法是使用函数来作为模块，几个函数作为一个模块，但是这种方式容易造成全局变量的污染，并且模块间没有联系。
+- 后面提出了对象写法，通过将函数作为一个对象的方法来实现，这样解决了直接使用函数作为模块的一些缺点，但是这种办法会暴露所有的所有的模块成员，外部代码可以修改内部属性的值。
+- 现在最常用的是立即执行函数的写法，通过利用闭包来实现模块私有作用域的建立，同时不会对全局作用域造成污染。
+
+## Promise
+
+> 这里你谈 `promise`的时候，除了将他解决的痛点以及常用的 `API` 之外，最好进行拓展把 `eventloop` 带进来好好讲一下，`microtask`(微任务)、`macrotask`(任务) 的执行顺序，如果看过 `promise` 源码，最好可以谈一谈 原生 `Promise` 是如何实现的。`Promise` 的关键点在于`callback` 的两个参数，一个是 `resovle`，一个是 `reject`。还有就是 `Promise` 的链式调用（`Promise.then()`，每一个 `then` 都是一个责任人）
+
+- `Promise` 是 `ES6` 新增的语法，解决了回调地狱的问题。
+- 可以把 `Promise`看成一个状态机。初始是 `pending` 状态，可以通过函数 `resolve` 和 `reject`，将状态转变为 `resolved` 或者 `rejected` 状态，状态一旦改变就不能再次变化。
+- `then` 函数会返回一个 `Promise` 实例，并且该返回值是一个新的实例而不是之前的实例。因为 `Promise` 规范规定除了 `pending` 状态，其他状态是不可以改变的，如果返回的是一个相同实例的话，多个 `then` 调用就失去意义了。 对于 `then` 来说，本质上可以把它看成是 `flatMap`
+
+**1. Promise 的基本情况**
+
+> 简单来说它就是一个容器，里面保存着某个未来才会结束的事件（通常是异步操作）的结果。从语法上说，Promise 是一个对象，从它可以获取异步操作的消息
+
+一般 Promise 在执行过程中，必然会处于以下几种状态之一。
+
+- 待定（`pending`）：初始状态，既没有被完成，也没有被拒绝。
+- 已完成（`fulfilled`）：操作成功完成。
+- 已拒绝（`rejected`）：操作失败。
+
+> 待定状态的 `Promise` 对象执行的话，最后要么会通过一个值完成，要么会通过一个原因被拒绝。当其中一种情况发生时，我们用 `Promise` 的 `then` 方法排列起来的相关处理程序就会被调用。因为最后 `Promise.prototype.then` 和 `Promise.prototype.catch` 方法返回的是一个 `Promise`， 所以它们可以继续被链式调用
+
+关于 Promise 的状态流转情况，有一点值得注意的是，内部状态改变之后不可逆，你需要在编程过程中加以注意。文字描述比较晦涩，我们直接通过一张图就能很清晰地看出 Promise 内部状态流转的情况
+
+![](../../\imgs\interview-js-21.png)
+
+从上图可以看出，我们最开始创建一个新的 `Promise` 返回给 `p1` ，然后开始执行，状态是 pending，当执行 `resolve`之后状态就切换为 `fulfilled`，执行 `reject` 之后就变为 `rejected` 的状态
+
+**2. Promise 的静态方法**
+
+- `all 方法`
+  - 语法： `Promise.all（iterable）`
+  - 参数： 一个可迭代对象，如 `Array`。
+  - 描述： 此方法对于汇总多个 `promise` 的结果很有用，在 ES6 中可以将多个 `Promise.all` 异步请求并行操作，返回结果一般有下面两种情况。
+    - 当所有结果成功返回时按照请求顺序返回成功结果。
+    - 当其中有一个失败方法时，则进入失败方法
+- 我们来看下业务的场景，对于下面这个业务场景页面的加载，将多个请求合并到一起，用 all 来实现可能效果会更好，请看代码片段
+
+```js
+// 在一个页面中需要加载获取轮播列表、获取店铺列表、获取分类列表这三个操作，页面需要同时发出请求进行页面渲染，这样用 `Promise.all` 来实现，看起来更清晰、一目了然。
+
+
+// 1.获取轮播数据列表
+function getBannerList(){
+  return new Promise((resolve,reject)=>{
+      setTimeout(function(){
+        resolve('轮播数据')
+      },300) 
+  })
+}
+// 2.获取店铺列表
+function getStoreList(){
+  return new Promise((resolve,reject)=>{
+    setTimeout(function(){
+      resolve('店铺数据')
+    },500)
+  })
+}
+// 3.获取分类列表
+function getCategoryList(){
+  return new Promise((resolve,reject)=>{
+    setTimeout(function(){
+      resolve('分类数据')
+    },700)
+  })
+}
+function initLoad(){ 
+  Promise.all([getBannerList(),getStoreList(),getCategoryList()])
+  .then(res=>{
+    console.log(res) 
+  }).catch(err=>{
+    console.log(err)
+  })
+} 
+initLoad()
+```
+
+- `allSettled` 方法
+  - `Promise.allSettled` 的语法及参数跟 `Promise.all` 类似，其参数接受一个 `Promise` 的数组，返回一个新的 `Promise`。`唯一的不同在于，执行完之后不会失败`，也就是说当 `Promise.allSettled` 全部处理完成后，我们可以拿到每个 `Promise` 的状态，而不管其是否处理成功
+- 我们来看一下用 `allSettled` 实现的一段代码
+
+```js
+const resolved = Promise.resolve(2);
+const rejected = Promise.reject(-1);
+const allSettledPromise = Promise.allSettled([resolved, rejected]);
+allSettledPromise.then(function (results) {
+  console.log(results);
+});
+// 返回结果：
+// [
+//    { status: 'fulfilled', value: 2 },
+//    { status: 'rejected', reason: -1 }
+// ]
+```
+
+> 从上面代码中可以看到，`Promise.allSettled` 最后返回的是一个数组，记录传进来的参数中每个 Promise 的返回值，这就是和 all 方法不太一样的地方。
+
+- `any` 方法
+  - 语法： `Promise.any（iterable）`
+  - 参数： `iterable` 可迭代的对象，例如 `Array`。
+  - 描述： `any` 方法返回一个 `Promise`，只要参数 `Promise` 实例有一个变成 `fulfilled`状态，最后 `any`返回的实例就会变成 `fulfilled` 状态；如果所有参数 `Promise` 实例都变成 `rejected` 状态，包装实例就会变成 `rejected` 状态。
+
+```js
+const resolved = Promise.resolve(2);
+const rejected = Promise.reject(-1);
+const anyPromise = Promise.any([resolved, rejected]);
+anyPromise.then(function (results) {
+  console.log(results);
+});
+// 返回结果：
+// 2
+```
+
+> 从改造后的代码中可以看出，只要其中一个 `Promise` 变成 `fulfilled`状态，那么 `any` 最后就返回这个`p romise`。由于上面 `resolved` 这个 Promise 已经是 `resolve` 的了，故最后返回结果为 `2`
+
+- `race` 方法
+  - 语法： `Promise.race（iterable）`
+  - 参数： `iterable` 可迭代的对象，例如 `Array`。
+  - 描述： `race`方法返回一个 `Promise`，只要参数的 `Promise` 之中有一个实例率先改变状态，则 `race` 方法的返回状态就跟着改变。那个率先改变的 `Promise` 实例的返回值，就传递给 `race` 方法的回调函数
+- 我们来看一下这个业务场景，对于图片的加载，特别适合用 race 方法来解决，将图片请求和超时判断放到一起，用 race 来实现图片的超时判断。请看代码片段。
+
+```js
+// 请求某个图片资源
+function requestImg(){
+  var p = new Promise(function(resolve, reject){
+    var img = new Image();
+    img.onload = function(){ resolve(img); }
+    img.src = 'http://www.baidu.com/img/flexible/logo/pc/result.png';
+  });
+  return p;
+}
+// 延时函数，用于给请求计时
+function timeout(){
+  var p = new Promise(function(resolve, reject){
+    setTimeout(function(){ reject('图片请求超时'); }, 5000);
+  });
+  return p;
+}
+Promise.race([requestImg(), timeout()])
+.then(function(results){
+  console.log(results);
+})
+.catch(function(reason){
+  console.log(reason);
+});
+
+
+// 从上面的代码中可以看出，采用 Promise 的方式来判断图片是否加载成功，也是针对 Promise.race 方法的一个比较好的业务场景
+```
+
+![](../../\imgs\interview-js-22.png)
+
+**promise手写实现，面试够用版：**
+
+```js
+function myPromise(constructor){
+    let self=this;
+    self.status="pending" //定义状态改变前的初始状态
+    self.value=undefined;//定义状态为resolved的时候的状态
+    self.reason=undefined;//定义状态为rejected的时候的状态
+    function resolve(value){
+        //两个==="pending"，保证了状态的改变是不可逆的
+       if(self.status==="pending"){
+          self.value=value;
+          self.status="resolved";
+       }
+    }
+    function reject(reason){
+        //两个==="pending"，保证了状态的改变是不可逆的
+       if(self.status==="pending"){
+          self.reason=reason;
+          self.status="rejected";
+       }
+    }
+    //捕获构造异常
+    try{
+       constructor(resolve,reject);
+    }catch(e){
+       reject(e);
+    }
+}
+// 定义链式调用的then方法
+myPromise.prototype.then=function(onFullfilled,onRejected){
+   let self=this;
+   switch(self.status){
+      case "resolved":
+        onFullfilled(self.value);
+        break;
+      case "rejected":
+        onRejected(self.reason);
+        break;
+      default:       
+   }
+}
+```
+
+## Generator
+
+> `Generator` 是 `ES6`中新增的语法，和 `Promise` 一样，都可以用来异步编程。Generator函数可以说是Iterator接口的具体实现方式。Generator 最大的特点就是可以控制函数的执行。
+
+- `function*` 用来声明一个函数是生成器函数，它比普通的函数声明多了一个`*`,`*`的位置比较随意可以挨着 `function` 关键字，也可以挨着函数名
+- `yield` 产出的意思，这个关键字只能出现在生成器函数体内，但是生成器中也可以没有`yield` 关键字，函数遇到 `yield` 的时候会暂停，并把 `yield` 后面的表达式结果抛出去
+- `next`作用是将代码的控制权交还给生成器函数
+
+```js
+function *foo(x) {
+  let y = 2 * (yield (x + 1))
+  let z = yield (y / 3)
+  return (x + y + z)
+}
+let it = foo(5)
+console.log(it.next())   // => {value: 6, done: false}
+console.log(it.next(12)) // => {value: 8, done: false}
+console.log(it.next(13)) // => {value: 42, done: true}
+```
+
+上面这个示例就是一个Generator函数，我们来分析其执行过程：
+
+- 首先 Generator 函数调用时它会返回一个迭代器
+- 当执行第一次 next 时，传参会被忽略，并且函数暂停在 yield (x + 1) 处，所以返回 5 + 1 = 6
+- 当执行第二次 next 时，传入的参数等于上一个 yield 的返回值，如果你不传参，yield 永远返回 undefined。此时 let y = 2 * 12，所以第二个 yield 等于 2 * 12 / 3 = 8
+- 当执行第三次 next 时，传入的参数会传递给 z，所以 z = 13, x = 5, y = 24，相加等于 42
+
+`yield`实际就是暂缓执行的标示，每执行一次`next()`，相当于指针移动到下一个`yield`位置
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-23.png)
+
+> **总结一下**，`Generator`函数是`ES6`提供的一种异步编程解决方案。通过`yield`标识位和`next()`方法调用，实现函数的分段执行
+
+**遍历器对象生成函数，最大的特点是可以交出函数的执行权**
+
+- `function` 关键字与函数名之间有一个星号；
+- 函数体内部使用 `yield`表达式，定义不同的内部状态；
+- `next`指针移向下一个状态
+
+> 这里你可以说说 `Generator`的异步编程，以及它的语法糖 `async` 和 `awiat`，传统的异步编程。`ES6` 之前，异步编程大致如下
+
+- 回调函数
+- 事件监听
+- 发布/订阅
+
+> 传统异步编程方案之一：协程，多个线程互相协作，完成异步任务。
+
+```js
+// 使用 * 表示这是一个 Generator 函数
+// 内部可以通过 yield 暂停代码
+// 通过调用 next 恢复执行
+function* test() {
+  let a = 1 + 2;
+  yield 2;
+  yield 3;
+}
+let b = test();
+console.log(b.next()); // >  { value: 2, done: false }
+console.log(b.next()); // >  { value: 3, done: false }
+console.log(b.next()); // >  { value: undefined, done: true }
+```
+
+> 从以上代码可以发现，加上 `*`的函数执行后拥有了 `next` 函数，也就是说函数执行后返回了一个对象。每次调用 `next` 函数可以继续执行被暂停的代码。以下是 `Generator` 函数的简单实现
+
+```js
+// cb 也就是编译过的 test 函数
+function generator(cb) {
+  return (function() {
+    var object = {
+      next: 0,
+      stop: function() {}
+    };
+
+    return {
+      next: function() {
+        var ret = cb(object);
+        if (ret === undefined) return { value: undefined, done: true };
+        return {
+          value: ret,
+          done: false
+        };
+      }
+    };
+  })();
+}
+// 如果你使用 babel 编译后可以发现 test 函数变成了这样
+function test() {
+  var a;
+  return generator(function(_context) {
+    while (1) {
+      switch ((_context.prev = _context.next)) {
+        // 可以发现通过 yield 将代码分割成几块
+        // 每次执行 next 函数就执行一块代码
+        // 并且表明下次需要执行哪块代码
+        case 0:
+          a = 1 + 2;
+          _context.next = 4;
+          return 2;
+        case 4:
+          _context.next = 6;
+          return 3;
+        // 执行完毕
+        case 6:
+        case "end":
+          return _context.stop();
+      }
+    }
+  });
+}
+```
+
+## async/await
+
+> `Generator` 函数的语法糖。有更好的语义、更好的适用性、返回值是 `Promise`。
+
+- await 和 promise 一样，更多的是考笔试题，当然偶尔也会问到和 promise 的一些区别。
+- await 相比直接使用 Promise 来说，优势在于处理 then 的调用链，能够更清晰准确的写出代码。缺点在于滥用 await 可能会导致性能问题，因为 await 会阻塞代码，也许之后的异步代码并不依赖于前者，但仍然需要等待前者完成，导致代码失去了并发性，此时更应该使用 Promise.all。
+- 一个函数如果加上 async ，那么该函数就会返回一个 Promise
+
+> - `async => *`
+> - `await => yield`
+
+```js
+// 基本用法
+
+async function timeout (ms) {
+  await new Promise((resolve) => {
+    setTimeout(resolve, ms)    
+  })
+}
+async function asyncConsole (value, ms) {
+  await timeout(ms)
+  console.log(value)
+}
+asyncConsole('hello async and await', 1000)
+```
+
+下面来看一个使用 `await` 的代码。
+
+```js
+var a = 0
+var b = async () => {
+  a = a + await 10
+  console.log('2', a) // -> '2' 10
+  a = (await 10) + a
+  console.log('3', a) // -> '3' 20
+}
+b()
+a++
+console.log('1', a) // -> '1' 1
+```
+
+- 首先函数`b` 先执行，在执行到 `await 10` 之前变量 `a` 还是 `0`，因为在 `await` 内部实现了 `generators` ，`generators` 会保留堆栈中东西，所以这时候 `a = 0` 被保存了下来
+- 因为 `await` 是异步操作，遇到`await`就会立即返回一个`pending`状态的`Promise`对象，暂时返回执行代码的控制权，使得函数外的代码得以继续执行，所以会先执行 `console.log('1', a)`
+- 这时候同步代码执行完毕，开始执行异步代码，将保存下来的值拿出来使用，这时候 `a = 10`
+- 然后后面就是常规执行代码了
+
+**优缺点：**
+
+> `async/await`的优势在于处理 then 的调用链，能够更清晰准确的写出代码，并且也能优雅地解决回调地狱问题。当然也存在一些缺点，因为 await 将异步代码改造成了同步代码，如果多个异步代码没有依赖性却使用了 await 会导致性能上的降低。
+
+**async原理**
+
+> `async/await`语法糖就是使用`Generator`函数+自动执行器来运作的
+
+```js
+// 定义了一个promise，用来模拟异步请求，作用是传入参数++
+function getNum(num){
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(num+1)
+        }, 1000)
+    })
+}
+
+//自动执行器，如果一个Generator函数没有执行完，则递归调用
+function asyncFun(func){
+  var gen = func();
+
+  function next(data){
+    var result = gen.next(data);
+    if (result.done) return result.value;
+    result.value.then(function(data){
+      next(data);
+    });
+  }
+
+  next();
+}
+
+// 所需要执行的Generator函数，内部的数据在执行完成一步的promise之后，再调用下一步
+var func = function* (){
+  var f1 = yield getNum(1);
+  var f2 = yield getNum(f1);
+  console.log(f2) ;
+};
+asyncFun(func);
+```
+
+- 在执行的过程中，判断一个函数的`promise`是否完成，如果已经完成，将结果传入下一个函数，继续重复此步骤
+- 每一个 `next()` 方法返回值的 `value` 属性为一个 `Promise` 对象，所以我们为其添加 `then` 方法， 在 `then` 方法里面接着运行 `next` 方法挪移遍历器指针，直到 `Generator`函数运行完成
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-24.png)
+
+## 事件循环
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-25.png)
+
+- 默认代码从上到下执行，执行环境通过`script`来执行（宏任务）
+- 在代码执行过程中，调用定时器 `promise` `click`事件...不会立即执行，需要等待当前代码全部执行完毕
+- 给异步方法划分队列，分别存放到微任务（立即存放）和宏任务（时间到了或事情发生了才存放）到队列中
+- `script`执行完毕后，会清空所有的微任务
+- 微任务执行完毕后，会渲染页面（不是每次都调用）
+- 再去宏任务队列中看有没有到达时间的，拿出来其中一个执行
+- 执行完毕后，按照上述步骤不停的循环
+
+**例子**
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-26.png)
+
+![](../../\imgs\interview-js-27.png)
+
+> 自动执行的情况 会输出 listener1 listener2 task1 task2
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-28.png)
+
+![](../../\imgs\interview-js-29.png)
+
+> 如果手动点击click 会一个宏任务取出来一个个执行，先执行click的宏任务，取出微任务去执行。会输出 listener1 task1 listener2 task2
+
+![](../../\imgs\interview-js-30.png)
+
+```js
+console.log(1)
+
+async function asyncFunc(){
+  console.log(2)
+  // await xx ==> promise.resolve(()=>{console.log(3)}).then()
+  // console.log(3) 放到promise.resolve或立即执行
+  await console.log(3) 
+  // 相当于把console.log(4)放到了then promise.resolve(()=>{console.log(3)}).then(()=>{
+  //   console.log(4)
+  // })
+  // 微任务谁先注册谁先执行
+  console.log(4)
+}
+
+setTimeout(()=>{console.log(5)})
+
+const promise = new Promise((resolve,reject)=>{
+  console.log(6)
+  resolve(7)
+})
+
+promise.then(d=>{console.log(d)})
+
+asyncFunc()
+
+console.log(8)
+
+// 输出 1 6 2 3 8 7 4 5
+```
+
+**浏览器事件循环**
+
+> 涉及面试题：异步代码执行顺序？解释一下什么是 `Event Loop` ？
+
+> JavaScript的单线程，与它的用途有关。作为浏览器脚本语言，JavaScript的主要用途是与用户互动，以及操作DOM。这决定了它只能是单线程，否则会带来很复杂的同步问题。比如，假定JavaScript同时有两个线程，一个线程在某个DOM节点上添加内容，另一个线程删除了这个节点，这时浏览器应该以哪个线程为准？所以，为了避免复杂性，从一诞生，JavaScript就是单线程，这已经成了这门语言的核心特征，将来也不会改变
+
+> js代码执行过程中会有很多任务，这些任务总的分成两类：
+
+- 同步任务
+- 异步任务
+
+> 当我们打开网站时，网页的渲染过程就是一大堆同步任务，比如页面骨架和页面元素的渲染。而像加载图片音乐之类占用资源大耗时久的任务，就是异步任务。，我们用导图来说明：
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-31.png)
+
+**我们解释一下这张图：**
+
+- 同步和异步任务分别进入不同的执行"场所"，同步的进入主线程，异步的进入Event Table并注册函数。
+- 当指定的事情完成时，Event Table会将这个函数移入Event Queue。
+- 主线程内的任务执行完毕为空，会去Event Queue读取对应的函数，进入主线程执行。
+- 上述过程会不断重复，也就是常说的Event Loop(事件循环)。
+
+> 那主线程执行栈何时为空呢？js引擎存在monitoring process进程，会持续不断的检查主线程执行栈是否为空，一旦为空，就会去Event Queue那里检查是否有等待被调用的函数
+
+以上就是js运行的整体流程
+
+**面试中该如何回答呢？ 下面是我个人推荐的回答：**
+
+- 首先js 是单线程运行的，在代码执行的时候，通过将不同函数的执行上下文压入执行栈中来保证代码的有序执行
+- 在执行同步代码的时候，如果遇到了异步事件，js 引擎并不会一直等待其返回结果，而是会将这个事件挂起，继续执行执行栈中的其他任务
+- 当同步事件执行完毕后，再将异步事件对应的回调加入到与当前执行栈中不同的另一个任务队列中等待执行
+- 任务队列可以分为宏任务对列和微任务对列，当当前执行栈中的事件执行完毕后，js 引擎首先会判断微任务对列中是否有任务可以执行，如果有就将微任务队首的事件压入栈中执行
+- 当微任务对列中的任务都执行完成后再去判断宏任务对列中的任务。
+
+```js
+setTimeout(function() {
+  console.log(1)
+}, 0);
+new Promise(function(resolve, reject) {
+  console.log(2);
+  resolve()
+}).then(function() {
+  console.log(3)
+});
+process.nextTick(function () {
+  console.log(4)
+})
+console.log(5)
+```
+
+- 第一轮：主线程开始执行，遇到`setTimeout`，将setTimeout的回调函数丢到宏任务队列中，在往下执行`new Promise`立即执行，输出2，then的回调函数丢到微任务队列中，再继续执行，遇到`process.nextTick`，同样将回调函数扔到微任务队列，再继续执行，输出5，当所有同步任务执行完成后看有没有可以执行的微任务，发现有then函数和`nextTick`两个微任务，先执行哪个呢？`process.nextTick`指定的异步任务总是发生在所有异步任务之前，因此先执行process.nextTick输出4然后执行then函数输出3，第一轮执行结束。
+- 第二轮：从宏任务队列开始，发现setTimeout回调，输出1执行完毕，因此结果是25431
+
+> `JS` 在执行的过程中会产生执行环境，这些执行环境会被顺序的加入到执行栈中。如果遇到异步的代码，会被挂起并加入到 `Task`（有多种 `task`） 队列中。一旦执行栈为空，`Event` `Loop` 就会从 `Task` 队列中拿出需要执行的代码并放入执行栈中执行，所以本质上来说 `JS` 中的异步还是同步行为
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-32.png)
+
+```js
+console.log('script start');
+
+setTimeout(function() {
+  console.log('setTimeout');
+}, 0);
+
+console.log('script end');
+```
+
+> 不同的任务源会被分配到不同的 `Task` 队列中，任务源可以分为 微任务（`microtask`） 和 宏任务（`macrotask`）。在 `ES6` 规范中，`microtask` 称为 `jobs`，`macrotask` 称为 `task`
+
+```js
+console.log('script start');
+
+setTimeout(function() {
+  console.log('setTimeout');
+}, 0);
+
+new Promise((resolve) => {
+    console.log('Promise')
+    resolve()
+}).then(function() {
+  console.log('promise1');
+}).then(function() {
+  console.log('promise2');
+});
+
+console.log('script end');
+// script start => Promise => script end => promise1 => promise2 => setTimeout
+```
+
+> 以上代码虽然 `setTimeout` 写在 `Promise` 之前，但是因为 `Promise` 属于微任务而 `setTimeout` 属于宏任务
+
+**微任务**
+
+- `process.nextTick`
+- `promise`
+- `Object.observe`
+- `MutationObserver`
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-33.png)
+
+**宏任务**
+
+- `script`
+- `setTimeout`
+- `setInterval`
+- `setImmediate`
+- `I/O` 网络请求完成、文件读写完成事件
+- `UI rendering`
+- 用户交互事件（比如鼠标点击、滚动页面、放大缩小等）
+
+> 宏任务中包括了 `script` ，浏览器会先执行一个宏任务，接下来有异步代码的话就先执行微任务
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-34.png)
+
+**所以正确的一次 Event loop 顺序是这样的**
+
+- 执行同步代码，这属于宏任务
+- 执行栈为空，查询是否有微任务需要执行
+- 执行所有微任务
+- 必要的话渲染 UI
+- 然后开始下一轮 `Event loop`，执行宏任务中的异步代码
+
+> 通过上述的 `Event loop` 顺序可知，如果宏任务中的异步代码有大量的计算并且需要操作 `DOM` 的话，为了更快的响应界面响应，我们可以把操作 `DOM` 放入微任务中
+
+- JavaScript 引擎首先从宏任务队列（macrotask queue）中取出第一个任务
+- 执行完毕后，再将微任务（microtask queue）中的所有任务取出，按照顺序分别全部执行（这里包括不仅指开始执行时队列里的微任务），如果在这一步过程中产生新的微任务，也需要执行；
+- 然后再从宏任务队列中取下一个，执行完毕后，再次将 microtask queue 中的全部取出，循环往复，直到两个 queue 中的任务都取完。
+
+![](../../\imgs\interview-js-35.png)
+
+> 总结起来就是：`一次 Eventloop 循环会处理一个宏任务和所有这次循环中产生的微任务`。
+
+**Node 中的 Event loop**
+
+> 当 Node.js 开始启动时，会初始化一个 Eventloop，处理输入的代码脚本，这些脚本会进行 API 异步调用，`process.nextTick()` 方法会开始处理事件循环。下面就是 Node.js 官网提供的 `Eventloop` 事件循环参考流程
+
+- `Node` 中的 `Event loop` 和浏览器中的不相同。
+- `Node` 的 `Event loop` 分为`6`个阶段，它们会按照顺序反复运行
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-36.png)
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-37.png)
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-38.png)
+
+- 每次执行执行一个宏任务后会清空微任务（执行顺序和浏览器一致，在node11版本以上）
+- `process.nextTick` node中的微任务，当前执行栈的底部，优先级比`promise`要高
+
+> 整个流程分为六个阶段，当这六个阶段执行完一次之后，才可以算得上执行了一次 Eventloop 的循环过程。我们来分别看下这六个阶段都做了哪些事情。
+
+- **Timers 阶段**：这个阶段执行 `setTimeout` 和 `setInterval`的回调函数，简单理解就是由这两个函数启动的回调函数。
+- **I/O callbacks 阶段**：这个阶段主要执行系统级别的回调函数，比如 TCP 连接失败的回调。
+- **idle，prepare 阶段**：仅系统内部使用，你只需要知道有这 2 个阶段就可以。
+- **poll 阶段**：`poll` 阶段是一个重要且复杂的阶段，几乎所有 `I/O` 相关的回调，都在这个阶段执行（除了`setTimeout`、`setInterval`、`setImmediate` 以及一些因为 `exception` 意外关闭产生的回调）。`检索新的 I/O 事件，执行与 I/O 相关的回调`，其他情况 Node.js 将在适当的时候在此阻塞。这也是最复杂的一个阶段，所有的事件循环以及回调处理都在这个阶段执行。这个阶段的主要流程如下图所示。
+
+![](../../\imgs\interview-js-39.png)
+
+- **check 阶段**：`setImmediate()` 回调函数在这里执行，`setImmediate` 并不是立马执行，而是当事件循环 `poll 中没有新的事件处理时就执行该部分`，如下代码所示。
+
+```js
+const fs = require('fs');
+setTimeout(() => { // 新的事件循环的起点
+    console.log('1'); 
+}, 0);
+setImmediate( () => {
+    console.log('setImmediate 1');
+});
+/// fs.readFile 将会在 poll 阶段执行
+fs.readFile('./test.conf', {encoding: 'utf-8'}, (err, data) => {
+    if (err) throw err;
+    console.log('read file success');
+});
+/// 该部分将会在首次事件循环中执行
+Promise.resolve().then(()=>{
+    console.log('poll callback');
+});
+// 首次事件循环执行
+console.log('2');
+```
+
+在这一代码中有一个非常奇特的地方，就是 `setImmediate` 会在 `setTimeout` 之后输出。有以下几点原因：
+
+> - `setTimeout` 如果不设置时间或者设置时间为 `0`，则会默认为 `1ms`
+> - 主流程执行完成后，超过 `1ms` 时，会将 `setTimeout` 回调函数逻辑插入到待执行回调函数 `poll` 队列中；
+> - 由于当前 `poll` 队列中存在可执行回调函数，因此需要先执行完，待完全执行完成后，才会执行`check：setImmediate`。
+
+> 因此这也验证了这句话，`先执行回调函数，再执行 setImmediate`
+
+- **close callbacks 阶段**：执行一些关闭的回调函数，如 `socket.on('close', ...)`
+
+> 除了把 Eventloop 的宏任务细分到不同阶段外。node 还引入了一个新的任务队列 `Process.nextTick()`
+
+可以认为，`Process.nextTick()` 会在上述各个阶段结束时，在`进入下一个阶段之前立即执行`（优先级甚至超过 `microtask` 队列）
+
+**事件循环的主要包含微任务和宏任务。具体是怎么进行循环的呢**
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-40.png)
+
+- **微任务**：在 Node.js 中微任务包含 2 种——`process.nextTick` 和 `Promise`。`微任务在事件循环中优先级是最高的`，因此在同一个事件循环中有其他任务存在时，优先执行微任务队列。并且`process.nextTick 和 Promise`也存在优先级，`process.nextTick` 高于 `Promise`
+- **宏任务**：在 Node.js 中宏任务包含 4 种——`setTimeout`、`setInterval`、`setImmediate` 和 `I/O`。宏任务在微任务执行之后执行，因此在同一个事件循环周期内，如果既存在微任务队列又存在宏任务队列，那么优先将微任务队列清空，再执行宏任务队列
+
+我们可以看到有一个核心的主线程，它的执行阶段主要处理三个核心逻辑。
+
+- 同步代码。
+- 将异步任务插入到微任务队列或者宏任务队列中。
+- 执行微任务或者宏任务的回调函数。在主线程处理回调函数的同时，也需要判断是否插入微任务和宏任务。根据优先级，先判断微任务队列是否存在任务，存在则先执行微任务，不存在则判断在宏任务队列是否有任务，有则执行。
+
+```js
+const fs = require('fs');
+// 首次事件循环执行
+console.log('start');
+/// 将会在新的事件循环中的阶段执行
+fs.readFile('./test.conf', {encoding: 'utf-8'}, (err, data) => {
+    if (err) throw err;
+    console.log('read file success');
+});
+setTimeout(() => { // 新的事件循环的起点
+    console.log('setTimeout'); 
+}, 0);
+/// 该部分将会在首次事件循环中执行
+Promise.resolve().then(()=>{
+    console.log('Promise callback');
+});
+/// 执行 process.nextTick
+process.nextTick(() => {
+    console.log('nextTick callback');
+});
+// 首次事件循环执行
+console.log('end');
+```
+
+分析下上面代码的执行过程
+
+- 第一个事件循环主线程发起，因此先执行同步代码，所以先输出 start，然后输出 end
+- 第一个事件循环主线程发起，因此先执行同步代码，所以先输出 start，然后输出 end；
+- 再从上往下分析，遇到微任务，插入微任务队列，遇到宏任务，插入宏任务队列，分析完成后，微任务队列包含：`Promise.resolve 和 process.nextTick`，宏任务队列包含：`fs.readFile 和 setTimeout`；
+- 先执行微任务队列，但是根据优先级，先执行 `process.nextTick 再执行 Promise.resolve`，所以先输出 `nextTick callback` 再输出 `Promise callback`；
+- 再执行宏任务队列，根据`宏任务插入先后顺序执行 setTimeout 再执行 fs.readFile`，这里需要注意，先执行 `setTimeout` 由于其回调时间较短，因此回调也先执行，并非是 `setTimeout` 先执行所以才先执行回调函数，但是它执行需要时间肯定大于 `1ms`，所以虽然 `fs.readFile` 先于`setTimeout` 执行，但是 `setTimeout` 执行更快，所以先输出 `setTimeout` ，最后输出 `read file success`。
+
+```js
+// 输出结果
+start
+end
+nextTick callback
+Promise callback
+setTimeout
+read file success
+```
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-41.png)
+
+> 当微任务和宏任务又产生新的微任务和宏任务时，又应该如何处理呢？如下代码所示：
+
+```js
+const fs = require('fs');
+setTimeout(() => { // 新的事件循环的起点
+    console.log('1'); 
+    fs.readFile('./config/test.conf', {encoding: 'utf-8'}, (err, data) => {
+        if (err) throw err;
+        console.log('read file sync success');
+    });
+}, 0);
+/// 回调将会在新的事件循环之前
+fs.readFile('./config/test.conf', {encoding: 'utf-8'}, (err, data) => {
+    if (err) throw err;
+    console.log('read file success');
+});
+/// 该部分将会在首次事件循环中执行
+Promise.resolve().then(()=>{
+    console.log('poll callback');
+});
+// 首次事件循环执行
+console.log('2');
+```
+
+在上面代码中，有 2 个宏任务和 1 个微任务，宏任务是 `setTimeout 和 fs.readFile`，微任务是 `Promise.resolve`。
+
+- 整个过程优先执行主线程的第一个事件循环过程，所以先执行同步逻辑，先输出 2。
+- 接下来执行微任务，输出 `poll callback`。
+- 再执行宏任务中的 `fs.readFile 和 setTimeout`，由于 `fs.readFile` 优先级高，先执行 `fs.readFile`。但是处理时间长于 `1ms`，因此会先执行 `setTimeout` 的回调函数，输出 `1`。这个阶段在执行过程中又会产生新的宏任务 `fs.readFile`，因此又将该 `fs.readFile 插入宏任务队列`
+- 最后由于只剩下宏任务了 `fs.readFile`，因此执行该宏任务，并等待处理完成后的回调，输出 `read file sync success`。
+
+```js
+// 结果
+2
+poll callback
+1
+read file success
+read file sync success
+```
+
+**Process.nextick() 和 Vue 的 nextick**
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-42.png)
+
+> `Node.js` 和浏览器端宏任务队列的另一个很重要的不同点是，浏览器端任务队列每轮事件循环仅出队一个回调函数接着去执行微任务队列；而 `Node.js` 端只要轮到执行某个宏任务队列，则会执行完队列中所有的当前任务，但是当前轮次新添加到队尾的任务则会等到下一轮次才会执行。
+
+```js
+setTimeout(() => {
+    console.log('setTimeout');
+}, 0);
+setImmediate(() => {
+    console.log('setImmediate');
+})
+// 这里可能会输出 setTimeout，setImmediate
+// 可能也会相反的输出，这取决于性能
+// 因为可能进入 event loop 用了不到 1 毫秒，这时候会执行 setImmediate
+// 否则会执行 setTimeout
+```
+
+> 上面介绍的都是 `macrotask` 的执行情况，`microtask` 会在以上每个阶段完成后立即执行
+
+```js
+setTimeout(()=>{
+    console.log('timer1')
+
+    Promise.resolve().then(function() {
+        console.log('promise1')
+    })
+}, 0)
+
+setTimeout(()=>{
+    console.log('timer2')
+
+    Promise.resolve().then(function() {
+        console.log('promise2')
+    })
+}, 0)
+
+// 以上代码在浏览器和 node 中打印情况是不同的
+// 浏览器中一定打印 timer1, promise1, timer2, promise2
+// node 中可能打印 timer1, timer2, promise1, promise2
+// 也可能打印 timer1, promise1, timer2, promise2
+```
+
+> `Node` 中的 `process.nextTick` 会先于其他 `microtask` 执行
+
+![](../../\imgs\interview-js-43.png)
+
+```js
+setTimeout(() => {
+ console.log("timer1");
+
+ Promise.resolve().then(function() {
+   console.log("promise1");
+ });
+}, 0);
+
+// poll阶段执行
+fs.readFile('./test',()=>{
+  // 在poll阶段里面 如果有setImmediate优先执行，setTimeout处于事件循环顶端 poll下面就是setImmediate
+  setTimeout(()=>console.log('setTimeout'),0)
+  setImmediate(()=>console.log('setImmediate'),0)
+})
+
+process.nextTick(() => {
+ console.log("nextTick");
+});
+// nextTick, timer1, promise1,setImmediate,setTimeout
+```
+
+> 对于 `microtask` 来说，它会在以上每个阶段完成前清空 `microtask` 队列，下图中的 `Tick` 就代表了 `microtask`
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-44.png)
+
+**谁来启动这个循环过程，循环条件是什么？**
+
+> 当 Node.js 启动后，会初始化事件循环，处理已提供的输入脚本，它可能会先调用一些异步的 API、调度定时器，或者 `process.nextTick()`，然后再开始处理事件循环。因此可以这样理解，Node.js 进程启动后，就发起了一个新的事件循环，也就是事件循环的起点。
+
+总结来说，Node.js 事件循环的发起点有 4 个：
+
+- `Node.js` 启动后；
+- `setTimeout` 回调函数；
+- `setInterval` 回调函数；
+- 也可能是一次 `I/O` 后的回调函数。
+
+**无限循环有没有终点**
+
+> 当所有的微任务和宏任务都清空的时候，虽然当前没有任务可执行了，但是也并不能代表循环结束了。因为可能存在当前还未回调的异步 I/O，所以这个循环是没有终点的，只要进程在，并且有新的任务存在，就会去执行
+
+**Node.js 是单线程的还是多线程的？**
+
+> `主线程是单线程执行的`，但是 Node.js `存在多线程执行`，多线程包括 `setTimeout 和异步 I/O 事件`。其实 Node.js 还存在其他的线程，包括`垃圾回收、内存优化`等
+
+**EventLoop 对渲染的影响**
+
+- 想必你之前在业务开发中也遇到过 `requestIdlecallback 和 requestAnimationFrame`，这两个函数在我们之前的内容中没有讲过，但是当你开始考虑它们在 Eventloop 的生命周期的哪一步触发，或者这两个方法的回调会在微任务队列还是宏任务队列执行的时候，才发现好像没有想象中那么简单。这两个方法其实也并不属于 JS 的原生方法，而是浏览器宿主环境提供的方法，因为它们牵扯到另一个问题：渲染。
+- 我们知道浏览器作为一个复杂的应用是多线程工作的，除了运行 JS 的线程外，还有渲染线程、定时器触发线程、HTTP 请求线程，等等。JS 线程可以读取并且修改 DOM，而渲染线程也需要读取 DOM，这是一个典型的多线程竞争临界资源的问题。所以浏览器就把这两个线程设计成互斥的，即同时只能有一个线程在执行
+- 渲染原本就不应该出现在 Eventloop 相关的知识体系里，但是因为 Eventloop 显然是在讨论 JS 如何运行的问题，而渲染则是浏览器另外一个线程的工作。但是 `requestAnimationFrame`的出现却把这两件事情给关联起来
+- 通过调用 `requestAnimationFrame` 我们可以在下次渲染之前执行回调函数。那下次渲染具体是哪个时间点呢？渲染和 Eventloop 有什么关系呢？
+  - 简单来说，就是在每一次 `Eventloop` 的末尾，`判断当前页面是否处于渲染时机，就是重新渲染`
+- 有屏幕的硬件限制，比如 60Hz 刷新率，简而言之就是 1 秒刷新了 60 次，16.6ms 刷新一次。这个时候浏览器的渲染间隔时间就没必要小于 `16.6ms`，因为就算渲染了屏幕上也看不到。当然浏览器也不能保证一定会每 16.6ms 会渲染一次，因为还会受到处理器的性能、JavaScript 执行效率等其他因素影响。
+- 回到 `requestAnimationFrame`，这个 API 保证在下次浏览器渲染之前一定会被调用，实际上我们完全可以把它看成是一个高级版的 `setInterval`。它们都是在一段时间后执行回调，但是前者的间隔时间是由浏览器自己不断调整的，而后者只能由用户指定。这样的特性也决定了 `requestAnimationFrame` 更适合用来做针对每一帧来修改的动画效果
+- 当然 `requestAnimationFrame` 不是 `Eventloop` 里的宏任务，或者说它并不在 `Eventloop` 的生命周期里，只是浏览器又开放的一个在渲染之前发生的新的 hook。另外需要注意的是微任务的认知概念也需要更新，在执行 animation callback 时也有可能产生微任务（比如 promise 的 callback），会放到 animation queue 处理完后再执行。所以微任务并不是像之前说的那样在每一轮 Eventloop 后处理，而是在 JS 的函数调用栈清空后处理
+
+但是 `requestIdlecallback` 却是一个更好理解的概念。当宏任务队列中没有任务可以处理时，浏览器可能存在“空闲状态”。这段空闲时间可以被 `requestIdlecallback` 利用起来执行一些优先级不高、不必立即执行的任务，如下图所示：
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-45.png)

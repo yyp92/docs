@@ -2791,6 +2791,321 @@ function compose(...funcs) {
 - 更换`Api`接口：把`reduce`改为`reduceRight`
 - 交互包裹位置：把`a(b(...args))`改为`b(a(...args))`
 
+## 正则相关
+
+### 1 实现千位分隔符
+
+```js
+// 保留三位小数
+parseToMoney(1234.56); // return '1,234.56'
+parseToMoney(123456789); // return '123,456,789'
+parseToMoney(1087654.321); // return '1,087,654.321'
+```
+
+```js
+function parseToMoney(num) {
+  num = parseFloat(num.toFixed(3));
+  let [integer, decimal] = String.prototype.split.call(num, '.');
+  integer = integer.replace(/\d(?=(\d{3})+$)/g, '$&,');
+  return integer + '.' + (decimal ? decimal : '');
+}
+```
+
+### 2 判断是否是电话号码
+
+```js
+function isPhone(tel) {
+    var regx = /^1[34578]\d{9}$/;
+    return regx.test(tel);
+}
+```
+
+### 3 验证是否是邮箱
+
+```js
+function isEmail(email) {
+    var regx = /^([a-zA-Z0-9_\-])+@([a-zA-Z0-9_\-])+(\.[a-zA-Z0-9_\-])+$/;
+    return regx.test(email);
+}
+```
+
+### 4 验证是否是身份证
+
+```js
+function isCardNo(number) {
+    var regx = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+    return regx.test(number);
+}
+```
+
+### 5 用正则写一个根据name获取cookie中的值的方法
+
+```js
+function getCookie(name) {
+  var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]*)'));
+  if (match) return unescape(match[2]);
+}
+```
+
+1. 获取页面上的`cookie`可以使用 `document.cookie`
+
+这里获取到的是类似于这样的字符串：
+
+```js
+'username=poetry; user-id=12345; user-roles=home, me, setting'
+```
+
+**可以看到这么几个信息：**
+
+- 每一个cookie都是由 `name=value` 这样的形式存储的
+
+- 每一项的开头可能是一个空串`''`(比如`username`的开头其实就是), 也可能是一个空字符串`' '`（比如`user-id`的开头就是）
+
+- 每一项用`";"`来区分
+
+- 如果某项中有多个值的时候，是用`","`来连接的(比如`user-roles`的值)
+
+- 每一项的结尾可能是有`";"`的(比如`username`的结尾)，也可能是没有的(比如`user-roles`的结尾)
+2. 所以我们将这里的正则拆分一下：
+- `'(^| )'`表示的就是获取每一项的开头，因为我们知道如果`^`不是放在`[]`里的话就是表示开头匹配。所以这里`(^| )`的意思其实就被拆分为`(^)`表示的匹配`username`这种情况，它前面什么都没有是一个空串(你可以把`(^)`理解为`^`它后面还有一个隐藏的`''`)；而`|`表示的就是或者是一个`" "`(为了匹配`user-id`开头的这种情况)
+
+- `+name+`这没什么好说的
+
+- `=([^;]*)`这里匹配的就是`=`后面的值了，比如`poetry`；刚刚说了`^`要是放在`[]`里的话就表示`"除了^后面的内容都能匹配"`，也就是非的意思。所以这里`([^;]*)`表示的是除了`";"`这个字符串别的都匹配(`*`应该都知道什么意思吧，匹配0次或多次)
+
+- 有的大佬等号后面是这样写的`'=([^;]*)(;|$)'`，而最后为什么可以把`'(;|$)'`给省略呢？因为其实最后一个`cookie`项是没有`';'`的，所以它可以合并到`=([^;]*)`这一步。
+3. 最后获取到的`match`其实是一个长度为4的数组。比如：
+
+```js
+[
+  "username=poetry;",
+  "",
+  "poetry",
+  ";"
+]
+```
+
+- 第0项：全量
+- 第1项：开头
+- 第2项：中间的值
+- 第3项：结尾
+
+所以我们是要拿第2项`match[2]`的值。
+
+4. 为了防止获取到的值是`%xxx`这样的字符序列，需要用`unescape()`方法解码。
+
+## 函数柯里化相关
+
+### 实现一个JS函数柯里化
+
+> **预先处理的思想，利用闭包的机制**
+> 
+> - 柯里化的定义：接收一部分参数，返回一个函数接收剩余参数，接收足够参数后，执行原函数
+> - 函数柯里化的主要作用和特点就是`参数复用`、`提前返回`和`延迟执行`
+
+- 柯里化把多次传入的参数合并，柯里化是一个高阶函数
+- 每次都返回一个新函数
+- 每次入参都是一个
+
+当柯里化函数接收到足够参数后，就会执行原函数，如何去确定何时达到足够的参数呢？
+
+**有两种思路：**
+
+- 通过函数的 `length` 属性，获取函数的形参个数，形参的个数就是所需的参数个数
+- 在调用柯里化工具函数时，手动指定所需的参数个数
+
+将这两点结合一下，实现一个简单 `curry` 函数
+
+**通用版**
+
+```js
+// 写法1
+function curry(fn, args) {
+  var length = fn.length;
+  var args = args || [];
+  return function(){
+      newArgs = args.concat(Array.prototype.slice.call(arguments));
+      if (newArgs.length < length) {
+          return curry.call(this,fn,newArgs);
+      }else{
+          return fn.apply(this,newArgs);
+      }
+  }
+}
+```
+
+```js
+// 写法2
+// 分批传入参数
+// redux 源码的compose也是用了类似柯里化的操作
+const curry = (fn, arr = []) => {// arr就是我们要收集每次调用时传入的参数
+  let len = fn.length; // 函数的长度，就是参数的个数
+
+  return function(...args) {
+    let newArgs = [...arr, ...args] // 收集每次传入的参数
+
+    // 如果传入的参数个数等于我们指定的函数参数个数，就执行指定的真正函数
+    if(newArgs.length === len) {
+      return fn(...newArgs)
+    } else {
+      // 递归收集参数
+      return curry(fn, newArgs)
+    }
+  }
+}
+```
+
+```js
+// 测试
+function multiFn(a, b, c) {
+  return a * b * c;
+}
+
+var multi = curry(multiFn);
+
+multi(2)(3)(4);
+multi(2,3,4);
+multi(2)(3,4);
+multi(2,3)(4)
+```
+
+**ES6写法**
+
+```js
+const curry = (fn, arr = []) => (...args) => (
+  arg => arg.length === fn.length
+    ? fn(...arg)
+    : curry(fn, arg)
+)([...arr, ...args])
+```
+
+```js
+// 测试
+let curryTest=curry((a,b,c,d)=>a+b+c+d)
+curryTest(1,2,3)(4) //返回10
+curryTest(1,2)(4)(3) //返回10
+curryTest(1,2)(3,4) //返回10
+```
+
+```js
+// 柯里化求值
+// 指定的函数
+function sum(a,b,c,d,e) {
+  return a + b + c + d + e
+}
+
+// 传入指定的函数，执行一次
+let newSum = curry(sum)
+
+// 柯里化 每次入参都是一个参数
+newSum(1)(2)(3)(4)(5)
+
+// 偏函数
+newSum(1)(2)(3,4,5)
+```
+
+```js
+// 柯里化简单应用
+// 判断类型，参数多少个，就执行多少次收集
+function isType(type, val) {
+  return Object.prototype.toString.call(val) === `[object ${type}]`
+}
+
+let newType = curry(isType)
+
+// 相当于把函数参数一个个传了，把第一次先缓存起来
+let isString = newType('String')
+let isNumber = newType('Number')
+
+isString('hello world')
+isNumber(999)
+```
+
+### 请实现一个 add 函数，满足以下功能
+
+```
+add(1);             // 1
+add(1)(2);      // 3
+add(1)(2)(3)；// 6
+add(1)(2, 3); // 6
+add(1, 2)(3); // 6
+add(1, 2, 3); // 6
+```
+
+```
+function add(...args) {
+  // 在内部声明一个函数，利用闭包的特性保存并收集所有的参数值
+  let fn = function(...newArgs) {
+   return add.apply(null, args.concat(newArgs))
+  }
+
+  // 利用toString隐式转换的特性，当最后执行时隐式转换，并计算最终的值返回
+  fn.toString = function() {
+    return args.reduce((total,curr)=> total + curr)
+  }
+
+  return fn
+}
+```
+
+考点：
+
+- 使用闭包， 同时要对JavaScript 的作用域链（原型链）有深入的理解
+- 重写函数的 `toSting()`方法
+
+```
+// 测试，调用toString方法触发求值
+
+add(1).toString();             // 1
+add(1)(2).toString();      // 3
+add(1)(2)(3).toString()；// 6
+add(1)(2, 3).toString(); // 6
+add(1, 2)(3).toString(); // 6
+add(1, 2, 3).toString(); // 6
+```
+
+### 实现 (5).add(3).minus(2) 功能
+
+> 例： 5 + 3 - 2，结果为 6
+
+```
+Number.prototype.add = function(n) {
+  return this.valueOf() + n;
+};
+Number.prototype.minus = function(n) {
+  return this.valueOf() - n;
+};
+```
+
+**实现add(1)(2) =3**
+
+```
+// 题意的答案
+const add = (num1) => (num2)=> num2 + num1;
+
+// 整了一个加强版 可以无限链式调用 add(1)(2)(3)(4)(5)....
+function add(x) {
+  // 存储和
+  let sum = x;
+
+  // 函数调用会相加，然后每次都会返回这个函数本身
+  let tmp = function (y) {
+    sum = sum + y;
+    return tmp;
+  };
+
+  // 对象的toString必须是一个方法 在方法中返回了这个和
+  tmp.toString = () => sum
+  return tmp;
+}
+
+alert(add(1)(2)(3)(4)(5))
+```
+
+> 无限链式调用实现的关键在于 **对象的 toString 方法**: 每个对象都有一个 `toString()` 方法，当该对象被表示为一个文本值时，或者一个对象以预期的字符串方式引用时自动调用。
+
+也就是我在调用很多次后，他们的结果会存在`add`函数中的`sum`变量上，当我`alert`的时候 `add`会自动调用 `toString`方法 打印出 `sum,` 也就是最终的结果
+
 ## 综合
 
 ### 实现一个 sleep 函数，比如 sleep(1000) 意味着等待1000毫秒
@@ -2855,4 +3170,417 @@ const timeout = i => new Promise(resolve => setTimeout(() => resolve(i), i))
 limit(2, [1000, 1000, 1000, 1000], timeout).then((res) => {
   console.log(res)
 })
+```
+
+### 异步串行 | 异步并行
+
+```js
+// 字节面试题，实现一个异步加法
+function asyncAdd(a, b, callback) {
+  setTimeout(function () {
+    callback(null, a + b);
+  }, 500);
+}
+
+// 解决方案
+// 1. promisify
+const promiseAdd = (a, b) => new Promise((resolve, reject) => {
+  asyncAdd(a, b, (err, res) => {
+    if (err) {
+      reject(err)
+    } else {
+      resolve(res)
+    }
+  })
+})
+
+// 2. 串行处理
+async function serialSum(...args) {
+  return args.reduce((task, now) => task.then(res => promiseAdd(res, now)), Promise.resolve(0))
+}
+
+// 3. 并行处理
+async function parallelSum(...args) {
+  if (args.length === 1) return args[0]
+  const tasks = []
+  for (let i = 0; i < args.length; i += 2) {
+    tasks.push(promiseAdd(args[i], args[i + 1] || 0))
+  }
+  const results = await Promise.all(tasks)
+  return parallelSum(...results)
+}
+
+// 测试
+(async () => {
+  console.log('Running...');
+  const res1 = await serialSum(1, 2, 3, 4, 5, 8, 9, 10, 11, 12)
+  console.log(res1)
+  const res2 = await parallelSum(1, 2, 3, 4, 5, 8, 9, 10, 11, 12)
+  console.log(res2)
+  console.log('Done');
+})()
+```
+
+### 实现有并行限制的 Promise 调度器
+
+题目描述:JS 实现一个带并发限制的异步调度器 `Scheduler`，保证同时运行的任务最多有两个
+
+```js
+ addTask(1000,"1");
+ addTask(500,"2");
+ addTask(300,"3");
+ addTask(400,"4");
+ 的输出顺序是：2 3 1 4
+
+ 整个的完整执行流程：
+
+一开始1、2两个任务开始执行
+500ms时，2任务执行完毕，输出2，任务3开始执行
+800ms时，3任务执行完毕，输出3，任务4开始执行
+1000ms时，1任务执行完毕，输出1，此时只剩下4任务在执行
+1200ms时，4任务执行完毕，输出4
+```
+
+实现代码如下:
+
+```js
+class Scheduler {
+  constructor(limit) {
+    this.queue = [];
+    this.maxCount = limit;
+    this.runCounts = 0;
+  }
+  add(time, order) {
+    const promiseCreator = () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          console.log(order);
+          resolve();
+        }, time);
+      });
+    };
+    this.queue.push(promiseCreator);
+  }
+  taskStart() {
+    for (let i = 0; i < this.maxCount; i++) {
+      this.request();
+    }
+  }
+  request() {
+    if (!this.queue || !this.queue.length || this.runCounts >= this.maxCount) {
+      return;
+    }
+    this.runCounts++;
+    this.queue
+      .shift()()
+      .then(() => {
+        this.runCounts--;
+        this.request();
+      });
+  }
+}
+const scheduler = new Scheduler(2);
+const addTask = (time, order) => {
+  scheduler.add(time, order);
+};
+addTask(1000, "1");
+addTask(500, "2");
+addTask(300, "3");
+addTask(400, "4");
+scheduler.taskStart();
+```
+
+### 图片懒加载
+
+```js
+// <img src="default.png" data-src="https://xxxx/real.png">
+function isVisible(el) {
+  const position = el.getBoundingClientRect()
+  const windowHeight = document.documentElement.clientHeight
+  // 顶部边缘可见
+  const topVisible = position.top > 0 && position.top < windowHeight;
+  // 底部边缘可见
+  const bottomVisible = position.bottom < windowHeight && position.bottom > 0;
+  return topVisible || bottomVisible;
+}
+
+function imageLazyLoad() {
+  const images = document.querySelectorAll('img')
+  for (let img of images) {
+    const realSrc = img.dataset.src
+    if (!realSrc) continue
+    if (isVisible(img)) {
+      img.src = realSrc
+      img.dataset.src = ''
+    }
+  }
+}
+
+// 测试
+window.addEventListener('load', imageLazyLoad)
+window.addEventListener('scroll', imageLazyLoad)
+// or
+window.addEventListener('scroll', throttle(imageLazyLoad, 1000))
+```
+
+### 实现 getValue/setValue 函数来获取path对应的值
+
+```js
+// 示例
+var object = { a: [{ b: { c: 3 } }] }; // path: 'a[0].b.c'
+var array = [{ a: { b: [1] } }]; // path: '[0].a.b[0]'
+
+function getValue(target, valuePath, defaultValue) {}
+
+console.log(getValue(object, "a[0].b.c", 0)); // 输出3
+console.log(getValue(array, "[0].a.b[0]", 12)); // 输出 1
+console.log(getValue(array, "[0].a.b[0].c", 12)); // 输出 12
+```
+
+**实现**
+
+```js
+/** * 测试属性是否匹配 */
+export function testPropTypes(value, type, dev) {
+  const sEnums = ['number', 'string', 'boolean', 'undefined', 'function']; // NaN
+  const oEnums = ['Null', 'Object', 'Array', 'Date', 'RegExp', 'Error'];
+  const nEnums = [
+    '[object Number]',
+    '[object String]',
+    '[object Boolean]',
+    '[object Undefined]',
+    '[object Function]',
+    '[object Null]',
+    '[object Object]',
+    '[object Array]',
+    '[object Date]',
+    '[object RegExp]',
+    '[object Error]',
+  ];
+  const reg = new RegExp('\\[object (.*?)\\]');
+
+  // 完全匹配模式，type应该传递类似格式[object Window] [object HTMLDocument] ...
+  if (reg.test(type)) {
+    // 排除nEnums的12种
+    if (~nEnums.indexOf(type)) {
+      if (dev === true) {
+        console.warn(value, 'The parameter type belongs to one of 12 types：number string boolean undefined Null Object Array Date RegExp function Error NaN');
+      }
+    }
+
+    if (Object.prototype.toString.call(value) === type) {
+      return true;
+    }
+
+    return false;
+  }
+}
+```
+
+```js
+const syncVarIterator = {
+  getter: function (obj, key, defaultValue) {
+    // 结果变量
+    const defaultResult = defaultValue === undefined ? undefined : defaultValue;
+
+    if (testPropTypes(obj, 'Object') === false && testPropTypes(obj, 'Array') === false) {
+      return defaultResult;
+    }
+
+    // 结果变量，暂时指向obj持有的引用，后续将可能被不断的修改
+    let result = obj;
+
+    // 得到知道值
+    try {
+      // 解析属性层次序列
+      const keyArr = key.split('.');
+
+      // 迭代obj对象属性
+      for (let i = 0; i < keyArr.length; i++) {
+        // 如果第 i 层属性存在对应的值则迭代该属性值
+        if (result[keyArr[i]] !== undefined) {
+          result = result[keyArr[i]];
+
+          // 如果不存在则返回未定义
+        } else {
+          return defaultResult;
+        }
+      }
+    } catch (e) {
+      return defaultResult;
+    }
+
+    // 返回获取的结果
+    return result;
+  },
+  setter: function (obj, key, val) {
+    // 如果不存在obj则返回未定义
+    if (testPropTypes(obj, 'Object') === false) {
+      return false;
+    }
+
+    // 结果变量，暂时指向obj持有的引用，后续将可能被不断的修改
+    let result = obj;
+
+    try {
+      // 解析属性层次序列
+      const keyArr = key.split('.');
+
+      let i = 0;
+
+      // 迭代obj对象属性
+      for (; i < keyArr.length - 1; i++) {
+        // 如果第 i 层属性对应的值不存在，则定义为对象
+        if (result[keyArr[i]] === undefined) {
+          result[keyArr[i]] = {};
+        }
+
+        // 如果第 i 层属性对应的值不是对象（Object）的一个实例，则抛出错误
+        if (!(result[keyArr[i]] instanceof Object)) {
+          throw new Error('obj.' + keyArr.splice(0, i + 1).join('.') + 'is not Object');
+        }
+
+        // 迭代该层属性值
+        result = result[keyArr[i]];
+      }
+
+      // 设置属性值
+      result[keyArr[i]] = val;
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+};
+```
+
+**使用promise来实现**
+
+创建 `enhancedObject` 函数
+
+```js
+const enhancedObject = (target) =>
+  new Proxy(target, {
+    get(target, property) {
+      if (property in target) {
+        return target[property];
+      } else {
+        return searchFor(property, target); //实际使用时要对value值进行复位
+      }
+    },
+  });
+
+let value = null;
+function searchFor(property, target) {
+  for (const key of Object.keys(target)) {
+    if (typeof target[key] === "object") {
+      searchFor(property, target[key]);
+    } else if (typeof target[property] !== "undefined") {
+      value = target[property];
+      break;
+    }
+  }
+  return value;
+}
+```
+
+使用 `enhancedObject` 函数
+
+```js
+const data = enhancedObject({
+  user: {
+    name: "test",
+    settings: {
+      theme: "dark",
+    },
+  },
+});
+
+console.log(data.user.settings.theme); // dark
+console.log(data.theme); // dark
+```
+
+以上代码运行后，控制台会输出以下代码：
+
+```js
+dark
+dark
+```
+
+> 通过观察以上的输出结果可知，使用 `enhancedObject` 函数处理过的对象，我们就可以方便地访问普通对象内部的深层属性。
+
+### 分片思想解决大数据量渲染问题
+
+题目描述: 渲染百万条结构简单的大数据时 怎么使用分片思想优化渲染
+
+```js
+let ul = document.getElementById("container");
+// 插入十万条数据
+let total = 100000;
+// 一次插入 20 条
+let once = 20;
+// 总页数
+let page = total / once;
+// 每条记录的索引
+let index = 0;
+
+// 循环加载数据
+function loop(curTotal, curIndex) {
+  if (curTotal <= 0) {
+    return false;
+  }
+  // 每页多少条
+  let pageCount = Math.min(curTotal, once);
+  window.requestAnimationFrame(function () {
+    for (let i = 0; i < pageCount; i++) {
+      let li = document.createElement("li");
+      li.innerText = curIndex + i + " : " + ~~(Math.random() * total);
+      ul.appendChild(li);
+    }
+    loop(curTotal - pageCount, curIndex + pageCount);
+  });
+}
+loop(total, index);
+```
+
+**扩展思考**：对于大数据量的简单 `dom` 结构渲染可以用分片思想解决 如果是复杂的 `dom` 结构渲染如何处理？
+
+这时候就需要使用**虚拟列表**了，虚拟列表和虚拟表格在日常项目使用还是很多的
+
+### 实现一个add方法完成两个大数相加
+
+```js
+// 题目
+let a = "9007199254740991";
+let b = "1234567899999999999";
+
+function add(a ,b){
+   //...
+}
+```
+
+实现代码如下:
+
+```js
+function add(a, b){
+   // 取两个数字的最大长度
+   let maxLength = Math.max(a.length, b.length);
+   // 用0去补齐长度
+   a = a.padStart(maxLength, 0); // "0009007199254740991"
+   b = b.padStart(maxLength, 0); // "1234567899999999999"
+   // 定义加法过程中需要用到的变量
+   let t = 0;
+   let f = 0;   // "进位"
+   let sum = "";
+   for (let i = maxLength - 1 ; i >= 0 ; i--) {
+      t = parseInt(a[i]) + parseInt(b[i]) + f;
+      f = Math.floor(t / 10);
+      sum = t % 10 + sum;
+   }
+   if (f !==0 ) {
+      sum = '' + f + sum;
+   }
+   return sum;
+}
 ```
