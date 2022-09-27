@@ -209,3 +209,6 @@
   - [nodejs](notes/面试/nodejs.md)
   - [前端工程化](notes/面试/前端工程化.md)
   - [移动多端开发](notes/面试/移动多端开发.md)
+  - [原理](notes/面试/原理.md)
+  - [docker](notes/面试/docker.md)
+  - [canvas](notes/面试/canvas.md)

@@ -2791,7 +2791,7 @@ function compose(...funcs) {
 - 更换`Api`接口：把`reduce`改为`reduceRight`
 - 交互包裹位置：把`a(b(...args))`改为`b(a(...args))`
 
-## 正则相关
+## 正则相关(??)
 
 ### 1 实现千位分隔符
 
@@ -2894,7 +2894,7 @@ function getCookie(name) {
 
 4. 为了防止获取到的值是`%xxx`这样的字符序列，需要用`unescape()`方法解码。
 
-## 函数柯里化相关
+## 函数柯里化相关(??)
 
 ### 实现一个JS函数柯里化
 
@@ -3136,7 +3136,7 @@ function union (arr1, arr2) {
  console.log(union(a, b)); // [2, 2]
 ```
 
-### 异步并发数限制
+### 异步并发数限制(??)
 
 ```js
 /** 
@@ -3172,7 +3172,7 @@ limit(2, [1000, 1000, 1000, 1000], timeout).then((res) => {
 })
 ```
 
-### 异步串行 | 异步并行
+### 异步串行 | 异步并行(??)
 
 ```js
 // 字节面试题，实现一个异步加法
@@ -3221,7 +3221,7 @@ async function parallelSum(...args) {
 })()
 ```
 
-### 实现有并行限制的 Promise 调度器
+### 实现有并行限制的 Promise 调度器(??)
 
 题目描述:JS 实现一个带并发限制的异步调度器 `Scheduler`，保证同时运行的任务最多有两个
 
@@ -3583,4 +3583,227 @@ function add(a, b){
    }
    return sum;
 }
+```
+
+### 基于Promise.all实现Ajax的串行和并行(??)
+
+> 基于Promise.all实现Ajax的串行和并行
+
+- 串行：请求是异步的，需要等待上一个请求成功，才能执行下一个请求
+- 并行：同时发送多个请求「`HTTP`请求可以同时进行，但是JS的操作都是一步步的来的，因为JS是单线程」,等待所有请求都成功，我们再去做什么事情?
+
+```js
+Promise.all([
+    axios.get('/user/list'),
+    axios.get('/user/list'),
+    axios.get('/user/list')
+]).then(results => {
+    console.log(results);
+}).catch(reason => {
+
+});
+```
+
+**Promise.all并发限制及async-pool的应用**
+
+> 并发限制指的是，每个时刻并发执行的promise数量是固定的，最终的执行结果还是保持与原来的
+
+```js
+const delay = function delay(interval) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            // if (interval === 1003) reject('xxx');
+            resolve(interval);
+        }, interval);
+    });
+};
+let tasks = [() => {
+    return delay(1000);
+}, () => {
+    return delay(1003);
+}, () => {
+    return delay(1005);
+}, () => {
+    return delay(1002);
+}, () => {
+    return delay(1004);
+}, () => {
+    return delay(1006);
+}];
+
+/* Promise.all(tasks.map(task => task())).then(results => {    console.log(results);}); */
+
+let results = [];
+asyncPool(2, tasks, (task, next) => {
+    task().then(result => {
+        results.push(result);
+        next();
+    });
+}, () => {
+    console.log(results);
+});
+```
+
+```js
+const delay = function delay(interval) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(interval);
+        }, interval);
+    });
+};
+let tasks = [() => {
+    return delay(1000);
+}, () => {
+    return delay(1003);
+}, () => {
+    return delay(1005);
+}, () => {
+    return delay(1002);
+}, () => {
+    return delay(1004);
+}, () => {
+    return delay(1006);
+}];
+```
+
+**JS实现Ajax并发请求控制的两大解决方案**
+
+> `tasks`：数组，数组包含很多方法，每一个方法执行就是发送一个请求「基于`Promise`管理」
+
+```js
+function createRequest(tasks, pool) {
+    pool = pool || 5;
+    let results = [],
+        together = new Array(pool).fill(null),
+        index = 0;
+    together = together.map(() => {
+        return new Promise((resolve, reject) => {
+            const run = function run() {
+                if (index >= tasks.length) {
+                    resolve();
+                    return;
+                };
+                let old_index = index,
+                    task = tasks[index++];
+                task().then(result => {
+                    results[old_index] = result;
+                    run();
+                }).catch(reason => {
+                    reject(reason);
+                });
+            };
+            run();
+        });
+    });
+    return Promise.all(together).then(() => results);
+} 
+
+/* createRequest(tasks, 2).then(results => {    // 都成功，整体才是成功，按顺序存储结果    console.log('成功-->', results);}).catch(reason => {    // 只要有也给失败，整体就是失败    console.log('失败-->', reason);}); */
+```
+
+```js
+function createRequest(tasks, pool, callback) {
+    if (typeof pool === "function") {
+        callback = pool;
+        pool = 5;
+    }
+    if (typeof pool !== "number") pool = 5;
+    if (typeof callback !== "function") callback = function () {};
+    //------
+    class TaskQueue {
+        running = 0;
+        queue = [];
+        results = [];
+        pushTask(task) {
+            let self = this;
+            self.queue.push(task);
+            self.next();
+        }
+        next() {
+            let self = this;
+            while (self.running < pool && self.queue.length) {
+                self.running++;
+                let task = self.queue.shift();
+                task().then(result => {
+                    self.results.push(result);
+                }).finally(() => {
+                    self.running--;
+                    self.next();
+                });
+            }
+            if (self.running === 0) callback(self.results);
+        }
+    }
+    let TQ = new TaskQueue;
+    tasks.forEach(task => TQ.pushTask(task));
+}
+createRequest(tasks, 2, results => {
+    console.log(results);
+});
+```
+
+### 版本号排序的方法
+
+题目描述:有一组版本号如下 `['0.1.1', '2.3.3', '0.302.1', '4.2', '4.3.5', '4.3.4.5']`。现在需要对其进行排序，排序的结果为 `['4.3.5','4.3.4.5','2.3.3','0.302.1','0.1.1']`
+
+```js
+arr.sort((a, b) => {
+  let i = 0;
+  const arr1 = a.split(".");
+  const arr2 = b.split(".");
+
+  while (true) {
+    const s1 = arr1[i];
+    const s2 = arr2[i];
+    i++;
+    if (s1 === undefined || s2 === undefined) {
+      return arr2.length - arr1.length;
+    }
+
+    if (s1 === s2) continue;
+
+    return s2 - s1;
+  }
+});
+console.log(arr);
+```
+
+### 查找数组公共前缀（美团）
+
+题目描述
+
+```
+编写一个函数来查找字符串数组中的最长公共前缀。
+如果不存在公共前缀，返回空字符串 ""。
+
+示例 1：
+
+输入：strs = ["flower","flow","flight"]
+输出："fl"
+
+示例 2：
+
+输入：strs = ["dog","racecar","car"]
+输出：""
+解释：输入不存在公共前缀。
+```
+
+答案
+
+```js
+const longestCommonPrefix = function (strs) {
+  const str = strs[0];
+  let index = 0;
+  while (index < str.length) {
+    const strCur = str.slice(0, index + 1);
+    for (let i = 0; i < strs.length; i++) {
+      if (!strs[i] || !strs[i].startsWith(strCur)) {
+        return str.slice(0, index);
+      }
+    }
+    index++;
+  }
+  return str;
+};
 ```

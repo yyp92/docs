@@ -2319,6 +2319,86 @@ define(["./a", "./b"], function(a, b) {
 - 后面提出了对象写法，通过将函数作为一个对象的方法来实现，这样解决了直接使用函数作为模块的一些缺点，但是这种办法会暴露所有的所有的模块成员，外部代码可以修改内部属性的值。
 - 现在最常用的是立即执行函数的写法，通过利用闭包来实现模块私有作用域的建立，同时不会对全局作用域造成污染。
 
+## Iterator迭代器
+
+> `Iterator`（迭代器）是一种接口，也可以说是一种规范。为各种不同的数据结构提供统一的访问机制。任何数据结构只要部署`Iterator`接口，就可以完成遍历操作（即依次处理该数据结构的所有成员）。
+
+Iterator语法：
+
+```js
+const obj = {
+    [Symbol.iterator]:function(){}
+}
+```
+
+> `[Symbol.iterator]` 属性名是固定的写法，只要拥有了该属性的对象，就能够用迭代器的方式进行遍历。
+
+- 迭代器的遍历方法是首先获得一个迭代器的指针，初始时该指针指向第一条数据之前，接着通过调用 next 方法，改变指针的指向，让其指向下一条数据
+- 每一次的 `next` 都会返回一个对象，该对象有两个属性
+  - `value` 代表想要获取的数据
+  - `done` 布尔值，false表示当前指针指向的数据有值，true表示遍历已经结束
+
+**Iterator 的作用有三个：**
+
+- 创建一个指针对象，指向当前数据结构的起始位置。也就是说，遍历器对象本质上，就是一个指针对象。
+- 第一次调用指针对象的next方法，可以将指针指向数据结构的第一个成员。
+- 第二次调用指针对象的next方法，指针就指向数据结构的第二个成员。
+- 不断调用指针对象的next方法，直到它指向数据结构的结束位置。
+
+> 每一次调用next方法，都会返回数据结构的当前成员的信息。具体来说，就是返回一个包含value和done两个属性的对象。其中，value属性是当前成员的值，done属性是一个布尔值，表示遍历是否结束。
+
+```js
+let arr = [{num:1},2,3]
+let it = arr[Symbol.iterator]() // 获取数组中的迭代器
+console.log(it.next())  // { value: Object { num: 1 }, done: false }
+console.log(it.next())  // { value: 2, done: false }
+console.log(it.next())  // { value: 3, done: false }
+console.log(it.next())  // { value: undefined, done: true }
+```
+
+> 对象没有布局Iterator接口，无法使用`for of` 遍历。下面使得对象具备Iterator接口
+
+- 一个数据结构只要有Symbol.iterator属性，就可以认为是“可遍历的”
+- 原型部署了Iterator接口的数据结构有三种，具体包含四种，分别是数组，类似数组的对象，Set和Map结构
+
+**为什么对象（Object）没有部署Iterator接口呢？**
+
+- 一是因为对象的哪个属性先遍历，哪个属性后遍历是不确定的，需要开发者手动指定。然而遍历遍历器是一种线性处理，对于非线性的数据结构，部署遍历器接口，就等于要部署一种线性转换
+- 对对象部署`Iterator`接口并不是很必要，因为`Map`弥补了它的缺陷，又正好有`Iteraotr`接口
+
+```js
+let obj = {
+    id: '123',
+    name: '张三',
+    age: 18,
+    gender: '男',
+    hobbie: '睡觉'
+}
+
+obj[Symbol.iterator] = function () {
+    let keyArr = Object.keys(obj)
+    let index = 0
+    return {
+        next() {
+            return index < keyArr.length ? {
+                value: {
+                    key: keyArr[index],
+                    val: obj[keyArr[index++]]
+                }
+            } : {
+                done: true
+            }
+        }
+    }
+}
+
+for (let key of obj) {
+  console.log(key)
+}
+```
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-20.png)
+
 ## Promise
 
 > 这里你谈 `promise`的时候，除了将他解决的痛点以及常用的 `API` 之外，最好进行拓展把 `eventloop` 带进来好好讲一下，`microtask`(微任务)、`macrotask`(任务) 的执行顺序，如果看过 `promise` 源码，最好可以谈一谈 原生 `Promise` 是如何实现的。`Promise` 的关键点在于`callback` 的两个参数，一个是 `resovle`，一个是 `reject`。还有就是 `Promise` 的链式调用（`Promise.then()`，每一个 `then` 都是一个责任人）
@@ -3174,3 +3254,878 @@ process.nextTick(() => {
 但是 `requestIdlecallback` 却是一个更好理解的概念。当宏任务队列中没有任务可以处理时，浏览器可能存在“空闲状态”。这段空闲时间可以被 `requestIdlecallback` 利用起来执行一些优先级不高、不必立即执行的任务，如下图所示：
 
 ![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-45.png)
+
+## 垃圾回收
+
+- 对于在JavaScript中的字符串，对象，数组是没有固定大小的，只有当对他们进行动态分配存储时，解释器就会分配内存来存储这些数据，当JavaScript的解释器消耗完系统中所有可用的内存时，就会造成系统崩溃。
+- 内存泄漏，在某些情况下，不再使用到的变量所占用内存没有及时释放，导致程序运行中，内存越占越大，极端情况下可以导致系统崩溃，服务器宕机。
+- JavaScript有自己的一套垃圾回收机制，JavaScript的解释器可以检测到什么时候程序不再使用这个对象了（数据），就会把它所占用的内存释放掉。
+- 针对JavaScript的来及回收机制有以下两种方法（常用）：标记清除，引用计数
+- 标记清除
+
+> v8 的垃圾回收机制基于分代回收机制，这个机制又基于世代假说，这个假说有两个特点，一是新生的对象容易早死，另一个是不死的对象会活得更久。基于这个假说，v8 引擎将内存分为了新生代和老生代。
+
+- 新创建的对象或者只经历过一次的垃圾回收的对象被称为新生代。经历过多次垃圾回收的对象被称为老生代。
+- 新生代被分为 From 和 To 两个空间，To 一般是闲置的。当 From 空间满了的时候会执行 Scavenge 算法进行垃圾回收。当我们执行垃圾回收算法的时候应用逻辑将会停止，等垃圾回收结束后再继续执行。
+
+**这个算法分为三步：**
+
+- 首先检查 From 空间的存活对象，如果对象存活则判断对象是否满足晋升到老生代的条件，如果满足条件则晋升到老生代。如果不满足条件则移动 To 空间。
+- 如果对象不存活，则释放对象的空间。
+- 最后将 From 空间和 To 空间角色进行交换。
+
+**新生代对象晋升到老生代有两个条件：**
+
+- 第一个是判断是对象否已经经过一次 Scavenge 回收。若经历过，则将对象从 From 空间复制到老生代中；若没有经历，则复制到 To 空间。
+- 第二个是 To 空间的内存使用占比是否超过限制。当对象从 From 空间复制到 To 空间时，若 To 空间使用超过 25%，则对象直接晋升到老生代中。设置 25% 的原因主要是因为算法结束后，两个空间结束后会交换位置，如果 To 空间的内存太小，会影响后续的内存分配。
+
+> 老生代采用了标记清除法和标记压缩法。标记清除法首先会对内存中存活的对象进行标记，标记结束后清除掉那些没有标记的对象。由于标记清除后会造成很多的内存碎片，不便于后面的内存分配。所以了解决内存碎片的问题引入了标记压缩法。
+
+由于在进行垃圾回收的时候会暂停应用的逻辑，对于新生代方法由于内存小，每次停顿的时间不会太长，但对于老生代来说每次垃圾回收的时间长，停顿会造成很大的影响。 为了解决这个问题 V8 引入了增量标记的方法，将一次停顿进行的过程分为了多步，每次执行完一小步就让运行逻辑执行一会，就这样交替运行。
+
+## 内存泄露
+
+- 意外的全局变量: 无法被回收
+- 定时器: 未被正确关闭，导致所引用的外部变量无法被释放
+- 事件监听: 没有正确销毁 (低版本浏览器可能出现)
+- 闭包
+  - 第一种情况是我们由于使用未声明的变量，而意外的创建了一个全局变量，而使这个变量一直留在内存中无法被回收。
+  - 第二种情况是我们设置了setInterval定时器，而忘记取消它，如果循环函数有对外部变量的引用的话，那么这个变量会被一直留在内存中，而无法被回收。
+  - 第三种情况是我们获取一个DOM元素的引用，而后面这个元素被删除，由于我们一直保留了对这个元素的引用，所以它也无法被回收。
+  - 第四种情况是不合理的使用闭包，从而导致某些变量一直被留在内存当中。
+- `dom` 引用: `dom` 元素被删除时，内存中的引用未被正确清空
+- 控制台`console.log`打印的东西
+
+> 可用 `chrome` 中的 `timeline` 进行内存标记，可视化查看内存的变化情况，找出异常点。
+
+[内存泄露排查方法](https://juejin.cn/post/6947841638118998029?utm_source=gold_browser_extension)
+
+## 深浅拷贝
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-46.png)
+
+**1. 浅拷贝的原理和实现**
+
+> 自己创建一个新的对象，来接受你要重新复制或引用的对象值。如果对象属性是基本的数据类型，复制的就是基本类型的值给新对象；但如果属性是引用数据类型，复制的就是内存中的地址，如果其中一个对象改变了这个内存中的地址，肯定会影响到另一个对象
+
+**方法一：object.assign**
+
+> `object.assign`是 ES6 中 `object` 的一个方法，该方法可以用于 JS 对象的合并等多个用途，`其中一个用途就是可以进行浅拷贝`。该方法的第一个参数是拷贝的目标对象，后面的参数是拷贝的来源对象（也可以是多个来源）。
+
+```js
+object.assign 的语法为：Object.assign(target, ...sources)
+```
+
+object.assign 的示例代码如下：
+
+```js
+let target = {};
+let source = { a: { b: 1 } };
+Object.assign(target, source);
+console.log(target); // { a: { b: 1 } };
+```
+
+**但是使用 object.assign 方法有几点需要注意**
+
+- 它不会拷贝对象的继承属性；
+- 它不会拷贝对象的不可枚举的属性；
+- 可以拷贝 `Symbol` 类型的属性。
+
+```js
+let obj1 = { a:{ b:1 }, sym:Symbol(1)}; 
+Object.defineProperty(obj1, 'innumerable' ,{
+    value:'不可枚举属性',
+    enumerable:false
+});
+let obj2 = {};
+Object.assign(obj2,obj1)
+obj1.a.b = 2;
+console.log('obj1',obj1);
+console.log('obj2',obj2);
+```
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-47.png)
+
+> 从上面的样例代码中可以看到，利用 `object.assign` 也可以拷贝 `Symbol` 类型的对象，但是如果到了对象的第二层属性 obj1.a.b 这里的时候，前者值的改变也会影响后者的第二层属性的值，说明其中`依旧存在着访问共同堆内存的问题`，也就是说`这种方法还不能进一步复制，而只是完成了浅拷贝的功能`
+
+**方法二：扩展运算符方式**
+
+- 我们也可以利用 JS 的扩展运算符，在构造对象的同时完成浅拷贝的功能。
+- 扩展运算符的语法为：`let cloneObj = { ...obj };`
+
+```js
+/* 对象的拷贝 */
+let obj = {a:1,b:{c:1}}
+let obj2 = {...obj}
+obj.a = 2
+console.log(obj)  //{a:2,b:{c:1}} console.log(obj2); //{a:1,b:{c:1}}
+obj.b.c = 2
+console.log(obj)  //{a:2,b:{c:2}} console.log(obj2); //{a:1,b:{c:2}}
+/* 数组的拷贝 */
+let arr = [1, 2, 3];
+let newArr = [...arr]; //跟arr.slice()是一样的效果
+```
+
+> 扩展运算符 和 `object.assign` 有同样的缺陷，也就是`实现的浅拷贝的功能差不多`，但是如果属性都是`基本类型的值，使用扩展运算符进行浅拷贝会更加方便`
+
+**方法三：concat 拷贝数组**
+
+> 数组的 `concat` 方法其实也是浅拷贝，所以连接一个含有引用类型的数组时，需要注意修改原数组中的元素的属性，因为它会影响拷贝之后连接的数组。不过 `concat` 只能用于数组的浅拷贝，使用场景比较局限。代码如下所示。
+
+```js
+let arr = [1, 2, 3];
+let newArr = arr.concat();
+newArr[1] = 100;
+console.log(arr);  // [ 1, 2, 3 ]
+console.log(newArr); // [ 1, 100, 3 ]
+```
+
+**方法四：slice 拷贝数组**
+
+> `slice` 方法也比较有局限性，因为`它仅仅针对数组类型`。`slice方法会返回一个新的数组对象`，这一对象由该方法的前两个参数来决定原数组截取的开始和结束时间，是不会影响和改变原始数组的。
+
+```js
+slice 的语法为：arr.slice(begin, end);
+```
+
+```js
+let arr = [1, 2, {val: 4}];
+let newArr = arr.slice();
+newArr[2].val = 1000;
+console.log(arr);  //[ 1, 2, { val: 1000 } ]
+```
+
+> 从上面的代码中可以看出，这就是`浅拷贝的限制所在了——它只能拷贝一层对象`。如果`存在对象的嵌套，那么浅拷贝将无能为力`。因此深拷贝就是为了解决这个问题而生的，它能解决多层对象嵌套问题，彻底实现拷贝
+
+**手工实现一个浅拷贝**
+
+根据以上对浅拷贝的理解，如果让你自己实现一个浅拷贝，大致的思路分为两点：
+
+- 对基础类型做一个最基本的一个拷贝；
+- 对引用类型开辟一个新的存储，并且拷贝一层对象属性。
+
+```js
+const shallowClone = (target) => {
+  if (typeof target === 'object' && target !== null) {
+    const cloneTarget = Array.isArray(target) ? []: {};
+    for (let prop in target) {
+      if (target.hasOwnProperty(prop)) {
+          cloneTarget[prop] = target[prop];
+      }
+    }
+    return cloneTarget;
+  } else {
+    return target;
+  }
+}
+```
+
+> 利用类型判断，针对引用类型的对象进行 for 循环遍历对象属性赋值给目标对象的属性，基本就可以手工实现一个浅拷贝的代码了
+
+**2. 深拷贝的原理和实现**
+
+`浅拷贝只是创建了一个新的对象，复制了原有对象的基本类型的值，而引用数据类型只拷贝了一层属性，再深层的还是无法进行拷贝`。深拷贝则不同，对于复杂引用数据类型，其在堆内存中完全开辟了一块内存地址，并将原有的对象完全复制过来存放。
+
+这两个对象是相互独立、不受影响的，彻底实现了内存上的分离。总的来说，`深拷贝的原理可以总结如下`：
+
+> 将一个对象从内存中完整地拷贝出来一份给目标对象，并从堆内存中开辟一个全新的空间存放新对象，且新对象的修改并不会改变原对象，二者实现真正的分离。
+
+**方法一：乞丐版（JSON.stringify）**
+
+> `JSON.stringify()` 是目前开发过程中最简单的深拷贝方法，其实就是把一个对象序列化成为 `JSON` 的字符串，并将对象里面的内容转换成字符串，最后再用 `JSON.parse()` 的方法将 `JSON` 字符串生成一个新的对象
+
+```js
+let a = {
+    age: 1,
+    jobs: {
+        first: 'FE'
+    }
+}
+let b = JSON.parse(JSON.stringify(a))
+a.jobs.first = 'native'
+console.log(b.jobs.first) // FE
+```
+
+**但是该方法也是有局限性的**：
+
+- 会忽略 `undefined`
+- 会忽略 `symbol`
+- 不能序列化函数
+- 无法拷贝不可枚举的属性
+- 无法拷贝对象的原型链
+- 拷贝 `RegExp` 引用类型会变成空对象
+- 拷贝 `Date` 引用类型会变成字符串
+- 对象中含有 `NaN`、`Infinity` 以及 `-Infinity`，`JSON` 序列化的结果会变成 `null`
+- 不能解决循环引用的对象，即对象成环 (`obj[key] = obj`)。
+
+```js
+function Obj() { 
+  this.func = function () { alert(1) }; 
+  this.obj = {a:1};
+  this.arr = [1,2,3];
+  this.und = undefined; 
+  this.reg = /123/; 
+  this.date = new Date(0); 
+  this.NaN = NaN;
+  this.infinity = Infinity;
+  this.sym = Symbol(1);
+} 
+let obj1 = new Obj();
+Object.defineProperty(obj1,'innumerable',{ 
+  enumerable:false,
+  value:'innumerable'
+});
+console.log('obj1',obj1);
+let str = JSON.stringify(obj1);
+let obj2 = JSON.parse(str);
+console.log('obj2',obj2);
+```
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-48.png)
+
+> 使用 `JSON.stringify` 方法实现深拷贝对象，虽然到目前为止还有很多无法实现的功能，但是这种方法足以满足日常的开发需求，并且是最简单和快捷的。而对于其他的也要实现深拷贝的，比较麻烦的属性对应的数据类型，`JSON.stringify` 暂时还是无法满足的，那么就需要下面的几种方法了
+
+**方法二：基础版（手写递归实现）**
+
+> 下面是一个实现 deepClone 函数封装的例子，通过 `for in` 遍历传入参数的属性值，如果值是引用类型则再次递归调用该函数，如果是基础数据类型就直接复制
+
+```js
+let obj1 = {
+  a:{
+    b:1
+  }
+}
+function deepClone(obj) { 
+  let cloneObj = {}
+  for(let key in obj) {                 //遍历
+    if(typeof obj[key] ==='object') { 
+      cloneObj[key] = deepClone(obj[key])  //是对象就再次调用该函数递归
+    } else {
+      cloneObj[key] = obj[key]  //基本类型的话直接复制值
+    }
+  }
+  return cloneObj
+}
+let obj2 = deepClone(obj1);
+obj1.a.b = 2;
+console.log(obj2);   //  {a:{b:1}}
+```
+
+虽然利用递归能实现一个深拷贝，但是同上面的 `JSON.stringify` 一样，还是有一些问题没有完全解决，例如：
+
+- 这个深拷贝函数并不能复制不可枚举的属性以及 `Symbol` 类型；
+- 这种方法`只是针对普通的引用类型的值做递归复制`，而对于 `Array、Date、RegExp、Error、Function` 这样的引用类型并不能正确地拷贝；
+- 对象的属性里面成环，即`循环引用没有解决`。
+
+这种基础版本的写法也比较简单，可以应对大部分的应用情况。但是你在面试的过程中，如果只能写出这样的一个有缺陷的深拷贝方法，有可能不会通过。
+
+所以为了“拯救”这些缺陷，下面我带你一起看看改进的版本，以便于你可以在面试种呈现出更好的深拷贝方法，赢得面试官的青睐。
+
+**方法三：改进版（改进后递归实现）**
+
+> 针对上面几个待解决问题，我先通过四点相关的理论告诉你分别应该怎么做。
+
+- 针对能够遍历对象的不可枚举属性以及 `Symbol` 类型，我们可以使用 `Reflect.ownKeys` 方法；
+- 当参数为 `Date、RegExp` 类型，则直接生成一个新的实例返回；
+- 利用 `Object` 的 `getOwnPropertyDescriptors` 方法可以获得对象的所有属性，以及对应的特性，顺便结合 `Object.create` 方法创建一个新对象，并继承传入原对象的原型链；
+- 利用 `WeakMap` 类型作为 `Hash` 表，因为 `WeakMap` 是弱引用类型，可以有效防止内存泄漏（你可以关注一下 `Map` 和 `weakMap` 的关键区别，这里要用 `weakMap`），作为检测循环引用很有帮助，如果存在循环，则引用直接返回 `WeakMap` 存储的值
+
+如果你在考虑到循环引用的问题之后，还能用 `WeakMap` 来很好地解决，并且向面试官解释这样做的目的，那么你所展示的代码，以及你对问题思考的全面性，在面试官眼中应该算是合格的了
+
+**实现深拷贝**
+
+```js
+const isComplexDataType = obj => (typeof obj === 'object' || typeof obj === 'function') && (obj !== null)
+
+const deepClone = function (obj, hash = new WeakMap()) {
+  if (obj.constructor === Date) {
+    return new Date(obj)       // 日期对象直接返回一个新的日期对象
+  }
+
+  if (obj.constructor === RegExp){
+    return new RegExp(obj)     //正则对象直接返回一个新的正则对象
+  }
+
+  //如果循环引用了就用 weakMap 来解决
+  if (hash.has(obj)) {
+    return hash.get(obj)
+  }
+  let allDesc = Object.getOwnPropertyDescriptors(obj)
+
+  //遍历传入参数所有键的特性
+  let cloneObj = Object.create(Object.getPrototypeOf(obj), allDesc)
+
+  // 把cloneObj原型复制到obj上
+  hash.set(obj, cloneObj)
+
+  for (let key of Reflect.ownKeys(obj)) { 
+    cloneObj[key] = (isComplexDataType(obj[key]) && typeof obj[key] !== 'function') ? deepClone(obj[key], hash) : obj[key]
+  }
+  return cloneObj
+}
+```
+
+```js
+// 下面是验证代码
+let obj = {
+  num: 0,
+  str: '',
+  boolean: true,
+  unf: undefined,
+  nul: null,
+  obj: { name: '我是一个对象', id: 1 },
+  arr: [0, 1, 2],
+  func: function () { console.log('我是一个函数') },
+  date: new Date(0),
+  reg: new RegExp('/我是一个正则/ig'),
+  [Symbol('1')]: 1,
+};
+Object.defineProperty(obj, 'innumerable', {
+  enumerable: false, value: '不可枚举属性' }
+);
+obj = Object.create(obj, Object.getOwnPropertyDescriptors(obj))
+obj.loop = obj    // 设置loop成循环引用的属性
+let cloneObj = deepClone(obj)
+cloneObj.arr.push(4)
+console.log('obj', obj)
+console.log('cloneObj', cloneObj)
+```
+
+我们看一下结果，`cloneObj` 在 `obj` 的基础上进行了一次深拷贝，`cloneObj` 里的 `arr` 数组进行了修改，并未影响到 `obj.arr` 的变化，如下图所示
+
+![](../..\imgs\interview-js-49.png)
+
+## 节流与防抖
+
+- 函数防抖 是指在事件被触发 n 秒后再执行回调，如果在这 n 秒内事件又被触发，则重新计时。这可以使用在一些点击请求的事件上，避免因为用户的多次点击向后端发送多次请求。
+- 函数节流 是指规定一个单位时间，在这个单位时间内，只能有一次触发事件的回调函数执行，如果在同一个单位时间内某事件被触发多次，只有一次能生效。节流可以使用在 scroll 函数的事件监听上，通过事件节流来降低事件调用的频率。
+
+```js
+// 函数防抖的实现
+function debounce(fn, wait) {
+  var timer = null;
+
+  return function() {
+    var context = this,
+      args = arguments;
+
+    // 如果此时存在定时器的话，则取消之前的定时器重新记时
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+
+    // 设置定时器，使事件间隔指定事件后执行
+    timer = setTimeout(() => {
+      fn.apply(context, args);
+    }, wait);
+  };
+}
+
+// 函数节流的实现;
+function throttle(fn, delay) {
+  var preTime = Date.now();
+
+  return function() {
+    var context = this,
+      args = arguments,
+      nowTime = Date.now();
+
+    // 如果两次时间间隔超过了指定时间，则执行函数。
+    if (nowTime - preTime >= delay) {
+      preTime = Date.now();
+      return fn.apply(context, args);
+    }
+  };
+}
+```
+
+## Proxy代理
+
+> proxy在目标对象的外层搭建了一层拦截，外界对目标对象的某些操作，必须通过这层拦截
+
+```js
+var proxy = new Proxy(target, handler);
+```
+
+> `new Proxy()`表示生成一个Proxy实例，`target`参数表示所要拦截的目标对象，`handler`参数也是一个对象，用来定制拦截行为
+
+```js
+var target = {
+   name: 'poetries'
+};
+var logHandler = {
+   get: function(target, key) {
+     console.log(`${key} 被读取`);
+     return target[key];
+   },
+   set: function(target, key, value) {
+     console.log(`${key} 被设置为 ${value}`);
+     target[key] = value;
+   }
+}
+var targetWithLog = new Proxy(target, logHandler);
+
+targetWithLog.name; // 控制台输出：name 被读取
+targetWithLog.name = 'others'; // 控制台输出：name 被设置为 others
+
+console.log(target.name); // 控制台输出: others
+```
+
+- `targetWithLog` 读取属性的值时，实际上执行的是 `logHandler.get` ：在控制台输出信息，并且读取被代理对象 `target` 的属性。
+- 在 `targetWithLog` 设置属性值时，实际上执行的是 `logHandler.set` ：在控制台输出信息，并且设置被代理对象 `target` 的属性的值
+
+```js
+// 由于拦截函数总是返回35，所以访问任何属性都得到35
+var proxy = new Proxy({}, {
+  get: function(target, property) {
+    return 35;
+  }
+});
+
+proxy.time // 35
+proxy.name // 35
+proxy.title // 35
+```
+
+**Proxy 实例也可以作为其他对象的原型对象**
+
+```js
+var proxy = new Proxy({}, {
+  get: function(target, property) {
+    return 35;
+  }
+});
+
+let obj = Object.create(proxy);
+obj.time // 35
+```
+
+> `proxy`对象是`obj`对象的原型，`obj`对象本身并没有`time`属性，所以根据原型链，会在`proxy`对象上读取该属性，导致被拦截
+
+**Proxy的作用**
+
+> 对于代理模式 `Proxy` 的作用主要体现在三个方面
+
+- 拦截和监视外部对对象的访问
+- 降低函数或类的复杂度
+- 在复杂操作前对操作进行校验或对所需资源进行管理
+
+**Proxy所能代理的范围--handler**
+
+> 实际上 handler 本身就是ES6所新设计的一个对象.它的作用就是用来 自定义代理对象的各种可代理操作 。它本身一共有13中方法,每种方法都可以代理一种操作.其13种方法如下
+
+```js
+// 在读取代理对象的原型时触发该操作，比如在执行 Object.getPrototypeOf(proxy) 时。
+handler.getPrototypeOf()
+
+// 在设置代理对象的原型时触发该操作，比如在执行 Object.setPrototypeOf(proxy, null) 时。
+handler.setPrototypeOf()
+
+
+// 在判断一个代理对象是否是可扩展时触发该操作，比如在执行 Object.isExtensible(proxy) 时。
+handler.isExtensible()
+
+
+// 在让一个代理对象不可扩展时触发该操作，比如在执行 Object.preventExtensions(proxy) 时。
+handler.preventExtensions()
+
+// 在获取代理对象某个属性的属性描述时触发该操作，比如在执行 Object.getOwnPropertyDescriptor(proxy, "foo") 时。
+handler.getOwnPropertyDescriptor()
+
+
+// 在定义代理对象某个属性时的属性描述时触发该操作，比如在执行 Object.defineProperty(proxy, "foo", {}) 时。
+andler.defineProperty()
+
+
+// 在判断代理对象是否拥有某个属性时触发该操作，比如在执行 "foo" in proxy 时。
+handler.has()
+
+// 在读取代理对象的某个属性时触发该操作，比如在执行 proxy.foo 时。
+handler.get()
+
+
+// 在给代理对象的某个属性赋值时触发该操作，比如在执行 proxy.foo = 1 时。
+handler.set()
+
+// 在删除代理对象的某个属性时触发该操作，比如在执行 delete proxy.foo 时。
+handler.deleteProperty()
+
+// 在获取代理对象的所有属性键时触发该操作，比如在执行 Object.getOwnPropertyNames(proxy) 时。
+handler.ownKeys()
+
+// 在调用一个目标对象为函数的代理对象时触发该操作，比如在执行 proxy() 时。
+handler.apply()
+
+
+// 在给一个目标对象为构造函数的代理对象构造实例时触发该操作，比如在执行new proxy() 时。
+handler.construct()
+```
+
+**为何Proxy不能被Polyfill**
+
+- 如class可以用`function`模拟；`promise`可以用`callback`模拟
+- 但是proxy不能用`Object.defineProperty`模拟
+
+> 目前谷歌的polyfill只能实现部分的功能，如get、set https://github.com/GoogleChrome/proxy-polyfill
+
+```js
+// commonJS require
+const proxyPolyfill = require('proxy-polyfill/src/proxy')();
+
+// Your environment may also support transparent rewriting of commonJS to ES6:
+import ProxyPolyfillBuilder from 'proxy-polyfill/src/proxy';
+const proxyPolyfill = ProxyPolyfillBuilder();
+
+// Then use...
+const myProxy = new proxyPolyfill(...);
+```
+
+## Ajax
+
+> 它是一种异步通信的方法，通过直接由 js 脚本向服务器发起 http 通信，然后根据服务器返回的数据，更新网页的相应部分，而不用刷新整个页面的一种方法。
+
+![](../../\imgs\interview-js-50.png)
+
+**面试手写（原生）：**
+
+```js
+// 1：创建Ajax对象
+var xhr = window.XMLHttpRequest?new XMLHttpRequest():new ActiveXObject('Microsoft.XMLHTTP');// 兼容IE6及以下版本
+// 2：配置 Ajax请求地址
+xhr.open('get','index.xml',true);
+// 3：发送请求
+xhr.send(null); // 严谨写法
+// 4:监听请求，接受响应
+xhr.onreadysatechange = function(){
+     if(xhr.readySate == 4 && xhr.status == 200 || xhr.status == 304 )
+          console.log(xhr.responsetXML)
+}
+```
+
+**jQuery写法**
+
+```js
+$.ajax({
+  type:'post',
+  url:'',
+  async:ture, // async 异步  sync  同步
+  data:data, // 针对post请求
+  dataType:'jsonp',
+  success:function (msg) {
+
+  },
+  error:function (error) {
+
+  }
+})
+```
+
+**promise 封装实现：**
+
+```js
+// promise 封装实现：
+
+function getJSON(url) {
+  // 创建一个 promise 对象
+  let promise = new Promise(function(resolve, reject) {
+    let xhr = new XMLHttpRequest();
+
+    // 新建一个 http 请求
+    xhr.open("GET", url, true);
+
+    // 设置状态的监听函数
+    xhr.onreadystatechange = function() {
+      if (this.readyState !== 4) return;
+
+      // 当请求成功或失败时，改变 promise 的状态
+      if (this.status === 200) {
+        resolve(this.response);
+      } else {
+        reject(new Error(this.statusText));
+      }
+    };
+
+    // 设置错误监听函数
+    xhr.onerror = function() {
+      reject(new Error(this.statusText));
+    };
+
+    // 设置响应的数据类型
+    xhr.responseType = "json";
+
+    // 设置请求头信息
+    xhr.setRequestHeader("Accept", "application/json");
+
+    // 发送 http 请求
+    xhr.send(null);
+  });
+
+  return promise;
+}
+```
+
+## 深入数组
+
+**一、梳理数组 API**
+
+**1. `Array.of`**
+
+> `Array.of` 用于将参数依次转化为数组中的一项，然后返回这个新数组，而不管这个参数是数字还是其他。它基本上与 Array 构造器功能一致，唯一的区别就在单个数字参数的处理上
+
+```js
+Array.of(8.0); // [8]
+Array(8.0); // [empty × 8]
+Array.of(8.0, 5); // [8, 5]
+Array(8.0, 5); // [8, 5]
+Array.of('8'); // ["8"]
+Array('8'); // ["8"]
+```
+
+**2. `Array.from`**
+
+从语法上看，Array.from 拥有 3 个参数：
+
+- 类似数组的对象，必选；
+- 加工函数，新生成的数组会经过该函数的加工再返回；
+- `this` 作用域，表示加工函数执行时 `this` 的值。
+
+这三个参数里面第一个参数是必选的，后两个参数都是可选的。我们通过一段代码来看看它的用法。
+
+```js
+var obj = {0: 'a', 1: 'b', 2:'c', length: 3};
+Array.from(obj, function(value, index){
+  console.log(value, index, this, arguments.length);
+  return value.repeat(3);   //必须指定返回值，否则返回 undefined
+}, obj);
+
+// return 的 value 重复了三遍，最后返回的数组为 ["aaa","bbb","ccc"]
+
+
+// 如果这里不指定 this 的话，加工函数完全可以是一个箭头函数。上述代码可以简写为如下形式。
+Array.from(obj, (value) => value.repeat(3));
+//  控制台返回 (3) ["aaa", "bbb", "ccc"]
+```
+
+> 除了上述 `obj` 对象以外，拥有迭代器的对象还包括 `String、Set、Map` 等，`Array.from` 统统可以处理，请看下面的代码。
+
+```js
+// String
+Array.from('abc');         // ["a", "b", "c"]
+// Set
+Array.from(new Set(['abc', 'def'])); // ["abc", "def"]
+// Map
+Array.from(new Map([[1, 'ab'], [2, 'de']])); 
+// [[1, 'ab'], [2, 'de']]
+```
+
+**3. `Array 的判断`**
+
+> 在 ES5 提供该方法之前，我们至少有如下 5 种方式去判断一个变量是否为数组。
+
+```js
+var a = [];
+// 1.基于instanceof
+a instanceof Array;
+// 2.基于constructor
+a.constructor === Array;
+// 3.基于Object.prototype.isPrototypeOf
+Array.prototype.isPrototypeOf(a);
+// 4.基于getPrototypeOf
+Object.getPrototypeOf(a) === Array.prototype;
+// 5.基于Object.prototype.toString
+Object.prototype.toString.apply(a) === '[object Array]';
+```
+
+> ES6 之后新增了一个 `Array.isArray` 方法，能直接判断数据类型是否为数组，但是如果 isArray 不存在，那么 `Array.isArray` 的 polyfill 通常可以这样写：
+
+```js
+if (!Array.isArray){
+  Array.isArray = function(arg){
+    return Object.prototype.toString.call(arg) === '[object Array]';
+  };
+}
+```
+
+**4. 改变自身的方法**
+
+> 基于 ES6，会改变自身值的方法一共有 `9` 个，分别为 `pop、push、reverse、shift、sort、splice、unshift，以及两个 ES6 新增的方法 copyWithin 和 fill`
+
+```js
+// pop方法
+var array = ["cat", "dog", "cow", "chicken", "mouse"];
+var item = array.pop();
+console.log(array); // ["cat", "dog", "cow", "chicken"]
+console.log(item); // mouse
+// push方法
+var array = ["football", "basketball",  "badminton"];
+var i = array.push("golfball");
+console.log(array); 
+// ["football", "basketball", "badminton", "golfball"]
+console.log(i); // 4
+// reverse方法
+var array = [1,2,3,4,5];
+var array2 = array.reverse();
+console.log(array); // [5,4,3,2,1]
+console.log(array2===array); // true
+// shift方法
+var array = [1,2,3,4,5];
+var item = array.shift();
+console.log(array); // [2,3,4,5]
+console.log(item); // 1
+// unshift方法
+var array = ["red", "green", "blue"];
+var length = array.unshift("yellow");
+console.log(array); // ["yellow", "red", "green", "blue"]
+console.log(length); // 4
+// sort方法
+var array = ["apple","Boy","Cat","dog"];
+var array2 = array.sort();
+console.log(array); // ["Boy", "Cat", "apple", "dog"]
+console.log(array2 == array); // true
+// splice方法
+var array = ["apple","boy"];
+var splices = array.splice(1,1);
+console.log(array); // ["apple"]
+console.log(splices); // ["boy"]
+// copyWithin方法
+var array = [1,2,3,4,5]; 
+var array2 = array.copyWithin(0,3);
+console.log(array===array2,array2);  // true [4, 5, 3, 4, 5]
+// fill方法
+var array = [1,2,3,4,5];
+var array2 = array.fill(10,0,3);
+console.log(array===array2,array2); 
+// true [10, 10, 10, 4, 5], 可见数组区间[0,3]的元素全部替换为10
+```
+
+**5. 不改变自身的方法**
+
+基于 ES7，不会改变自身的方法也有 `9` 个，分别为 `concat、join、slice、toString、toLocaleString、indexOf、lastIndexOf、未形成标准的 toSource，以及 ES7 新增的方法 includes`。
+
+```js
+// concat方法
+var array = [1, 2, 3];
+var array2 = array.concat(4,[5,6],[7,8,9]);
+console.log(array2); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
+console.log(array); // [1, 2, 3], 可见原数组并未被修改
+// join方法
+var array = ['We', 'are', 'Chinese'];
+console.log(array.join()); // "We,are,Chinese"
+console.log(array.join('+')); // "We+are+Chinese"
+// slice方法
+var array = ["one", "two", "three","four", "five"];
+console.log(array.slice()); // ["one", "two", "three","four", "five"]
+console.log(array.slice(2,3)); // ["three"]
+// toString方法
+var array = ['Jan', 'Feb', 'Mar', 'Apr'];
+var str = array.toString();
+console.log(str); // Jan,Feb,Mar,Apr
+// tolocalString方法
+var array= [{name:'zz'}, 123, "abc", new Date()];
+var str = array.toLocaleString();
+console.log(str); // [object Object],123,abc,2016/1/5 下午1:06:23
+// indexOf方法
+var array = ['abc', 'def', 'ghi','123'];
+console.log(array.indexOf('def')); // 1
+// includes方法
+var array = [-0, 1, 2];
+console.log(array.includes(+0)); // true
+console.log(array.includes(1)); // true
+var array = [NaN];
+console.log(array.includes(NaN)); // true
+```
+
+> 其中 includes 方法需要注意的是，如果元素中有 0，那么在判断过程中不论是 +0 还是 -0 都会判断为 True，这里的 `includes 忽略了 +0 和 -0`
+
+**6. 数组遍历的方法**
+
+基于 ES6，不会改变自身的遍历方法一共有 12 个，分别为 `forEach、every、some、filter、map、reduce、reduceRight，以及 ES6 新增的方法 entries、find、findIndex、keys、values`
+
+```js
+// forEach方法
+var array = [1, 3, 5];
+var obj = {name:'cc'};
+var sReturn = array.forEach(function(value, index, array){
+  array[index] = value;
+  console.log(this.name); // cc被打印了三次, this指向obj
+},obj);
+console.log(array); // [1, 3, 5]
+console.log(sReturn); // undefined, 可见返回值为undefined
+// every方法
+var o = {0:10, 1:8, 2:25, length:3};
+var bool = Array.prototype.every.call(o,function(value, index, obj){
+  return value >= 8;
+},o);
+console.log(bool); // true
+// some方法
+var array = [18, 9, 10, 35, 80];
+var isExist = array.some(function(value, index, array){
+  return value > 20;
+});
+console.log(isExist); // true 
+// map 方法
+var array = [18, 9, 10, 35, 80];
+array.map(item => item + 1);
+console.log(array);  // [19, 10, 11, 36, 81]
+// filter 方法
+var array = [18, 9, 10, 35, 80];
+var array2 = array.filter(function(value, index, array){
+  return value > 20;
+});
+console.log(array2); // [35, 80]
+// reduce方法
+var array = [1, 2, 3, 4];
+var s = array.reduce(function(previousValue, value, index, array){
+  return previousValue * value;
+},1);
+console.log(s); // 24
+// ES6写法更加简洁
+array.reduce((p, v) => p * v); // 24
+// reduceRight方法 (和reduce的区别就是从后往前累计)
+var array = [1, 2, 3, 4];
+array.reduceRight((p, v) => p * v); // 24
+// entries方法
+var array = ["a", "b", "c"];
+var iterator = array.entries();
+console.log(iterator.next().value); // [0, "a"]
+console.log(iterator.next().value); // [1, "b"]
+console.log(iterator.next().value); // [2, "c"]
+console.log(iterator.next().value); // undefined, 迭代器处于数组末尾时, 再迭代就会返回undefined
+// find & findIndex方法
+var array = [1, 3, 5, 7, 8, 9, 10];
+function f(value, index, array){
+  return value%2==0;     // 返回偶数
+}
+function f2(value, index, array){
+  return value > 20;     // 返回大于20的数
+}
+console.log(array.find(f)); // 8
+console.log(array.find(f2)); // undefined
+console.log(array.findIndex(f)); // 4
+console.log(array.findIndex(f2)); // -1
+// keys方法
+[...Array(10).keys()];     // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[...new Array(10).keys()]; // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+// values方法
+var array = ["abc", "xyz"];
+var iterator = array.values();
+console.log(iterator.next().value);//abc
+console.log(iterator.next().value);//xyz
+```
+
+**7. 总结**
+
+![](../../\imgs\interview-js-51.png)
+
+> 这些方法之间存在很多共性，如下：
+
+- 所有插入元素的方法，比如 `push、unshift` 一律返回数组新的长度；
+- 所有删除元素的方法，比如 `pop、shift、splice` 一律返回删除的元素，或者返回删除的多个元素组成的数组；
+- 部分遍历方法，比如 `forEach、every、some、filter、map、find、findIndex`，它们都包含 `function(value,index,array){}` 和 `thisArg` 这样两个形参。
+
+> 数组和字符串方法
+
+![](../../\imgs\interview-js-52.png)
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-55.png)
