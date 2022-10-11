@@ -4129,3 +4129,557 @@ console.log(iterator.next().value);//xyz
 ![](../../\imgs\interview-js-52.png)
 
 ![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-55.png)
+
+**二、理解JS的类数组**
+
+> 在 JavaScript 中有哪些情况下的对象是类数组呢？主要有以下几种
+
+- 函数里面的参数对象 `arguments`；
+- 用 `getElementsByTagName/ClassName/Name` 获得的 `HTMLCollection`
+- 用 `querySelector` 获得的 `NodeList`
+
+**1. arguments对象**
+
+> arguments对象是函数中传递的参数值的集合。它是一个类似数组的对象，因为它有一个`length`属性，我们可以使用数组索引表示法`arguments[1]`来访问单个值，但它没有数组中的内置方法，如：forEach、reduce、filter和map。
+
+```js
+function foo(name, age, sex) {
+    console.log(arguments);
+    console.log(typeof arguments);
+    console.log(Object.prototype.toString.call(arguments));
+}
+foo('jack', '18', 'male');
+```
+
+这段代码比较容易，就是直接将这个函数的 arguments 在函数内部打印出来，那么我们看下这个 arguments 打印出来的结果，请看控制台的这张截图。
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-56.png)
+
+> 从结果中可以看到，`typeof` 这个 `arguments` 返回的是 `object`，通过 `Object.prototype.toString.call` 返回的结果是 `'[object arguments]'`，可以看出来返回的不是 `'[object array]'`，说明 `arguments` 和数组还是有区别的。
+
+我们可以使用`Array.prototype.slice`将`arguments`对象转换成一个数组。
+
+```js
+function one() {
+  return Array.prototype.slice.call(arguments);
+}
+```
+
+> 注意:箭头函数中没有arguments对象。
+
+```js
+function one() {
+  return arguments;
+}
+const two = function () {
+  return arguments;
+}
+const three = function three() {
+  return arguments;
+}
+
+const four = () => arguments;
+
+four(); // Throws an error  - arguments is not defined
+```
+
+> 当我们调用函数four时，它会抛出一个ReferenceError: arguments is not defined error。使用rest语法，可以解决这个问题。
+
+```js
+const four = (...args) => args;
+```
+
+这会自动将所有参数值放入数组中。
+
+> arguments 不仅仅有一个 length 属性，还有一个 callee 属性，我们接下来看看这个 callee 是干什么的，代码如下所示
+
+```js
+function foo(name, age, sex) {
+    console.log(arguments.callee);
+}
+foo('jack', '18', 'male');
+```
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-57.png)
+
+> 从控制台可以看到，输出的就是函数自身，如果在函数内部直接执行调用 `callee` 的话，那它就会不停地执行当前函数，直到执行到内存溢出
+
+**2. HTMLCollection**
+
+> HTMLCollection 简单来说是 HTML DOM 对象的一个接口，这个接口包含了获取到的 DOM 元素集合，返回的类型是类数组对象，如果用 typeof 来判断的话，它返回的是 'object'。它是及时更新的，当文档中的 DOM 变化时，它也会随之变化。
+
+描述起来比较抽象，还是通过一段代码来看下 `HTMLCollection` 最后返回的是什么，我们先随便找一个页面中有 form 表单的页面，在控制台中执行下述代码
+
+```js
+var elem1, elem2;
+// document.forms 是一个 HTMLCollection
+elem1 = document.forms[0];
+elem2 = document.forms.item(0);
+console.log(elem1);
+console.log(elem2);
+console.log(typeof elem1);
+console.log(Object.prototype.toString.call(elem1));
+```
+
+在这个有 form 表单的页面执行上面的代码，得到的结果如下。
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-58.png)
+
+可以看到，这里打印出来了页面第一个 form 表单元素，同时也打印出来了判断类型的结果，说明打印的判断的类型和 arguments 返回的也比较类似，typeof 返回的都是 'object'，和上面的类似。
+
+另外需要注意的一点就是 HTML DOM 中的 HTMLCollection 是即时更新的，当其所包含的文档结构发生改变时，它会自动更新。下面我们再看最后一个 NodeList 类数组。
+
+**3. NodeList**
+
+> NodeList 对象是节点的集合，通常是由 querySlector 返回的。NodeList 不是一个数组，也是一种类数组。虽然 NodeList 不是一个数组，但是可以使用 for...of 来迭代。在一些情况下，NodeList 是一个实时集合，也就是说，如果文档中的节点树发生变化，NodeList 也会随之变化。我们还是利用代码来理解一下 Nodelist 这种类数组。
+
+```js
+var list = document.querySelectorAll('input[type=checkbox]');
+for (var checkbox of list) {
+  checkbox.checked = true;
+}
+console.log(list);
+console.log(typeof list);
+console.log(Object.prototype.toString.call(list));
+```
+
+> 从上面的代码执行的结果中可以发现，我们是通过有 CheckBox 的页面执行的代码，在结果可中输出了一个 NodeList 类数组，里面有一个 CheckBox 元素，并且我们判断了它的类型，和上面的 arguments 与 HTMLCollection 其实是类似的，执行结果如下图所示。
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-59.png)
+
+**4. 类数组应用场景**
+
+> 1. 遍历参数操作
+
+我们在函数内部可以直接获取 `arguments` 这个类数组的值，那么也可以对于参数进行一些操作，比如下面这段代码，我们可以将函数的参数默认进行求和操作。
+
+```js
+function add() {
+    var sum =0,
+        len = arguments.length;
+    for(var i = 0; i < len; i++){
+        sum += arguments[i];
+    }
+    return sum;
+}
+add()                           // 0
+add(1)                          // 1
+add(1，2)                       // 3
+add(1,2,3,4);                   // 10
+```
+
+> 2. 定义链接字符串函数
+
+我们可以通过 arguments 这个例子定义一个函数来连接字符串。这个函数唯一正式声明了的参数是一个字符串，该参数指定一个字符作为衔接点来连接字符串。该函数定义如下。
+
+```js
+// 这段代码说明了，你可以传递任意数量的参数到该函数，并使用每个参数作为列表中的项创建列表进行拼接。从这个例子中也可以看出，我们可以在日常编码中采用这样的代码抽象方式，把需要解决的这一类问题，都抽象成通用的方法，来提升代码的可复用性
+function myConcat(separa) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return args.join(separa);
+}
+myConcat(", ", "red", "orange", "blue");
+// "red, orange, blue"
+myConcat("; ", "elephant", "lion", "snake");
+// "elephant; lion; snake"
+myConcat(". ", "one", "two", "three", "four", "five");
+// "one. two. three. four. five"
+```
+
+> 3. 传递参数使用
+
+```js
+// 使用 apply 将 foo 的参数传递给 bar
+function foo() {
+    bar.apply(this, arguments);
+}
+function bar(a, b, c) {
+   console.log(a, b, c);
+}
+foo(1, 2, 3)   //1 2 3
+```
+
+**5. 如何将类数组转换成数组**
+
+> 1. 类数组借用数组方法转数组
+
+```js
+function sum(a, b) {
+  let args = Array.prototype.slice.call(arguments);
+ // let args = [].slice.call(arguments); // 这样写也是一样效果
+  console.log(args.reduce((sum, cur) => sum + cur));
+}
+sum(1, 2);  // 3
+function sum(a, b) {
+  let args = Array.prototype.concat.apply([], arguments);
+  console.log(args.reduce((sum, cur) => sum + cur));
+}
+sum(1, 2);  // 3
+```
+
+> 2. ES6 的方法转数组
+
+```js
+function sum(a, b) {
+  let args = Array.from(arguments);
+  console.log(args.reduce((sum, cur) => sum + cur));
+}
+sum(1, 2);    // 3
+function sum(a, b) {
+  let args = [...arguments];
+  console.log(args.reduce((sum, cur) => sum + cur));
+}
+sum(1, 2);    // 3
+function sum(...args) {
+  console.log(args.reduce((sum, cur) => sum + cur));
+}
+sum(1, 2);    // 3
+```
+
+> `Array.from` 和 `ES6 的展开运算符`，都可以把 `arguments`这个类数组转换成数组 `args`
+
+类数组和数组的异同点
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-60.png)
+
+> 在前端工作中，开发者往往会忽视对类数组的学习，其实在高级 JavaScript 编程中经常需要将类数组向数组转化，尤其是一些比较复杂的开源项目，经常会看到函数中处理参数的写法，例如：`[].slice.call(arguments)` 这行代码。
+
+**三、实现数组扁平化的 6 种方式**
+
+**1. 方法一：普通的递归实**
+
+普通的递归思路很容易理解，就是通过循环递归的方式，一项一项地去遍历，如果每一项还是一个数组，那么就继续往下遍历，利用递归程序的方法，来实现数组的每一项的连接。我们来看下这个方法是如何实现的，如下所示
+
+```js
+// 方法1
+var a = [1, [2, [3, 4, 5]]];
+function flatten(arr) {
+  let result = [];
+
+  for(let i = 0; i < arr.length; i++) {
+    if(Array.isArray(arr[i])) {
+      result = result.concat(flatten(arr[i]));
+    } else {
+      result.push(arr[i]);
+    }
+  }
+  return result;
+}
+flatten(a);  //  [1, 2, 3, 4，5]
+```
+
+> 从上面这段代码可以看出，最后返回的结果是扁平化的结果，这段代码核心就是循环遍历过程中的递归操作，就是在遍历过程中发现数组元素还是数组的时候进行递归操作，把数组的结果通过数组的 concat 方法拼接到最后要返回的 result 数组上，那么最后输出的结果就是扁平化后的数组
+
+**2. 方法二：利用 reduce 函数迭代**
+
+从上面普通的递归函数中可以看出，其实就是对数组的每一项进行处理，那么我们其实也可以用 `reduce` 来实现数组的拼接，从而简化第一种方法的代码，改造后的代码如下所示。
+
+```js
+// 方法2
+var arr = [1, [2, [3, 4]]];
+function flatten(arr) {
+    return arr.reduce(function(prev, next){
+        return prev.concat(Array.isArray(next) ? flatten(next) : next)
+    }, [])
+}
+console.log(flatten(arr));//  [1, 2, 3, 4，5]
+```
+
+**3. 方法三：扩展运算符实现**
+
+这个方法的实现，采用了扩展运算符和 some 的方法，两者共同使用，达到数组扁平化的目的，还是来看一下代码
+
+```
+// 方法3
+var arr = [1, [2, [3, 4]]];
+function flatten(arr) {
+    while (arr.some(item => Array.isArray(item))) {
+        arr = [].concat(...arr);
+    }
+    return arr;
+}
+console.log(flatten(arr)); //  [1, 2, 3, 4，5]
+```
+
+从执行的结果中可以发现，我们先用数组的 some 方法把数组中仍然是组数的项过滤出来，然后执行 concat 操作，利用 ES6 的展开运算符，将其拼接到原数组中，最后返回原数组，达到了预期的效果。
+
+前三种实现数组扁平化的方式其实是最基本的思路，都是通过最普通递归思路衍生的方法，尤其是前两种实现方法比较类似。值得注意的是 reduce 方法，它可以在很多应用场景中实现，由于 reduce 这个方法提供的几个参数比较灵活，能解决很多问题，所以是值得熟练使用并且精通的
+
+**4. 方法四：split 和 toString 共同处理**
+
+> 我们也可以通过 split 和 toString 两个方法，来共同实现数组扁平化，由于数组会默认带一个 toString 的方法，所以可以把数组直接转换成逗号分隔的字符串，然后再用 split 方法把字符串重新转换为数组，如下面的代码所示。
+
+```js
+// 方法4
+var arr = [1, [2, [3, 4]]];
+function flatten(arr) {
+    return arr.toString().split(',');
+}
+console.log(flatten(arr)); //  [1, 2, 3, 4]
+```
+
+通过这两个方法可以将多维数组直接转换成逗号连接的字符串，然后再重新分隔成数组，你可以在控制台执行一下查看结果。
+
+**5. 方法五：调用 ES6 中的 flat**
+
+我们还可以直接调用 ES6 中的 flat 方法，可以直接实现数组扁平化。先来看下 flat 方法的语法：
+
+```js
+arr.flat([depth])
+```
+
+> 其中 depth 是 flat 的参数，depth 是可以传递数组的展开深度（默认不填、数值是 1），即展开一层数组。那么如果多层的该怎么处理呢？参数也可以传进 Infinity，代表不论多少层都要展开。那么我们来看下，用 flat 方法怎么实现，请看下面的代码。
+
+```js
+// 方法5
+var arr = [1, [2, [3, 4]]];
+function flatten(arr) {
+  return arr.flat(Infinity);
+}
+console.log(flatten(arr)); //  [1, 2, 3, 4，5]
+```
+
+- 可以看出，一个嵌套了两层的数组，通过将 `flat` 方法的参数设置为 `Infinity`，达到了我们预期的效果。其实同样也可以设置成 2，也能实现这样的效果。
+- 因此，你在编程过程中，发现对数组的嵌套层数不确定的时候，最好直接使用 `Infinity`，可以达到扁平化。下面我们再来看最后一种场景
+
+**6. 方法六：正则和 JSON 方法共同处理**
+
+> 我们在第四种方法中已经尝试了用 toString 方法，其中仍然采用了将 JSON.stringify 的方法先转换为字符串，然后通过正则表达式过滤掉字符串中的数组的方括号，最后再利用 JSON.parse 把它转换成数组。请看下面的代码
+
+```js
+// 方法 6
+let arr = [1, [2, [3, [4, 5]]], 6];
+function flatten(arr) {
+  let str = JSON.stringify(arr);
+  str = str.replace(/(\[|\])/g, '');
+  str = '[' + str + ']';
+  return JSON.parse(str); 
+}
+console.log(flatten(arr)); //  [1, 2, 3, 4，5]
+```
+
+可以看到，其中先把传入的数组转换成字符串，然后通过正则表达式的方式把括号过滤掉，这部分正则的表达式你不太理解的话，可以看看下面的图片
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-61.png)
+
+> 通过这个在线网站 https://regexper.com/ 可以把正则分析成容易理解的可视化的逻辑脑图。其中我们可以看到，匹配规则是：全局匹配（g）左括号或者右括号，将它们替换成空格，最后返回处理后的结果。之后拿着正则处理好的结果重新在外层包裹括号，最后通过 JSON.parse 转换成数组返回。
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-62.png)
+
+**四、如何用 JS 实现各种数组排序**
+
+数据结构算法中排序有很多种，常见的、不常见的，至少包含十种以上。根据它们的特性，可以大致分为两种类型：比较类排序和非比较类排序。
+
+- **比较类排序**：通过比较来决定元素间的相对次序，其时间复杂度不能突破 `O(nlogn)`，因此也称为非线性时间比较类排序。
+- **非比较类排序**：不通过比较来决定元素间的相对次序，它可以突破基于比较排序的时间下界，以线性时间运行，因此也称为线性时间非比较类排序。
+
+我们通过一张图片来看看这两种分类方式分别包括哪些排序方法。
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-63.png)
+
+非比较类的排序在实际情况中用的比较少
+
+**1. 冒泡排序**
+
+> 冒泡排序是最基础的排序，一般在最开始学习数据结构的时候就会接触它。冒泡排序是一次比较两个元素，如果顺序是错误的就把它们交换过来。走访数列的工作会重复地进行，直到不需要再交换，也就是说该数列已经排序完成。请看下面的代码。
+
+```js
+var a = [1, 3, 6, 3, 23, 76, 1, 34, 222, 6, 456, 221];
+function bubbleSort(array) {
+  const len = array.length
+  if (len < 2) return array
+  for (let i = 0; i < len; i++) {
+    for (let j = 0; j < i; j++) {
+      if (array[j] > array[i]) {
+        const temp = array[j]
+        array[j] = array[i]
+        array[i] = temp
+      }
+    }
+  }
+  return array
+}
+bubbleSort(a);  // [1, 1, 3, 3, 6, 6, 23, 34, 76, 221, 222, 456]
+```
+
+从上面这段代码可以看出，最后返回的是排好序的结果。因为冒泡排序实在太基础和简单，这里就不过多赘述了。下面我们来看看快速排序法
+
+**2. 快速排序**
+
+> 快速排序的基本思想是通过一趟排序，将待排记录分隔成独立的两部分，其中一部分记录的关键字均比另一部分的关键字小，则可以分别对这两部分记录继续进行排序，以达到整个序列有序。
+
+```js
+var a = [1, 3, 6, 3, 23, 76, 1, 34, 222, 6, 456, 221];
+function quickSort(array) {
+  var quick = function(arr) {
+    if (arr.length <= 1) return arr
+    const len = arr.length
+    const index = Math.floor(len >> 1)
+    const pivot = arr.splice(index, 1)[0]
+    const left = []
+    const right = []
+    for (let i = 0; i < len; i++) {
+      if (arr[i] > pivot) {
+        right.push(arr[i])
+      } else if (arr[i] <= pivot) {
+        left.push(arr[i])
+      }
+    }
+    return quick(left).concat([pivot], quick(right))
+  }
+  const result = quick(array)
+  return result
+}
+quickSort(a);//  [1, 1, 3, 3, 6, 6, 23, 34, 76, 221, 222, 456]
+```
+
+> 上面的代码在控制台执行之后，也可以得到预期的结果。最主要的思路是从数列中挑出一个元素，称为 “基准”（pivot）；然后重新排序数列，所有元素比基准值小的摆放在基准前面、比基准值大的摆在基准的后面；在这个区分搞定之后，该基准就处于数列的中间位置；然后把小于基准值元素的子数列（left）和大于基准值元素的子数列（right）递归地调用 quick 方法排序完成，这就是快排的思路。
+
+**3. 插入排序**
+
+插入排序算法描述的是一种简单直观的排序算法。它的`工作原理是通过构建有序序列，对于未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入，从而达到排序的效果`。来看一下代码
+
+```js
+var a = [1, 3, 6, 3, 23, 76, 1, 34, 222, 6, 456, 221];
+function insertSort(array) {
+  const len = array.length
+  let current
+  let prev
+  for (let i = 1; i < len; i++) {
+    current = array[i]
+    prev = i - 1
+    while (prev >= 0 && array[prev] > current) {
+      array[prev + 1] = array[prev]
+      prev--
+    }
+    array[prev + 1] = current
+  }
+  return array
+}
+insertSort(a); // [1, 1, 3, 3, 6, 6, 23, 34, 76, 221, 222, 456]
+```
+
+从执行的结果中可以发现，通过插入排序这种方式实现了排序效果。插入排序的思路是基于数组本身进行调整的，首先循环遍历从 i 等于 1 开始，拿到当前的 current 的值，去和前面的值比较，如果前面的大于当前的值，就把前面的值和当前的那个值进行交换，通过这样不断循环达到了排序的目的
+
+**4. 选择排序**
+
+选择排序是一种简单直观的排序算法。它的工作原理是，`首先将最小的元素存放在序列的起始位置，再从剩余未排序元素中继续寻找最小元素，然后放到已排序的序列后面……以此类推，直到所有元素均排序完毕`。请看下面的代码。
+
+```js
+var a = [1, 3, 6, 3, 23, 76, 1, 34, 222, 6, 456, 221];
+function selectSort(array) {
+  const len = array.length
+  let temp
+  let minIndex
+  for (let i = 0; i < len - 1; i++) {
+    minIndex = i
+    for (let j = i + 1; j < len; j++) {
+      if (array[j] <= array[minIndex]) {
+        minIndex = j
+      }
+    }
+    temp = array[i]
+    array[i] = array[minIndex]
+    array[minIndex] = temp
+  }
+  return array
+}
+selectSort(a); // [1, 1, 3, 3, 6, 6, 23, 34, 76, 221, 222, 456]
+```
+
+这样，通过选择排序的方法同样也可以实现数组的排序，从上面的代码中可以看出该排序是表现最稳定的排序算法之一，因为无论什么数据进去都是 O(n 平方) 的时间复杂度，所以用到它的时候，数据规模越小越好
+
+**5. 堆排序**
+
+堆排序是指利用堆这种数据结构所设计的一种排序算法。堆积是一个近似完全二叉树的结构，并同时满足堆积的性质，即子结点的键值或索引总是小于（或者大于）它的父节点。堆的底层实际上就是一棵完全二叉树，可以用数组实现。
+
+根节点最大的堆叫作大根堆，根节点最小的堆叫作小根堆，你可以根据从大到小排序或者从小到大来排序，分别建立对应的堆就可以。请看下面的代码
+
+```js
+var a = [1, 3, 6, 3, 23, 76, 1, 34, 222, 6, 456, 221];
+function heap_sort(arr) {
+  var len = arr.length
+  var k = 0
+  function swap(i, j) {
+    var temp = arr[i]
+    arr[i] = arr[j]
+    arr[j] = temp
+  }
+  function max_heapify(start, end) {
+    var dad = start
+    var son = dad * 2 + 1
+    if (son >= end) return
+    if (son + 1 < end && arr[son] < arr[son + 1]) {
+      son++
+    }
+    if (arr[dad] <= arr[son]) {
+      swap(dad, son)
+      max_heapify(son, end)
+    }
+  }
+  for (var i = Math.floor(len / 2) - 1; i >= 0; i--) {
+    max_heapify(i, len)
+  }
+
+  for (var j = len - 1; j > k; j--) {
+    swap(0, j)
+    max_heapify(0, j)
+  }
+
+  return arr
+}
+heap_sort(a); // [1, 1, 3, 3, 6, 6, 23, 34, 76, 221, 222, 456]
+```
+
+从代码来看，堆排序相比上面几种排序整体上会复杂一些，不太容易理解。不过你应该知道两点：
+
+- 一是堆排序最核心的点就在于排序前先建堆；
+- 二是由于堆其实就是完全二叉树，如果父节点的序号为 n，那么叶子节点的序号就分别是 `2n` 和 `2n+1`。
+
+你理解了这两点，再看代码就比较好理解了。堆排序最后有两个循环：第一个是处理父节点的顺序；第二个循环则是根据父节点和叶子节点的大小对比，进行堆的调整。通过这两轮循环的调整，最后堆排序完成。
+
+**6. 归并排序**
+
+归并排序是建立在归并操作上的一种有效的排序算法，该算法是采用分治法的一个非常典型的应用。将已有序的子序列合并，得到完全有序的序列；先使每个子序列有序，再使子序列段间有序。若将两个有序表合并成一个有序表，称为二路归并。我们先看一下代码。
+
+```js
+var a = [1, 3, 6, 3, 23, 76, 1, 34, 222, 6, 456, 221];
+function mergeSort(array) {
+  const merge = (right, left) => {
+    const result = []
+    let il = 0
+    let ir = 0
+    while (il < left.length && ir < right.length) {
+      if (left[il] < right[ir]) {
+        result.push(left[il++])
+      } else {
+        result.push(right[ir++])
+      }
+    }
+    while (il < left.length) {
+      result.push(left[il++])
+    }
+    while (ir < right.length) {
+      result.push(right[ir++])
+    }
+    return result
+  }
+  const mergeSort = array => {
+    if (array.length === 1) { return array }
+    const mid = Math.floor(array.length / 2)
+    const left = array.slice(0, mid)
+    const right = array.slice(mid, array.length)
+    return merge(mergeSort(left), mergeSort(right))
+  }
+  return mergeSort(array)
+}
+mergeSort(a); // [1, 1, 3, 3, 6, 6, 23, 34, 76, 221, 222, 456]
+```
+
+从上面这段代码中可以看到，通过归并排序可以得到想要的结果。上面提到了分治的思路，你可以从 mergeSort 方法中看到，通过 mid 可以把该数组分成左右两个数组，分别对这两个进行递归调用排序方法，最后将两个数组按照顺序归并起来。
+
+归并排序是一种稳定的排序方法，和选择排序一样，归并排序的性能不受输入数据的影响，但表现比选择排序好得多，因为始终都是 O(nlogn) 的时间复杂度。而代价是需要额外的内存空间。
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-64.png)
+
+其中你可以看到排序相关的时间复杂度和空间复杂度以及稳定性的情况，如果遇到需要自己实现排序的时候，可以根据它们的空间和时间复杂度综合考量，选择最适合的排序方法。
