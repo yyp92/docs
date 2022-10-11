@@ -13,7 +13,7 @@
   
   - [typescript](notes/js/typescript.md)
   - [ts类型操作](notes/js/TS类型操作.md)
-  - [ts学习资料](notes/js/TS学习资料.md)
+  - [ts学习资料](notes/js/ts学习资料.md)
 
 - js-设计模式
   
@@ -211,6 +211,10 @@
   - [nodejs](notes/面试/nodejs.md)
   - [前端工程化](notes/面试/前端工程化.md)
   - [移动多端开发](notes/面试/移动多端开发.md)
-  - [原理](notes/面试/原理.md)
   - [docker](notes/面试/docker.md)
   - [canvas](notes/面试/canvas.md)
+
+- 面试-原理
+  
+  - [react-router](notes/面试/react-router.md)
+  - [mobx](notes/面试/mobx.md)

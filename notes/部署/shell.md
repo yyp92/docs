@@ -335,7 +335,7 @@ declare [+/-] [选项] 变量名
 
 举例，将变量设定为整数型从而实现加和，通过配置项`-i`进行设定
 
-![](C:\Users\Administrator\Desktop\docs\imgs\shell-4.jpg)
+![](../../\imgs\shell-4.jpg)
 
 ###### 数组类型
 
@@ -351,11 +351,11 @@ declare [+/-] [选项] 变量名
 
 取第二个值
 
-![](C:\Users\Administrator\Desktop\docs\imgs\shell-7.jpg)
+![](../../\imgs\shell-7.jpg)
 
 输出所有
 
-![](C:\Users\Administrator\Desktop\docs\imgs\shell-8.jpg)
+![](../../\imgs\shell-8.jpg)
 
 ##### 取消变量的类型属性
 
@@ -371,7 +371,7 @@ declare [+/-] [选项] 变量名
 declare -r [变量名]
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\shell-10.jpg)
+![](../../\imgs\shell-10.jpg)
 
 ##### 查询变量
 
@@ -463,7 +463,7 @@ source [修改的配置文件地址]
 
 而作用范围如下图
 
-![](C:\Users\Administrator\Desktop\docs\imgs\shell-14.jpg)
+![](../../\imgs\shell-14.jpg)
 
 ## shell 之运算
 
@@ -492,11 +492,13 @@ source [修改的配置文件地址]
 ##### 括号
 
 - 圆括号
+  
   - ()：单独使用圆括号会产生一个子 shell（这样执行的表达式的输出就不会在当前 shell 中显示），也可用于数组赋值（colors=(yellow red blue)）
   - (())：算数运算赋值，是 let 的缩写
   - $()：将命令赋值给变量
 
 - 方括号
+  
   - []：单独使用是测试或数组元素功能
   - [[]]：表示测试表达式
 
@@ -584,7 +586,7 @@ esac
 
 ##### 运算的优先级
 
-![](C:\Users\Administrator\Desktop\docs\imgs\shell-15.jpg)
+![](../../\imgs\shell-15.jpg)
 
 ## shell 之语句
 
@@ -742,7 +744,6 @@ fi # 结束
 实例
 
 ```shell
-
 if [ $UID = 0 ]; then
     echo " root user "
 fi
@@ -1569,7 +1570,7 @@ flock -xn "/tmp/f.lock" -c "/root/a.sh"
 
 下图是两个终端同时运行这条命令，后执行者会因为抢不到锁而得不到执行，马上退出
 
-![](C:\Users\Administrator\Desktop\docs\imgs\shell-18.jpg)
+![](../../\imgs\shell-18.jpg)
 
 ### 重点概念：管道
 
