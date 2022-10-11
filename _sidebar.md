@@ -113,6 +113,7 @@
   - [linux](notes/部署/linux.md)
   - [ssh](notes/部署/ssh.md)
   - [使用CI-CD优化前端构建的五种策略](notes/部署/使用CI-CD优化前端构建的五种策略.md)
+  - [shell](notes/部署/shell.md)
 
 - 包管理工具
   
