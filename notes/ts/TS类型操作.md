@@ -1508,7 +1508,6 @@ type IsNotEqual<
 #### IntAddSingle - 整数相加
 
 ```ts
-
 type IntAddSingleHepler<N1 extends number, N2 extends number> = [
   ...array.GetTuple<N1>,
   ...array.GetTuple<N2>

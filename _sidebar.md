@@ -13,6 +13,7 @@
   
   - [typescript](notes/js/typescript.md)
   - [ts类型操作](notes/js/TS类型操作.md)
+  - [ts学习资料](notes/js/TS学习资料.md)
 
 - js-设计模式
   
