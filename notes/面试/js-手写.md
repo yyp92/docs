@@ -4273,6 +4273,141 @@ function treeToList(data) {
 }
 ```
 
+## 手写常见排序
+
+![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-13.png)
+
+### 1 冒泡排序
+
+> 冒泡排序的原理如下，从第一个元素开始，把当前元素和下一个索引元素进行比较。如果当前元素大，那么就交换位置，重复操作直到比较到最后一个元素，那么此时最后一个元素就是该数组中最大的数。下一轮重复以上操作，但是此时最后一个元素已经是最大数了，所以不需要再比较最后一个元素，只需要比较到 `length - 1` 的位置。
+
+```js
+function bubbleSort(list) {
+  var n = list.length;
+  if (!n) return [];
+
+  for (var i = 0; i < n; i++) {
+    // 注意这里需要 n - i - 1
+    for (var j = 0; j < n - i - 1; j++) {
+      if (list[j] > list[j + 1]) {
+        var temp = list[j + 1];
+        list[j + 1] = list[j];
+        list[j] = temp;
+      }
+    }
+  }
+  return list;
+}
+```
+
+### 2 快速排序
+
+> 快排的原理如下。随机选取一个数组中的值作为基准值，从左至右取值与基准值对比大小。比基准值小的放数组左边，大的放右边，对比完成后将基准值和第一个比基准值大的值交换位置。然后将数组以基准值的位置分为两部分，继续递归以上操作
+
+```js
+function quickSort(arr) {
+  if (arr.length<=1){
+    return arr;
+  }
+  var baseIndex = Math.floor(arr.length/2);//向下取整，选取基准点
+  var base = arr.splice(baseIndex,1)[0];//取出基准点的值，
+  // splice 通过删除或替换现有元素或者原地添加新的元素来修改数组,并以数组形式返回被修改的内容。此方法会改变原数组。
+  // slice方法返回一个新的数组对象,不会更改原数组
+  //这里不能直接base=arr[baseIndex],因为base代表的每次都删除的那个数
+  var left=[];
+  var right=[];
+  for (var i = 0; i < arr.length; i++){
+    // 这里的length是变化的，因为splice会改变原数组。
+    if (arr[i] < base){
+      left.push(arr[i]);//比基准点小的放在左边数组，
+    }
+  }else{
+    right.push(arr[i]);//比基准点大的放在右边数组，
+  }
+  return quickSort(left).concat([base],quickSort(right));
+}
+```
+
+### 3 选择排序
+
+```js
+function selectSort(arr) {
+  // 缓存数组长度
+  const len = arr.length;
+  // 定义 minIndex，缓存当前区间最小值的索引，注意是索引
+  let minIndex;
+  // i 是当前排序区间的起点
+  for (let i = 0; i < len - 1; i++) {
+    // 初始化 minIndex 为当前区间第一个元素
+    minIndex = i;
+    // i、j分别定义当前区间的上下界，i是左边界，j是右边界
+    for (let j = i; j < len; j++) {
+      // 若 j 处的数据项比当前最小值还要小，则更新最小值索引为 j
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+    // 如果 minIndex 对应元素不是目前的头部元素，则交换两者
+    if (minIndex !== i) {
+      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+    }
+  }
+  return arr;
+}
+// console.log(selectSort([3, 6, 2, 4, 1]));
+```
+
+### 4 插入排序
+
+```js
+function insertSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let j = i;
+    let target = arr[j];
+    while (j > 0 && arr[j - 1] > target) {
+      arr[j] = arr[j - 1];
+      j--;
+    }
+    arr[j] = target;
+  }
+  return arr;
+}
+// console.log(insertSort([3, 6, 2, 4, 1]));
+```
+
+### 5 二分查找
+
+```js
+function search(arr, target, start, end) {
+  let targetIndex = -1;
+
+  let mid = Math.floor((start + end) / 2);
+
+  if (arr[mid] === target) {
+    targetIndex = mid;
+    return targetIndex;
+  }
+
+  if (start >= end) {
+    return targetIndex;
+  }
+
+  if (arr[mid] < target) {
+    return search(arr, target, mid + 1, end);
+  } else {
+    return search(arr, target, start, mid - 1);
+  }
+}
+
+// const dataArr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+// const position = search(dataArr, 6, 0, dataArr.length - 1);
+// if (position !== -1) {
+//   console.log(`目标元素在数组中的位置:${position}`);
+// } else {
+//   console.log("目标元素不在数组中");
+// }
+```
+
 ## 综合
 
 ### 实现一个 sleep 函数，比如 sleep(1000) 意味着等待1000毫秒
@@ -4301,6 +4436,50 @@ function union (arr1, arr2) {
  const a = [1, 2, 2, 1];
  const b = [2, 3, 2];
  console.log(union(a, b)); // [2, 2]
+```
+
+### 异步请求并发(??)
+
+- 利用Promise.race设置limit条赛道, 选出limit个请求放入赛道开始赛跑, 获胜者返回当前赛道号
+- 遍历剩余请求数组, 利用.then链式调用, 每轮比赛结束将当前请求放入空闲赛道, 与之前请求已跑请求继续赛跑
+
+```js
+const urls = [1,2,3,4,5,6,7,8,9,10]
+function load(url) {
+  return new Promise((resolve, reject) => {
+    console.log(`${url} start`)
+    setTimeout(() => {
+      console.log(`${url} success`)
+      resolve(url)
+    }, (Math.random() * 10000) >> 0)
+  })
+}
+
+function limitLoad(urls, handler, limit) {
+  const queue = urls.slice(0)
+  const promises = queue.splice(0, limit).map((url, idx) => {
+    return handler(url).then(() => idx)
+  })
+
+  let p = Promise.race(promises)
+  for (let i = 0; i < queue.length; i ++) {
+    p = p.then(idx => {
+      promises[idx] = handler(queue[i]).then(() => idx)
+      return Promise.race(promises)
+    })
+  }
+}
+
+limitLoad(urls, load, 3)
+```
+
+### 异步并发请求(重试机制)(??)
+
+- 每条请求打retry标识
+- 出栈limit条请求, 成功后再出栈一条执行; 失败则更新retry标识重新执行，超过重试次数仍失败, 再出栈一条执行
+
+```js
+
 ```
 
 ### 异步并发数限制(??)
