@@ -221,4 +221,6 @@
   - [dva](notes/面试/dva.md)
   - [浅析redux-saga中间件及用法](notes/面试/浅析redux-saga中间件及用法.md)
   - [redux之源码分析](notes/面试/redux之源码分析.md)
+  - [redux之异步Action及操作](notes/面试/redux之异步Action及操作.md)
+  - [浅析中间件](notes/面试/浅析中间件.md)
   
