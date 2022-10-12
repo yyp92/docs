@@ -2666,6 +2666,160 @@ asyncFunc(function* () {
 })
 ```
 
+## 实现ES6的const
+
+> 由于ES5环境没有`block`的概念，所以是无法百分百实现`const`，只能是挂载到某个对象下，要么是全局的`window`，要么就是自定义一个`object`来当容器
+
+```js
+var __const = function __const (data, value) {
+    window.data = value // 把要定义的data挂载到window下，并赋值value
+    Object.defineProperty(window, data, { // 利用Object.defineProperty的能力劫持当前对象，并修改其属性描述符
+      enumerable: false,
+      configurable: false,
+      get: function () {
+        return value
+      },
+      set: function (data) {
+        if (data !== value) { // 当要对当前属性进行赋值时，则抛出错误！
+          throw new TypeError('Assignment to constant variable.')
+        } else {
+          return value
+        }
+      }
+    })
+  }
+  __const('a', 10)
+  console.log(a)
+  delete a
+  console.log(a)
+  for (let item in window) { // 因为const定义的属性在global下也是不存在的，所以用到了enumerable: false来模拟这一功能
+    if (item === 'a') { // 因为不可枚举，所以不执行
+      console.log(window[item])
+    }
+  }
+  a = 20 // 报错
+```
+
+> `Vue`目前双向绑定的核心实现思路就是利用`Object.defineProperty`对`get`跟`set`进行劫持，监听用户对属性进行调用以及赋值时的具体情况，从而实现的双向绑定
+
+## 实现一个迭代器生成函数
+
+### 1 ES6对迭代器的实现
+
+JS原生的集合类型数据结构，只有`Array`（数组）和`Object`（对象）；而`ES6`中，又新增了`Map`和`Set`。四种数据结构各自有着自己特别的内部实现，但我们仍期待以同样的一套规则去遍历它们，所以`ES6`在推出新数据结构的同时也推出了一套**统一的接口机制**——迭代器（`Iterator`）。
+
+> `ES6`约定，任何数据结构只要具备`Symbol.iterator`属性（这个属性就是`Iterator`的具体实现，它本质上是当前数据结构默认的迭代器生成函数），就可以被遍历——准确地说，是被`for...of...`循环和迭代器的next方法遍历。 事实上，`for...of...`的背后正是对`next`方法的反复调用。
+
+在ES6中，针对`Array`、`Map`、`Set`、`String`、`TypedArray`、函数的 `arguments` 对象、`NodeList` 对象这些原生的数据结构都可以通过`for...of...`进行遍历。原理都是一样的，此处我们拿最简单的数组进行举例，当我们用`for...of...`遍历数组时：
+
+```js
+const arr = [1, 2, 3]
+const len = arr.length
+for(item of arr) {
+   console.log(`当前元素是${item}`)
+}
+```
+
+> 之所以能够按顺序一次一次地拿到数组里的每一个成员，是因为我们借助数组的`Symbol.iterator`生成了它对应的迭代器对象，通过反复调用迭代器对象的`next`方法访问了数组成员，像这样：
+
+```js
+const arr = [1, 2, 3]
+// 通过调用iterator，拿到迭代器对象
+const iterator = arr[Symbol.iterator]()
+
+// 对迭代器对象执行next，就能逐个访问集合的成员
+iterator.next()
+iterator.next()
+iterator.next()
+```
+
+丢进控制台，我们可以看到`next`每次会按顺序帮我们访问一个集合成员：
+
+![](../../\imgs\handwriting-js-3.png)
+
+> 而`for...of...`做的事情，基本等价于下面这通操作：
+
+```js
+// 通过调用iterator，拿到迭代器对象
+const iterator = arr[Symbol.iterator]()
+
+// 初始化一个迭代结果
+let now = { done: false }
+
+// 循环往外迭代成员
+while(!now.done) {
+    now = iterator.next()
+    if(!now.done) {
+        console.log(`现在遍历到了${now.value}`)
+    }
+}
+```
+
+> 可以看出，`for...of...`其实就是`iterator`循环调用换了种写法。在ES6中我们之所以能够开心地用`for...of...`遍历各种各种的集合，全靠迭代器模式在背后给力。
+
+ps：此处推荐阅读[迭代协议 (opens new window)](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols)，相信大家读过后会对迭代器在ES6中的实现有更深的理解。
+
+### 2 实现迭代器生成函数
+
+我们说**迭代器对象**全凭**迭代器生成函数**帮我们生成。在`ES6`中，实现一个迭代器生成函数并不是什么难事儿，因为ES6早帮我们考虑好了全套的解决方案，内置了贴心的**生成器**（`Generator`）供我们使用：
+
+```js
+// 编写一个迭代器生成函数
+function *iteratorGenerator() {
+    yield '1号选手'
+    yield '2号选手'
+    yield '3号选手'
+}
+
+const iterator = iteratorGenerator()
+
+iterator.next()
+iterator.next()
+iterator.next()
+```
+
+丢进控制台，不负众望：
+
+![](../../\imgs\handwriting-js-4.png)
+
+写一个生成器函数并没有什么难度，但在面试的过程中，面试官往往对生成器这种语法糖背后的实现逻辑更感兴趣。下面我们要做的，不仅仅是写一个迭代器对象，而是用`ES5`去写一个能够生成迭代器对象的迭代器生成函数（解析在注释里）：
+
+```js
+// 定义生成器函数，入参是任意集合
+function iteratorGenerator(list) {
+    // idx记录当前访问的索引
+    var idx = 0
+    // len记录传入集合的长度
+    var len = list.length
+    return {
+        // 自定义next方法
+        next: function() {
+            // 如果索引还没有超出集合长度，done为false
+            var done = idx >= len
+            // 如果done为false，则可以继续取值
+            var value = !done ? list[idx++] : undefined
+
+            // 将当前值与遍历是否完毕（done）返回
+            return {
+                done: done,
+                value: value
+            }
+        }
+    }
+}
+
+var iterator = iteratorGenerator(['1号选手', '2号选手', '3号选手'])
+iterator.next()
+iterator.next()
+iterator.next()
+```
+
+此处为了记录每次遍历的位置，我们实现了一个闭包，借助自由变量来做我们的迭代过程中的“游标”。
+
+运行一下我们自定义的迭代器，结果符合预期：
+
+![](../../\imgs\handwriting-js-5.png)
+
 ## 实现ES6的extends
 
 ```js
@@ -2790,6 +2944,414 @@ function compose(...funcs) {
 
 - 更换`Api`接口：把`reduce`改为`reduceRight`
 - 交互包裹位置：把`a(b(...args))`改为`b(a(...args))`
+
+## setTimeout与setInterval实现
+
+### 1 setTimeout 模拟实现 setInterval
+
+题目描述: `setInterval` 用来实现循环定时调用 可能会存在一定的问题 能用 `setTimeout` 解决吗
+
+实现代码如下:
+
+```js
+  function mySetInterval(fn, t) {
+  let timerId = null;
+  function interval() {
+    fn();
+    timerId = setTimeout(interval, t); // 递归调用
+  }
+  timerId = setTimeout(interval, t); // 首次调用
+  return {
+    // 利用闭包的特性 保存timerId
+    cancel:() => {
+      clearTimeout(timerId)
+    }
+  }
+}
+```
+
+```js
+// 测试
+var a = mySetInterval(()=>{
+  console.log(111);
+},1000)
+var b = mySetInterval(() => {
+  console.log(222)
+}, 1000)
+
+// 终止定时器
+a.cancel()
+b.cancel()
+```
+
+> 为什么要用 `setTimeout` 模拟实现 `setInterval`？`setInterval` 的缺陷是什么？
+
+```js
+setInterval(fn(), N);
+```
+
+> 上面这句代码的意思其实是`fn()`将会在 `N` 秒之后被推入任务队列。在 `setInterval` 被推入任务队列时，如果在它前面有很多任务或者某个任务等待时间较长比如网络请求等，那么这个定时器的执行时间和我们预定它执行的时间可能并不一致
+
+```js
+// 最常见的出现的就是，当我们需要使用 ajax 轮询服务器是否有新数据时，必定会有一些人会使用 setInterval，然而无论网络状况如何，它都会去一遍又一遍的发送请求，最后的间隔时间可能和原定的时间有很大的出入
+
+// 做一个网络轮询，每一秒查询一次数据。
+let startTime = new Date().getTime();
+let count = 0;
+
+setInterval(() => {
+    let i = 0;
+    while (i++ < 10000000); // 假设的网络延迟
+    count++;
+    console.log(
+        "与原设定的间隔时差了：",
+        new Date().getTime() - (startTime + count * 1000),
+        "毫秒"
+    );
+}, 1000)
+
+// 输出：
+// 与原设定的间隔时差了： 567 毫秒
+// 与原设定的间隔时差了： 552 毫秒
+// 与原设定的间隔时差了： 563 毫秒
+// 与原设定的间隔时差了： 554 毫秒(2次)
+// 与原设定的间隔时差了： 564 毫秒
+// 与原设定的间隔时差了： 602 毫秒
+// 与原设定的间隔时差了： 573 毫秒
+// 与原设定的间隔时差了： 633 毫秒
+```
+
+> **再次强调**，定时器指定的时间间隔，表示的是何时将定时器的代码添加到消息队列，而不是何时执行代码。所以真正何时执行代码的时间是不能保证的，取决于何时被主线程的事件循环取到，并执行。
+
+```js
+setInterval(function, N)
+//即：每隔N秒把function事件推到消息队列中
+```
+
+![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-6.png)
+
+> 上图可见，`setInterval` 每隔 `100ms` 往队列中添加一个事件；`100ms` 后，添加 `T1` 定时器代码至队列中，主线程中还有任务在执行，所以等待，`some event` 执行结束后执行 `T1`定时器代码；又过了 `100ms`，`T2` 定时器被添加到队列中，主线程还在执行 `T1` 代码，所以等待；又过了 `100ms`，理论上又要往队列里推一个定时器代码，但由于此时 `T2` 还在队列中，所以 `T3` 不会被添加（`T3` 被跳过），结果就是此时被跳过；这里我们可以看到，`T1` 定时器执行结束后马上执行了 T2 代码，所以并没有达到定时器的效果
+
+**setInterval有两个缺点**
+
+- 使用`setInterval`时，某些间隔会被跳过
+- 可能多个定时器会连续执行
+
+> **可以这么理解**：每个`setTimeout`产生的任务会直接`push`到任务队列中；而`setInterval`在每次把任务`push`到任务队列前，都要进行一下判断(看上次的任务是否仍在队列中)。因而我们一般用`setTimeout`模拟`setInterval`，来规避掉上面的缺点
+
+### 2 setInterval 模拟实现 setTimeout
+
+```js
+const mySetTimeout = (fn, t) => {
+  const timer = setInterval(() => {
+    clearInterval(timer);
+    fn();
+  }, t);
+};
+```
+
+```js
+// 测试
+// mySetTimeout(()=>{
+//   console.log(1);
+// },1000)
+```
+
+## 实现Node的require方法
+
+**require 基本原理**
+
+![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-7.png)
+
+**require 查找路径**
+
+![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-8.png)
+
+> `require` 和 `module.exports` 干的事情并不复杂，我们先假设有一个全局对象`{}`，初始情况下是空的，当你 `require` 某个文件时，就将这个文件拿出来执行，如果这个文件里面存在`module.exports`，当运行到这行代码时将 `module.exports` 的值加入这个对象，键为对应的文件名，最终这个对象就长这样：
+
+```js
+{
+  "a.js": "hello world",
+  "b.js": function add(){},
+  "c.js": 2,
+  "d.js": { num: 2 }
+}
+```
+
+> 当你再次 `require` 某个文件时，如果这个对象里面有对应的值，就直接返回给你，如果没有就重复前面的步骤，执行目标文件，然后将它的 `module.exports` 加入这个全局对象，并返回给调用者。这个全局对象其实就是我们经常听说的缓存。所以 `require` 和 `module.exports` 并没有什么黑魔法，就只是运行并获取目标文件的值，然后加入缓存，用的时候拿出来用就行
+
+**手写实现一个require**
+
+```js
+const path = require('path'); // 路径操作
+const fs = require('fs'); // 文件读取
+const vm = require('vm'); // 文件执行
+
+// node模块化的实现
+// node中是自带模块化机制的，每个文件就是一个单独的模块，并且它遵循的是CommonJS规范，也就是使用require的方式导入模块，通过module.export的方式导出模块。
+// node模块的运行机制也很简单，其实就是在每一个模块外层包裹了一层函数，有了函数的包裹就可以实现代码间的作用域隔离
+
+// require加载模块
+// require依赖node中的fs模块来加载模块文件，fs.readFile读取到的是一个字符串。
+// 在javascrpt中我们可以通过eval或者new Function的方式来将一个字符串转换成js代码来运行。
+
+// eval
+// const name = 'poetry';
+// const str = 'const a = 123; console.log(name)';
+// eval(str); // poetry;
+
+// new Function
+// new Function接收的是一个要执行的字符串，返回的是一个新的函数，调用这个新的函数字符串就会执行了。如果这个函数需要传递参数，可以在new Function的时候依次传入参数，最后传入的是要执行的字符串。比如这里传入参数b，要执行的字符串str
+// const b = 3;
+// const str = 'let a = 1; return a + b';
+// const fun = new Function('b', str);
+// console.log(fun(b, str)); // 4
+// 可以看到eval和Function实例化都可以用来执行javascript字符串，似乎他们都可以来实现require模块加载。不过在node中并没有选用他们来实现模块化，原因也很简单因为他们都有一个致命的问题，就是都容易被不属于他们的变量所影响。
+// 如下str字符串中并没有定义a，但是确可以使用上面定义的a变量，这显然是不对的，在模块化机制中，str字符串应该具有自身独立的运行空间，自身不存在的变量是不可以直接使用的
+// const a = 1;
+// const str = 'console.log(a)';
+// eval(str);
+// const func = new Function(str);
+// func();
+
+// node存在一个vm虚拟环境的概念，用来运行额外的js文件，他可以保证javascript执行的独立性，不会被外部所影响
+// vm 内置模块
+// 虽然我们在外部定义了hello，但是str是一个独立的模块，并不在村hello变量，所以会直接报错。
+// 引入vm模块， 不需要安装，node 自建模块
+// const vm = require('vm');
+// const hello = 'poetry';
+// const str = 'console.log(hello)';
+// wm.runInThisContext(str); // 报错
+// 所以node执行javascript模块时可以采用vm来实现。就可以保证模块的独立性了
+
+// 分析实现步骤
+// 1.导入相关模块，创建一个Require方法。
+// 2.抽离通过Module._load方法，用于加载模块。
+// 3.Module.resolveFilename 根据相对路径，转换成绝对路径。
+// 4.缓存模块 Module._cache，同一个模块不要重复加载，提升性能。
+// 5.创建模块 id: 保存的内容是 exports = {}相当于this。
+// 6.利用tryModuleLoad(module, filename) 尝试加载模块。
+// 7.Module._extensions使用读取文件。
+// 8.Module.wrap: 把读取到的js包裹一个函数。
+// 9.将拿到的字符串使用runInThisContext运行字符串。
+// 10.让字符串执行并将this改编成exports
+
+// 定义导入类，参数为模块路径
+function Require(modulePath) {
+    // 获取当前要加载的绝对路径
+    let absPathname = path.resolve(__dirname, modulePath);
+
+    // 自动给模块添加后缀名，实现省略后缀名加载模块，其实也就是如果文件没有后缀名的时候遍历一下所有的后缀名看一下文件是否存在
+    // 获取所有后缀名
+    const extNames = Object.keys(Module._extensions);
+    let index = 0;
+    // 存储原始文件路径
+    const oldPath = absPathname;
+    function findExt(absPathname) {
+        if (index === extNames.length) {
+            throw new Error('文件不存在');
+        }
+        try {
+            fs.accessSync(absPathname);
+            return absPathname;
+        } catch(e) {
+            const ext = extNames[index++];
+            findExt(oldPath + ext);
+        }
+    }
+    // 递归追加后缀名，判断文件是否存在
+    absPathname = findExt(absPathname);
+
+    // 从缓存中读取，如果存在，直接返回结果
+    if (Module._cache[absPathname]) {
+        return Module._cache[absPathname].exports;
+    }
+
+    // 创建模块，新建Module实例
+    const module = new Module(absPathname);
+
+    // 添加缓存
+    Module._cache[absPathname] = module;
+
+    // 加载当前模块
+    tryModuleLoad(module);
+
+    // 返回exports对象
+    return module.exports;
+}
+
+// Module的实现很简单，就是给模块创建一个exports对象，tryModuleLoad执行的时候将内容加入到exports中，id就是模块的绝对路径
+// 定义模块, 添加文件id标识和exports属性
+function Module(id) {
+    this.id = id;
+    // 读取到的文件内容会放在exports中
+    this.exports = {};
+}
+
+Module._cache = {};
+
+// 我们给Module挂载静态属性wrapper，里面定义一下这个函数的字符串，wrapper是一个数组，数组的第一个元素就是函数的参数部分，其中有exports，module. Require，__dirname, __filename, 都是我们模块中常用的全局变量。注意这里传入的Require参数是我们自己定义的Require
+// 第二个参数就是函数的结束部分。两部分都是字符串，使用的时候我们将他们包裹在模块的字符串外部就可以了
+Module.wrapper = [
+    "(function(exports, module, Require, __dirname, __filename) {",
+    "})"
+]
+
+// _extensions用于针对不同的模块扩展名使用不同的加载方式，比如JSON和javascript加载方式肯定是不同的。JSON使用JSON.parse来运行。
+// javascript使用vm.runInThisContext来运行，可以看到fs.readFileSync传入的是module.id也就是我们Module定义时候id存储的是模块的绝对路径，读取到的content是一个字符串，我们使用Module.wrapper来包裹一下就相当于在这个模块外部又包裹了一个函数，也就实现了私有作用域。
+// 使用call来执行fn函数，第一个参数改变运行的this我们传入module.exports，后面的参数就是函数外面包裹参数exports, module, Require, __dirname, __filename
+Module._extensions = {
+    '.js'(module) {
+        const content = fs.readFileSync(module.id, 'utf8');
+        const fnStr = Module.wrapper[0] + content + Module.wrapper[1];
+        const fn = vm.runInThisContext(fnStr);
+        fn.call(module.exports, module.exports, module, Require,__filename,__dirname);
+    },
+    '.json'(module) {
+        const json = fs.readFileSync(module.id, 'utf8');
+        module.exports = JSON.parse(json); // 把文件的结果放在exports属性上
+    }
+}
+
+// tryModuleLoad函数接收的是模块对象，通过path.extname来获取模块的后缀名，然后使用Module._extensions来加载模块
+// 定义模块加载方法
+function tryModuleLoad(module) {
+    // 获取扩展名
+    const extension = path.extname(module.id);
+    // 通过后缀加载当前模块
+    Module._extensions[extension](module);
+}
+
+// 至此Require加载机制我们基本就写完了，我们来重新看一下。Require加载模块的时候传入模块名称，在Require方法中使用path.resolve(__dirname, modulePath)获取到文件的绝对路径。然后通过new Module实例化的方式创建module对象，将模块的绝对路径存储在module的id属性中，在module中创建exports属性为一个json对象
+// 使用tryModuleLoad方法去加载模块，tryModuleLoad中使用path.extname获取到文件的扩展名，然后根据扩展名来执行对应的模块加载机制
+// 最终将加载到的模块挂载module.exports中。tryModuleLoad执行完毕之后module.exports已经存在了，直接返回就可以了
+
+
+// 给模块添加缓存
+// 添加缓存也比较简单，就是文件加载的时候将文件放入缓存中，再去加载模块时先看缓存中是否存在，如果存在直接使用，如果不存在再去重新，加载之后再放入缓存
+
+// 测试
+let json = Require('./test.json');
+let test2 = Require('./test2.js');
+console.log(json);
+console.log(test2);
+```
+
+## 实现LRU淘汰算法
+
+`LRU` 缓存算法是一个非常经典的算法，在很多面试中经常问道，不仅仅包括前端面试
+
+> `LRU` 英文全称是 `Least Recently Used`，英译过来就是”**最近最少使用**“的意思。`LRU` 是一种常用的页面置换算法，选择最近最久未使用的页面予以淘汰。该算法赋予每个页面一个访问字段，用来记录一个页面自上次被访问以来所经历的时间 `t`，当须淘汰一个页面时，选择现有页面中其 `t` 值最大的，即最近最少使用的页面予以淘汰
+
+通俗的解释：
+
+> 假如我们有一块内存，专门用来缓存我们最近发访问的网页，访问一个新网页，我们就会往内存中添加一个网页地址，随着网页的不断增加，内存存满了，这个时候我们就需要考虑删除一些网页了。这个时候我们找到内存中最早访问的那个网页地址，然后把它删掉。这一整个过程就可以称之为 `LRU` 算法
+
+![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-9.png)
+
+上图就很好的解释了 `LRU` 算法在干嘛了，其实非常简单，无非就是我们往内存里面添加或者删除元素的时候，遵循**最近最少使用原则**
+
+**使用场景**
+
+`LRU` 算法使用的场景非常多，这里简单举几个例子即可：
+
+- 我们操作系统底层的内存管理，其中就包括有 `LRU` 算法
+- 我们常见的缓存服务，比如 `redis` 等等
+- 比如浏览器的最近浏览记录存储
+- `vue`中的`keep-alive`组件使用了`LRU`算法
+
+**梳理实现 LRU 思路**
+
+- 特点分析：
+  - 我们需要一块有限的存储空间，因为无限的化就没必要使用`LRU`算发删除数据了。
+  - 我们这块存储空间里面存储的数据需要是有序的，因为我们必须要顺序来删除数据，所以可以考虑使用 `Array`、`Map` 数据结构来存储，不能使用 `Object`，因为它是无序的。
+  - 我们能够删除或者添加以及获取到这块存储空间中的指定数据。
+  - 存储空间存满之后，在添加数据时，会自动删除时间最久远的那条数据。
+- 实现需求：
+  - 实现一个 `LRUCache` 类型，用来充当存储空间
+  - 采用 `Map` 数据结构存储数据，因为它的存取时间复杂度为 `O(1)`，数组为 `O(n)`
+  - 实现 `get` 和 `set` 方法，用来获取和添加数据
+  - 我们的存储空间有长度限制，所以无需提供删除方法，存储满之后，自动删除最久远的那条数据
+  - 当使用 `get` 获取数据后，该条数据需要更新到最前面
+
+**具体实现**
+
+```js
+class LRUCache {
+  constructor(length) {
+    this.length = length; // 存储长度
+    this.data = new Map(); // 存储数据
+  }
+  // 存储数据，通过键值对的方式
+  set(key, value) {
+    const data = this.data;
+    if (data.has(key)) {
+      data.delete(key)
+    }
+
+    data.set(key, value);
+
+    // 如果超出了容量，则需要删除最久的数据
+    if (data.size > this.length) {
+      const delKey = data.keys().next().value;
+      data.delete(delKey);
+    }
+  }
+  // 获取数据
+  get(key) {
+    const data = this.data;
+    // 未找到
+    if (!data.has(key)) {
+      return null;
+    }
+    const value = data.get(key); // 获取元素
+    data.delete(key); // 删除元素
+    data.set(key, value); // 重新插入元素
+
+    return value // 返回获取的值
+  }
+}
+var lruCache = new LRUCache(5);
+```
+
+- `set 方法`：往 `map` 里面添加新数据，如果添加的数据存在了，则先删除该条数据，然后再添加。如果添加数据后超长了，则需要删除最久远的一条数据。`data.keys().next().value` 便是获取最后一条数据的意思。
+- `get 方法`：首先从 `map` 对象中拿出该条数据，然后删除该条数据，最后再重新插入该条数据，确保将该条数据移动到最前面
+
+```js
+// 测试
+
+// 存储数据 set：
+
+lruCache.set('name', 'test');
+lruCache.set('age', 10);
+lruCache.set('sex', '男');
+lruCache.set('height', 180);
+lruCache.set('weight', '120');
+console.log(lruCache);
+```
+
+![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-10.png)
+
+继续插入数据，此时会超长，代码如下：
+
+```js
+lruCache.set('grade', '100');
+console.log(lruCache);
+```
+
+![](../../\imgs\handwriting-js-11.png)
+
+此时我们发现存储时间最久的 name 已经被移除了，新插入的数据变为了最前面的一个。
+
+我们使用 `get` 获取数据，代码如下：
+
+![](../../\imgs\handwriting-js-12.png)
+
+我们发现此时 `sex` 字段已经跑到最前面去了
+
+**总结**
+
+> `LRU` 算法其实逻辑非常的简单，明白了原理之后实现起来非常的简单。最主要的是我们需要使用什么数据结构来存储数据，因为 `map` 的存取非常快，所以我们采用了它，当然数组其实也可以实现的。还有一些小伙伴使用链表来实现 `LRU`，这当然也是可以的。
 
 ## 正则相关(??)
 
@@ -3105,6 +3667,611 @@ alert(add(1)(2)(3)(4)(5))
 > 无限链式调用实现的关键在于 **对象的 toString 方法**: 每个对象都有一个 `toString()` 方法，当该对象被表示为一个文本值时，或者一个对象以预期的字符串方式引用时自动调用。
 
 也就是我在调用很多次后，他们的结果会存在`add`函数中的`sum`变量上，当我`alert`的时候 `add`会自动调用 `toString`方法 打印出 `sum,` 也就是最终的结果
+
+## 字符串相关
+
+### 1 查找字符串中出现最多的字符和个数
+
+> 例: abbcccddddd -> 字符最多的是d，出现了5次
+
+```js
+let str = "abcabcabcbbccccc";
+let num = 0;
+let char = '';
+
+ // 使其按照一定的次序排列
+str = str.split('').sort().join('');
+// "aaabbbbbcccccccc"
+
+// 定义正则表达式
+// 正则表达式中的小括号"()"。是代表分组的意思。 如果再其后面出现\1则是代表与第一个小括号中要匹配的内容相同。
+// 注意：\1必须与小括号配合使用
+let re = /(\w)\1+/g;
+str.replace(re,($0,$1) => {
+    if(num < $0.length){
+        num = $0.length;
+        char = $1;        
+    }
+});
+console.log(`字符最多的是${char}，出现了${num}次`);
+```
+
+### 2 字符串查找
+
+> 请使用最基本的遍历来实现判断字符串 a 是否被包含在字符串 b 中，并返回第一次出现的位置（找不到返回 -1）。
+
+```js
+a='34';b='1234567'; // 返回 2
+a='35';b='1234567'; // 返回 -1
+a='355';b='12354355'; // 返回 5
+isContain(a,b);
+```
+
+```js
+function isContain(a, b) {
+  for (let i in b) {
+    if (a[0] === b[i]) {
+      let tmp = true;
+      for (let j in a) {
+        if (a[j] !== b[~~i + ~~j]) {
+          tmp = false;
+        }
+      }
+      if (tmp) {
+        return i;
+      }
+    }
+  }
+  return -1;
+}
+```
+
+### 3 字符串最长的不重复子串
+
+题目描述
+
+```js
+给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
+
+
+示例 1:
+
+输入: s = "abcabcbb"
+输出: 3
+解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+
+示例 2:
+
+输入: s = "bbbbb"
+输出: 1
+解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+
+示例 3:
+
+输入: s = "pwwkew"
+输出: 3
+解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+     请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+
+示例 4:
+
+输入: s = ""
+输出: 0
+```
+
+答案
+
+```js
+const lengthOfLongestSubstring = function (s) {
+  if (s.length === 0) {
+    return 0;
+  }
+
+  let left = 0;
+  let right = 1;
+  let max = 0;
+  while (right <= s.length) {
+    let lr = s.slice(left, right);
+    const index = lr.indexOf(s[right]);
+
+    if (index > -1) {
+      left = index + left + 1;
+    } else {
+      lr = s.slice(left, right + 1);
+      max = Math.max(max, lr.length);
+    }
+    right++;
+  }
+  return max;
+};
+```
+
+## 实现工具函数
+
+### 1 对象扁平化
+
+```js
+function objectFlat(obj = {}) {
+  const res = {}
+  function flat(item, preKey = '') {
+    Object.entries(item).forEach(([key, val]) => {
+      const newKey = preKey ? `${preKey}.${key}` : key
+      if (val && typeof val === 'object') {
+        flat(val, newKey)
+      } else {
+        res[newKey] = val
+      }
+    })
+  }
+  flat(obj)
+  return res
+}
+
+// 测试
+const source = { a: { b: { c: 1, d: 2 }, e: 3 }, f: { g: 2 } }
+console.log(objectFlat(source));
+```
+
+### 2 实现一个管理本地缓存过期的函数
+
+> 封装一个可以设置过期时间的`localStorage`存储函数
+
+```js
+class Storage{
+  constructor(name){
+      this.name = 'storage';
+  }
+  //设置缓存
+  setItem(params){
+      let obj = {
+          name:'', // 存入数据  属性
+          value:'',// 属性值
+          expires:"", // 过期时间
+          startTime:new Date().getTime()//记录何时将值存入缓存，毫秒级
+      }
+      let options = {};
+      //将obj和传进来的params合并
+      Object.assign(options,obj,params);
+      if(options.expires){
+      //如果options.expires设置了的话
+      //以options.name为key，options为值放进去
+          localStorage.setItem(options.name,JSON.stringify(options));
+      }else{
+      //如果options.expires没有设置，就判断一下value的类型
+          let type = Object.prototype.toString.call(options.value);
+          //如果value是对象或者数组对象的类型，就先用JSON.stringify转一下，再存进去
+          if(Object.prototype.toString.call(options.value) == '[object Object]'){
+              options.value = JSON.stringify(options.value);
+          }
+          if(Object.prototype.toString.call(options.value) == '[object Array]'){
+              options.value = JSON.stringify(options.value);
+          }
+          localStorage.setItem(options.name,options.value);
+      }
+  }
+  //拿到缓存
+  getItem(name){
+      let item = localStorage.getItem(name);
+      //先将拿到的试着进行json转为对象的形式
+      try{
+          item = JSON.parse(item);
+      }catch(error){
+      //如果不行就不是json的字符串，就直接返回
+          item = item;
+      }
+      //如果有startTime的值，说明设置了失效时间
+      if(item.startTime){
+          let date = new Date().getTime();
+          //何时将值取出减去刚存入的时间，与item.expires比较，如果大于就是过期了，如果小于或等于就还没过期
+          if(date - item.startTime > item.expires){
+          //缓存过期，清除缓存，返回false
+              localStorage.removeItem(name);
+              return false;
+          }else{
+          //缓存未过期，返回值
+              return item.value;
+          }
+      }else{
+      //如果没有设置失效时间，直接返回值
+          return item;
+      }
+  }
+  //移出缓存
+  removeItem(name){
+      localStorage.removeItem(name);
+  }
+  //移出全部缓存
+  clear(){
+      localStorage.clear();
+  }
+}
+```
+
+**用法**
+
+```js
+let storage = new Storage();
+storage.setItem({
+  name:"name",
+  value:"ppp"
+})
+```
+
+下面我把值取出来
+
+```js
+let value = storage.getItem('name');
+console.log('我是value',value);
+```
+
+> 设置5秒过期
+
+```js
+let storage = new Storage();
+storage.setItem({
+  name:"name",
+  value:"ppp",
+  expires: 5000
+})
+```
+
+```js
+// 过期后再取出来会变为 false
+let value = storage.getItem('name');
+console.log('我是value',value);
+```
+
+### 3 实现lodash的chunk方法--数组按指定长度拆分
+
+**题目**
+
+```js
+/** * @param input * @param size * @returns {Array} */
+_.chunk(['a', 'b', 'c', 'd'], 2)
+// => [['a', 'b'], ['c', 'd']]
+
+_.chunk(['a', 'b', 'c', 'd'], 3)
+// => [['a', 'b', 'c'], ['d']]
+
+_.chunk(['a', 'b', 'c', 'd'], 5)
+// => [['a', 'b', 'c', 'd']]
+
+_.chunk(['a', 'b', 'c', 'd'], 0)
+// => []
+```
+
+**实现**
+
+```js
+function chunk(arr, length) {
+  let newArr = [];
+  for (let i = 0; i < arr.length; i += length) {
+    newArr.push(arr.slice(i, i + length));
+  }
+  return newArr;
+}
+```
+
+### 4 手写深度比较isEqual
+
+> 思路：深度比较两个对象，就是要深度比较对象的每一个元素。=> 递归
+
+- 递归退出条件：
+  - 被比较的是两个值类型变量，直接用“===”判断
+  - 被比较的两个变量之一为`null`，直接判断另一个元素是否也为`null`
+- 提前结束递推：
+  - 两个变量`keys`数量不同
+  - 传入的两个参数是同一个变量
+- 递推工作：深度比较每一个`key`
+
+```js
+function isEqual(obj1, obj2){
+    // 其中一个为值类型或null
+    if(!isObject(obj1) || !isObject(obj2)){
+        return obj1 === obj2;
+    }
+
+    // 判断是否两个参数是同一个变量
+    if(obj1 === obj2){
+        return true;
+    }
+
+    // 判断keys数是否相等
+    const obj1Keys = Object.keys(obj1);
+    const obj2Keys = Object.keys(obj2);
+    if(obj1Keys.length !== obj2Keys.length){
+        return false;
+    }
+
+    // 深度比较每一个key
+    for(let key in obj1){
+        if(!isEqual(obj1[key], obj2[key])){
+            return false;
+        }
+    }
+
+    return true;
+}
+```
+
+### 5 实现一个JSON.stringify
+
+```js
+JSON.stringify(value[, replacer [, space]])：
+```
+
+- `Boolean | Number| String`类型会自动转换成对应的原始值。
+- `undefined`、任意函数以及`symbol`，会被忽略（出现在非数组对象的属性值中时），或者被转换成 `null`（出现在数组中时）。
+- 不可枚举的属性会被忽略如果一个对象的属性值通过某种间接的方式指回该对象本身，即循环引用，属性也会被忽略
+- 如果一个对象的属性值通过某种间接的方式指回该对象本身，即循环引用，属性也会被忽略
+
+```js
+function jsonStringify(obj) {
+    let type = typeof obj;
+    if (type !== "object") {
+        if (/string|undefined|function/.test(type)) {
+            obj = '"' + obj + '"';
+        }
+        return String(obj);
+    } else {
+        let json = []
+        let arr = Array.isArray(obj)
+        for (let k in obj) {
+            let v = obj[k];
+            let type = typeof v;
+            if (/string|undefined|function/.test(type)) {
+                v = '"' + v + '"';
+            } else if (type === "object") {
+                v = jsonStringify(v);
+            }
+            json.push((arr ? "" : '"' + k + '":') + String(v));
+        }
+        return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}")
+    }
+}
+jsonStringify({x : 5}) // "{"x":5}"
+jsonStringify([1, "false", false]) // "[1,"false",false]"
+jsonStringify({b: undefined}) // "{"b":"undefined"}"
+```
+
+### 6 实现一个JSON.parse
+
+```js
+JSON.parse(text[, reviver])
+```
+
+> 用来解析JSON字符串，构造由字符串描述的JavaScript值或对象。提供可选的reviver函数用以在返回之前对所得到的对象执行变换(操作)
+
+**第一种：直接调用 eval**
+
+```js
+function jsonParse(opt) {
+    return eval('(' + opt + ')');
+}
+jsonParse(jsonStringify({x : 5}))
+// Object { x: 5}
+jsonParse(jsonStringify([1, "false", false]))
+// [1, "false", falsr]
+jsonParse(jsonStringify({b: undefined}))
+// Object { b: "undefined"}
+```
+
+> 避免在不必要的情况下使用 `eval`，`eval()` 是一个危险的函数，他执行的代码拥有着执行者的权利。如果你用`eval()`运行的字符串代码被恶意方（不怀好意的人）操控修改，您最终可能会在您的网页/扩展程序的权限下，在用户计算机上运行恶意代码。它会执行JS代码，有XSS漏洞。
+
+如果你只想记这个方法，就得对参数json做校验。
+
+```js
+var rx_one = /^[\],:{}\s]*$/;
+var rx_two = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g;
+var rx_three = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g;
+var rx_four = /(?:^|:|,)(?:\s*\[)+/g;
+if (
+    rx_one.test(
+        json
+            .replace(rx_two, "@")
+            .replace(rx_three, "]")
+            .replace(rx_four, "")
+    )
+) {
+    var obj = eval("(" +json + ")");
+}
+```
+
+**第二种：Function**
+
+> 核心：Function与eval有相同的字符串参数特性
+
+```js
+var func = new Function(arg1, arg2, ..., functionBody);
+```
+
+在转换JSON的实际应用中，只需要这么做
+
+```js
+var jsonStr = '{ "age": 20, "name": "jack" }'
+var json = (new Function('return ' + jsonStr))();
+```
+
+> `eval` 与 `Function`都有着动态编译js代码的作用，但是在实际的编程中并不推荐使用
+
+### 7 解析 URL Params 为对象
+
+```js
+let url = 'http://www.domain.com/?user=anonymous&id=123&id=456&city=%E5%8C%97%E4%BA%AC&enabled';
+parseParam(url)
+/* 结果{ user: 'anonymous',  id: [ 123, 456 ], // 重复出现的 key 要组装成数组，能被转成数字的就转成数字类型  city: '北京', // 中文需解码  enabled: true, // 未指定值得 key 约定为 true}*/
+```
+
+```js
+function parseParam(url) {
+  const paramsStr = /.+\?(.+)$/.exec(url)[1]; // 将 ? 后面的字符串取出来
+  const paramsArr = paramsStr.split('&'); // 将字符串以 & 分割后存到数组中
+  let paramsObj = {};
+  // 将 params 存到对象中
+  paramsArr.forEach(param => {
+    if (/=/.test(param)) { // 处理有 value 的参数
+      let [key, val] = param.split('='); // 分割 key 和 value
+      val = decodeURIComponent(val); // 解码
+      val = /^\d+$/.test(val) ? parseFloat(val) : val; // 判断是否转为数字
+
+      if (paramsObj.hasOwnProperty(key)) { // 如果对象有 key，则添加一个值
+        paramsObj[key] = [].concat(paramsObj[key], val);
+      } else { // 如果对象没有这个 key，创建 key 并设置值
+        paramsObj[key] = val;
+      }
+    } else { // 处理没有 value 的参数
+      paramsObj[param] = true;
+    }
+  })
+
+  return paramsObj;
+}
+```
+
+### 8 转化为驼峰命名
+
+```js
+var s1 = "get-element-by-id"
+
+// 转化为 getElementById
+
+var f = function(s) {
+    return s.replace(/-\w/g, function(x) {
+        return x.slice(1).toUpperCase();
+    })
+}
+```
+
+### 9 实现一个函数判断数据类型
+
+```js
+function getType(obj) {
+   if (obj === null) return String(obj);
+   return typeof obj === 'object' 
+   ? Object.prototype.toString.call(obj).replace('[object ', '').replace(']', '').toLowerCase()
+   : typeof obj;
+}
+
+// 调用
+getType(null); // -> null
+getType(undefined); // -> undefined
+getType({}); // -> object
+getType([]); // -> array
+getType(123); // -> number
+getType(true); // -> boolean
+getType('123'); // -> string
+getType(/123/); // -> regexp
+getType(new Date()); // -> date
+```
+
+### 10 对象数组列表转成树形结构（处理菜单）
+
+```js
+[
+    {
+        id: 1,
+        text: '节点1',
+        parentId: 0 //这里用0表示为顶级节点
+    },
+    {
+        id: 2,
+        text: '节点1_1',
+        parentId: 1 //通过这个字段来确定子父级
+    }
+    ...
+]
+
+转成
+[
+    {
+        id: 1,
+        text: '节点1',
+        parentId: 0,
+        children: [
+            {
+                id:2,
+                text: '节点1_1',
+                parentId:1
+            }
+        ]
+    }
+]
+```
+
+实现代码如下:
+
+```js
+function listToTree(data) {
+  let temp = {};
+  let treeData = [];
+  for (let i = 0; i < data.length; i++) {
+    temp[data[i].id] = data[i];
+  }
+  for (let i in temp) {
+    if (+temp[i].parentId != 0) {
+      if (!temp[temp[i].parentId].children) {
+        temp[temp[i].parentId].children = [];
+      }
+      temp[temp[i].parentId].children.push(temp[i]);
+    } else {
+      treeData.push(temp[i]);
+    }
+  }
+  return treeData;
+}
+```
+
+### 11 树形结构转成列表（处理菜单）
+
+```js
+[
+    {
+        id: 1,
+        text: '节点1',
+        parentId: 0,
+        children: [
+            {
+                id:2,
+                text: '节点1_1',
+                parentId:1
+            }
+        ]
+    }
+]
+转成
+[
+    {
+        id: 1,
+        text: '节点1',
+        parentId: 0 //这里用0表示为顶级节点
+    },
+    {
+        id: 2,
+        text: '节点1_1',
+        parentId: 1 //通过这个字段来确定子父级
+    }
+    ...
+]
+```
+
+实现代码如下:
+
+```js
+function treeToList(data) {
+  let res = [];
+  const dfs = (tree) => {
+    tree.forEach((item) => {
+      if (item.children) {
+        dfs(item.children);
+        delete item.children;
+      }
+      res.push(item);
+    });
+  };
+  dfs(data);
+  return res;
+}
+```
 
 ## 综合
 
