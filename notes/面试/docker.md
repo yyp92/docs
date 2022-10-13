@@ -685,3 +685,1618 @@ sudo docker attach nginx
 
 - 这个命令最直观的效果可以理解为我们将容器中的主程序转为了“前台”运行 ( 与 `docker run` 中的 `-d` 选项有相反的意思 )。
 - 由于我们的输入输出流衔接到了容器的主程序上，我们的输入输出操作也就直接针对了这个程序，而我们发送的 `Linux` 信号也会转移到这个程序上。例如我们可以通过 `Ctrl + C` 来向程序发送停止信号，让程序停止 ( 从而容器也会随之停止 )。...
+
+## 七、为容器配置网络
+
+### 7.1 容器网络
+
+> 在之前介绍 `Docker` 核心组成的时候，我们已经简单谈到了容器网络的相关知识。容器网络实质上也是由 `Docker` 为应用程序所创造的虚拟环境的一部分，它能让应用从宿主机操作系统的网络环境中独立出来，形成容器自有的网络设备、IP 协议栈、端口套接字、IP 路由表、防火墙等等与网络相关的模块...
+
+![](../../\imgs\interview-docker-12.png)
+
+> 还是回归上面这幅之前展示过的关于 `Docker` 网络的图片。在 Docker 网络中，有三个比较核心的概念，也就是：沙盒 ( Sandbox )、网络 ( Network )、端点 ( Endpoint )
+
+- 沙盒提供了容器的虚拟网络栈，也就是之前所提到的端口套接字、`IP` 路由表、防火墙等的内容。其实现隔离了容器网络与宿主机网络，形成了完全独立的容器网络环境。
+- 网络可以理解为 `Docker` 内部的虚拟子网，网络内的参与者相互可见并能够进行通讯。`Docker` 的这种虚拟网络也是于宿主机网络存在隔离关系的，其目的主要是形成容器间的安全通讯环境。
+- 端点是位于容器或网络隔离墙之上的洞，其主要目的是形成一个可以控制的突破封闭的网络环境的出入口。当容器的端点与网络的端点形成配对后，就如同在这两者之间搭建了桥梁，便能够进行数据传输了
+
+### 7.2 浅析 Docker 的网络实现
+
+- 容器网络模型为容器引擎提供了一套标准的网络对接范式，而在 `Docker` 中，实现这套范式的是 `Docker` 所封装的 `libnetwork` 模块。
+- 而对于网络的具体实现，在 `Docker` 的发展过程中也逐渐抽象，形成了统一的抽象定义。进而通过这些抽象定义，便可以对 `Docker` 网络的实现方式进行不同的变化...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-13.png)
+
+> 目前 `Docker` 官方为我们提供了五种 `Docker`网络驱动，分别是：`Bridge Driver`、`Host Driver`、`Overlay Driver`、`MacLan Driver`、`one Driver`。
+
+其中，`Bridge` 网络是 `Docker` 容器的默认网络驱动，简而言之其就是通过网桥来实现网络通讯 ( 网桥网络的实现可以基于硬件，也可以基于软件 )。而 `Overlay` 网络是借助 `Docker` 集群模块 `Docker Swarm`来搭建的跨 `Docker Daemon` 网络，我们可以通过它搭建跨物理主机的虚拟网络，进而让不同物理机中运行的容器感知不到多个物理机的存在。
+
+> `Bridge Driver` 和 `Overlay Driver` 在开发中使用频率较高
+
+### 7.4 容器互联
+
+- 由于 `Docker` 提倡容器与应用共生的轻量级容器理念，所以容器中通常只包含一种应用程序，但我们知道，如今纷繁的系统服务，没有几个是可以通过单一的应用程序支撑的。拿最简单的 `Web` 应用为例，也至少需要业务应用、数据库应用、缓存应用等组成。也就是说，在 `Docker` 里我们需要通过多个容器来组成这样的系统。
+- 而这些互联网时代的应用，其间的通讯方式主要以网络为主，所以打通容器间的网络，是使它们能够互相通讯的关键所在。
+- 要让一个容器连接到另外一个容器，我们可以在容器通过 `docker create` 或 `docker run` 创建时通过 `--link` 选项进行配置。
+- 例如，这里我们创建一个 `MySQL` 容器，将运行我们 `Web` 应用的容器连接到这个 `MySQL` 容器上，打通两个容器间的网络，实现它们之间的网络互通...
+
+```bash
+sudo docker run -d --name mysql -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql
+sudo docker run -d --name webapp --link mysql webapp:latest...
+```
+
+- 容器间的网络已经打通，那么我们要如何在`Web`应用中连接到 `MySQL` 数据库呢？`Docker` 为容器间连接提供了一种非常友好的方式，我们只需要将容器的网络命名填入到连接地址中，就可以访问需要连接的容器了。
+- 假设我们在 `Web` 应用中使用的是 `JDBC` 进行数据库连接的，我们可以这么填写连接...
+
+```docker
+String url = "jdbc:mysql://mysql:3306/webapp";
+```
+
+- 在这里，连接地址中的 `mysql` 就好似我们常见的域名解析，`Docker` 会将其指向 `MySQL` 容器的 `IP` 地址。
+- 看到这里，读者们有没有发现 `Docker` 在容器互通中为我们带来的一项便利，也就是我们不再需要真实的知道另外一个容器的 `IP` 地址就能进行连接。再具体来对比，在以往的开发中，我们每切换一个环境 ( 例如将程序从开发环境提交到测试环境 )，都需要重新配置程序中的各项连接地址等参数，而在 `Docker` 里，我们并不需要关心这个，只需要程序中配置被连接容器的别名，映射`IP` 的工作就交给 `Docker` 完成了...
+
+### 7.5 暴露端口
+
+- 需要注意的是，虽然容器间的网络打通了，但并不意味着我们可以任意访问被连接容器中的任何服务。`Docker` 为容器网络增加了一套安全机制，只有容器自身允许的端口，才能被其他容器所访问。
+- 这个容器自我标记端口可被访问的过程，我们通常称为暴露端口。我们在 `docker ps` 的结果中可以看到容器暴露给其他容器访问的端口
+
+```bash
+sudo docker ps
+
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                 NAMES
+95507bc88082        mysql:5.7           "docker-entrypoint.s…"   17 seconds ago      Up 16 seconds       3306/tcp, 33060/tcp   mysql...
+```
+
+- 这里我们看到，`MySQL` 这个容器暴露的端口是 `3306` 和 `33060`。所以我们连接到 `MySQL` 容器后，只能对这两个端口进行访问。
+- 端口的暴露可以通过 `Docker` 镜像进行定义，也可以在容器创建时进行定义。在容器创建时进行定义的方法是借助 `--expose` 这个选项...
+
+```bash
+sudo docker run -d --name mysql -e MYSQL_RANDOM_ROOT_PASSWORD=yes --expose 13306 --expose 23306 mysql:5.7
+```
+
+> 这里我们为 `MySQL` 暴露了 `13306` 和 `23306` 这两个端口，暴露后我们可以在 `docker ps` 中看到这两个端口已经成功的打开
+
+```bash
+sudo docker ps 
+
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                       NAMES
+3c4e645f21d7        mysql:5.7           "docker-entrypoint.s…"   4 seconds ago       Up 3 seconds        3306/tcp, 13306/tcp, 23306/tcp, 33060/tcp   mysql...
+```
+
+> 容器暴露了端口只是类似我们打开了容器的防火墙，具体能不能通过这个端口访问容器中的服务，还需要容器中的应用监听并处理来自这个端口的请求。
+
+### 7.6 通过别名连接
+
+> 纯粹的通过容器名来打开容器间的网络通道缺乏一定的灵活性，在 `Docker` 里还支持连接时使用别名来使我们摆脱容器名的限制。
+
+```bash
+sudo docker run -d --name webapp --link mysql:database webapp:latest
+```
+
+> 在这里，我们使用 `--link <name>:<alias>` 的形式，连接到 `MySQL` 容器，并设置它的别名为 `database`。当我们要在 `Web` 应用中使用 `MySQL` 连接时，我们就可以使用 `database` 来代替连接地址了
+
+```docker
+String url = "jdbc:mysql://database:3306/webapp";
+```
+
+### 7.7 管理网络
+
+- 容器能够互相连接的前提是两者同处于一个网络中 ( 这里的网络是指容器网络模型中的网络 )。这个限制很好理解，刚才我们说了，网络这个概念我们可以理解为 `Docker` 所虚拟的子网，而容器网络沙盒可以看做是虚拟的主机，只有当多个主机在同一子网里时，才能互相看到并进行网络数据交换。
+- 当我们启动 `Docker` 服务时，它会为我们创建一个默认的 `bridge` 网络，而我们创建的容器在不专门指定网络的情况下都会连接到这个网络上。所以我们刚才之所以能够把 `webapp` 容器连接到 `mysql`容器上，其原因是两者都处于 `bridge` 这个网络上。
+- 我们通过 `docker inspect`命令查看容器，可以在 `Network` 部分看到容器网络相关的信息...
+
+```bash
+sudo docker inspect mysql
+
+[
+    {
+## ......
+        "NetworkSettings": {
+## ......
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "bc14eb1da66b67c7d155d6c78cb5389d4ffa6c719c8be3280628b7b54617441b",
+                    "EndpointID": "1e201db6858341d326be4510971b2f81f0f85ebd09b9b168e1df61bab18a6f22",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+            }
+## ......
+        }
+## ......
+    }
+]...
+```
+
+- 这里我们能够看到 `mysql` 容器在 `bridge`网络中所分配的 `IP` 地址，其自身的端点、`Mac` 地址，`bridge` 网络的网关地址等信息。
+- `Docker` 默认创建的这个 `bridge` 网络是非常重要的，理由自然是在没有明确指定容器网络时，容器都会连接到这个网络中。在之前讲解 `Docker for Win` 和 `Docker for Mac` 安装的时候，我们提到过这两个软件的配置中都有一块配置 `Docker` 中默认网络的内容，这块所指的默认网络就是这个 `bridge` 网络...
+
+### 7.8 创建网络
+
+- 在 `Docker` 里，我们也能够创建网络，形成自己定义虚拟子网的目的。
+- `docker CLI` 里与网络相关的命令都以 `network` 开头，其中创建网络的命令是 `docker network create`
+
+```bash
+sudo docker network create -d bridge individual
+```
+
+- 通过 `-d` 选项我们可以为新的网络指定驱动的类型，其值可以是刚才我们所提及的 `bridge`、`host`、`overlay`、`maclan`、`none`，也可以是其他网络驱动插件所定义的类型。这里我们使用的是 `Bridge Driver` ( 当我们不指定网络驱动时，`Docker`也会默认采用 `Bridge Driver`作为网络驱动 )。
+- 通过 `docker network ls` 或是 `docker network list` 可以查看 `Docker` 中已经存在的网络...
+
+```bash
+sudo docker network ls
+
+NETWORK ID          NAME                DRIVER              SCOPE
+bc14eb1da66b        bridge              bridge              local
+35c3ef1cc27d        individual          bridge              local...
+```
+
+> 之后在我们创建容器时，可以通过 `--network` 来指定容器所加入的网络，一旦这个参数被指定，容器便不会默认加入到 `bridge` 这个网络中了 ( 但是仍然可以通过 `--network bridge` 让其加入 )。
+
+```bash
+sudo docker run -d --name mysql -e MYSQL_RANDOM_ROOT_PASSWORD=yes --network individual mysql:5.7
+```
+
+> 我们通过 `docker inspect` 观察一下此时的容器网络
+
+```bash
+sudo docker inspect mysql
+
+[
+    {
+## ......
+        "NetworkSettings": {
+## ......
+            "Networks": {
+                "individual": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": [
+                        "2ad678e6d110"
+                    ],
+                    "NetworkID": "35c3ef1cc27d24e15a2b22bdd606dc28e58f0593ead6a57da34a8ed989b1b15d",
+                    "EndpointID": "41a2345b913a45c3c5aae258776fcd1be03b812403e249f96b161e50d66595ab",
+                    "Gateway": "172.18.0.1",
+                    "IPAddress": "172.18.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:12:00:02",
+                    "DriverOpts": null
+                }
+            }
+## ......
+        }
+## ......
+    }
+]...
+```
+
+- 可以看到，容器所加入网络已经变成了 `individual`这个网络了。
+- 这时候我们通过`--link` 让处于另外一个网络的容器连接到这个容器上，看看会发生什么样的效果
+
+```bash
+sudo docker run -d --name webapp --link mysql --network bridge webapp:latest
+
+docker: Error response from daemon: Cannot link to /mysql, as it does not belong to the default network.
+ERRO[0000] error waiting for container: context canceled...
+```
+
+- 可以看到容器并不能正常的启动，而 `Docker` 提醒我们两个容器处于不同的网络，之间是不能相互连接引用的。
+- 我们来改变一下，让运行 `Web`应用的容器加入到 `individual` 这个网络，就可以成功建立容器间的网络连接了
+
+```bash
+sudo docker run -d --name webapp --link mysql --network individual webapp:latest
+```
+
+### 7.9 端口映射
+
+> 刚才我们提及的都是容器直接通过 `Docker` 网络进行的互相访问，在实际使用中，还有一个非常常见的需求，就是我们需要在容器外通过网络访问容器中的应用。最简单的一个例子，我们提供了 Web 服务，那么我们就需要提供一种方式访问运行在容器中的 Web 应用。
+
+- 在 `Docker` 中，提供了一个端口映射的功能实现这样的需求...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-14.png)
+
+- 通过 `Docker` 端口映射功能，我们可以把容器的端口映射到宿主操作系统的端口上，当我们从外部访问宿主操作系统的端口时，数据请求就会自动发送给与之关联的容器端口
+- 要映射端口，我们可以在创建容器时使用 `-p` 或者是 `--publish`选项...
+
+```bash
+sudo docker run -d --name nginx -p 80:80 -p 443:443 nginx:1.12
+```
+
+> 使用端口映射选项的格式是 `-p <ip>:<host-port>:<container-port>`，其中 `ip` 是宿主操作系统的监听 `ip`，可以用来控制监听的网卡，默认为 `0.0.0.0`，也就是监听所有网卡。`host-port` 和 `container-port` 分别表示映射到宿主操作系统的端口和容器的端口，这两者是可以不一样的，我们可以将容器的 `80` 端口映射到宿主操作系统的 8080 端口，传入 `-p 8080:80` 即可。
+
+- 我们可以在容器列表里看到端口映射的配置...
+
+```bash
+sudo docker ps
+
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                      NAMES
+bc79fc5d42a6        nginx:1.12          "nginx -g 'daemon of…"   4 seconds ago       Up 2 seconds        0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp   nginx...
+```
+
+- 打印的结果里用 `->` 标记了端口的映射关系。
+
+### 7.10 在 Windows 和 macOS 中使用映射
+
+> `Docker` 的端口映射功能是将容器端口映射到宿主操作系统的端口上，实际来说就是映射到了 `Linux` 系统的端口上。而我们知道，在 `Windows` 和 `macOS` 中运行的 Docker，其 Linux 环境是被虚拟出来的，如果我们仅仅是将端口映射到 `Linux` 上，由于虚拟环境还有一层隔离，我们依然不能通过`Windows` 或`macOS` 的端口来访问容器。
+
+- 解决这种问题的方法很简单，只需要再加一次映射，将虚拟 `Linux` 系统中的端口映射到 `Windows` 或 `macOS` 的端口即可。...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-15.png)
+
+- 如果我们使用 `Docker for Windows` 或 `Docker for` Mac，这个端口映射的操作程序会自动帮助我们完成，所以我们不需要做任何额外的事情，就能够直接使用 `Windows` 或 `macOS` 的端口访问容器端口了。
+- 而当我们使用 `Docker Toolbox` 时，由于其自动化能力比较差，所以需要我们在 `VirtualBox` 里单独配置这个操作系统端口到 `Linux` 端口的映射关系...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-16.png)
+
+> 在 `VirtualBox` 配置中的端口转发一栏里，进行相关的配置即可
+
+## 八、管理和存储数据
+
+### 8.1 数据管理实现方式
+
+**Docker 容器中的文件系统于我们这些开发使用者来说，虽然有很多优势，但也有很多弊端，其中显著的两点就是**
+
+- 沙盒文件系统是跟随容器生命周期所创建和移除的，数据无法直接被持久化存储。
+- 由于容器隔离，我们很难从容器外部获得或操作容器内部文件中的数据
+
+> 当然，`Docker` 很好的解决了这些问题，这主要还是归功于 `Docker` 容器文件系统是基于 `UnionFS`。由于 `UnionFS` 支持挂载不同类型的文件系统到统一的目录结构中，所以我们只需要将宿主操作系统中，文件系统里的文件或目录挂载到容器中，便能够让容器内外共享这个文件。
+
+- 由于通过这种方式可以互通容器内外的文件，那么文件数据持久化和操作容器内文件的问题就自然而然的解决了。
+- 同时，`UnionFS` 带来的读写性能损失是可以忽略不计的，所以这种实现可以说是相当优秀的...
+
+### 8.2 挂载方式
+
+> 基于底层存储实现，`Docker` 提供了三种适用于不同场景的文件系统挂载方式：Bind `Mount`、`Volume` 和 `Tmpfs Mount`
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-17.png)
+
+- `Bind Mount` 能够直接将宿主操作系统中的目录和文件挂载到容器内的文件系统中，通过指定容器外的路径和容器内的路径，就可以形成挂载映射关系，在容器内外对文件的读写，都是相互可见的。
+- `Volume` 也是从宿主操作系统中挂载目录到容器内，只不过这个挂载的目录由 Docker 进行管理，我们只需要指定容器内的目录，不需要关心具体挂载到了宿主操作系统中的哪里。
+- `Tmpfs Mount` 支持挂载系统内存中的一部分到容器的文件系统里，不过由于内存和容器的特征，它的存储并不是持久的，其中的内容会随着容器的停止而消失...
+
+### 8.3 挂载文件到容器
+
+> 要将宿主操作系统中的目录挂载到容器之后，我们可以在容器创建的时候通过传递 -v 或 --volume 选项来指定内外挂载的对应目录或文件
+
+```bash
+sudo docker run -d --name nginx -v /webapp/html:/usr/share/nginx/html nginx:1.12
+```
+
+- 使用 `-v`或 `--volume` 来挂载宿主操作系统目录的形式是 `-v <host-path>:<container-path>` 或 `--volume <host-path>:<container-path>`，其中 `host-path` 和 `container-path` 分别代表宿主操作系统中的目录和容器中的目录。这里需要注意的是，为了避免混淆，`Docker`这里强制定义目录时必须使用绝对路径，不能使用相对路径。
+- 我们能够指定目录进行挂载，也能够指定具体的文件来挂载，具体选择何种形式来挂载，大家可以根据具体的情况来选择。
+- 当挂载了目录的容器启动后，我们可以看到我们在宿主操作系统中的文件已经出现在容器中了...
+
+```bash
+sudo docker exec nginx ls /usr/share/nginx/html
+
+index.html
+```
+
+> 在 `docker inspect` 的结果里，我们可以看到有关容器数据挂载相关的信息
+
+```bash
+sudo docker inspect nginx
+
+[
+    {
+## ......
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/webapp/html",
+                "Destination": "/usr/share/nginx/html",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ],
+## ......
+    }
+]...
+```
+
+> 在关于挂载的信息中我们可以看到一个 `RW` 字段，这表示挂载目录或文件的读写性 ( `Read and Write` )。实际操作中，`Docker` 还支持以只读的方式挂载，通过只读方式挂载的目录和文件，只能被容器中的程序读取，但不接受容器中程序修改它们的请求。在挂载选项 `-v`后再接上 `:ro` 就可以只读挂载了...
+
+```bash
+sudo docker run -d --name nginx -v /webapp/html:/usr/share/nginx/html:ro nginx:1.12
+```
+
+### 8.4 挂载临时文件目录
+
+- `Tmpfs Mount` 是一种特殊的挂载方式，它主要利用内存来存储数据。由于内存不是持久性存储设备，所以其带给 `Tmpfs Mount` 的特征就是临时性挂载。
+- 与挂载宿主操作系统目录或文件不同，挂载临时文件目录要通过 `--tmpfs` 这个选项来完成。由于内存的具体位置不需要我们来指定，这个选项里我们只需要传递挂载到容器内的目录即可。...
+
+```bash
+sudo docker run -d --name webapp --tmpfs /webapp/cache webapp:latest
+```
+
+> 容器已挂载的临时文件目录我们也可以通过 `docker inspect` 命令查看。
+
+```bash
+sudo docker inspect webapp
+
+[
+    {
+## ......
+         "Tmpfs": {
+            "/webapp/cache": ""
+        },
+## ......
+    }
+]...
+```
+
+- 挂载临时文件首先要注意它不是持久存储这一特性，在此基础上，它有几种常见的适应场景。
+- 应用中使用到，但不需要进行持久保存的敏感数据，可以借助内存的非持久性和程序隔离性进行一定的安全保障。
+- 读写速度要求较高，数据变化量大，但不需要持久保存的数据，可以借助内存的高读写速度减少操作的时间...
+
+### 8.5 使用数据卷
+
+- 除了与其他虚拟机工具近似的宿主操作系统目录挂载的功能外，`Docker` 还创造了数据卷 ( `Volume` ) 这个概念。数据卷的本质其实依然是宿主操作系统上的一个目录，只不过这个目录存放在`Docker` 内部，接受 `Docker`的管理。
+- 在使用数据卷进行挂载时，我们不需要知道数据具体存储在了宿主操作系统的何处，只需要给定容器中的哪个目录会被挂载即可。
+- 我们依然可以使用 `-v`或 `--volume` 选项来定义数据卷的挂载。...
+
+```bash
+sudo docker run -d --name webapp -v /webapp/storage webapp:latest
+```
+
+> 数据卷挂载到容器后，我们可以通过 `docker inspect` 看到容器中数据卷挂载的信息。
+
+```bash
+sudo docker inspect webapp
+
+[
+    {
+## ......
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "2bbd2719b81fbe030e6f446243386d763ef25879ec82bb60c9be7ef7f3a25336",
+                "Source": "/var/lib/docker/volumes/2bbd2719b81fbe030e6f446243386d763ef25879ec82bb60c9be7ef7f3a25336/_data",
+                "Destination": "/webapp/storage",
+                "Driver": "local",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+## ......
+    }
+]...
+```
+
+- 这里我们所得到的信息与绑定挂载有所区别，除了 `Type` 中的类型不一样之外，在数据卷挂载中，我们还要关注一下`Name` 和 `Source` 这两个信息。
+- 其中 `Source` 是 `Docker` 为我们分配用于挂载的宿主机目录，其位于 `Docker` 的资源区域 ( 这里是默认的`/var/lib/docker` ) 内。当然，我们并不需要关心这个目录，一切对它的管理都已经在 `Docker`内实现了。
+- 为了方便识别数据卷，我们可以像命名容器一样为数据卷命名，这里的 `Name` 就是数据卷的命名。在我们未给出数据卷命名的时候，`Docker`会采用数据卷的 `ID` 命名数据卷。我们也可以通过 `-v <name>:<container-path>` 这种形式来命名数据卷...
+
+```bash
+sudo docker run -d --name webapp -v appdata:/webapp/storage webapp:latest
+```
+
+> 由于 `-v` 选项既承载了 `Bind Mount` 的定义，又参与了 `Volume` 的定义，所以其传参方式需要特别留意。前面提到了`，-v` 在定义绑定挂载时必须使用绝对路径，其目的主要是为了避免与数据卷挂载中命名这种形式的冲突。
+
+## 九、操作镜像：保存和共享镜像
+
+### 9.1 提交容器更改
+
+- 之前我们已经介绍过了，`Docker` 镜像的本质是多个基于 `UnionFS` 的镜像层依次挂载的结果，而容器的文件系统则是在以只读方式挂载镜像后增加的一个可读可写的沙盒环境。
+- 基于这样的结构，`Docker` 中为我们提供了将容器中的这个可读可写的沙盒环境持久化为一个镜像层的方法。更浅显的说，就是我们能够很轻松的在 `Docker` 里将容器内的修改记录下来，保存为一个新的镜像。
+- 将容器修改的内容保存为镜像的命令是 `docker` commit，由于镜像的结构很像代码仓库里的修改记录，而记录容器修改的过程又像是在提交代码，所以这里我们更形象的称之为提交容器的更改...
+
+```bash
+sudo docker commit webapp
+
+sha256:0bc42f7ff218029c6c4199ab5c75ab83aeaaed3b5c731f715a3e807dda61d19e
+```
+
+- `Docker` 执行将容器内沙盒文件系统记录成镜像层的时候，会先暂停容器的运行，以保证容器内的文件系统处于一个相对稳定的状态，确保数据的一致性。
+- 在使用 `docker commit` 提交镜像更新后，我们可以得到 `Docker`创建的新镜像的 `ID`，之后我们也能够从本地镜像列表中找到它...
+
+```bash
+sudo docker images
+
+REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
+<none>                <none>              0bc42f7ff218        3 seconds ago       372MB
+## .........
+```
+
+> 像通过 `Git` 等代码仓库软件提交代码一样，我们还能在提交容器更改的时候给出一个提交信息，方便以后查询
+
+```bash
+sudo docker commit -m "Configured" webapp
+```
+
+### 9.2 为镜像命名
+
+- 在上面的例子里，我们发现提交容器更新后产生的镜像并没 `REPOSITORY` 和 `TAG` 的内容，也就是说，这个新的镜像还没有名字。
+- 之前我们谈到过，使用没有名字的镜像并不是很好的选择，因为我们无法直观的看到我们正在使用什么。好在 `Docker` 为我们提供了一个为镜像取名的命令，也就是 `docker tag` 命令...
+
+```bash
+sudo docker tag 0bc42f7ff218 webapp:1.0
+```
+
+> 使用 `docker tag` 能够为未命名的镜像指定镜像名，也能够对已有的镜像创建一个新的命名
+
+```bash
+sudo docker tag webapp:1.0 webapp:latest
+```
+
+> 当我们对未命名的镜像进行命名后，`Docker` 就不会在镜像列表里继续显示这个镜像，取而代之的是我们新的命名。而如果我们对以后镜像使用 `docker tag`，旧的镜像依然会存在于镜像列表中。
+
+```bash
+sudo docker images
+
+REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
+webapp                1.0                 0bc42f7ff218        29 minutes ago      372MB
+webapp                latest              0bc42f7ff218        29 minutes ago      372MB
+## .........
+```
+
+- 由于镜像是对镜像层的引用记录，所以我们对镜像进行命名后，虽然能够在镜像列表里同时看到新老两个镜像，实质是它们其实引用着相同的镜像层，这个我们能够从镜像 ID 中看得出来 ( 因为镜像 `ID` 就是最上层镜像层的 `ID` )。正是这个原因，我们虽然创建了新的镜像，但对物理存储的占用空间却不是镜像大小直接翻倍，并且创建也在霎那之间。
+- 除了使用 `docker tag` 在容器提交为新的镜像后为镜像命名这种方式外，我们还可以直接在 `docker commit` 命令里指定新的镜像名，这种方式在使用容器提交时会更加方便。...
+
+```bash
+sudo docker commit -m "Upgrade" webapp webapp：2.0
+```
+
+### 9.3 镜像的迁移
+
+- 在我们将更新导出为镜像后，就可以开始迁移镜像的工作了。
+- 由于 `Docker` 是以集中的方式管理镜像的，所以在迁移之前，我们要先从 `Docker` 中取出镜像。`docker save` 命令可以将镜像输出，提供了一种让我们保存镜像到 Docker 外部的方式...
+
+```bash
+sudo docker save webapp:1.0 > webapp-1.0.tar
+```
+
+- 在默认定义下，`docker save` 命令会将镜像内容放入输出流中，这就需要我们使用管道进行接收 ( 也就是命令中的 > 符号 )，这属于 `Linux`等系统控制台中的用法，这里我们不做详细讲解。
+- 管道这种用法有时候依然不太友好，`docker save` 命令还为我们提供了 `-o` 选项，用来指定输出文件，使用这个选项可以让命令更具有统一性。...
+
+```bash
+sudo docker save -o ./webapp-1.0.tar webapp:1.0
+```
+
+> 在镜像导出之后，我们就可以找到已经存储镜像内容的 `webapp-1.0.tar` 这个文件了。有兴趣的朋友，可以使用解压软件查看其中的内容，你会看到里面其实就是镜像所基于的几个镜像层的记录文件
+
+### 9.4 导入镜像
+
+- 我们可以通过很多种方式将导出的镜像文件复制到另一台机器上，在这么操作之后，我们就要将镜像导入到这台新机器中运行的 `Docker` 中
+- 导入镜像的方式也很简单，使用与 `docker save` 相对的 `docker load` 命令即可
+
+```bash
+sudo docker load < webapp-1.0.tar
+```
+
+> 相对的，`docker load` 命令是从输入流中读取镜像的数据，所以我们这里也要使用管道来传输内容。当然，我们也能够使用 `-i` 选项指定输入文件
+
+```bash
+sudo docker load -i webapp-1.0.tar
+```
+
+> 镜像导入后，我们就可以通过 `docker images` 看到它了，导入的镜像会延用原有的镜像名称
+
+### 9.5 批量迁移
+
+> 通过 `docker save` 和 `docker load`命令我们还能够批量迁移镜像，只要我们在 `docker save` 中传入多个镜像名作为参数，它就能够将这些镜像都打成一个包，便于我们一次性迁移多个镜像。
+
+```bash
+sudo docker save -o ./images.tar webapp:1.0 nginx:1.12 mysql:5.7
+```
+
+> 装有多个镜像的包可以直接被 `docker load` 识别和读取，我们将这个包导入后，所有其中装载的镜像都会被导入到 `Docker`之中。
+
+### 9.6 导出和导入容器
+
+- 也许 `Docker` 的开发者认为，提交镜像修改，再导出镜像进行迁移的方法还不够效率，所以还为我们提供了一个导出容器的方法。
+- 使用 `docker export` 命令我们可以直接导出容器，我们可以把它简单的理解为 `docker commit` 与 `docker save` 的结合体...
+
+```bash
+sudo docker export -o ./webapp.tar webapp
+```
+
+> 相对的，使用 `docker export` 导出的容器包，我们可以使用 `docker import` 导入。这里需要注意的是，使用 `docker import` 并非直接将容器导入，而是将容器运行时的内容以镜像的形式导入。所以导入的结果其实是一个镜像，而不是容器。在 `docker import` 的参数里，我们可以给这个镜像命名...
+
+```bash
+sudo docker import ./webapp.tar webapp:1.0
+```
+
+> 在开发的过程中，使用 `docker save` 和 `docker load`，或者是使用 `docker export`和 `docker import` 都可以达到迁移容器或者镜像的目的
+
+## 十、操作镜像：通过 Dockerfile 创建镜像
+
+### 10.1 关于 Dockerfile
+
+> `Dockerfile` 是 `Docker`中用于定义镜像自动化构建流程的配置文件，在 `Dockerfile` 中，包含了构建镜像过程中需要执行的命令和其他操作。通过 `Dockerfile` 我们可以更加清晰、明确的给定 `Docker` 镜像的制作过程，而由于其仅是简单、小体积的文件，在网络等其他介质中传递的速度极快，能够更快的帮助我们实现容器迁移和集群部署...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-18.png)
+
+> 通常来说，我们对 `Dockerfile` 的定义就是针对一个名为`Dockerfile` 的文件，其虽然没有扩展名，但本质就是一个文本文件，所以我们可以通过常见的文本编辑器或者 `IDE` 创建和编辑它。
+
+- `Dockerfile` 的内容很简单，主要以两种形式呈现，一种是注释行，另一种是指令行...
+
+```dockerfile
+# Comment
+INSTRUCTION arguments
+```
+
+> 在 `Dockerfile` 中，拥有一套独立的指令语法，其用于给出镜像构建过程中所要执行的过程。`Dockerfile` 里的指令行，就是由指令与其相应的参数所组成
+
+### 10.2 环境搭建与镜像构建
+
+- 如果具体来说 `Dockerfile` 的作用和其实际运转的机制，我们可以用一个我们开发中的常见流程来比较。
+- 在一个完整的开发、测试、部署过程中，程序运行环境的定义通常是由开发人员来进行的，因为他们更加熟悉程序运转的各个细节，更适合搭建适合程序的运行环境。
+- 在这样的前提下，为了方便测试和运维搭建相同的程序运行环境，常用的做法是由开发人员编写一套环境搭建手册，帮助测试人员和运维人员了解环境搭建的流程。
+- 而 `Dockerfile` 就很像这样一个环境搭建手册，因为其中包含的就是一个构建容器的过程。
+- 而比环境搭建手册更好的是，`Dockerfile` 在容器体系下能够完成自动构建，既不需要测试和运维人员深入理解环境中各个软件的具体细节，也不需要人工执行每一个搭建流程。...
+
+### 10.3 编写 Dockerfile
+
+> 相对于之前我们介绍的提交容器修改，再进行镜像迁移的方式相比，使用 `Dockerfile` 进行这项工作有很多优势，我总结了几项尤为突出的。
+
+- `Dockerfile` 的体积远小于镜像包，更容易进行快速迁移和部署。
+- 环境构建流程记录了`Dockerfile`中，能够直观的看到镜像构建的顺序和逻辑。
+- 使用 `Dockerfile` 来构建镜像能够更轻松的实现自动部署等自动化流程。
+- 在修改环境搭建细节时，修改 `Dockerfile` 文件要比从新提交镜像来的轻松、简单。...
+
+> 纸上得来终觉浅，光说很多关于 `Dockerfile` 的概念其实对我们开发使用来说意义不大，这里我们直接学习如何编写一个用于构建镜像的 `Dockerfile`。
+
+- 首先我们来看一个完整的 `Dockerfile`的例子，这是用于构建 `Docker`官方所提供的 `Redis`镜像的 `Dockerfile` 文件...
+
+```dockerfile
+FROM debian:stretch-slim
+
+# add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
+RUN groupadd -r redis && useradd -r -g redis redis
+
+# grab gosu for easy step-down from root
+# https://github.com/tianon/gosu/releases
+ENV GOSU_VERSION 1.10
+RUN set -ex; \
+    \
+    fetchDeps=" \
+        ca-certificates \
+        dirmngr \
+        gnupg \
+        wget \
+    "; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends $fetchDeps; \
+    rm -rf /var/lib/apt/lists/*; \
+    \
+    dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
+    wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
+    wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc"; \
+    export GNUPGHOME="$(mktemp -d)"; \
+    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
+    gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
+    gpgc...
+```
+
+> 其中可以很明确的见到我们之前说的 `Dockerfile` 文件的两种行结构，也就是指令行和注释行，接下来我们着重关注指令行，因为这是构建镜像的关键
+
+### 10.4 Dockerfile 的结构
+
+> 总体上来说，我们可以将 `Dockerfile` 理解为一个由上往下执行指令的脚本文件。当我们调用构建命令让 `Docker` 通过我们给出的`Dockerfile` 构建镜像时，Docker 会逐一按顺序解析 `Dockerfile` 中的指令，并根据它们不同的含义执行不同的操作。
+
+如果进行细分，我们可以将 `Dockerfile` 的指令简单分为五大类。...
+
+- **基础指令**：用于定义新镜像的基础和性质。
+- **控制指令**：是指导镜像构建的核心部分，用于描述镜像在构建过程中需要执行的命令。
+- **引入指令**：用于将外部文件直接引入到构建镜像内部。
+- **执行指令**：能够为基于镜像所创建的容器，指定在启动时需要执行的脚本或命令。
+- **配置指令**：对镜像以及基于镜像所创建的容器，可以通过配置指令对其网络、用户等内容进行配置...
+
+### 10.5 常见 Dockerfile 指令
+
+> 熟悉 `Dockerfile` 的指令是编写 `Dockerfile` 的前提，这里我们先来介绍几个最常见的 `Dockerfile` 指令，它们基本上囊括了所有 `Dockerfile` 中`90%`以上的工作。
+
+**FROM**
+
+- 通常来说，我们不会从零开始搭建一个镜像，而是会选择一个已经存在的镜像作为我们新镜像的基础，这种方式能够大幅减少我们的时间。
+- 在 `Dockerfile` 里，我们可以通过 `FROM` 指令指定一个基础镜像，接下来所有的指令都是基于这个镜像所展开的。在镜像构建的过程中，`Docker` 也会先获取到这个给出的基础镜像，再从这个镜像上进行构建操作。
+- `FROM` 指令支持三种形式，不管是哪种形式，其核心逻辑就是指出能够被 `Docker` 识别的那个镜像，好让 `Docker`从那个镜像之上开始构建工作...
+
+```dockerfile
+FROM <image> [AS <name>]
+FROM <image>[:<tag>] [AS <name>]
+FROM <image>[@<digest>] [AS <name>]
+```
+
+- 既然选择一个基础镜像是构建新镜像的根本，那么 `Dockerfile` 中的第一条指令必须是`FROM` 指令，因为没有了基础镜像，一切构建过程都无法开展。
+- 当然，一个 `Dockerfile` 要以 `FROM` 指令作为开始并不意味着 `FROM`只能是 `Dockerfile`中的第一条指令。在 `Dockerfile` 中可以多次出现 `FROM`指令，当 `FROM` 第二次或者之后出现时，表示在此刻构建时，要将当前指出镜像的内容合并到此刻构建镜像的内容里。这对于我们直接合并两个镜像的功能很有帮助...
+
+**RUN**
+
+- 镜像的构建虽然是按照指令执行的，但指令只是引导，最终大部分内容还是控制台中对程序发出的命令，而 `RUN` 指令就是用于向控制台发送命令的指令。
+- 在`RUN`指令之后，我们直接拼接上需要执行的命令，在构建时，`Docker` 就会执行这些命令，并将它们对文件系统的修改记录下来，形成镜像的变化。...
+
+```dockerfile
+RUN <command>
+RUN ["executable", "param1", "param2"]
+```
+
+> `RUN` 指令是支持`\` 换行的，如果单行的长度过长，建议对内容进行切割，方便阅读。而事实上，我们会经常看到 `\` 分割的命令，例如在上面我们贴出的 `Redis` 镜像的 `Dockerfile` 里
+
+**ENTRYPOINT 和 CMD**
+
+> 基于镜像启动的容器，在容器启动时会根据镜像所定义的一条命令来启动容器中进程号为 `1` 的进程。而这个命令的定义，就是通过 `Dockerfile` 中的 `NTRYPOINT` 和 `CMD` 实现的。
+
+```dockerfile
+ENTRYPOINT ["executable", "param1", "param2"]
+ENTRYPOINT command param1 param2
+
+CMD ["executable","param1","param2"]
+CMD ["param1","param2"]
+CMD command param1 param2...
+```
+
+- `ENTRYPOINT` 指令和 `CMD` 指令的用法近似，都是给出需要执行的命令，并且它们都可以为空，或者说是不在 `Dockerfile` 里指出。
+- 当 `ENTRYPOINT` 与 `CMD` 同时给出时，`CMD` 中的内容会作为 `ENTRYPOINT` 定义命令的参数，最终执行容器启动的还是 `ENTRYPOINT` 中给出的命令...
+
+**EXPOSE**
+
+> 由于我们构建镜像时更了解镜像中应用程序的逻辑，也更加清楚它需要接收和处理来自哪些端口的请求，所以在镜像中定义端口暴露显然是更合理的做法。
+
+- 通过 `EXPOSE` 指令就可以为镜像指定要暴露的端口。
+
+```dockerfile
+EXPOSE <port> [<port>/<protocol>...]
+```
+
+> 当我们通过`EXPOSE`指令配置了镜像的端口暴露定义，那么基于这个镜像所创建的容器，在被其他容器通过 `--link` 选项连接时，就能够直接允许来自其他容器对这些端口的访问了
+
+**VOLUME**
+
+- 在一些程序里，我们需要持久化一些数据，比如数据库中存储数据的文件夹就需要单独处理。在之前的小节里，我们提到可以通过数据卷来处理这些问题。
+- 但使用数据卷需要我们在创建容器时通过 `-v` 选项来定义，而有时候由于镜像的使用者对镜像了解程度不高，会漏掉数据卷的创建，从而引起不必要的麻烦。
+- 还是那句话，制作镜像的人是最清楚镜像中程序工作的各项流程的，所以它来定义数据卷也是最合适的。所以在 `Dockerfile` 里，提供了 `VOLUME` 指令来定义基于此镜像的容器所自动建立的数据卷...
+
+```dockerfile
+VOLUME ["/data"]
+```
+
+> 在 `VOLUME` 指令中定义的目录，在基于新镜像创建容器时，会自动建立为数据卷，不需要我们再单独使用`-v`选项来配置了
+
+**COPY 和 ADD**
+
+> 在制作新的镜像的时候，我们可能需要将一些软件配置、程序代码、执行脚本等直接导入到镜像内的文件系统里，使用 `COPY` 或`ADD` 指令能够帮助我们直接从宿主机的文件系统里拷贝内容到镜像里的文件系统中。
+
+```dockerfile
+COPY [--chown=<user>:<group>] <src>... <dest>
+ADD [--chown=<user>:<group>] <src>... <dest>
+
+COPY [--chown=<user>:<group>] ["<src>",... "<dest>"]
+ADD [--chown=<user>:<group>] ["<src>",... "<dest>"]...
+```
+
+- `COPY` 与`ADD` 指令的定义方式完全一样，需要注意的仅是当我们的目录中存在空格时，可以使用后两种格式避免空格产生歧义。
+- 对比`COPY` 与 `ADD`，两者的区别主要在于 `ADD` 能够支持使用网络端的`URL` 地址作为 `src` 源，并且在源文件被识别为压缩包时，自动进行解压，而`COPY` 没有这两个能力。
+- 虽然看上去 `COPY` 能力稍弱，但对于那些不希望源文件被解压或没有网络请求的场景，`COPY`指令是个不错的选择。...
+
+### 10.6 构建镜像
+
+> 在编写好 `Dockerfile` 之后，我们就可以构建我们所定义的镜像了，构建镜像的命令为 `docker build`
+
+```bash
+sudo docker build ./webapp
+```
+
+- `docker build` 可以接收一个参数，需要特别注意的是，这个参数为一个目录路径 ( 本地路径或 URL 路径 )，而并非 Dockerfile`文件的路径。在`docker build` 里，这个我们给出的目录会作为构建的环境目录，我们很多的操作都是基于这个目录进行的。
+- 例如，在我们使用 `COPY` 或是 `ADD` 拷贝文件到构建的新镜像时，会以这个目录作为基础目录。
+- 在默认情况下，`docker build` 也会从这个目录下寻找名为 `Dockerfile` 的文件，将它作为 `Dockerfile`内容的来源。如果我们的 `Dockerfile` 文件路径不在这个目录下，或者有另外的文件名，我们可以通过 `-f`选项单独给出 `Dockerfile`文件的路径。...
+
+```bash
+sudo docker build -t webapp:latest -f ./webapp/a.Dockerfile ./webapp
+```
+
+> 当然，在构建时我们最好总是携带上 `-t` 选项，用它来指定新生成镜像的名称。
+
+```bash
+sudo docker build -t webapp:latest ./webapp
+```
+
+## 十一、常见 Dockerfile 使用技巧
+
+### 11.1 构建中使用变量
+
+> 在实际编写 `Dockerfile` 时，与搭建环境相关的指令会是其中占有大部分比例的指令。在搭建程序所需运行环境时，难免涉及到一些可变量，例如依赖软件的版本，编译的参数等等。我们可以直接将这些数据写入到 `Dockerfile` 中完全没有问题，有问题的是这些可变量我们会经常调整，在调整时就需要我们到 `Dockerfile` 中找到它们并进行更改，如果只是简单的 `Dockerfile` 文件尚且好说，但如果是相对复杂或是存在多处变量的 `Dockerfile` 文件，这个工作就变得繁琐而让人烦躁了。
+
+- 在 `Dockerfile` 里，我们可以用 `ARG` 指令来建立一个参数变量，我们可以在构建时通过构建指令传入这个参数变量，并且在 `Dockerfile`里使用它。
+- 例如，我们希望通过参数变量控制 `Dockerfile` 中某个程序的版本，在构建时安装我们指定版本的软件，我们可以通过 `ARG` 定义的参数作为占位符，替换版本定义的部分...
+
+```dockerfile
+FROM debian:stretch-slim
+
+## ......
+
+ARG TOMCAT_MAJOR
+ARG TOMCAT_VERSION
+
+## ......
+
+RUN wget -O tomcat.tar.gz "https://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz"
+
+## .........
+```
+
+- 在这个例子里，我们将 `Tomcat` 的版本号通过 `ARG` 指令定义为参数变量，在调用下载 `Tomcat` 包时，使用变量替换掉下载地址中的版本号。通过这样的定义，就可以让我们在不对 `Dockerfile` 进行大幅修改的前提下，轻松实现对 `Tomcat` 版本的切换并重新构建镜像了。
+
+> 如果我们需要通过这个 `Dockerfile`文件构建 `Tomcat` 镜像，我们可以在构建时通过 `docker build`的 `--build-arg` 选项来设置参数变量...
+
+```bash
+sudo docker build --build-arg TOMCAT_MAJOR=8 --build-arg TOMCAT_VERSION=8.0.53 -t tomcat:8.0 ./tomcat
+```
+
+### 11.2 环境变量
+
+> 环境变量也是用来定义参数的东西，与 `ARG`指令相类似，环境变量的定义是通过 `ENV` 这个指令来完成的
+
+```dockerfile
+FROM debian:stretch-slim
+
+## ......
+
+ENV TOMCAT_MAJOR 8
+ENV TOMCAT_VERSION 8.0.53
+
+## ......
+
+RUN wget -O tomcat.tar.gz "https://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz"...
+```
+
+- 环境变量的使用方法与参数变量一样，也都是能够直接替换指令参数中的内容。
+- 与参数变量只能影响构建过程不同，环境变量不仅能够影响构建，还能够影响基于此镜像创建的容器。环境变量设置的实质，其实就是定义操作系统环境变量，所以在运行的容器里，一样拥有这些变量，而容器中运行的程序也能够得到这些变量的值。
+- 另一个不同点是，环境变量的值不是在构建指令中传入的，而是在 `Dockerfile` 中编写的，所以如果我们要修改环境变量的值，我们需要到 `Dockerfile` 修改。不过即使这样，只要我们将 `ENV` 定义放在 `Dockerfile` 前部容易查找的地方，其依然可以很快的帮助我们切换镜像环境中的一些内容。
+- 由于环境变量在容器运行时依然有效，所以运行容器时我们还可以对其进行覆盖，在创建容器时使用 `-e`或是 `--env` 选项，可以对环境变量的值进行修改或定义新的环境变量...
+
+```bash
+sudo docker run -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:5.7
+```
+
+- 事实上，这种用法在我们开发中是非常常见的。也正是因为这种允许运行时配置的方法存在，环境变量和定义它的 `ENV` 指令，是我们更常使用的指令，我们会优先选择它们来实现对变量的操作。
+- 关于环境变量是如何能够帮助我们更轻松的处理 `Docker` 镜像和容器使用等问题，我们会在下一节中进行实际展示，通过例子大家能够更容易理解它的原理。
+- 另外需要说明一点，通过 `ENV` 指令和 `ARG` 指令所定义的参数，在使用时都是采用 `$ + NAME` 这种形式来占位的，所以它们之间的定义就存在冲突的可能性。对于这种场景，大家只需要记住，`ENV`指令所定义的变量，永远会覆盖`ARG` 所定义的变量，即使它们定时的顺序是相反的...
+
+### 11.3 合并命令
+
+在上一节我们展示的完整的官方 `Redis` 镜像的 `Dockerfile` 中，我们会发现 RUN 等指令里会聚合下大量的代码。
+
+事实上，下面两种写法对于搭建的环境来说是没有太大区别的
+
+```dockerfile
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends $fetchDeps; \
+    rm -rf /var/lib/apt/lists/*;
+```
+
+```dockerfile
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends $fetchDeps
+RUN rm -rf /var/lib/apt/lists/*
+```
+
+那为什么我们更多见的是第一种形式而非第二种呢？这就要从镜像构建的过程说起了。
+
+看似连续的镜像构建过程，其实是由多个小段组成。每当一条能够形成对文件系统改动的指令在被执行前，`Docker` 先会基于上条命令的结果启动一个容器，在容器中运行这条指令的内容，之后将结果打包成一个镜像层，如此反复，最终形成镜像...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-19.png)
+
+所以说，我们之前谈到镜像是由多个镜像层叠加而得，而这些镜像层其实就是在我们 `Dockerfile`中每条指令所生成的。
+
+了解了这个原理，大家就很容易理解为什么绝大多数镜像会将命令合并到一条指令中，因为这种做法不但减少了镜像层的数量，也减少了镜像构建过程中反复创建容器的次数，提高了镜像构建的速度...
+
+### 11.4 构建缓存
+
+- `Docker` 在镜像构建的过程中，还支持一种缓存策略来提高镜像的构建速度。
+- 由于镜像是多个指令所创建的镜像层组合而得，那么如果我们判断新编译的镜像层与已经存在的镜像层未发生变化，那么我们完全可以直接利用之前构建的结果，而不需要再执行这条构建指令，这就是镜像构建缓存的原理。
+- 那么 `Docker` 是如何判断镜像层与之前的镜像间不存在变化的呢？这主要参考两个维度，第一是所基于的镜像层是否一样，第二是用于生成镜像层的指令的内容是否一样- 基于这个原则，我们在条件允许的前提下，更建议将不容易发生变化的搭建过程放到 `Dockerfile` 的前部，充分利用构建缓存提高镜像构建的速度。另外，指令的合并也不宜过度，而是将易变和不易变的过程拆分，分别放到不同的指令里。
+- 在另外一些时候，我们可能不希望 `Docker` 在构建镜像时使用构建缓存，这时我们可以通过 `--no-cache`选项来禁用它...
+
+```bash
+sudo docker build --no-cache ./webapp
+```
+
+### 11.5 搭配 ENTRYPOINT 和 CMD
+
+> 上一节我们谈到了 `ENTRYPOINT` 和 `CMD` 这两个命令，也解释了这两个命令的目的，即都是用来指定基于此镜像所创建容器里主进程的启动命令的。
+
+- 两个指令的区别在于，`ENTRYPOINT` 指令的优先级高于 `CMD`指令。当 `ENTRYPOINT` 和 `CMD`同时在镜像中被指定时，`CMD` 里的内容会作为 `ENTRYPOINT` 的参数，两者拼接之后，才是最终执行的命令。
+- 为了更好的让大家理解，这里索性列出所有的 `ENTRYPOINT` 与`CMD` 的组合，供大家参考...
+
+| ENTRYPOINT                     | CMD                       | 实际执行                                              |
+| ------------------------------ | ------------------------- | ------------------------------------------------- |
+| ENTRYPOINT ["/bin/ep", "arge"] |                           | /bin/ep arge                                      |
+| ENTRYPOINT /bin/ep arge        |                           | /bin/sh -c /bin/ep arge                           |
+|                                | CMD ["/bin/exec", "args"] | /bin/exec args                                    |
+|                                | CMD /bin/exec args        | /bin/sh -c /bin/exec args                         |
+| ENTRYPOINT ["/bin/ep", "arge"] | CMD ["/bin/exec", "argc"] | /bin/ep arge /bin/exec argc                       |
+| ENTRYPOINT ["/bin/ep", "arge"] | CMD /bin/exec args        | /bin/ep arge /bin/sh -c /bin/exec args            |
+| ENTRYPOINT /bin/ep arge        | CMD ["/bin/exec", "argc"] | /bin/sh -c /bin/ep arge /bin/exec argc            |
+| ENTRYPOINT /bin/ep arge        | CMD /bin/exec args        | /bin/sh -c /bin/ep arge /bin/sh -c /bin/exec args |
+
+有的读者会存在疑问，既然两者都是用来定义容器启动命令的，为什么还要分成两个，合并为一个指令岂不是更方便吗？
+
+- 这其实在于 `ENTRYPOINT` 和`CMD`设计的目的是不同的。`ENTRYPOINT` 指令主要用于对容器进行一些初始化，而 `CMD` 指令则用于真正定义容器中主程序的启动命令。
+- 另外，我们之前谈到创建容器时可以改写容器主程序的启动命令，而这个覆盖只会覆盖 `CMD` 中定义的内容，而不会影响 `ENTRYPOINT`中的内容。
+- 我们依然以之前的 `Redis` 镜像为例，这是 `Redis` 镜像中对 `ENTRYPOINT` 和 `CMD` 的定义...
+
+```dockerfile
+## ......
+
+COPY docker-entrypoint.sh /usr/local/bin/
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+## ......
+
+CMD ["redis-server"]...
+```
+
+- 可以很清晰的看到，`CMD` 指令定义的正是启动 Redis 的服务程序，而 `ENTRYPOINT`使用的是一个外部引入的脚本文件。
+- 事实上，使用脚本文件来作为 `ENTRYPOINT` 的内容是常见的做法，因为对容器运行初始化的命令相对较多，全部直接放置在 `ENTRYPOINT` 后会特别复杂。
+- 我们来看看 `Redis` 中的`ENTRYPOINT` 脚本，可以看到其中会根据脚本参数进行一些处理，而脚本的参数，其实就是 `CMD` 中定义的内容。...
+
+```shell
+#!/bin/sh
+set -e
+
+# first arg is `-f` or `--some-option`
+# or first arg is `something.conf`
+if [ "${1#-}" != "$1" ] || [ "${1%.conf}" != "$1" ]; then
+    set -- redis-server "$@"
+fi
+
+# allow the container to be started with `--user`
+if [ "$1" = 'redis-server' -a "$(id -u)" = '0' ]; then
+    find . \! -user redis -exec chown redis '{}' +
+    exec gosu redis "$0" "$@"
+fi
+
+exec "$@"...
+```
+
+- 这里我们要关注脚本最后的一条命令，也就是`exec "$@"`。在很多镜像的 `ENTRYPOINT` 脚本里，我们都会看到这条命令，其作用其实很简单，就是运行一个程序，而运行命令就是 `ENTRYPOINT`脚本的参数。反过来，由于 `ENTRYPOINT` 脚本的参数就是 `CMD` 指令中的内容，所以实际执行的就是 `CMD`里的命令。
+- 所以说，虽然 `Docker` 对容器启动命令的结合机制为`CMD` 作为 `ENTRYPOINT` 的参数，合并后执行 `ENTRYPOINT`中的定义，但实际在我们使用中，我们还会在 `ENTRYPOINT` 的脚本里代理到 `CMD` 命令上。
+- 相对来说，`Redis` 的 `ENTRYPOINT` 内容还是简单的，在掌握了 `ENTRYPOINT` 的相关作用后，大家可以尝试阅读和编写一些复杂的 `ENTRYPOINT` 脚本...
+
+### 11.6 临摹案例
+
+> 上面提及的几项只是几个比较常见的 `Dockerfile` 最佳实践，其实在编写 Dockerfile 时，还有很多不成文的小技巧。
+
+- 想要学好 `Dockerfile` 的编写，阅读和思考前人的作品是必不可少的。
+- 前面我们介绍了，`Docker` 官方提供的 `Docker Hub` 是`Docker` 镜像的中央仓库，它除了镜像丰富之外，给我们带来的另一项好处就是其大部分镜像都是能够直接提供 `Dockerfile` 文件给我们参考的。
+
+> 要得到镜像的 `Dockerfile` 文件，我们可以进入到镜像的详情页面，在介绍中，镜像作者们通常会直接把 `Dockerfile` 的连接放在那里。...
+
+![](../../\imgs\interview-docker-20.png)
+
+除此之外，进入到`Dockerfile` 这个栏目下，我们也能够直接看到镜像 `Dockerfile` 的内容。在页面的右侧，还有进入`Dockerfile` 源文件的连接，如果在 `Dockerfile` 中有引入其他的文件，我们可以通过这个连接访问到。...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-21.png)
+
+> 另外，我自己也制作了一些软件的镜像，大家可以访问 `GitHub` 上的项目地址，查阅其中的`Dockerfile` 内容：github.com/cogset
+
+## 十二、使用 Docker Hub 中的镜像
+
+### 12.1 选择镜像与程序版本
+
+- 由于 `Docker` 的容器设计是程序即容器的，所以组成我们服务系统的多个程序一般会搭建在多个容器里，互相之间协作提供服务。例如一套最简单的 服务，我们可能会需要 `Java` 容器来运行基于 `Spring Boot`的程序，需要 `MySQL` 容器来提供数据库支持，需要 `Redis` 容器来作为高速 KV 存储等等。装有这些程序的镜像我们都可以很容易的在 `Docker Hub` 上找到并直接使用，但在我们使用前，光选择镜像还是不够的，我们还得根据需要选择对应程序版本的镜像。
+- 虽然我们常把软件的版本放在 `Tag` 里作为镜像名的一部分，但对于一些复杂的应用，除了版本外，还存在很多的变量，镜像的维护者们也喜欢将这些变量一同组合到镜像的 `Tag` 里，所以我们在使用镜像前，一定要先了解不同 `Tag` 对应的不同内容。
+- 这里我们来看个例子，下面是由 Docker 官方提供的 OpenJDK 镜像的说明页面...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-22.png)
+
+- 通常来说，镜像的维护者会在镜像介绍中展示出镜像所有的 Tag，如果没有，我们也能够从页面上的 `Tags` 导航里进入到镜像标签列表页面。
+- 在 `OpenJDK` 镜像的 `Tag` 列表里，我们可以看到同样版本号的镜像就存在多种标签。在这些不同的标签上，除了定义 `OpenJDK` 的版本，还有操作系统，软件提供者等信息。
+- 镜像维护者为我们提供这么多的标签进行选择，其实方便了我们在不同场景下选择不同环境实现细节时，都能直接用到这个镜像，而不需要再单独编写 `Dockerfile` 并构建。
+- 但是换句话说，正是有这么多不同标签的镜像存在，所以我们在选择的时候，更要仔细认真，找到我们想要的那个镜像。...
+
+### 12.2 Alpine 镜像
+
+> 如果大家多接触几个镜像，就会发现带有 `Alpine` 的版本是许多镜像中都常见的标签。带有`Alpine` 标签的镜像到底是什么样的存在呢？它与相同软件不同标签的镜像又有什么样的区别呢？
+
+- 镜像标签中的 `Alpine` 其实指的是这个镜像内的文件系统内容，是基于 `Alpine Linux` 这个操作系统的。`Alpine Linux`是一个相当精简的操作系统，而基于它的 `Docker`镜像可以仅有数 MB 的尺寸。如果软件基于这样的系统镜像之上构建而得，可以想象新的镜像也是十分小巧的。
+
+- 在 `Docker` 里，`Alpine` 系统的镜像到底有多小，我们不妨来与其他系统镜像做一个比较...
+
+| 操作系统镜像        | 占用空间    |
+| ------------- | ------- |
+| alpine:latest | 4.4 MB  |
+| ubuntu:latest | 84.1 MB |
+| debian:latest | 101 MB  |
+| centos:latest | 200 MB  |
+
+> 可以看到，`Alpine` 系统镜像的尺寸要远小于其他常见的系统镜像。让我们再来比较同一个软件在基于普通系统的镜像和基于 Alpine 系统的镜像后尺寸上的区别
+
+| 镜像标签              | 占用空间    |
+| ----------------- | ------- |
+| python:3.6-alpine | 74.2 MB |
+| python:3.6-jessie | 697 MB  |
+
+- 由于基于 `Alpine` 系统建立的软件镜像远远小于基于其他系统的软件镜像，它在网络传输上的优势尤为明显。如果我们选择这类的镜像，不但可以节约网络传输的时间，也能减少镜像对硬盘空间的占用。
+- 当然，有优点也会有缺点，`Alpine` 镜像的缺点就在于它实在过于精简，以至于麻雀虽小，也无法做到五脏俱全了。在 Alpine 中缺少很多常见的工具和类库，以至于如果我们想基于软件 `Alpine` 标签的镜像进行二次构建，那搭建的过程会相当烦琐。所以如果你想要对软件镜像进行改造，并基于其构建新的镜像，那么 `Alpine` 镜像不是一个很好的选择 (这时候我们更提倡基于 `Ubuntu`、`Debian`、`CentOS` 这类相对完整的系统镜像来构建)。...
+
+### 12.3 对容器进行配置
+
+- 除了合理选择镜像外，许多镜像还为我们提供了更加方便的功能，这些细节我们通常都可以在镜像的详情里阅读到。
+- 这里我们以 `MySQL`为例，看看通常我们是怎样阅读和使用镜像的特殊功能的。
+- 自己安装过 `MySQL` 的朋友一定知道，搭建 `MySQL` 最麻烦的地方并不是安装的过程，而是安装后进行初始化配置的过程。就拿更改 root 账号的密码来说，在初始的 `MySQL` 里就要耗费不少工作量。
+- 如果我们拿到一个 `MySQL` 镜像，运行起来的 MySQL 也就约等于一个刚刚安装好的程序，面临的正好是复杂的初始化过程。
+- 好在 `MySQL` 镜像的维护者们为我们打造了一些自动化脚本，通过它们，我们只需要简单的传入几个参数，就能够快速实现对 `MySQL` 数据库的初始化。
+- 在 MySQL 镜像的详情里，描述了我们要如何传入这些参数来启动 MySQL 容器。...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-23.png)
+
+> 对于 `MySQL` 镜像来说，进行软件配置的方法是通过环境变量的方式来实现的 ( 在其他的镜像里，还有通过启动命令、挂载等方式来实现的 )。我们只需要通过这些给出的环境变量，就可以初始化 `MySQL` 的配置了。
+
+例如，我们可以通过下面的命令来直接建立 `MySQL` 中的用户和数据库。...
+
+```bash
+sudo docker run --name mysql -e MYSQL_DATABASE=webapp -e MYSQL_USER=www -e MYSQL_PASSWORD=my-secret-pw -d mysql:5.7
+```
+
+通过这条命令启动的 `MySQL` 容器，在内部就已经完成了用户的创建和数据库的创建，我们通过 `MySQL` 客户端就能够直接登录这个用户和访问对应的数据库了。
+
+如果深究 `MySQL` 是如何实现这样复杂的功能的，大家可以到 `MySQL`镜像的 `Dockerfile` 源码库里，找到 `docker-entrypoint.sh` 这个脚本，所有的秘密正暗藏在其中。`MySQL` 正是利用了 `ENTRYPOINT` 指令进行初始化这种任务安排，对容器中的 `MySQL` 进行初始化的。
+
+通过 `MySQL`镜像这样的逻辑，大家还可以举一反三，了解其他镜像所特用的使用方法，甚至可以参考编写、构建一些能够提供这类方法的 `Dockerfile` 和镜像...
+
+### 12.4 共享自己的镜像
+
+如果我们希望将我们镜像公开给网络上的开发者们，那通过 `Docker Hub` 无疑是最佳的方式。
+
+要在`Docker Hub` 上共享镜像，我们必须有一个`Docker Hub` 的账号，这自不必说了。在登录到我们账号的控制面板后，我们能够找到创建的按钮，在这里选择 Create Automated Build ( 创建自动构建 )。...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-24.png)
+
+自动构建镜像是 `Docker Hub`为我们提供的一套镜像构建服务，我们只需要提供 `Dockerfile` 和相关的基本文件，`Docker Hub` 就能够在云端自动将它们构建成镜像，之后便可以让其他开发者通过 docker pull 命令拉取到这一镜像。
+
+自动构建让不需要我们再用本机进行镜像的构建，既能节约时间，又能享受高速的云端机器构建。...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-25.png)
+
+在 `Docker Hub` 中并不直接存放我们用于构建的 `Dockerfile` 和相关文件，我们必须将 `Docker Hub` 账号授权到 `GitHub` 或是 `Bitbucket` 来从这些代码库中获取 `Dockerfile`和相关文件。
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-26.png)
+
+在连接到 `GitHub` 或 `Bitbucket` 后，我们就可以选择我们存放 `Dockerfile` 和相关文件的代码仓库用来创建自动构建了。
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-27.png)
+
+在基本信息填写完成，点击创建按钮后，`Docker Hub` 就会开始根据我们 `Dockerfile` 的内容构建镜像了。而此时，我们也能够访问我们镜像专有的详情页面了。
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-28.png)
+
+## 十三、组合操作：使用 Docker Compose 管理容器
+
+### 13.1 解决容器管理问题
+
+> 拿任何一个相对完整的应用系统来说，都不可能是由一个程序独立支撑的，而对于使用 Docker 来部署的分布式计算服务更是这样。随着时代的发展和技术演进，我们越来越推崇将大型服务拆分成较小的微服务，分别部署到独立的机器或容器中。也就是说，我们的应用系统往往由数十个甚至上百个应用程序或微服务组成。即使是一个小的微服务模块，通常都需要多个应用协作完成工作。
+
+- 我们编写一个小型的微服务模块，虽然我们编写代码主要针对的是其中的应用部分，但如果我们要完整的进行开发、测试，与应用相关的周边软件必然是必不可少的。
+- 虽然 Docker Engine 帮助我们完成了对应用运行环境的封装，我们可以不需要记录复杂的应用环境搭建过程，通过简单的配置便可以将应用运行起来了，但这只是针对单个容器或单个应用程序来说的。如果延伸到由多个应用组成的应用系统，那情况就稍显复杂了。
+- 就拿最简单的例子来说吧，如果我们要为我们的应用容器准备一个 `MySQL` 容器和一个 `Redis`容器，那么在每次启动时，我们先要将 `MySQL` 容器和 `Redis` 容器启动起来，再将应用容器运行起来。这其中还不要忘了在创建应用容器时将容器网络连接到`MySQL` 容器和 `Redis` 容器上，以便应用连接上它们并进行数据交换。
+- 这还不够，如果我们还对容器进行了各种配置，我们最好还得将容器创建和配置的命令保存下来，以便下次可以直接使用。
+
+> 如果我们要想让这套体系像 `docker run` 和 `docker rm` 那样自如的进行无痕切换，那就更加麻烦了，我们可能需要编写一些脚本才能不至于被绕到命令的毛线球里。
+
+说了这么多，其实核心还是缺少一个对容器组合进行管理的东西...
+
+**Docker Compose**
+
+- 针对这种情况，我们就不得不引出在我们开发中最常使用的多容器定义和运行软件，也就是 `Docker Compose`了。
+- 如果说 `Dockerfile`是将容器内运行环境的搭建固化下来，那么 `Docker Compose` 我们就可以理解为将多个容器运行的方式和配置固化下来...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-29.png)
+
+> 在 `Docker Compose` 里，我们通过一个配置文件，将所有与应用系统相关的软件及它们对应的容器进行配置，之后使用 `Docker Compose` 提供的命令进行启动，就能让 `Docker Compose` 将刚才我们所提到的那些复杂问题解决掉...
+
+### 13.2 安装 Docker Compose
+
+- 虽然 `Docker Compose` 目前也是由 `Docker`官方主要维护，但其却不属于 `Docker Engine` 的一部分，而是一个独立的软件。所以如果我们要在 Linux 中使用它，还必须要单独下载使用。
+- `Docker Compose` 是一个由 `Python` 编写的软件，在拥有 `Python` 运行环境的机器上，我们可以直接运行它，不需要其它的操作。
+- 我们可以通过下面的命令下载 `Docker Compose` 到应用执行目录，并附上运行权限，这样`Docker Compose`就可以在机器中使用了...
+
+```bash
+sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+sudo docker-compose version
+
+docker-compose version 1.21.2, build a133471
+docker-py version: 3.3.0
+CPython version: 3.6.5
+OpenSSL version: OpenSSL 1.0.1t  3 May 2016...
+```
+
+我们也能够通过 `Python` 的包管理工具 `pip`来安装`Docker Compose`。
+
+```bash
+sudo pip install docker-compose
+```
+
+**在 Windows 和 macOS 中的 Docker Compose**
+
+> 在我们更常用于开发的 Windows 和 macOS 中，使用 Docker Compose 会来得更加方便。不论你是使用 Docker for Win 还是 Docker for Mac，亦或是 Docker Toolbox 来搭建 Docker 运行环境，你都可以直接使用 docker-compose 这个命令。这三款软件都已经将 Docker Compose 内置在其中，供我们使用...
+
+### 13.3 Docker Compose 的基本使用逻辑
+
+> 如果将使用 `Docker Compose`的步骤简化来说，可以分成三步。
+
+- 如果需要的话，编写容器所需镜像的 `Dockerfile`；( 也可以使用现有的镜像 )
+- 编写用于配置容器的 `docker-compose.yml`；
+- 使用 `docker-compose` 命令启动应用
+
+**编写 Docker Compose 配置**
+
+- 配置文件是 `Docker Compose` 的核心部分，我们正是通过它去定义组成应用服务容器群的各项配置，而编写配置文件，则是使用 `Docker Compose`过程中最核心的一个步骤。
+- `Docker Compose`的配置文件是一个基于 `YAML`格式的文件。关于 `YAML` 的语法大家可以在网上找到，这里不再细说，总的来说，`YAML` 是一种清晰、简单的标记语言，你甚至都可以在看过几个例子后摸索出它的语法。
+- 与`Dockerfile`采用 `Dockerfile` 这个名字作为镜像构建定义的默认文件名一样，`Docker Compose` 的配置文件也有一个缺省的文件名，也就是 docker-compose.yml`，如非必要，我建议大家直接使用这个文件名来做`Docker Compose` 项目的定义。
+
+> 这里我们来看一个简单的 `Docker Compose`配置文件内容...
+
+```yml
+version: '3'
+
+services:
+
+  webapp:
+    build: ./image/webapp
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./code:/code
+      - logvolume:/var/log
+    links:
+      - mysql
+      - redis
+
+  redis:
+    image: redis:3.2
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+
+volumes:
+  logvolume: {}...
+```
+
+- `Docker Compose`配置文件里可以包含许多内容，从每个容器的各个细节控制，到网络、数据卷等的定义。
+- 这里我们看几个主要的细节。首先是 `version` 这个配置，这代表我们定义的 `docker-compose.yml` 文件内容所采用的版本，目前 `Docker Compose` 的配置文件已经迭代至了第三版，其所支持的功能也越来越丰富，所以我们建议使用最新的版本来定义。
+- 接下来我们来看 `services`这块，这是整个 `-compose.yml` 的核心部分，其定义了容器的各项细节。
+- 在 `Docker Compose` 里不直接体现容器这个概念，这是把 `service` 作为配置的最小单元。虽然我们看上去每个 `service` 里的配置内容就像是在配置容器，但其实 `service` 代表的是一个应用集群的配置。每个 `service` 定义的内容，可以通过特定的配置进行水平扩充，将同样的容器复制数份形成一个容器集群。而 `Docker Compose` 能够对这个集群做到黑盒效果，让其他的应用和容器无法感知它们的具体结构。
+
+**启动和停止**
+
+- 对于开发来说，最常使用的 `Docker Compose` 命令就是 `docker-compose up` 和 `docker-compose down` 了。
+- `docker-compose up` 命令类似于`Docker Engine` 中的 `docker run`，它会根据 `docker-compose.yml` 中配置的内容，创建所有的容器、网络、数据卷等等内容，并将它们启动。与 `docker run`一样，默认情况下 `docker-compose up` 会在“前台”运行，我们可以用 `-d` 选项使其“后台”运行。事实上，我们大多数情况都会加上`-d`选项...
+
+```bash
+sudo docker-compose up -d
+```
+
+> 需要注意的是，`docker-compose`命令默认会识别当前控制台所在目录内的 `docker-compose.yml` 文件，而会以这个目录的名字作为组装的应用项目的名称。如果我们需要改变它们，可以通过选项 -f 来修改识别的 `Docker Compose` 配置文件，通过 -p 选项来定义项目名。...
+
+```bash
+sudo docker-compose -f ./compose/docker-compose.yml -p myapp up -d
+```
+
+> 与 `docker-compose up` 相反，`docker-compose down` 命令用于停止所有的容器，并将它们删除，同时消除网络等配置内容，也就是几乎将这个 `Docker Compose` 项目的所有影响从`Docker`中清除
+
+```bash
+sudo docker-compose down
+```
+
+- 如果条件允许，我更建议大家像容器使用一样对待 `Docker Compose` 项目，做到随用随启，随停随删。也就是使用的时候通过`docker-compose up` 进行，而短时间内不再需要时，通过 `docker-compose down` 清理它。
+- 借助 `Docker`容器的秒级启动和停止特性，我们在使用 `docker-compose up` 和`docker-compose down` 时可以非常快的完成操作。这就意味着，我们可以在不到半分钟的时间内停止一套环境，切换到另外一套环境，这对于经常进行多个项目开发的朋友来说，绝对是福音。
+- 通过 `Docker` 让我们能够在开发过程中搭建一套不受干扰的独立环境，让开发过程能够基于稳定的环境下进行。而 `Docker Compose` 则让我们更近一步，同时让我们处理好多套开发环境，并进行快速切换。...
+
+**容器命令**
+
+- 除了启动和停止命令外，`Docker Compose` 还为我们提供了很多直接操作服务的命令。之前我们说了，服务可以看成是一组相同容器的集合，所以操作服务就有点像操作容器一样。
+- 这些命令看上去都和 `Docker Engine` 中对单个容器进行操作的命令类似，我们来看几个常见的。
+- 在`Docker Engine` 中，如果我们想要查看容器中主进程的输出内容，可以使用 `docker logs` 命令。而由于在 `Docker Compose`下运行的服务，其命名都是由 `Docker Compose` 自动完成的，如果我们直接使用 `docker logs` 就需要先找到容器的名字，这显然有些麻烦了。我们可以直接使用 `docker-compose logs` 命令来完成这项工作...
+
+```bash
+sudo docker-compose logs nginx
+```
+
+- 在 `docker-compose logs`衔接的是 `Docker Compose` 中所定义的服务的名称。
+- 同理，在 `Docker Compose` 还有几个类似的命令可以单独控制某个或某些服务。
+- 通过 `docker-compose create`，`docker-compose start` 和 `docker-compose stop` 我们可以实现与 `docker create`，`docker start`和 `docker stop` 相似的效果，只不过操作的对象由 Docker Engine 中的容器变为了 `Docker Compose` 中的服务。...
+
+```bash
+sudo docker-compose create webapp
+sudo docker-compose start webapp
+sudo docker-compose stop webapp
+```
+
+## 十四、组合操作：常用的 Docker Compose 配置项
+
+### 14.1 定义服务
+
+> 为了理解在开发中常用的 `Docker Compose` 配置，我们通过一个在开发中使用的 `Docker Compose` 文件来进行下面的讲解
+
+```yml
+version: "3"
+
+services:
+
+  redis:
+    image: redis:3.2
+    networks:
+      - backend
+    volumes:
+      - ./redis/redis.conf:/etc/redis.conf:ro
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "/etc/redis.conf"]
+
+  database:
+    image: mysql:5.7
+    networks:
+      - backend
+    volumes:
+      - ./mysql/my.cnf:/etc/mysql/my.cnf:ro
+      - mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+    ports:
+      - "3306:3306"
+
+  webapp:
+    build: ./webapp
+    networks:
+      - frontend
+      - backend
+    volumes:
+      - ./webapp:/webapp
+    depends_on:
+      - redis
+      - database
+
+  nginx:
+    image: nginx:1.12
+    networks:
+      - frontend
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./webapp/html:/webapp/html
+    depends_on:
+      - webapp
+    ports:
+      - "80:80"
+      - "443:443"
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  mysql-data:...
+```
+
+- 在这个 `Docker Compose` 的示例中，我们看到占有大量篇幅的就是 `services` 部分，也就是服务定义的部分了。在上一节里，我们已经说到了，`Docker Compose` 中的服务，是对一组相同容器集群统一配置的定义，所以可见，在 `Docker Compose` 里，主要的内容也是对容器配置的定义。
+- 在 `Docker Compose` 的配置文件里，对服务的定义与我们之前谈到的创建和启动容器中的选项非常相似，或者说 `Docker Compose` 就是从配置文件中读取出这些内容，代我们创建和管理这些容器的。
+- 在使用时，我们首先要为每个服务定义一个名称，用以区别不同的服务。在这个例子里，`redi`s`、`database`、`webapp`、`nginx `就是服务的名称...
+
+**指定镜像**
+
+- 容器最基础的就是镜像了，所以每个服务必须指定镜像。在 `Docker Compose` 里，我们可以通过两种方式为服务指定所采用的镜像。一种是通过 `image` 这个配置，这个相对简单，给出能在镜像仓库中找到镜像的名称即可。
+- 另外一种指定镜像的方式就是直接采用 `Dockerfile` 来构建镜像，通过`build` 这个配置我们能够定义构建的环境目录，这与 `docker build` 中的环境目录是同一个含义。如果我们通过这种方式指定镜像，那么 `Docker Compose` 先会帮助我们执行镜像的构建，之后再通过这个镜像启动容器。
+
+> 当然，在 `docker build`里我们还能通过选项定义许多内容，这些在 `Docker Compose` 里我们依然可以...
+
+```yml
+## ......
+  webapp:
+    build:
+      context: ./webapp
+      dockerfile: webapp-dockerfile
+      args:
+        - JAVA_VERSION=1.6
+## .........
+```
+
+- 在配置文件里，我们还能用`Map` 的形式来定义 `build`，在这种格式下，我们能够指定更多的镜像构建参数，例如 `Dockerfile` 的文件名，构建参数等等。
+- 当然，对于一些可以不通过重新构建镜像的方式便能修改的内容，我们还是不建议重新构建镜像，而是使用原有的镜像做简单的修改。
+- 例如上面的配置里，我们希望修改 `Redis` 的启动命令，加入配置文件以便对`Redis` 服务进行配置，那么我们可以直接通过`command` 配置来修改。而在 `MySQL` 的定义，我们通过 `environment` 配置为 `MySQL`设置了初始密码。
+
+> 这些对镜像的使用方法我们在之前都已经谈到过了，只不过我们之前用的是 `Docker Engine` 的命令以及其选项来控制的，而在 `Docker Compose` 里，我们直接通过配置文件来定义它们。
+
+由于 `Docker Compose` 的配置已经固化下来，所以我们不需要担心忘记之前执行了哪些命令来启动容器，当每次需要开启或关闭环境时，只需要 `docker-compose up -d`和 `docker-compose down` 命令，就能轻松完成操作...
+
+**依赖声明**
+
+- 虽然我们在 `Docker Compose` 的配置文件里定义服务，在书写上有由上至下的先后关系，但实际在容器启动中，由于各种因素的存在，其顺序还是无法保障的。
+- 所以，如果我们的服务间有非常强的依赖关系，我们就必须告知 `Docker Compose` 容器的先后启动顺序。只有当被依赖的容器完全启动后，`Docker Compose` 才会创建和启动这个容器。
+- 定义依赖的方式很简单，在上面的例子里我们已经看到了，也就是 `depends_on` 这个配置项，我们只需要通过它列出这个服务所有依赖的其他服务即可。在`Docker Compose` 为我们启动项目的时候，会检查所有依赖，形成正确的启动顺序并按这个顺序来依次启动容器。...
+
+### 14.2 文件挂载
+
+- 在 `Docker Compose` 里定义文件挂载的方式与 `Docker Engine` 里也并没有太多的区别，使用 `volumes` 配置可以像 `docker CLI` 里的 `-v` 选项一样来指定外部挂载和数据卷挂载。
+- 在上面的例子里，我们看到了定义几种常用挂载的方式。我们能够直接挂载宿主机文件系统中的目录，也可以通过数据卷的形式挂载内容。
+- 在使用外部文件挂载的时候，我们可以直接指定相对目录进行挂载，这里的相对目录是指相对于 `docker-compose.yml` 文件的目录。
+- 由于有相对目录这样的机制，我们可以将`docker-compose.yml` 和所有相关的挂载文件放置到同一个文件夹下，形成一个完整的项目文件夹。这样既可以很好的整理项目文件，也利于完整的进行项目迁移。
+- 虽然 `Docker` 提倡将代码或编译好的程序通过构建镜像的方式打包到镜像里，随整个`CI` 流部署到服务器中，但对于开发者来说，每次修改程序进行简单测试都要重新构建镜像简直是浪费生命的操作。所以在开发时，我们推荐直接将代码挂载到容器里，而不是通过镜像构建的方式打包成镜像。
+- 同时，在开发过程中，对于程序的配置等内容，我们也建议直接使用文件挂载的形式挂载到容器里，避免经常修改所带来的麻烦...
+
+**使用数据卷**
+
+- 如果我们要在项目中使用数据卷来存放特殊的数据，我们也可以让 D`ocker Compose`自动完成对数据卷的创建，而不需要我们单独进行操作。
+- 在上面的例子里，独立于 `services` 的 `配置就是用来声明数据卷的。定义数据卷最简单的方式仅需要提供数据卷的名称，对于我们在`Docker Engine `中创建数据卷时能够使用的其他定义，也能够放入`Docker Compose `的数据卷定义中。
+- 如果我们想把属于 `Docker Compose` 项目以外的数据卷引入进来直接使用，我们可以将数据卷定义为外部引入，通过 `external` 这个配置就能完成这个定义...
+
+```yml
+## ......
+volumes:
+  mysql-data:
+    external: true
+## ......
+```
+
+在加入 `external` 定义后，`Docker Compose` 在创建项目时不会直接创建数据卷，而是优先从 `Docker Engine` 中已有的数据卷里寻找并直接采用
+
+### 14.3 配置网络
+
+- 网络也是容器间互相访问的桥梁，所以网络的配置对于多个容器组成的应用系统来说也是非常重要的。在 `Docker Compose` 里，我们可以为整个应用系统设置一个或多个网络。
+- 要使用网络，我们必须先声明网络。声明网络的配置同样独立于 `services` 存在，是位于根配置下的 `networks` 配置。在上面的例子里，我们已经看到了声明 `frontend`和 b`ackend`这两个网络最简单的方式。
+- 除了简单的声明网络名称，让 `Docker Compose` 自动按默认形式完成网络配置外，我们还可以显式的指定网络的参数。...
+
+```yml
+networks:
+  frontend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.10.1.0/24
+## .........
+```
+
+在这里，我们为网络定义了网络驱动的类型，并指定了子网的网段。
+
+**使用网络别名**
+
+直接使用容器名或服务名来作为连接其他服务的网络地址，因为缺乏灵活性，常常还不能满足我们的需要。这时候我们可以为服务单独设置网络别名，在其他容器里，我们将这个别名作为网络地址进行访问。
+
+网络别名的定义方式很简单，这里需要将之前简单的网络 List 定义结构修改成 Map 结构，以便在网络中加入更多的定义...
+
+```yml
+## ......
+  database:
+    networks:
+      backend:
+        aliases:
+          - backend.database
+## ......
+  webapp:
+    networks:
+      backend:
+        aliases:
+          - backend.webapp
+      frontend:
+        aliases:
+          - frontend.webapp
+## .........
+```
+
+> 在我们进行这样的配置后，我们便可以使用这里我们所设置的网络别名对其他容器进行访问了。
+
+**端口映射**
+
+- 在 `Docker Compose` 的每个服务配置里，我们还看到了 `ports` 这个配置项，它是用来定义端口映射的。
+- 我们可以利用它进行宿主机与容器端口的映射，这个配置与`docker CLI` 中`-p` 选项的使用方法是近似的。
+- 需要注意的是，由于`YAML`格式对`xx:yy` 这种格式的解析有特殊性，在设置小于 `60` 的值时，会被当成时间而不是字符串来处理，所以我们最好使用引号将端口映射的定义包裹起来，避免歧义。...
+
+## 十五、组合操作：编写 Docker Compose 项目
+
+### 15.1 设计项目的目录结构
+
+> 在这一小节里，我们以一个由 `MySQL`、`Redis`、`PHP-FPM` 和 `Nginx` 组成的小型 PHP 网站为例，介绍通过 Docker 搭建运行这套程序运行环境的方法。
+
+- 既然我们说到这个小型网站是由 MySQL、Redis、PHP-FPM 和 Nginx 四款软件所组成的，那么自然在 Docker 里，我们要准备四个容器分别来运行它们。而为了更好地管理这四个容器所组成的环境，我们这里还会使用到`Docker Compose`。
+- 与搭建一个软件开发项目类似，我们提倡将 `Docker Compose` 项目的组成内容聚集到一个文件目录中，这样更利于我们进行管理和迁移。
+- 这里我已经建立好了一个目录结构，虽然我们在实践的过程中不一定要按照这样的结构，但我相信这个结构一定对你有所启发...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-30.png)
+
+> 简单说明一下这个结构中主要目录和文件的功能和作用。在这个结构里，我们可以将根目录下的几个目录分为四类
+
+- 第一类是 Docker 定义目录，也就是 compose 这个目录。在这个目录里，包含了 docker-compose.yml 这个用于定义 Docker Compose 项目的配置文件。此外，还包含了我们用于构建自定义镜像的内容。
+- 第二类是程序文件目录，在这个项目里是 mysql、nginx、phpfpm、redis 这四个目录。这些目录分别对应着 Docker Compose 中定义的服务，在其中主要存放对应程序的配置，产生的数据或日志等内容。
+- 第三类是代码目录，在这个项目中就是存放 Web 程序的 website 目录。我们将代码统一放在这个目录中，方便在容器中挂载。
+- 第四类是工具命令目录，这里指 bin 这个目录。我们在这里存放一些自己编写的命令脚本，我们通过这些脚本可以更简洁地操作整个项目。...
+
+### 15.2 编写 Docker Compose 配置文件
+
+> 接下来我们就要编写 `docker-compose.yml`文件来定义组成这个环境的所有 Docker 容器以及与它们相关的内容了。`docker-compose.yml` 规则和编写的方法在前两小节中已经谈到，这里我们就不再展开，直接来看看编写好的 docker-compose.yml 配置文件。...
+
+```yml
+version: "3"
+
+networks:
+  frontend:
+  backend:
+
+services:
+
+  redis:
+    image: redis:3.2
+    networks:
+      - backend
+    volumes:
+      - ../redis/redis.conf:/etc/redis/redis.conf:ro
+      - ../redis/data:/data
+    command: ["redis-server", "/etc/redis/redis.conf"]
+    ports:
+      - "6379:6379"
+
+  mysql:
+    image: mysql:5.7
+    networks:
+      - backend
+    volumes:
+      - ../mysql/my.cnf:/etc/mysql/my.cnf:ro
+      - ../mysql/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+    ports:
+      - "3306:3306"
+
+  phpfpm:
+    build: ./phpfpm
+    networks:
+      - frontend
+      - backend
+    volumes:
+      - ../phpfpm/php.ini:/usr/local/etc/php/php.ini:ro
+      - ../phpfpm/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
+      - ../phpfpm/php-fpm.d:/usr/local/etc/php-fpm.d:ro
+      - ../phpfpm/crontab:/etc/crontab:ro
+      - ../website:/website
+    depends_on:
+      - redis
+      - mysql
+
+  nginx:
+    image: nginx:1.12
+    networks:
+      - frontend
+    volumes:
+      - ../nginx/nginx.c...
+```
+
+> 使用合适的镜像是提高工作效率的途径之一，这里讲解一下我们在这个项目中选择镜像的原由。
+
+- 在这个项目里，我们直接采用了 MySQL、Redis 和 Nginx 三个官方镜像，而对于 PHP-FPM 的镜像，我们需要增加一些功能，所以我们通过 Dockerfile 构建的方式来生成。
+- 对于 MySQL 来说，我们需要为它们设置密码，所以原则上我们是需要对它们进行改造并生成新的镜像来使用的。而由于 MySQL 镜像可以通过我们之前在镜像使用方法一节所提到的环境变量配置的方式，来直接指定 MySQL 的密码及其他一些关键性内容，所以我们就无须单独构建镜像，可以直接采用官方镜像并配合使用环境变量来达到目的。
+- 对于 Redis 来说，出于安全考虑，我们一样需要设置密码。Redis 设置密码的方法是通过配置文件来完成的，所以我们需要修改 Redis 的配置文件并挂载到 Redis 容器中。这个过程也相对简单，不过需要注意的是，在官方提供的 Redis 镜像里，默认的启动命令是 redis-server，其并没有指定加载配置文件。所以在我们定义 Redis 容器时，要使用 command 配置修改容器的启动命令，使其读取我们挂载到容器的配置文件...
+
+**自定义镜像**
+
+- 相比较于 MySQL、Redis 这样可以通过简单配置即可直接使用的镜像不同，PHP 的镜像中缺乏了一些我们程序中必要的元素，而这些部分我们推荐使用自定义镜像的方式将它们加入其中。
+- 在这个例子里，因为需要让 PHP 连接到 MySQL 数据库中，所以我们要为镜像中的 PHP 程序安装和开启 pdo_mysql 这个扩展。
+- 了解如何安装扩展，这就要考验我们之前在 Docker Hub 镜像使用一节中学到的知识了。我们通过阅读 PHP 镜像的介绍页面，可以找到 PHP 镜像中已经为我们准备好了扩展的安装和启用命令，这让我们可以很轻松地在镜像中加入扩展。...
+
+![](../../\imgs\interview-docker-31.png)
+
+> 在准备好这些使用方法之后，我们就可以开始编写构建 PHP 镜像的 `Dockerfile` 文件了。这里我已经编写好了一份，供大家参考
+
+```
+FROM php:7.2-fpm
+
+MAINTAINER You Ming <youming@funcuter.org>
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends cron
+
+RUN docker-php-ext-install pdo_mysql
+
+COPY docker-entrypoint.sh /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["php-fpm"]...
+```
+
+- 由于 Docker 官方所提供的镜像比较精简，所以在这个 Dockerfile 里，我们还执行了 cron 的安装命令，来确保我们可以使用定时任务。
+- 大家注意到，这里除了我们进行功能安装外，还将一个脚本拷入了镜像中，并将其作为 ENTRYPOINT 启动入口。这个文件的作用主要是为了启动 cron 服务，以便我们在容器中可以正常使用它。...
+
+```
+#!/bin/bash
+
+service cron start
+
+exec "$@"
+```
+
+> 在 `docker-entrypoint.sh` 里，除了启动 `cron` 服务的命令外，我们在脚本的最后看到的是 `exec "$@"` 这行命令。`$@`是 `shell` 脚本获取参数的符号，这里获得的是所有传入脚本的参数，而 `exec` 是执行命令，直接执行这些参数。
+
+- 如果直接看这条命令大家会有些疑惑，参数怎么拿来执行，这不是有问题么？
+- 请大家回顾一下，我们之前提到的，如果在镜像里同时定义了 `ENTRYPOINT`和 `CMD`两个指令，`CMD` 指令的内容会以参数的形式传递给 `ENTRYPOINT` 指令。所以，这里脚本最终执行的，是 `CMD`中所定义的命令。...
+
+**目录挂载**
+
+> 在这个例子里，我们会把项目中的一些目录或文件挂载到容器里，这样的挂载主要有三种目的
+
+- 将程序的配置通过挂载的方式覆盖容器中对应的文件，这让我们可以直接在容器外修改程序的配置，并通过直接重启容器就能应用这些配置；
+- 把目录挂载到容器中应用数据的输出目录，就可以让容器中的程序直接将数据输出到容器外，对于 `MySQL`、`Redi`s 中的数据，程序的日志等内容，我们可以使用这种方法来持久保存它们；
+- 把代码或者编译后的程序挂载到容器中，让它们在容器中可以直接运行，这就避免了我们在开发中反复构建镜像带来的麻烦，节省出大量宝贵的开发时间...
+
+> 上述的几种方法，对于线上部署来说都是不适用的，但在我们的开发过程中，却可以为我们免去大量不必要的工作，因此建议在开发中使用这些挂载结构
+
+### 15.3 编写辅助脚本
+
+> 我们知道，虽然 `Docker Compose` 简化了许多操作流程，但我们还是需要使用 `docker-compose` 命令来管理项目。对于这个例子来说，我们要启动它就必须使用这样的 `docker-compose` 命令来管理项目。对于这个例子来说，我们要启动它就必须使用这样的：...
+
+```bash
+sudo docker-compose -p website up -d
+```
+
+- 而执行的目录必须是 `docker-compose.yml` 文件所在的目录，这样才能正确地读取 `Docker Compose`项目的配置内容。
+- 我编写了一个 `compose` 脚本，用来简化 `docker-compose` 的操作命令
+
+```yml
+#!/bin/bash
+
+root=$(cd `dirname $0`; dirname `pwd`)
+
+docker-compose -p website -f ${root}/compose/docker-compose.yml "$@"...
+```
+
+> 在这个脚本里，我把一些共性的东西包含进去，这样我们就不必每次传入这些参数或选项了。同时，这个脚本还能自适应调用的目录，准确找到 `docker-compose.yml` 文件，更方便我们直接调用。
+
+- 通过这个脚本来操作项目，我们的命令就可以简化为：...
+
+```bash
+sudo ./bin/compose up -d
+
+sudo ./bin/compose logs nginx
+
+sudo ./bin/compose down
+```
+
+当然，我们还可以编写像代码部署、服务重启等脚本，来提高我们的开发效率。
+
+## 十六、组合操作：应用于服务化开发
+
+### 16.1 服务开发环境
+
+> 在开始之前，我们依然来设定一个场景。在这里，假定我们处于一个`Dubbo` 治下的微服务系统，而工作是开发系统中某一项微服务。
+
+- 微服务开发与上一节里我们提到的小型项目开发在环境搭建上有一定的区别，我们要合理地调整 `Docker` 的使用方法和策略，就必须先了解这些区别。
+- 在微服务开发中，我们所开发的功能都不是完整的系统，很多功能需要与其他服务之间配合才能正常运转，而我们开发所使用的机器时常无法满足我们在一台机器上将这些相关服务同时运行起来。
+- 我们仅仅是开发某一部分服务的内容，既对其他服务的运转机制不太了解，又完全没有必要在自己的机器上运行其他的服务。所以我们最佳的实践自然就是让参与系统中服务开发的同事，各自维护自己开发服务的环境，而直接提供给我们对应的连接地址使用服务即可。
+- 更确切地说，我们在开发中，只需要在本地搭建起自己所开发服务的运行环境，再与其他开发者搭建的环境互联即可...
+
+### 16.2 搭建本地环境
+
+> 在我们的开发机器上，我们只需要运行我们正在开发的服务，这个过程依然可以使用 `Docker Compose` 来完成。这里我给出了一个简单的例子，表示一个简单的小服务运行环境
+
+```yml
+version: "3"
+
+networks:
+  backend:
+  mesh:
+
+services:
+
+  mysql:
+    image: mysql:5.7
+    networks:
+      - backend
+    volumes:
+      - ../mysql/my.cnf:/etc/mysql/my.cnf:ro
+      - ../mysql/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+    ports:
+      - "3306:3306"
+
+  app:
+    build: ./spring
+    networks:
+      - mesh
+      - backend
+    volumes:
+      - ../app:/app
+    depends_on:
+      - mysql...
+```
+
+### 16.3 跨主机网络
+
+- 搭建好本地的环境，我们就需要考虑如何与朋友们所搭建的环境进行互联了。
+- 这时候大家也许会想到，可以将服务涉及的相关端口通过映射的方式暴露到我们机器的端口上，接着我们只需要通过各服务机器的 IP 与对应的端口就可以连接了。
+- 然而这种方法还不算特别方便，一来除了处理映射外，我们还需要配置防火墙等才能使其他的机器正确访问到容器，二来是这种方式我们依然要记录各个服务的网络地址等配置，而开发中切换它们是个烦琐的过程。
+- 在介绍`Docker Compose` 的小节里，我们知道了可以通过设置网络别名 ( `alias` ) 的方式来更轻松地连接其他容器，如果我们在服务化开发里也能这么做就能减少很多烦琐操作了。
+- 要实现设置网络别名的目的，自然要先确保所有涉及的容器位于同一个网络中，这时候就需要引出我们之前在网络小节里说到的 `Overlay`网络了...
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-32.png)
+
+> `Overlay Network` 能够跨越物理主机的限制，让多个处于不同 `Docker daemon` 实例中的容器连接到同一个网络，并且让这些容器感觉这个网络与其他类型的网络没有区别。
+
+**Docker Swarm**
+
+> 要搭建 `Overlay Network` 网络，我们就要用到 `Docker Swarm` 这个工具了。`Docker Swarm`是 `Docker`内置的集群工具，它能够帮助我们更轻松地将服务部署到 `Docker daemon` 的集群之中。
+
+![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-33.png)
+
+- 在真实的服务部署里，我们通常是使用 `Docker Compose` 来定义集群，而通过 `Docker Swarm` 来部署集群。
+- `Docker Swarm`最初是独立的项目，不过目前已经集成到了`Docker` 之中，我们通过 `docker CLI`的命令就能够直接操控它。
+- 对于 `Docker Swarm`来说，每一个 `Docker daemon` 的实例都可以成为集群中的一个节点，而在 `Docker daemon` 加入到集群成为其中的一员后，集群的管理节点就能对它进行控制。我们要搭建的 `Overlay` 网络正是基于这样的集群实现的。
+- 既然要将 `Docker`加入到集群，我们就必须先有一个集群，我们在任意一个 `Docker`实例上都可以通过 `docker swarm init` 来初始化集群...
+
+```bash
+sudo docker swarm init
+
+Swarm initialized: current node (t4ydh2o5mwp5io2netepcauyl) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-4dvxvx4n7magy5zh0g0de0xoues9azekw308jlv6hlvqwpriwy-cb43z26n5jbadk024tx0cqz5r 192.168.1.5:2377...
+```
+
+- 在集群初始化后，这个 `Docker` 实例就自动成为了集群的管理节点，而其他 `Docker` 实例可以通过运行这里所打印的 `docker swarm join` 命令来加入集群。
+- 加入到集群的节点默认为普通节点，如果要以管理节点的身份加入到集群中，我们可以通过 `ocker swarm join-token` 命令来获得管理节点的加入命令。...
+
+```bash
+sudo docker swarm join-token manager
+
+To add a manager to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-60am9y6axwot0angn1e5inxrpzrj5d6aa91gx72f8et94wztm1-7lz0dth35wywekjd1qn30jtes 192.168.1.5:2377...
+```
+
+我们通过这些命令来建立用于我们服务开发的 `Docker` 集群，并将相关开发同事的 `Docker` 加入到这个集群里，就完成了搭建跨主机网络的第一步
+
+**建立跨主机网络**
+
+接下来，我们就通过 `docker network create` 命令来建立 `Overlay` 网络。
+
+```bash
+sudo docker network create --driver overlay --attachable mesh
+```
+
+在创建 `Overlay` 网络时，我们要加入`--attachable` 选项以便不同机器上的 `Docker` 容器能够正常使用到它。
+
+在创建了这个网络之后，我们可以在任何一个加入到集群的`Docker`实例上使用 `docker network ls` 查看一下其下的网络列表。我们会发现这个网络定义已经同步到了所有集群中的节点上...
+
+```bash
+sudo docker network ls
+
+NETWORK ID          NAME                DRIVER              SCOPE
+## ......
+y89bt74ld9l8        mesh                overlay             swarm
+## .........
+```
+
+接下来我们要修改 `Docker Compose` 的定义，让它使用这个我们已经定义好的网络，而不是再重新创建网络。
+
+我们只需要在`Docker Compose` 配置文件的网络定义部分，将网络的 `external` 属性设置为 `true`，就可以让`Docker Compose` 将其建立的容器都连接到这个不属于 `Docker Compose` 的项目上了。
+
+```yml
+networks:
+  mesh:
+    external: true
+```
+
+> 通过这个实现，我们在开发中就使整个服务都处于一个可以使用别名映射网络中，避免了要对不同功能联调时切换服务 IP 的烦琐流程。在这种结构下，我们只需要让我们开发的 `Docker` 退出和加入不同的集群，就能马上做到切换不同联调项目。...
