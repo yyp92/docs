@@ -2,7 +2,7 @@
 
 ## npm - 先锋
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-manage-1.png)
+![](../../\imgs\npm-manage-1.png)
 
 2010 年 1 月，一款名为 npm 的包管理器诞生。
 
@@ -10,7 +10,7 @@
 
 > npm 官方辟谣：
 > 
-> ![图片](C:\Users\Administrator\Desktop\docs\imgs\npm-manage-1-1.png)
+> ![图片](../../\imgs\npm-manage-1-1.png)
 
 它的前身其实是名为 pm（pkgmakeinst） 的 bash 工具，它可以在各种平台上安装各种东西。
 
@@ -53,7 +53,7 @@ node_modules
 
 在真实场景下，依赖增多，冗余的包也变多，node_modules 最终会堪比黑洞，很快就能把磁盘占满。而且依赖嵌套的深度也会十分可怕，这个就是**依赖地狱**。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-manage-2.png)
+![](../../\imgs\npm-manage-2.png)
 
 ### 扁平的 node_modules 结构
 
@@ -150,7 +150,7 @@ node_modules
 
 ## yarn - 创新
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-manage-3.png)
+![](../../\imgs\npm-manage-3.png)
 
 2016 年，yarn 发布，yarn 也采用**扁平化 node_modules 结构**。它的出现是为了解决 npm v3 几个最为迫在眉睫的问题：依赖安装速度慢，不确定性。
 
@@ -178,7 +178,7 @@ yarn 依然和 npm 一样是扁平化的 node_modules 结构，没有解决**幽
 
 ## pnpm - 后浪
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-manage-4.png)
+![](../../\imgs\npm-manage-4.png)
 
 pnpm - performant npm，在 2017 年正式发布，定义为快速的，节省磁盘空间的包管理工具，开创了一套新的依赖管理机制，成为了包管理的后起之秀。
 
@@ -224,7 +224,7 @@ node_modules
 
 pnpm 官方图片也清晰地解释了这套机制：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-manage-5.png)
+![](../../\imgs\npm-manage-5.png)
 
 ### 未来可期
 
@@ -244,7 +244,7 @@ pnpm 官方图片也清晰地解释了这套机制：
 
 ## yarn Plug’n’Play - 探索
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-manage-6.png)
+![](../../\imgs\npm-manage-6.png)
 
 2020 年 1 月，yarn v2 发布，也叫 yarn berry（v1 叫 yarn classic）。它是对 yarn 的一次重大升级，其中一项重要更新就是 Plug’n’Play（Plug'n'Play = Plug and Play = PnP，即插即用）。
 

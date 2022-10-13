@@ -6,9 +6,9 @@
 
 转换后的代码类似下面这样：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\source-map-1.png)
+![](../../\imgs\source-map-1.png)
 
-![](C:\Users\Administrator\Desktop\docs\imgs\source-map-2.png)
+![](../../\imgs\source-map-2.png)
 
 虽然这种代码对计算机非常友好，但是我们debug将会变得很困难，这时候就需要sourcemap了。
 
@@ -75,7 +75,7 @@ console.log(123);
 
 每个属性的含义如下:
 
-![](C:\Users\Administrator\Desktop\docs\imgs\source-map-6-1.png)
+![](../../\imgs\source-map-6-1.png)
 
 - version：遵循的是哪一个sourcemap版本的规范（下面会浅提一下）
 
@@ -109,7 +109,7 @@ console.log(123);
 
 这里主要关注mappings和names属性，mappings属性是一个很长的字符串，它分成三个部分。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\source-map-6-2.png)
+![](../../\imgs\source-map-6-2.png)
 
 1. 分号(;)，表示行对应，生成的文件的每一行用分号(;)分隔，一个分号代表转换后源码的一行
 
@@ -145,13 +145,13 @@ console.log(123);
 
 假设文件a.js有一行代码 `I Love SourceMap`，最终打包后输出的文件为bundle.js，内容为 `Javascript is awesome`，如下：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\source-map-6.png)
+![](../../\imgs\source-map-6.png)
 
 那么怎么表示映射关系。
 
 以 Love 为例，它原始的位置为(0,2)，输出后是awesome，位置为(0,14)，那么我们可以这样来映射：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\source-map-7.png)
+![](../../\imgs\source-map-7.png)
 
 像这样写成一种固定的格式，里面包含了原始位置和输出后的位置，单词，同时还有原始文件名，因为可能把多个文件进行处理输出，如果不写文件名，就不知道输入位置来自哪个文件:
 
@@ -171,7 +171,7 @@ console.log(123);
 
 考虑到，如果文件特别大的话，那么行列的数值可能会特别大，所以可以考虑用相对位置来代替绝对位置来表示，只用绝对位置表示第一个单词的位置，后面的都使用相对前一个单词的位置。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\source-map-10.png)
+![](../../\imgs\source-map-10.png)
 
 | 原始单词      | 输入位置            | 输出单词       | 输出位置                 | 映射          |
 | --------- | --------------- | ---------- | -------------------- | ----------- |
@@ -207,7 +207,7 @@ console.log(123);
 
 看几个例子来理解，每一步的变化我都用不同颜色标记了：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\source-map-11.png)
+![](../../\imgs\source-map-11.png)
 
 第三步（按...5554分割），最右边4位是因为他还需要额外多表示一位符号位，其余的都可以用5位来表示数值。
 
@@ -222,7 +222,7 @@ console.log(123);
 
 然后再把它转成base64编码，可以查下面这张表：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\source-map-12.png)
+![](../../\imgs\source-map-12.png)
 
 就可以得到5和-19的**base64 vlq**编码了，因为5的 vlq 编码数值是10，所以查上表可得到K，同理-19可以得到n和B，最终能得到5和-19的 base64 vlq 编码分别是K和nB。
 

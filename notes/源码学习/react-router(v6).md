@@ -14,7 +14,7 @@
 
 首先我们从路由的使用方法上，来看一下 v6 的变化，还是举例一个场景。比如有如下的路由结构：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-router-v6-1.jpg)
+![](../../\imgs\react-router-v6-1.jpg)
 
 如上图所示，页面分为简单的 2 级路由结构：
 
@@ -83,7 +83,7 @@ function Children (){
 
 看一下整体效果：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-router-v6-2.gif)
+![](../../\imgs\react-router-v6-2.gif)
 
 那么整体路由层级的结构图，如下所示（重点看和 v6 的整体设计的区别 ）：
 
@@ -222,7 +222,7 @@ function Layout(){
 
 - **状态获取**：对于路由状态 location 的获取 ，可以用自定义 hooks 中 `useLocation` 。location 里面保存了 hash | key | pathname | search | state 等状态。
   
-  - ![](C:\Users\Administrator\Desktop\docs\imgs\react-router-v6-7.jpg)
+  - ![](../../\imgs\react-router-v6-7.jpg)
 
 - **路由跳转**：新版路由提供了 `useNavigate` ，实现路由的跳转。具体用法参考如下代码：
   
@@ -288,7 +288,7 @@ function Layout(){
     
     来看一下演示：
     
-    ![](C:\Users\Administrator\Desktop\docs\imgs\react-router-v6-8.gif)
+    ![](../../\imgs\react-router-v6-8.gif)
 
 - **配置更加灵活。** 在 v5 版本中，通过 options 到路由组件的配置，可以用一个额外的路由插件，叫做 `react-router-config` 中的 `renderRoutes` 方法。在 v6 版本中提供了自定义 hooks `useRoutes` 让路由的配置更加灵活。来看一下具体的使用。
   
@@ -333,7 +333,7 @@ function Layout(){
 
 接下来我们看一下 v6 整体设计：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-router-v6-9.jpg)
+![](../../\imgs\react-router-v6-9.jpg)
 
 - 从如上图中，可以看得出，新版本 v6 已经完全拥抱了 hooks 。
 
@@ -551,7 +551,7 @@ function createRoutesFromChildren(children) { /* 从把 变成层级嵌套结构
 
 element 会被转化成如下结构：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-router-v6-10.jpg)
+![](../../\imgs\react-router-v6-10.jpg)
 
 接下来暴露的重点就是 **useRoute** ，似乎从路由挂载，再到切换路由重新渲染，都和它有关系。那么接下来重点看一下这个自定义 hooks。
 
@@ -585,7 +585,7 @@ function useRoutes(routes, locationArg) {
 
 - **第二阶段，通过 `matchRoutes`，找到匹配的路由分支。**，什么叫做匹配的路由分支呢，比如上面的切换路由到  `/children/child1`，那么明显是一个二级路由，那么它的路由分支就应该是 root -> children -> child1。我们打印 matches 看一下数据结构。
   
-  - ![](C:\Users\Administrator\Desktop\docs\imgs\react-router-v6-11.jpg)
+  - ![](../../\imgs\react-router-v6-11.jpg)
 
 - 还有一点就是 `useRoutes` 内部用了 `useLocation`。当 location 对象变化的时候，useRoutes 会重新执行渲染。
 
@@ -612,7 +612,7 @@ function matchRoutes(routes,locationArg,basename){
 
 - 首先通过 **flattenRoutes** 将数组进行扁平化处理，扁平化处理后变成了如下的样子。
   
-  - ![](C:\Users\Administrator\Desktop\docs\imgs\react-router-v6-12.jpg)
+  - ![](../../\imgs\react-router-v6-12.jpg)
   
   - 扁平化的 branches 里面有一个 **routesMeta** 属性，存放了每一个 route 信息，比如上面那个 `/children/child1` 那么本质上有2层路由组成。第一层是 `/children`，第二层是 `/child1`；
 
@@ -691,7 +691,7 @@ export function useOutlet(context?: unknown): React.ReactElement | null {
 
 我们把 reduceRight 做的事，用一幅流程图来表示。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-router-v6-13.jpg)
+![](../../\imgs\react-router-v6-13.jpg)
 
 #### 路由更新到对应组件渲染展示流程
 

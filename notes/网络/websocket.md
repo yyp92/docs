@@ -1,6 +1,6 @@
 # websocket
 
-![](C:\Users\Administrator\Desktop\docs\imgs\websocket-1.gif)
+![](../../\imgs\websocket-1.gif)
 
 看演示不过瘾，我也玩一下(http://socket.vjscoder.com/websocket-chatroom/index.html#/)  
 
@@ -18,7 +18,7 @@ WebSocket 是 HTML5 开始提供的一种在**单个 TCP 连接上**进行**全�
 
 - 兼容性问题(主流浏览器都支持)
 
-![](C:\Users\Administrator\Desktop\docs\imgs\websocket-2.jpg)
+![](../../\imgs\websocket-2.jpg)
 
 ##### Websocket特点
 
@@ -54,11 +54,11 @@ WebSocket 是 HTML5 开始提供的一种在**单个 TCP 连接上**进行**全�
   - 全双工通信：服务器可以主动向客户端推送信息，客户端也可以主动向服务器发送信息，是真正的**双向平等**对话，属于服务器推送技术的一种。
   - HTTP协议基于Request/Response，只能做单向传输，是**半双工通信**，而WebSocket是**全双工通信**
   
-  ![](C:\Users\Administrator\Desktop\docs\imgs\websocket-3.jpg)
+  ![](../../\imgs\websocket-3.jpg)
   
   - **http是无状态的，所以请求得到响应以后就关闭了,无状态的好处是服务器不需要存储相关会话信息**。缺点是每次http请求和响应都会发送关于请求的冗余信息；而**WebSocket** 只需要建立一次Request/Response消息对，之后都是TCP连接，避免了需要多次建立Request/Response消息对而产生的**冗余头部信息**。**节省了大量流量和服务器资源**。
   
-  ![](C:\Users\Administrator\Desktop\docs\imgs\websocket-4.jpg)
+  ![](../../\imgs\websocket-4.jpg)
   
   - WebSocket在建立握手连接时，数据是通过HTTP协议传输的，但在建立连接之后，**真正的数据传输阶段是不需要HTTP协议参与的。而http需要需要三次握手**。
   
@@ -200,7 +200,7 @@ Websocket对象只有4个事件
 
 当要检查发往服务器的缓冲数据量，特别是客户端向服务器发送大量数据。尽管调用send()连接是立即生效的，但是数据在互联网上的传输却不是这样。浏览器将为你的客户端应用程序缓存出栈数据，从而使你可以随时调用send(), 但如果你想知道数据在网络上的传输速率，Websocket对象可以告诉你缓存的大小。因此可以用bufferedAmount检查已经进入队列，但是尚未发送到服务器的字节数。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\websocket-7.jpg)
+![](../../\imgs\websocket-7.jpg)
 
 - **Protocol**: 打开握手期间使用的协议。
 
@@ -247,7 +247,7 @@ Sec-WebSocket-Accept用来确定：
 */ 
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\websocket-8.jpg)
+![](../../\imgs\websocket-8.jpg)
 
 #### websocket消息格式
 
@@ -398,7 +398,7 @@ ws.on('close', function (message) {
 
 #### 首发消息debug查看面板
 
-![](C:\Users\Administrator\Desktop\docs\imgs\websocket-9.jpg)
+![](../../\imgs\websocket-9.jpg)
 
 #### 心跳保活
 
@@ -406,7 +406,7 @@ https://juejin.cn/post/6844903765875621896
 
 由于在长连接的场景下，客户端和服务端并不是一直处于通信状态，如果双方长期没有沟通则双方都不清楚对方目前的状态，所以需要发送一段很小的报文告诉对方“我还活着”。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\websocket-10.jpg)
+![](../../\imgs\websocket-10.jpg)
 
 如上图所示，在应用层通常是由客户端发送一个心跳包 `ping` 到服务端，服务端收到后响应一个 `pong` 表明双方都活得好好的。
 
@@ -514,7 +514,7 @@ ws.on('message', function (message) {
 
 1. 消息必达是为了处理长连过程中一些重要消息因为网络、服务器等原因，导致用户未收到消息的兼容处理。下图中，（1）直接消息丢失，无法处理，(2)(3)可通过ack手段使用户能收到重要消息，提高消息触达率。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\websocket-11.jpg)
+![](../../\imgs\websocket-11.jpg)
 
 2. 使用ack机制来触使消息必达，即当客户端收到消息后，需要发送一条ack回执，告诉服务端已经收到消息了。如果服务端未接收到客户端的ack消息，则理解为客户端未收到消息，将会重发此消息，以保证用户能够接收到消息。当客户端需要接收消息时，使用ack处理消息必达可能会有以下几种情况：
    
@@ -530,7 +530,7 @@ ws.on('message', function (message) {
    
    ![](../../\imgs\websocket-12.jpg)
    
-   ![](C:\Users\Administrator\Desktop\docs\imgs\websocket-13.jpg)
+   ![](../../\imgs\websocket-13.jpg)
 
 ## 拓展
 

@@ -8,7 +8,7 @@
 
 ### 工具栏
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-1.jpg)
+![](../../\imgs\devTools-1.jpg)
 
 从左到右依次为：
 
@@ -34,7 +34,7 @@
 
 ### 概览
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-2.jpg)
+![](../../\imgs\devTools-2.jpg)
 
 在概览上可以拖动鼠标进行缩放，可以点击定位，可以鼠标滚轮放大缩小。
 
@@ -56,7 +56,7 @@
 
 #### Frames-帧
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-3.jpg)
+![](../../\imgs\devTools-3.jpg)
 
 - 白色：没有变化
 
@@ -68,7 +68,7 @@
 
 #### Main-主线程
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-4.jpg)
+![](../../\imgs\devTools-4.jpg)
 
 > `Ctrl + F`可以搜索`Task`名字，定位到具体的位置会标红
 
@@ -82,15 +82,15 @@
 
 我们可以点击任意脚本活动查看
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-5.jpg)
+![](../../\imgs\devTools-5.jpg)
 
 (anonymous)代表的是匿名函数的意思，点击旁边文件导航跳转过去，光标定位的地方就是函数调用的位置。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-6.jpg)
+![](../../\imgs\devTools-6.jpg)
 
 ### Call Tree 调用树
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-7.jpg)
+![](../../\imgs\devTools-7.jpg)
 
 调用树的顺序是从上到下，和`Buttom-Up`顺序相反，这里介绍一个就可以了
 
@@ -114,7 +114,7 @@
 
 与后端调试接口时，有时候会让你再请求一次，再请求一次...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-9.jpg)
+![](../../\imgs\devTools-9.jpg)
 
 右击，选择`Replay XHR`，则会重新发起请求。
 
@@ -122,7 +122,7 @@
 
 可以阻断请求URL和当前域名
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-10.jpg)
+![](../../\imgs\devTools-10.jpg)
 
 搜索`Show Network request blocking`查看阻断的列表
 
@@ -134,19 +134,19 @@
 
 ### $0
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-12.gif)
+![](../../\imgs\devTools-12.gif)
 
 `$1`对上次的节点引用，`$2`对上上次节点的引用，一直到`$4`
 
 ### $_
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-13.gif)
+![](../../\imgs\devTools-13.gif)
 
 ### $、$$
 
 > 等同于`document.querySelector`和`document.querySelectorAll`
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-14.jpg)
+![](../../\imgs\devTools-14.jpg)
 
 ## Sources
 
@@ -154,11 +154,11 @@
 
 有时候我们在翻译网站的时候，会把代码也翻译成中文，那我们可以使用`Sources`的`Snippets`来内置代码，指定元素不进行翻译，也可以在片段中快捷键`Ctrl+Enter`执行
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-15.jpg)
+![](../../\imgs\devTools-15.jpg)
 
 有时候我们想更快的执行这段代码，可以先重命名，然后通过快捷键`Ctrl+p`可以快速定位到片段的位置去执行
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-16.gif)
+![](../../\imgs\devTools-16.gif)
 
 当然，`Snippets`这里我只是举了一个例子，你可以实现你想要的一些东西
 
@@ -166,7 +166,7 @@
 
 > 打开开发者工具按`ctrl+shift+p`搜索`Show Javascript Profiler`选中然后回车
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-17.jpg)
+![](../../\imgs\devTools-17.jpg)
 
 可以看到当前js代码执行时间，也可以通过左上角录制，测试当前按钮执行的函数是否有性能问题
 
@@ -174,7 +174,7 @@
 
 然后我们点击右侧的html
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-19.jpg)
+![](../../\imgs\devTools-19.jpg)
 
 点击事件执行时间和函数每一行执行的时间都给你展示出来，是不是very nice?
 
@@ -182,7 +182,7 @@
 
 > 搜索`Rendering`
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-20.jpg)
+![](../../\imgs\devTools-20.jpg)
 
 ### 1. Paint Flashing(绘画闪烁)
 
@@ -202,11 +202,11 @@
 页面中减慢滚动速度的元素会突显成蓝绿色，包括触摸滚轮事件处理程序和其他主线程滚动情况
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-21.jpg)
+![](../../\imgs\devTools-21.jpg)
 
 ### 4. Core Web Vitals(核心网络生命力)
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-22.jpg)
+![](../../\imgs\devTools-22.jpg)
 
 右上角面板中我们能够看到当前网站的三大核心指标所消耗的时间，这里做个简单的介绍：
 
@@ -222,7 +222,7 @@
 
 > 搜索`Show Layers`
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-23.jpg)
+![](../../\imgs\devTools-23.jpg)
 
 `Slow scroll rects`翻译的意思是慢速移动矩形，其实就是对应上面`Rendering`中的第3点，影响页面滚动的元素。有时候在写页面的时候，页面出现横向滚动条又无法定位到哪个子集元素宽度超出了，这时候就可以打开`Layers`面板查看了，能快速定位我们的`css`问题。
 
@@ -244,7 +244,7 @@
 
 点击`Heap snapshot`，再点击左上角圆圈，获取当前快照
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-26.jpg)
+![](../../\imgs\devTools-26.jpg)
 
 可以看到当前内存占用情况
 
@@ -260,7 +260,7 @@
 
 切到performance也能测内存泄露，我们需要在下方勾选Menory，再去录制即可。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-28.jpg)
+![](../../\imgs\devTools-28.jpg)
 
 可以看到内存一直在增加，没有平稳成一条直线就说明有泄露了。
 
@@ -270,7 +270,7 @@
 
 ![](../../\imgs\devTools-29.jpg)
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-29-1.jpg)
+![](../../\imgs\devTools-29-1.jpg)
 
 可以看到,右边百分比就是当前代码未使用到的,单位是字节，所以我们可以对此优化。
 
@@ -278,13 +278,13 @@
 
 > 搜索`Show Performance Monitor`
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-30.jpg)
+![](../../\imgs\devTools-30.jpg)
 
 可以看到：CPU使用情况、JS内存大小、DOM节点数等都可以实时监控。
 
 监控内存泄漏到平稳图：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\devTools-31.jpg)
+![](../../\imgs\devTools-31.jpg)
 
 ## FPS
 

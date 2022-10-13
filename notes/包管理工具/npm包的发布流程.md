@@ -6,21 +6,21 @@
 
 - 首先在github上新建仓库，新建仓库时License 选择MIT, 此步骤不选择也无妨，后续添加license也可以。但是一定要有License才能发布npm包。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-1.jpg)
+![](../../\imgs\npm-publish-1.jpg)
 
 - 拉取代码到本地
 
 - 初始化项目，安装依赖等
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-2.jpg)
+![](../../\imgs\npm-publish-2.jpg)
 
 - 完善功能
 
 - 打包，并在package.json中指明入口
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-3.jpg)
+![](../../\imgs\npm-publish-3.jpg)
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-3-1.jpg)
+![](../../\imgs\npm-publish-3-1.jpg)
 
 另外如果发布公有包需要在package.json中增加publishConfig的配置
 
@@ -36,7 +36,7 @@
 
 先看下图了解注册的流程：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-4.jpg)
+![](../../\imgs\npm-publish-4.jpg)
 
 网址：www.npmjs.com/signup[2]
 
@@ -46,7 +46,7 @@
 
 点击"我是人类" 会进行图片验证，如下图：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-6.jpg)
+![](../../\imgs\npm-publish-6.jpg)
 
 图片验证完就是输入用户名、密码、邮箱过程，
 
@@ -60,7 +60,7 @@
 
 执行`npm login` 命令登录npm ：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-6-1.jpg)
+![](../../\imgs\npm-publish-6-1.jpg)
 
 如上图所示，登录失败了。解决办法：使用nrm切换镜像，将镜像改为npm。下面简要介绍一下nrm。
 
@@ -73,17 +73,17 @@ npm i -g nrm
 nrm -V
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-6-2.jpg)
+![](../../\imgs\npm-publish-6-2.jpg)
 
 常用nrm命令如下：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-7.jpg)
+![](../../\imgs\npm-publish-7.jpg)
 
 想了解更多关于nrm[3]的内容请查看文档和资料[4]。
 
 下图是使用nrm ls命令查看镜像：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-8.jpg)
+![](../../\imgs\npm-publish-8.jpg)
 
 下图是将镜像切换为npm：
 
@@ -93,7 +93,7 @@ nrm -V
 
 切换镜像之后再登录：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-10.jpg)
+![](../../\imgs\npm-publish-10.jpg)
 
 如上图登录时需要输入OTP，要查看邮箱。输入OTP回车之后就可以成功登录了
 
@@ -103,7 +103,7 @@ nrm -V
 
 登录成功之后即可执行发布命令：`npm publish`，如下图：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-11.jpg)
+![](../../\imgs\npm-publish-11.jpg)
 
 此时npm包发布成功了。
 
@@ -121,21 +121,21 @@ nrm -V
 
 查资料所如下命令可以删掉发布错误的npm包：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-13.jpg)
+![](../../\imgs\npm-publish-13.jpg)
 
 但实际上此命令是表示废弃已发布的npm包，并不是删除。
 
 在npm网站上仍然能够查到已废弃的npm包，如下图所示：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-14.jpg)
+![](../../\imgs\npm-publish-14.jpg)
 
 废弃之后是否可以发布成功呢？重新执行npm publish
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-15.jpg)
+![](../../\imgs\npm-publish-15.jpg)
 
 执行结果如下图：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-16.jpg)
+![](../../\imgs\npm-publish-16.jpg)
 
 还是报错，所以单单废弃原有包还是不能发布新包的。
 
@@ -143,19 +143,19 @@ nrm -V
 
 正确的解决办法是：`npm unpublish <包名> \-force` ,命令执行效果：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-17.jpg)
+![](../../\imgs\npm-publish-17.jpg)
 
 再在npm网站上查找则查不到了：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-18.jpg)
+![](../../\imgs\npm-publish-18.jpg)
 
 删掉已发布的包之后，终于可以重新发布了：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-19.jpg)
+![](../../\imgs\npm-publish-19.jpg)
 
 发布成功！在npm网站上也能够看到新包了：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-20.jpg)
+![](../../\imgs\npm-publish-20.jpg)
 
 ### 如何使用npm包
 
@@ -165,11 +165,11 @@ nrm -V
 
 可以查看package.json文件，返现已经将mx-dev-util加添为dependiences:
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-22.jpg)
+![](../../\imgs\npm-publish-22.jpg)
 
 接着就是在项目中使用npm包提供的方法了：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-23.jpg)
+![](../../\imgs\npm-publish-23.jpg)
 
 ### 更新npm包版本
 
@@ -191,7 +191,7 @@ npm version  major | minor | patch | premajor | preminor | prepatch | prerelease
 
 如果当前版本为 0.0.1 则发布major、minor，patch版本之后会变为 1.0.0 ，0.1.0， 0.0.2。导图总结如下：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-24.jpg)
+![](../../\imgs\npm-publish-24.jpg)
 
 了解更多可查看npm version文档和相关资料[5]。
 
@@ -201,7 +201,7 @@ npm version  major | minor | patch | premajor | preminor | prepatch | prerelease
 
 执行命令失败，提示需要先提交代码，下图为提交代码过程：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-26.jpg)
+![](../../\imgs\npm-publish-26.jpg)
 
 提交代码后，再执行版本更新命令：
 
@@ -217,7 +217,7 @@ npm version  major | minor | patch | premajor | preminor | prepatch | prerelease
 
 下面总结一下用到发布npm包用到的npm命令
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-publish-29.jpg)
+![](../../\imgs\npm-publish-29.jpg)
 
 ## 总结
 

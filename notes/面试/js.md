@@ -590,7 +590,7 @@ func.bind(thisArg, param1, param2, ...)
 - 箭头函数中this比较特殊,箭头函数this为父作用域的this，不是调用时的this.要知道前四种方式,都是调用时确定,也就是动态的,而箭头函数的this指向是静态的,声明的时候就确定了下来；
 - `apply、call、bind`都是js给函数内置的一些API，调用他们可以为函数指定this的执行,同时也可以传参。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-5.png)
+![](../../\imgs\interview-js-5.png)
 
 ```js
 let a = {
@@ -1441,7 +1441,7 @@ const prototype = Object.prototype
 
 **总结**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-13.png)
+![](../../\imgs\interview-js-13.png)
 
 - 每个函数都有 `prototype` 属性，除了 `Function.prototype.bind()`，该属性指向原型。
 - 每个对象都有 `__proto__` 属性，指向了创建该对象的构造函数的原型。其实这个属性指向了 `[[prototype]]`，但是 `[[prototype]]`是内部属性，我们并不能访问到，所以使用 `_proto_`来访问。
@@ -1610,7 +1610,7 @@ console.log(s1.play, s2.play);
 
 可以看到控制台：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-15.png)
+![](../../\imgs\interview-js-15.png)
 
 > 明明我只改变了s1的play属性，为什么s2也跟着变了呢？很简单，因为两个实例使用的是同一个原型对象。
 
@@ -2135,7 +2135,7 @@ l.init(); // Uncaught Error: Error
 
 **事件对象**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-19.png)
+![](../../\imgs\interview-js-19.png)
 
 **事件流阻止**
 
@@ -2397,7 +2397,7 @@ for (let key of obj) {
 }
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-20.png)
+![](../../\imgs\interview-js-20.png)
 
 ## Promise
 
@@ -2622,7 +2622,7 @@ console.log(it.next(13)) // => {value: 42, done: true}
 
 `yield`实际就是暂缓执行的标示，每执行一次`next()`，相当于指针移动到下一个`yield`位置
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-23.png)
+![](../../\imgs\interview-js-23.png)
 
 > **总结一下**，`Generator`函数是`ES6`提供的一种异步编程解决方案。通过`yield`标识位和`next()`方法调用，实现函数的分段执行
 
@@ -2799,7 +2799,7 @@ asyncFun(func);
 
 ## 事件循环
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-25.png)
+![](../../\imgs\interview-js-25.png)
 
 - 默认代码从上到下执行，执行环境通过`script`来执行（宏任务）
 - 在代码执行过程中，调用定时器 `promise` `click`事件...不会立即执行，需要等待当前代码全部执行完毕
@@ -2811,7 +2811,7 @@ asyncFun(func);
 
 **例子**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-26.png)
+![](../../\imgs\interview-js-26.png)
 
 ![](../../\imgs\interview-js-27.png)
 
@@ -2869,7 +2869,7 @@ console.log(8)
 
 > 当我们打开网站时，网页的渲染过程就是一大堆同步任务，比如页面骨架和页面元素的渲染。而像加载图片音乐之类占用资源大耗时久的任务，就是异步任务。，我们用导图来说明：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-31.png)
+![](../../\imgs\interview-js-31.png)
 
 **我们解释一下这张图：**
 
@@ -2997,9 +2997,9 @@ console.log('script end');
 
 ![](../../\imgs\interview-js-36.png)
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-37.png)
+![](../../\imgs\interview-js-37.png)
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-38.png)
+![](../../\imgs\interview-js-38.png)
 
 - 每次执行执行一个宏任务后会清空微任务（执行顺序和浏览器一致，在node11版本以上）
 - `process.nextTick` node中的微任务，当前执行栈的底部，优先级比`promise`要高
@@ -3105,7 +3105,7 @@ setTimeout
 read file success
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-41.png)
+![](../../\imgs\interview-js-41.png)
 
 > 当微任务和宏任务又产生新的微任务和宏任务时，又应该如何处理呢？如下代码所示：
 
@@ -3149,7 +3149,7 @@ read file sync success
 
 **Process.nextick() 和 Vue 的 nextick**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-42.png)
+![](../../\imgs\interview-js-42.png)
 
 > `Node.js` 和浏览器端宏任务队列的另一个很重要的不同点是，浏览器端任务队列每轮事件循环仅出队一个回调函数接着去执行微任务队列；而 `Node.js` 端只要轮到执行某个宏任务队列，则会执行完队列中所有的当前任务，但是当前轮次新添加到队尾的任务则会等到下一轮次才会执行。
 
@@ -3302,7 +3302,7 @@ process.nextTick(() => {
 
 ## 深浅拷贝
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-46.png)
+![](../../\imgs\interview-js-46.png)
 
 **1. 浅拷贝的原理和实现**
 
@@ -3344,7 +3344,7 @@ console.log('obj1',obj1);
 console.log('obj2',obj2);
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-47.png)
+![](../../\imgs\interview-js-47.png)
 
 > 从上面的样例代码中可以看到，利用 `object.assign` 也可以拷贝 `Symbol` 类型的对象，但是如果到了对象的第二层属性 obj1.a.b 这里的时候，前者值的改变也会影响后者的第二层属性的值，说明其中`依旧存在着访问共同堆内存的问题`，也就是说`这种方法还不能进一步复制，而只是完成了浅拷贝的功能`
 
@@ -3481,7 +3481,7 @@ let obj2 = JSON.parse(str);
 console.log('obj2',obj2);
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-48.png)
+![](../../\imgs\interview-js-48.png)
 
 > 使用 `JSON.stringify` 方法实现深拷贝对象，虽然到目前为止还有很多无法实现的功能，但是这种方法足以满足日常的开发需求，并且是最简单和快捷的。而对于其他的也要实现深拷贝的，比较麻烦的属性对应的数据类型，`JSON.stringify` 暂时还是无法满足的，那么就需要下面的几种方法了
 
@@ -4128,7 +4128,7 @@ console.log(iterator.next().value);//xyz
 
 ![](../../\imgs\interview-js-52.png)
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-55.png)
+![](../../\imgs\interview-js-55.png)
 
 **二、理解JS的类数组**
 
@@ -4200,7 +4200,7 @@ function foo(name, age, sex) {
 foo('jack', '18', 'male');
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-57.png)
+![](../../\imgs\interview-js-57.png)
 
 > 从控制台可以看到，输出的就是函数自身，如果在函数内部直接执行调用 `callee` 的话，那它就会不停地执行当前函数，直到执行到内存溢出
 
@@ -4223,7 +4223,7 @@ console.log(Object.prototype.toString.call(elem1));
 
 在这个有 form 表单的页面执行上面的代码，得到的结果如下。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-58.png)
+![](../../\imgs\interview-js-58.png)
 
 可以看到，这里打印出来了页面第一个 form 表单元素，同时也打印出来了判断类型的结果，说明打印的判断的类型和 arguments 返回的也比较类似，typeof 返回的都是 'object'，和上面的类似。
 
@@ -4340,7 +4340,7 @@ sum(1, 2);    // 3
 
 类数组和数组的异同点
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-60.png)
+![](../../\imgs\interview-js-60.png)
 
 > 在前端工作中，开发者往往会忽视对类数组的学习，其实在高级 JavaScript 编程中经常需要将类数组向数组转化，尤其是一些比较复杂的开源项目，经常会看到函数中处理参数的写法，例如：`[].slice.call(arguments)` 这行代码。
 
@@ -4460,11 +4460,11 @@ console.log(flatten(arr)); //  [1, 2, 3, 4，5]
 
 可以看到，其中先把传入的数组转换成字符串，然后通过正则表达式的方式把括号过滤掉，这部分正则的表达式你不太理解的话，可以看看下面的图片
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-61.png)
+![](../../\imgs\interview-js-61.png)
 
 > 通过这个在线网站 https://regexper.com/ 可以把正则分析成容易理解的可视化的逻辑脑图。其中我们可以看到，匹配规则是：全局匹配（g）左括号或者右括号，将它们替换成空格，最后返回处理后的结果。之后拿着正则处理好的结果重新在外层包裹括号，最后通过 JSON.parse 转换成数组返回。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-62.png)
+![](../../\imgs\interview-js-62.png)
 
 **四、如何用 JS 实现各种数组排序**
 
@@ -4475,7 +4475,7 @@ console.log(flatten(arr)); //  [1, 2, 3, 4，5]
 
 我们通过一张图片来看看这两种分类方式分别包括哪些排序方法。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-63.png)
+![](../../\imgs\interview-js-63.png)
 
 非比较类的排序在实际情况中用的比较少
 
@@ -4680,6 +4680,6 @@ mergeSort(a); // [1, 1, 3, 3, 6, 6, 23, 34, 76, 221, 222, 456]
 
 归并排序是一种稳定的排序方法，和选择排序一样，归并排序的性能不受输入数据的影响，但表现比选择排序好得多，因为始终都是 O(nlogn) 的时间复杂度。而代价是需要额外的内存空间。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-64.png)
+![](../../\imgs\interview-js-64.png)
 
 其中你可以看到排序相关的时间复杂度和空间复杂度以及稳定性的情况，如果遇到需要自己实现排序的时候，可以根据它们的空间和时间复杂度综合考量，选择最适合的排序方法。

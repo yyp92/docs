@@ -559,7 +559,7 @@ module.exports = function () { return 'foo'; };
 
 > 新生代中的对象主要通过 Scavenge 算法进行垃圾回收。这是一种采用复制的方式实现的垃圾回收算法。它将堆内存一份为二，每一部分空间成为 semispace。在这两个 semispace 空间中，只有一个处于使用中，另一个处于闲置状态。处于使用状态的 semispace 空间称为 From 空间，处于闲置状态的空间称为 To 空间
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-nodejs-5.png)
+![](../../\imgs\interview-nodejs-5.png)
 
 - 当开始垃圾回收的时候，会检查 From 空间中的存活对象，这些存活对象将被复制到 To 空间中，而非存活对象占用的空间将会被释放。完成复制后，From 空间和 To 空间发生角色对换。
 - 应为新生代中对象的生命周期比较短，就比较适合这个算法。
@@ -720,7 +720,7 @@ Sec-WebSocket-Accept: server-random-string
 
 ### https 验证身份也就是 TSL/SSL 身份验证的过程
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-nodejs-7.png)
+![](../../\imgs\interview-nodejs-7.png)
 
 ## 进程通信
 

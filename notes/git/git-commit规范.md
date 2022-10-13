@@ -90,7 +90,7 @@ npm install -g commitizen cz-conventional-changelog
   
   安装完毕后，可直接使用 git cz 来取代 git commit。
   
-  ![](C:\Users\Administrator\Desktop\docs\imgs\git-commit-1.jpg)
+  ![](../../\imgs\git-commit-1.jpg)
 
 可以看到当你 cz 之后，下面有很多的 type 让你选择，这就省掉了每次你去想应该用哪种 type，非常方便。
 
@@ -102,7 +102,7 @@ npm install -g commitizen cz-conventional-changelog
 
 在 git commit 上使用 emoji 提供了一种简单的方法，仅通过查看所使用的表情符号来确定提交的目的或意图, 得提交记录非常好理解，阅读体验非常棒。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\git-commit-2.jpg)
+![](../../\imgs\git-commit-2.jpg)
 
 ### 使用方法
 
@@ -119,7 +119,7 @@ git commit -m 'added image to repo :art:'
 
 效果展示：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\git-commit-3.jpg)
+![](../../\imgs\git-commit-3.jpg)
 
 如果你们团队是一个喜欢用 emoji 的团队，其实可以不用遵循上面的一节的规范，因为 emoji 已经可以表达出 header 的 type 的作用了，直接在 emoji 后面加描述即可。
 
@@ -180,7 +180,7 @@ emojify "Hey, I just :raising_hand: you, and this is :scream: , but here's my :c
 
 显示效果：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\git-commit-4.jpg)
+![](../../\imgs\git-commit-4.jpg)
 
 在使用 git bash 的时候，设置替换日志中的表情符号代码
 
@@ -198,7 +198,7 @@ gitlog
 
 效果如下：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\git-commit-5.jpg)
+![](../../\imgs\git-commit-5.jpg)
 
 ### 参考资料
 

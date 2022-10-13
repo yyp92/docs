@@ -8,7 +8,7 @@
 
 那么今天我们就一起来探索下这个流程，下图是我梳理出的“从输入 URL 到页面展示完整流程示意图”：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\chrome-render-url-1.png)
+![](../../\imgs\chrome-render-url-1.png)
 
 从图中可以看出，**整个过程需要各个进程之间的配合**，所以在开始正式流程之前，我们还是先来快速回顾下**浏览器进程**、**渲染进程**和**网络进程**的主要职责。
 
@@ -62,7 +62,7 @@
 
 当前页面没有监听 beforeunload 事件或者同意了继续后续流程，那么浏览器便进入下图的状态：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\chrome-render-url-2.jpg)
+![](../../\imgs\chrome-render-url-2.jpg)
 
 从图中可以看出，此时图中页面显示的依然是之前打开的页面内容，并没立即替换为极客时间的页面。因为需要等待**提交文档**阶段，页面内容才会被替换。
 
@@ -110,7 +110,7 @@ curl -I https://time.geekbang.org/
 
 我们看到服务器返回如下信息：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\chrome-render-url-4.jpg)
+![](../../\imgs\chrome-render-url-4.jpg)
 
 从图中可以看出，服务器返回的响应头的状态码是 200，这是告诉浏览器一切正常，可以继续往下处理该请求了。
 
@@ -130,7 +130,7 @@ curl -I https://time.geekbang.org/
 
 返回信息如下图：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\chrome-render-url-5.jpg)
+![](../../\imgs\chrome-render-url-5.jpg)
 
 从图中可以看到，响应头中的 Content-type 字段的值是 text/html，这就是告诉浏览器，服务器返回的数据是 **HTML 格式**。
 
@@ -176,7 +176,7 @@ Chrome 的默认策略是，每个标签对应一个渲染进程。但**如果�
 
 那若新页面和当前页面不属于同一站点，情况又会发生什么样的变化呢？比如我通过极客邦页面里的链接打开 InfoQ 的官网（https://www.infoq.cn/ ）， 因为 infoq.cn 和 geekbang.org 不属于同一站点，所以 infoq.cn 会使用一个新的渲染进程，你可以参考下图：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\chrome-render-url-8.jpg)
+![](../../\imgs\chrome-render-url-8.jpg)
 
 从图中任务管理器可以看出：由于极客邦和极客时间的标签页拥有**相同的协议和根域名**，所以它们属于**同一站点**，并运行在同一个渲染进程中；而 infoq.cn 的根域名不同于 geekbang.org，也就是说 InfoQ 和极客邦不属于同一站点，因此它们会运行在两个不同的渲染进程之中。
 
@@ -212,7 +212,7 @@ Chrome 的默认策略是，每个标签对应一个渲染进程。但**如果�
 
 这里你只需要先了解一旦页面生成完成，**渲染进程会发送一个消息给浏览器进程，浏览器接收到消息后，会停止标签图标上的加载动画**。如下所示：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\chrome-render-url-10.jpg)
+![](../../\imgs\chrome-render-url-10.jpg)
 
 ## 总结：
 

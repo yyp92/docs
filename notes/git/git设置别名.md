@@ -22,7 +22,7 @@
     ps = push            //输入git ps => git push
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\git-alias-2.png)
+![](../../\imgs\git-alias-2.png)
 
 ## 保存设置并愉快的使用
 
@@ -30,4 +30,4 @@
 
 保存完之后就可以愉快的使用上面设置好的命令了。比如：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\git-alias-3.gif)
+![](../../\imgs\git-alias-3.gif)

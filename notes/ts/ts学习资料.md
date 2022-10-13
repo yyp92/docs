@@ -6,7 +6,7 @@ TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 
 
 TypeScript 官方文档，提供了中文版本。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\ts-study-1.png)
+![](../../\imgs\ts-study-1.png)
 
 **Github:** https://github.com/microsoft/TypeScript
 
@@ -14,7 +14,7 @@ TypeScript 官方文档，提供了中文版本。
 
 可能是中国最好的 TypeScript 入门到进阶系统教程。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\ts-study-2.png)
+![](../../\imgs\ts-study-2.png)
 
 **Github:** https://github.com/mqyqingfeng/learn-typescript
 
@@ -22,7 +22,7 @@ TypeScript 官方文档，提供了中文版本。
 
 TypeScript 使用手册（中文版）翻译。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\ts-study-3.png)
+![](../../\imgs\ts-study-3.png)
 
 **Github:** https://github.com/zhongsp/TypeScript
 
@@ -30,7 +30,7 @@ TypeScript 使用手册（中文版）翻译。
 
 TypeScript Deep Dive 中文版。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\ts-study-4.png)
+![](../../\imgs\ts-study-4.png)
 
 **Github:** https://github.com/jkchao/typescript-book-chinese
 
@@ -38,7 +38,7 @@ TypeScript Deep Dive 中文版。
 
 从 JavaScript 程序员的角度总结思考，循序渐进地理解 TypeScript。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\ts-study-5.png)
+![](../../\imgs\ts-study-5.png)
 
 **Github:** https://github.com/xcatliu/typescript-tutorial
 
@@ -46,7 +46,7 @@ TypeScript Deep Dive 中文版。
 
 高质量的类型可以提高项目的可维护性并避免一些潜在的漏洞。本项目意在于让你更好地了解 TS 的类型系统，编写你自己的类型工具，或者只是单纯的享受挑战的乐趣！
 
-![](C:\Users\Administrator\Desktop\docs\imgs\ts-study-6.png)
+![](../../\imgs\ts-study-6.png)
 
 **Github:** https://github.com/type-challenges/type-challenges
 
@@ -62,7 +62,7 @@ DefinitelyTyped 包含大量的高质量的 TypeScript 类型定义。通过使�
 
 本指南记录了有关在 React（及其生态系统）中以函数式风格使用 TypeScript 的模式和秘诀。它将使代码类型安全，同时专注于从实现中推断类型，从长远来看更容易编写和维护正确的类型。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\ts-study-8.png)
+![](../../\imgs\ts-study-8.png)
 
 **Github:** https://github.com/piotrwitek/react-redux-typescript-guide
 
@@ -70,7 +70,7 @@ DefinitelyTyped 包含大量的高质量的 TypeScript 类型定义。通过使�
 
 专注于帮助 React 开发人员在 React 应用中使用 TypeScript。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\ts-study-9.png)
+![](../../\imgs\ts-study-9.png)
 
 **Github:** https://github.com/typescript-cheatsheets/react
 
@@ -86,7 +86,7 @@ DefinitelyTyped 包含大量的高质量的 TypeScript 类型定义。通过使�
 
 Google TypeScript 风格指南。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\ts-study-11.png)
+![](../../\imgs\ts-study-11.png)
 
 **Github：**https://google.github.io/styleguide/tsguide.html
 
@@ -94,6 +94,6 @@ Google TypeScript 风格指南。
 
 很棒的 TypeScript 资源
 
-![](C:\Users\Administrator\Desktop\docs\imgs\ts-study-12.png)
+![](../../\imgs\ts-study-12.png)
 
 **Github:** https://github.com/semlinker/awesome-typescript

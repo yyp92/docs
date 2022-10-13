@@ -71,7 +71,7 @@ dva = React-Router + Redux + Redux-saga
 
 ### 2.2 Dva的五个API
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-principle-dva-1.png)
+![](../../\imgs\interview-principle-dva-1.png)
 
 #### 2.2.1 app = dva(Opts)
 
@@ -480,7 +480,7 @@ effects: {
 }
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-principle-dva-1-2.png)
+![](../../\imgs\interview-principle-dva-1-2.png)
 
 > 在项目中最主要的会用到的是 `put` 与 `call`
 
@@ -543,7 +543,7 @@ export default connect(mapStateToProps)(App);
 
 ### 2.4 整体架构
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-principle-dva-2.png)
+![](../../\imgs\interview-principle-dva-2.png)
 
 - 首先我们根据 `url` 访问相关的 `Route-Component`，在组件中我们通过 `dispatch`发送 `action` 到 `model` 里面的 `effect` 或者直接 `Reducer`
 - 当我们将`action`发送给`Effect`，基本上是取服务器上面请求数据的，服务器返回数据之后，`effect` 会发送相应的 `action`给 `reducer`，由唯一能改变 `state`的 `reducer` 改变 `state` ，然后通过`connect`重新渲染组件。
@@ -557,7 +557,7 @@ export default connect(mapStateToProps)(App);
 > React` 只负责页面渲染, 而不负责页面逻辑, 页面逻辑可以从中单独抽取出来, 变成 `store
 > ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-principle-dva-3.png)
+![](../../\imgs\interview-principle-dva-3.png)
 
 > 使用 `Middleware` 拦截 `action`, 这样一来异步的网络操作也就很方便了, 做成一个 `Middleware`就行了, 这里使用`redux-saga` 这个类库
 
@@ -566,7 +566,7 @@ export default connect(mapStateToProps)(App);
 
 **图解二：Dva表示法**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-principle-dva-4.png)
+![](../../\imgs\interview-principle-dva-4.png)
 
 > dva做了 3 件很重要的事情
 
@@ -1707,7 +1707,7 @@ axios.interceptors.response.use((response) => {
 
 > `NProgress` 的使用主要有两个方法，当调用 `NProgress.start();` 时在浏览器顶部就会出现蓝色小条，当调用 `NProgress.done();` 蓝色小条就会消失。我们分别在请求开始和接收到响应调用这两个方法
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-principle-dva-5.png)
+![](../../\imgs\interview-principle-dva-5.png)
 
 ### 6.6 网络请求成功处理
 

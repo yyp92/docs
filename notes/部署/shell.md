@@ -243,7 +243,7 @@ echo $k
 1+2+3
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\shell-2.jpg)
+![](../../\imgs\shell-2.jpg)
 
 #### 赋值
 
@@ -391,7 +391,7 @@ declare -p [变量名] #显示指定变量的被声明的类型
 declare -x [变量名]
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\shell-12.jpg)
+![](../../\imgs\shell-12.jpg)
 
 由此也可以看到，之前定义全局环境变量的方式`export [变量名]`其实就是`declare -x [变量名]`的语法糖
 
@@ -1682,7 +1682,7 @@ nocmd 2> error.log
 
 这些就是 🐢 的臀部--规定了，踩坑良久，献于诸君。我们来看看我说的那个 vscode 插件支持【一键输出打印语句】，目前支持 js 和 shell。【如需试用可以搜索：weiyi-tools】
 
-![](C:\Users\Administrator\Desktop\docs\imgs\shell-19.gif)
+![](../../\imgs\shell-19.gif)
 
 ### 自动输出时期：set
 

@@ -1,6 +1,6 @@
 # React 全部 Hooks 使用大全 （包含 React v18 版本 ）
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-hooks-1.png)
+![](../../\imgs\react-hooks-1.png)
 
 ## 前言
 
@@ -40,7 +40,7 @@ React hooks是react16.8 以后，react新增的钩子API，目的是增加代码
 
 在 React 的世界中，不同的 hooks 使命也是不同的，我这里对 React hooks 按照功能分类，分成了 **数据更新驱动**，**状态获取与传递，执行副作用，状态派生与保存，和工具类型，** 具体功能划分和使用场景如下：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-hooks-2.png)
+![](../../\imgs\react-hooks-2.png)
 
 ## hooks 之数据更新驱动
 
@@ -772,7 +772,7 @@ function Demo (){
 
 这在纯客户端渲染中没有问题，但是在服务端渲染的时候，传统模式下需要走如下流程：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-hooks-5.png)
+![](../../\imgs\react-hooks-5.png)
 
 在这个过程中，当服务端渲染到 html 和 hydrate 过程分别在服务端和客户端进行，但是会走两遍 id 的生成流程，这样就会造成 id不一致的情况发生。useId 的出现能有效的解决这个问题。
 

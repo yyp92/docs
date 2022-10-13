@@ -22,7 +22,7 @@
 
 - `HTTP` 与连接。通过 `TCP`，或者 `TLS`——加密的 `TCP` 连接来发送，理论上任何可靠的传输协议都可以使用。连接是传输层控制的，这从根本上来讲不是 `HTTP` 的范畴。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\http-1-1.png)
+![](../../\imgs\http-1-1.png)
 
 也就是说，`HTTP` 依赖于面向连接的 `TCP` 进行消息传递，但连接并不是必须的。只需要它是可靠的，或不丢失消息的（至少返回错误）。
 
@@ -32,7 +32,7 @@
 
 `HTTP` 的组件系统包括客户端、`web` 服务器和代理。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\http-2.png)
+![](../../\imgs\http-2.png)
 
 ### 客户端：user-agent
 
@@ -78,7 +78,7 @@
 
 HTTP 请求和响应都包括起始行（`start line`）、请求头（`HTTP Headers`）、空行（`empty line`）以及 `body` 部分，如下图所示：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\http-3.png)
+![](../../\imgs\http-3.png)
 
 - 起始行。请求的起始行：请求方法、请求 `Path` 和`HTTP` 版本号 响应的起始行：`HTTP` 版本号、响应状态码以及状态文本描述
 
@@ -499,7 +499,7 @@ Cache-Control: must-revalidate
 
 第二次请求相同网页：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\http-14.png)
+![](../../\imgs\http-14.png)
 
 协商缓存，假如没有改动的话，返回 304 ，改动了返回 200 资源
 
@@ -511,7 +511,7 @@ Cache-Control: must-revalidate
 
 现在的200`(from cache)`已经变成了 `disk cache`(磁盘缓存)和 `memory cache`(内存缓存)两种。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\http-15.png)
+![](../../\imgs\http-15.png)
 
 ### revving 技术
 
@@ -639,7 +639,7 @@ Access-Control-Allow-Origin: http://foo.example
 
 服务器确认允许之后，才发起实际的 `HTTP` 请求。在预检请求的返回中，服务器端也可以通知客户端，是否需要携带身份凭证（包括 `Cookies` 和 `HTTP` 认证相关数据）
 
-![](C:\Users\Administrator\Desktop\docs\imgs\http-19.png)
+![](../../\imgs\http-19.png)
 
 预检请求中同时携带了下面两个首部字段：
 

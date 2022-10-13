@@ -38,7 +38,7 @@
 
 我们可以把流看作这些数据的集合，就像液体一样，我们先把这些液体保存在一个容器里（流的内部缓冲区 BufferList），等到相应的事件触发的时候，我们再把里面的液体倒进管道里，并通知其他人在管道的另一侧拿自己的容器来接里面的液体进行处理。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-stream-1.png)
+![](../../\imgs\nodejs-stream-1.png)
 
 ## 什么是可读流（Readable Stream）
 
@@ -107,7 +107,7 @@ BufferList 中的每一个节点我把它表示为了 BufferNode，里面的 Dat
 
 这种数据结构获取头部的数据的速度快于 Array.prototype.shift()。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-stream-2.png)
+![](../../\imgs\nodejs-stream-2.png)
 
 ### 数据存储类型
 
@@ -142,7 +142,7 @@ console.log(readableStream._readableState.buffer.tail);
 
 运行结果：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-stream-3.png)
+![](../../\imgs\nodejs-stream-3.png)
 
 如果 objectMode === false：
 
@@ -161,7 +161,7 @@ readableStream.push({ name: 'lisa'});
 
 运行结果：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-stream-4.png)
+![](../../\imgs\nodejs-stream-4.png)
 
 ### 数据存储结构
 
@@ -188,7 +188,7 @@ const readableStream = new Stream.Readable({
 
 经过 readableStream.push ('abc') 操作之后，当前的 buffer 为：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-stream-6.png)
+![](../../\imgs\nodejs-stream-6.png)
 
 可以看到目前的数据存储了，头尾存储的数据都是字符串 'abc' 的 ascii 码，类型为 Buffer 类型，length 表示当前保存的数据的条数而非数据内容的大小。
 
@@ -233,7 +233,7 @@ consume(n, hasStrings) {
 
 2.如果所消耗的数据恰好等于链表头节点所存储的数据的长度，则直接返回当前头节点的数据
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-stream-8.png)
+![](../../\imgs\nodejs-stream-8.png)
 
 3.如果所消耗的数据的长度大于链表头节点的长度，那么会根据传入的第二个参数进行最后一次判断，判断当前的 BufferList 底层存储的是 string 还是 Buffer
 

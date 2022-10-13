@@ -4,11 +4,11 @@
 
 > 打印`mobx`，看看`mobx`中有什么
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-principle-mobx-1.png)
+![](../../\imgs\interview-principle-mobx-1.png)
 
 > `MobX`的整个流程
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-principle-mobx-2.png)
+![](../../\imgs\interview-principle-mobx-2.png)
 
 **MobX 和 Redux 的比较**
 
@@ -41,7 +41,7 @@
 
 ## 二、核心API
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-principle-mobx-3.png)
+![](../../\imgs\interview-principle-mobx-3.png)
 
 ### 2.1 @observable
 

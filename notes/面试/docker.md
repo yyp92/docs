@@ -24,7 +24,7 @@
 
 > 在 `Docker` 中，实现了强大的网络功能，我们不但能够十分轻松的对每个容器的网络进行配置，还能在容器间建立虚拟网络，将数个容器包裹其中，同时与其他网络环境隔离
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-1.png)
+![](../../\imgs\interview-docker-1.png)
 
 > `Docker` 能够在容器中营造独立的域名解析环境，这使得我们可以在不修改代码和配置的前提下直接迁移容器，`Docker` 会为我们完成新环境的网络适配。对于这个功能，我们甚至能够在不同的物理服务器间实现，让处在两台物理机上的两个 Docker 所提供的容器，加入到同一个虚拟网络中，形成完全屏蔽硬件的效果...
 
@@ -321,7 +321,7 @@ cogset/cron         latest              c01d5ac6fc8a        15 months ago       
 - 镜像层的 `ID` 既可以识别每个镜像层，也可以用来直接识别镜像 ( 因为根据最上层镜像能够找出所有依赖的下层镜像，所以最上层进行的镜像层 ID 就能表示镜像的 `ID` )，但是使用这种无意义的超长哈希码显然是违背人性的，所以这里我们还要介绍镜像的命名，通过镜像名我们能够更容易的识别镜像...
 - 在 `docker images` 命令打印出的内容中，我们还能看到两个与镜像命名有关的数据：`REPOSITORY` 和 `TAG`，这两者其实就组成了 `docker` 对镜像的命名规则
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-6.png)
+![](../../\imgs\interview-docker-6.png)
 
 **准确的来说，镜像的命名我们可以分成三个部分：username、repository 和 tag**
 
@@ -357,7 +357,7 @@ cogset/cron         latest              c01d5ac6fc8a        15 months ago       
 
 当然，存储镜像并不是镜像仓库最值得炫耀的功能，其最大的作用是实现了 `Docker` 镜像的分发。借助镜像仓库，我们得到了一个镜像的中转站，我们可以将开发环境上所使用的镜像推送至镜像仓库，并在测试或生产环境上拉取到它们，而这个过程仅需要几个命令，甚至自动化完成...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-8.png)
+![](../../\imgs\interview-docker-8.png)
 
 ### 5.2 获取镜像
 
@@ -410,7 +410,7 @@ openresty/openresty   1.13.6.2-alpine     08d5c926e4b6        3 months ago      
 
 Docker Hub 的地址是：hub.docker.com/
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-9.png)
+![](../../\imgs\interview-docker-9.png)
 
 - 由于定位是 `Docker` 的中央镜像仓库系统，同时也是 `Docker Engine` 的默认镜像仓库，所以 `Docker Hub` 是开发者共享镜像的首选，那么也就意味着其中的镜像足够丰富
 - 常用服务软件的镜像，我们都能在 `Docker Hub` 中找到，甚至能找到针对它们不同用法的不同镜像。
@@ -705,7 +705,7 @@ sudo docker attach nginx
 - 容器网络模型为容器引擎提供了一套标准的网络对接范式，而在 `Docker` 中，实现这套范式的是 `Docker` 所封装的 `libnetwork` 模块。
 - 而对于网络的具体实现，在 `Docker` 的发展过程中也逐渐抽象，形成了统一的抽象定义。进而通过这些抽象定义，便可以对 `Docker` 网络的实现方式进行不同的变化...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-13.png)
+![](../../\imgs\interview-docker-13.png)
 
 > 目前 `Docker` 官方为我们提供了五种 `Docker`网络驱动，分别是：`Bridge Driver`、`Host Driver`、`Overlay Driver`、`MacLan Driver`、`one Driver`。
 
@@ -1490,7 +1490,7 @@ RUN rm -rf /var/lib/apt/lists/*
 
 看似连续的镜像构建过程，其实是由多个小段组成。每当一条能够形成对文件系统改动的指令在被执行前，`Docker` 先会基于上条命令的结果启动一个容器，在容器中运行这条指令的内容，之后将结果打包成一个镜像层，如此反复，最终形成镜像...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-19.png)
+![](../../\imgs\interview-docker-19.png)
 
 所以说，我们之前谈到镜像是由多个镜像层叠加而得，而这些镜像层其实就是在我们 `Dockerfile`中每条指令所生成的。
 
@@ -1583,7 +1583,7 @@ exec "$@"...
 
 除此之外，进入到`Dockerfile` 这个栏目下，我们也能够直接看到镜像 `Dockerfile` 的内容。在页面的右侧，还有进入`Dockerfile` 源文件的连接，如果在 `Dockerfile` 中有引入其他的文件，我们可以通过这个连接访问到。...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-21.png)
+![](../../\imgs\interview-docker-21.png)
 
 > 另外，我自己也制作了一些软件的镜像，大家可以访问 `GitHub` 上的项目地址，查阅其中的`Dockerfile` 内容：github.com/cogset
 
@@ -1636,7 +1636,7 @@ exec "$@"...
 - 好在 `MySQL` 镜像的维护者们为我们打造了一些自动化脚本，通过它们，我们只需要简单的传入几个参数，就能够快速实现对 `MySQL` 数据库的初始化。
 - 在 MySQL 镜像的详情里，描述了我们要如何传入这些参数来启动 MySQL 容器。...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-23.png)
+![](../../\imgs\interview-docker-23.png)
 
 > 对于 `MySQL` 镜像来说，进行软件配置的方法是通过环境变量的方式来实现的 ( 在其他的镜像里，还有通过启动命令、挂载等方式来实现的 )。我们只需要通过这些给出的环境变量，就可以初始化 `MySQL` 的配置了。
 
@@ -1672,11 +1672,11 @@ sudo docker run --name mysql -e MYSQL_DATABASE=webapp -e MYSQL_USER=www -e MYSQL
 
 在连接到 `GitHub` 或 `Bitbucket` 后，我们就可以选择我们存放 `Dockerfile` 和相关文件的代码仓库用来创建自动构建了。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-27.png)
+![](../../\imgs\interview-docker-27.png)
 
 在基本信息填写完成，点击创建按钮后，`Docker Hub` 就会开始根据我们 `Dockerfile` 的内容构建镜像了。而此时，我们也能够访问我们镜像专有的详情页面了。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-28.png)
+![](../../\imgs\interview-docker-28.png)
 
 ## 十三、组合操作：使用 Docker Compose 管理容器
 
@@ -1698,7 +1698,7 @@ sudo docker run --name mysql -e MYSQL_DATABASE=webapp -e MYSQL_USER=www -e MYSQL
 - 针对这种情况，我们就不得不引出在我们开发中最常使用的多容器定义和运行软件，也就是 `Docker Compose`了。
 - 如果说 `Dockerfile`是将容器内运行环境的搭建固化下来，那么 `Docker Compose` 我们就可以理解为将多个容器运行的方式和配置固化下来...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-29.png)
+![](../../\imgs\interview-docker-29.png)
 
 > 在 `Docker Compose` 里，我们通过一个配置文件，将所有与应用系统相关的软件及它们对应的容器进行配置，之后使用 `Docker Compose` 提供的命令进行启动，就能让 `Docker Compose` 将刚才我们所提到的那些复杂问题解决掉...
 
@@ -2238,7 +2238,7 @@ services:
 
 > 要搭建 `Overlay Network` 网络，我们就要用到 `Docker Swarm` 这个工具了。`Docker Swarm`是 `Docker`内置的集群工具，它能够帮助我们更轻松地将服务部署到 `Docker daemon` 的集群之中。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-33.png)
+![](../../\imgs\interview-docker-33.png)
 
 - 在真实的服务部署里，我们通常是使用 `Docker Compose` 来定义集群，而通过 `Docker Swarm` 来部署集群。
 - `Docker Swarm`最初是独立的项目，不过目前已经集成到了`Docker` 之中，我们通过 `docker CLI`的命令就能够直接操控它。

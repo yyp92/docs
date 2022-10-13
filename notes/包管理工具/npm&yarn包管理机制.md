@@ -26,7 +26,7 @@
 
 ### npm install
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-vs-yarn-manage-1.png)
+![](../../\imgs\npm-vs-yarn-manage-1.png)
 
 上图是 npm 安装依赖大致的过程，其中这样几个步骤需要关注：
 
@@ -126,7 +126,7 @@ version "17.0.2"
 
 以下是在 yarn 安装依赖时的步骤：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-vs-yarn-manage-2.png)
+![](../../\imgs\npm-vs-yarn-manage-2.png)
 
 1、检查（checking）
 
@@ -150,7 +150,7 @@ version "17.0.2"
 
 判断系统中存在符合 "**cachefolder+slug+node_modules+pkg.name**" 规则的路径，如果存在则判断为命中缓存，否则就会重新下载。值得注意的是，不同版本的包在缓存中是扁平化管理。以下是缓存中 webpack 的依赖缓存，可以通过 yarn cache dir 查看。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-vs-yarn-manage-3.png)
+![](../../\imgs\npm-vs-yarn-manage-3.png)
 
 4、链接包（linking dependencies）
 
@@ -168,13 +168,13 @@ version "17.0.2"
 
 > pkg-a@1.0.0 依赖 pkg-b@1.0.0，npm v3 是扁平化管理依赖。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-vs-yarn-manage-4.png)
+![](../../\imgs\npm-vs-yarn-manage-4.png)
 
 场景二：不同 npm 版本处理依赖多版本共存问题 
 
 > 在场景一的基础上，安装 pkg-c@1.0.0，而它依赖另一个版本的 pgk-b@2.0.0。由于根目录下已存在 pkg-b@1.0.0 的依赖，npm v3 会把 pkg-b@2.0.0 安装到 pkg-c@1.0.0 依赖的 node_modules 目录。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-vs-yarn-manage-5.png)
+![](../../\imgs\npm-vs-yarn-manage-5.png)
 
 靓仔疑惑：为什么 pkg-b@1.0.0 在顶级，而 pkg-b@2.0.0 在子级呢？
 
@@ -182,7 +182,7 @@ version "17.0.2"
 
 > 在场景二的基础上，安装 pkg-d@1.0.0，而它也依赖 pkg-b@2.0.0。同样的，由于根目录下已存在 pkg-b@1.0.0 的依赖，npm v3 会把 pkg-b@2.0.0 安装到 pkg-d@1.0.0 依赖的 node_modules 目录。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-vs-yarn-manage-6.png)
+![](../../\imgs\npm-vs-yarn-manage-6.png)
 
 靓仔疑惑：你可能会疑问，此时存在2个 pkg-b@2.0.0 和1个 pkg-b@1.0.0，出现在顶级安装目录的不应该是 v2 版本而非 v1 版本嘛？
 
@@ -192,7 +192,7 @@ version "17.0.2"
 
 > 在场景三的基础上，安装 pkg-e@1.0.0，它依赖 pkg-b@1.0.0。由于顶级目录已存在目标版本，因此 npm v3 会跳过该依赖的安装。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-vs-yarn-manage-7.png)
+![](../../\imgs\npm-vs-yarn-manage-7.png)
 
 场景五：版本升级囧境在
 
@@ -204,11 +204,11 @@ version "17.0.2"
 
 > 在场景五的基础上，更新 pkg-e@2.0.0，它依赖了 pkg-b@2.0.0。那么 npm v3 的执行顺序是，删除 pkg-a@1.0.0，安装 pkg-e@2.0.0，删除 pkg-b@1.0.0，安装 pkg-b@2.0.0，于是出现以下结构。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-vs-yarn-manage-9.png)
+![](../../\imgs\npm-vs-yarn-manage-9.png)
 
 此时你会发现，存在多个 pkg-b@2.0.0 分布在不同的 node_modules 目录，他们是不是只要在顶级目录存在一份即可？没错，我们删除 node_modules 目录重装，得到的就是你想的清晰的结构。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-vs-yarn-manage-10.png)
+![](../../\imgs\npm-vs-yarn-manage-10.png)
 
 实际上，更优雅的方式是使用 npm dedupe 命令达到上述结构。而 yarn 在安装依赖时会自动执行 dedupe 命令。
 
@@ -236,7 +236,7 @@ npm 和 yarn 作为两款相似的包管理工具，在一些功能实现上它�
 
 3. 性能。（对比 npm v6 和 yarn v1）目前 npm v7 优化了缓存和下载网络策略，性能的差异在缩小。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\npm-vs-yarn-manage-11.png)
+![](../../\imgs\npm-vs-yarn-manage-11.png)
 
 ## [拓展] npm 企业级部署私服原理
 

@@ -12,7 +12,7 @@
 
 > 防抖函数原理：**把触发非常频繁的事件合并成一次去执行** 在指定时间内只执行一次回调函数，如果在指定的时间内又触发了该事件，则回调函数的执行时间会基于此刻重新开始计算
 
-![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-1.png)
+![](../../\imgs\handwriting-js-1.png)
 
 防抖动和节流本质是不一样的。**防抖动是将多次执行变为`最后一次执行`，节流是将多次执行变成`每隔一段时间执行`**
 
@@ -3061,11 +3061,11 @@ const mySetTimeout = (fn, t) => {
 
 **require 基本原理**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-7.png)
+![](../../\imgs\handwriting-js-7.png)
 
 **require 查找路径**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-8.png)
+![](../../\imgs\handwriting-js-8.png)
 
 > `require` 和 `module.exports` 干的事情并不复杂，我们先假设有一个全局对象`{}`，初始情况下是空的，当你 `require` 某个文件时，就将这个文件拿出来执行，如果这个文件里面存在`module.exports`，当运行到这行代码时将 `module.exports` 的值加入这个对象，键为对应的文件名，最终这个对象就长这样：
 
@@ -3330,7 +3330,7 @@ lruCache.set('weight', '120');
 console.log(lruCache);
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-10.png)
+![](../../\imgs\handwriting-js-10.png)
 
 继续插入数据，此时会超长，代码如下：
 
@@ -5320,7 +5320,7 @@ class BST {
 }
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-16.png)
+![](../../\imgs\handwriting-js-16.png)
 
 ![](../../\imgs\handwriting-js-17.png)
 
@@ -5553,7 +5553,7 @@ class BST {
 
 二叉树的遍历方式
 
-![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-19.png)
+![](../../\imgs\handwriting-js-19.png)
 
 ```js
 // 测试

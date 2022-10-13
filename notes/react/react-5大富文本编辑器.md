@@ -2,7 +2,7 @@
 
 ### 一. Draft.js
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-rich-text-1.png)
+![](../../\imgs\react-rich-text-1.png)
 
 这是一款最受欢迎的，能够满足基本需求的免费编辑器。
 
@@ -39,7 +39,7 @@ yarn add draft-js
 
 这是一款支持复杂内容的免费编辑器。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-rich-text-2.png)
+![](../../\imgs\react-rich-text-2.png)
 
 Slate.js是另一个令人兴奋的React富文本编辑器，灵感来自Draft.js。你可以用它来构建像**Medium Editor**、**Dropbox Paper**或**Google Docs**那样的漂亮编辑器。
 
@@ -74,7 +74,7 @@ npm install slate slate-react
 
 这是一款带有主题的免费API驱动的编辑器。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-rich-text-3.png)
+![](../../\imgs\react-rich-text-3.png)
 
 排名第三的是**Quill.js**，富文本编辑器具有跨平台和跨浏览器支持。因此，这是你在台式机、平板电脑和手机的所有现代浏览器上寻找流畅功能的最佳选择。
 
@@ -117,7 +117,7 @@ npm install quill@1.3.6
 
 这是一款商业功能的富文本编辑器。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-rich-text-5.png)
+![](../../\imgs\react-rich-text-5.png)
 
 这个编辑器是一个**商业库**。如果你有一些额外的钱，并希望拥有一个不令人头痛的强大的文本编辑器，**TinyMCE**是一个不错的选择。
 
@@ -147,7 +147,7 @@ npm install quill@1.3.6
 
 这是一个商业生产就绪的编辑器。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-rich-text-6.png)
+![](../../\imgs\react-rich-text-6.png)
 
 **Kendo**可能是市场上最著名的商业UI组件库。
 
@@ -177,7 +177,7 @@ npm install quill@1.3.6
 
 这是一款免费的现代文本编辑器。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-rich-text-7.png)
+![](../../\imgs\react-rich-text-7.png)
 
 这是一款非常推荐的编辑器。尽管这个编辑器还在测试阶段，但有许多令人兴奋的功能。
 

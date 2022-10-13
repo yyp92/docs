@@ -24,13 +24,13 @@
 
 无论是怎样的编译过程，基本都会是下面的一个过程：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\compile-1.png)
+![](../../\imgs\compile-1.png)
 
 上面的约定的编译规则，就是指各种编程语言的语法规则，不同的编译器会产出不同的“编译结果”，例如 `C/C++` 语言经过编译得到二进制的机器码，然后交给操作系统，例如当我们运行 tsc 命令就会将 TS 代码编译为 js 代码，再比如执行 babel 命令会将 es6+ 的代码编译为指定目标(es5)的 js 代码。
 
 一般来说，整个编译过程主要分为两个阶段：**编译** **前端**和**编译后端**，大致分为下面的几个过程：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\compile-2.png)
+![](../../\imgs\compile-2.png)
 
 从上图可以看到，编译前端主要就是帮助计算机阅读源代码并理解源代码的结构、含义、作用等，将源代码由一串无意义的字符流解析为一个个的有特定含义的构件。通常情况下，编译前端会产生一种用于给编译后端消费的中间产物，比如我们常见的抽象语法树 AST，而编译后端则是在前端解析的结果和基础上，进一步优化和转换并生成最终的目标代码。
 
@@ -163,7 +163,7 @@ const name = 'xujianglong';
 
 听起来有点抽象，对比到代码分词中来说，我们可以把每个单词的处理过程当成一种状态，将整体的输入（源代码）按照每个字符依次去读取，根据每次读取到的字符来更改当前的状态，每个 token 识别完了就可以抛出来。我们举个简单的四则运算的例子：`10 + 20 - 30`
 
-![](C:\Users\Administrator\Desktop\docs\imgs\compile-4.png)
+![](../../\imgs\compile-4.png)
 
 首先我们定义了三种状态机，分别是 `NUMBER` 代表数值，`ADD` 代表加号，`SUB` 代表减号：
 
@@ -340,7 +340,7 @@ Babel 主要用于将采用 ECMAScript 2015+ 语法编写的代码转换为向�
 
 Babel 的工作流程可分为如下几个步骤：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\compile-5.png)
+![](../../\imgs\compile-5.png)
 
 下面详细介绍下 babel 工作流程的各个阶段。
 
@@ -414,7 +414,7 @@ console.log(result);
 
 所有的这些节点通过嵌套形成了 AST 树，例如一个变量赋值语句形成的树形结构如下所示：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\compile-6.png)
+![](../../\imgs\compile-6.png)
 
 ### transform（转化）
 
@@ -445,7 +445,7 @@ traverse(ast, {
 
 访问一个节点的过程如下：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\compile-7.png)
+![](../../\imgs\compile-7.png)
 
 下面我们看一个简单的例子：
 

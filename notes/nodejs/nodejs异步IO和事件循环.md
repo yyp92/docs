@@ -69,7 +69,7 @@ console.log('正常执行')
 
 阻塞 I/O 造成代码执行等待 I/O 结果，浪费等待时间，CPU 的处理能力得不到充分利用，I/O 失败还会让整整个线程退出。阻塞 I / O 在整个调用栈上示意图如下：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-io-1.jpg)
+![](../../\imgs\nodejs-io-1.jpg)
 
 **非阻塞I/O**
 
@@ -96,7 +96,7 @@ fs.readFile('./file1.js',(err,data)=>{
 
 对于异步 I/O 的处理， Nodejs 内部使用了线程池来处理异步 I/O 任务，线程池中会有多个 I/O 线程来同时处理异步的 I/O 操作，比如如上的的例子中，在整个 I/O 模型中会这样。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-io-2.jpg)
+![](../../\imgs\nodejs-io-2.jpg)
 
 接下来将一起探索一下异步 I/O 执行过程。
 
@@ -140,7 +140,7 @@ Nodejs 的事件循环有多个阶段，其中有一个专门处理 I/O 回调�
 
 用一幅图表示四者的关系：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-io-3.jpg)
+![](../../\imgs\nodejs-io-3.jpg)
 
 总结上述过程：
 
@@ -160,11 +160,11 @@ Nodejs 的事件循环有多个阶段，其中有一个专门处理 I/O 回调�
 
 以 libuv 下 nodejs 的事件循环为参考，关系如下：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-io-4.jpg)
+![](../../\imgs\nodejs-io-4.jpg)
 
 以浏览器下 javaScript 的事件循环为参考，关系如下：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-io-5.jpg)
+![](../../\imgs\nodejs-io-5.jpg)
 
 事件循环本质上就像一个 while 循环，如下所示，我来用一段代码模拟事件循环的执行流程。
 
@@ -345,7 +345,7 @@ console.log('代码执行完毕')
 
 效果：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-io-7.jpg)
+![](../../\imgs\nodejs-io-7.jpg)
 
 打印结果：Promise执行 -> 代码执行完毕 -> nextTick 执行 -> Promise 回调执行 -> setTimeout 执行
 
@@ -380,7 +380,7 @@ setTimeout(() => {
 
 接下来用流程图，表示事件循环的六大阶段的执行顺序，以及两个优先队列的执行逻辑。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-io-9.jpg)
+![](../../\imgs\nodejs-io-9.jpg)
 
 ### timer 阶段 ->  计时器 timer / 延时器 interval
 
@@ -476,7 +476,7 @@ function Timeout(callback, after, args, isRepeat, isRefed) {
 
 用一副流程图描述一下，我们创建一个 timer ，再到 timer 在事件循环里面执行的流程。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-io-10.jpg)
+![](../../\imgs\nodejs-io-10.jpg)
 
 #### timer 特性
 
@@ -500,7 +500,7 @@ setTimeout(()=>{
 
 打印结果：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-io-11.jpg)
+![](../../\imgs\nodejs-io-11.jpg)
 
 nextTick 队列是在事件循环的每一阶段结束执行的，两个延时器的阀值都是 0 ，如果在 timer 阶段一次性执行完，过期任务的话，那么打印 setTimeout1  -> setTimeout2 -> nextTick ，实际上先执行一个 timer 任务，然后执行 nextTick 任务，最后再执行下一个 timer 任务。
 
@@ -720,7 +720,7 @@ setImmediate(()=>{
 })
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-io-13.jpg)
+![](../../\imgs\nodejs-io-13.jpg)
 
 打印 setImmediate1 -> nextTick -> setImmediate2 ，在每一次事件循环中，执行一个 setImmediate ，然后执行清空 nextTick 队列，在下一次事件循环中，执行另外一个 setImmediate2 。
 
@@ -782,7 +782,7 @@ for(let i=0;i<100000;i++){
 
 效果：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-io-16.jpg)
+![](../../\imgs\nodejs-io-16.jpg)
 
 `100000` 循环阻塞代码，这样会让 setTimeout 超过时间阀值执行，这样就保证了每次先执行 **setTimeout** -> **setImmediate** 。
 
@@ -994,7 +994,7 @@ setImmediate(3) setImmediate(7) setImmediate(13)
 
 到此为止，执行整个事件循环。那么整体打印内容如下：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\nodejs-io-17.jpg)
+![](../../\imgs\nodejs-io-17.jpg)
 
 ## 总结
 

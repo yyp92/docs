@@ -268,7 +268,7 @@ React.render(<App />, document.body)
 
 ### 2.3 用户点击了Link组件后路由系统中到底发生了哪些变化
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-principle-react-router-3.png)
+![](../../\imgs\interview-principle-react-router-3.png)
 
 > `Link` 组件最终会渲染为 `HTML` 标签 `<a>`，它的 `to`、`query`、`hash`属性会被组合在一起并渲染为 `href` 属性。虽然 `Link` 被渲染为超链接，但在内部实现上使用脚本拦截了浏览器的默认行为，然后调用了`history.pushState` 方法
 

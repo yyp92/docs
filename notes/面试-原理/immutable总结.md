@@ -66,7 +66,7 @@ Immutable.fromJS({a:1, b:2, c:3}).map(function(value, key) { /* do some thing */
 
 > 打印`immutableJS`看看有什么东西
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-principle-immutable-1.png)
+![](../../\imgs\interview-principle-immutable-1.png)
 
 **一个说明不可变的例子**
 

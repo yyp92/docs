@@ -97,7 +97,7 @@ var asyncSayActionCreator = function (message) {
 }
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-principle-redux-9.png)
+![](../../\imgs\interview-principle-redux-9.png)
 
 - 上图表达的是 `redux` 中一个简单的同步数据流动的场景，点击`button` 后，在回调中 `dispatch` 一个 `action`，`reducer` 收到`action` 后，更新 `state` 并通知 `view` 重新渲染
 

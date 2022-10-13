@@ -58,7 +58,7 @@ parallel-webpack --watch
 
 然而，如果我们使用微前端，我们可以将应用程序的功能拆分，并独立维护应用程序的构建和发布管道，以便不断提交更新和修复错误。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\ci-cd-1.png)
+![](../../\imgs\ci-cd-1.png)
 
 通常，可以独立地整合和部署每个应用程序，让你更快地修复重要功能。因此，这确实对 CI/CD 流程的提速有很大帮助。
 

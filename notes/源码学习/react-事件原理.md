@@ -18,7 +18,7 @@
 
 - 6 `onClick`是在冒泡阶段绑定的？那么`onClickCapture`就是在事件捕获阶段绑定的吗？
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-event-1.jpg)
+![](../../\imgs\react-event-1.jpg)
 
 ## 必要的知识概念
 
@@ -46,7 +46,7 @@ class Index extends React.Component{
 
 最终转成`fiber`对象形式如下：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-event-3.jpg)
+![](../../\imgs\react-event-3.jpg)
 
 `fiber`对象上的`memoizedProps` 和 `pendingProps`保存了我们的事件。
 
@@ -94,11 +94,11 @@ class Index extends React.Component{
 
 **我们先看一下`input dom`元素上绑定的事件**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-event-7.jpg)
+![](../../\imgs\react-event-7.jpg)
 
 **然后我们看一下`document`上绑定的事件**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-event-8.jpg)
+![](../../\imgs\react-event-8.jpg)
 
 我们发现，我们给`<input>`绑定的`onChange`，并没有直接绑定在`input`上，而是统一绑定在了`document`上，然后我们`onChange`被处理成很多事件监听器，比如`blur` , `change` , `input` , `keydown` , `keyup` 等。
 
@@ -138,7 +138,7 @@ class Index extends React.Component{
 
 看`<div> hello , my name is alien </div>` 对应的 `fiber`类型。tag = 5
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-event-9.jpg)
+![](../../\imgs\react-event-9.jpg)
 
 然后我们去`react`源码中找到这种类的`fiber`类型。
 
@@ -524,7 +524,7 @@ function getClosestInstanceFromNode(targetNode){
 
 **两者关系图**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-event-12.jpg)
+![](../../\imgs\react-event-12.jpg)
 
 ### legacy 事件处理系统与批量更新
 
@@ -699,7 +699,7 @@ render(){
 
 看到这里我们应该知道上述函数打印顺序为什么了吧，首先遍历 `button` 对应的fiber，首先遇到了 `onClickCapture` ,将 `handerClick1`  放到了数组最前面，然后又把`onClick`对应`handerClick`的放到数组的最后面，形成的结构是`[ handerClick1 , handerClick ]` ， 然后向上遍历，遇到了`div`对应fiber,将`onClickCapture`对应的`handerClick3`放在了数组前面，将`onClick`对应的 `handerClick2` 放在了数组后面，形成的结构 `[ handerClick3,handerClick1 , handerClick,handerClick2 ]` ,所以执行的顺序 // 4  2  1  3，就是这么简单，完美！
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-event-13.jpg)
+![](../../\imgs\react-event-13.jpg)
 
 ### 事件触发
 
@@ -727,7 +727,7 @@ SyntheticEvent.prototype={
 
 在 `handerClick` 中打印 `e` :
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-event-14.jpg)
+![](../../\imgs\react-event-14.jpg)
 
 既然事件执行队列和事件源对象都形成了，接下来就是最后一步**事件触发**了。上面大家有没有注意到一个函数`runEventsInBatch`，所有事件绑定函数，就是在这里触发的。让我们一起看看。
 
@@ -793,7 +793,7 @@ handerClick(e){
 
 - **③最后通过`runEventsInBatch`执行事件队列，如果发现阻止冒泡，那么break跳出循环，最后重置事件源，放回到事件池中，完成整个流程。**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-event-15.jpg)
+![](../../\imgs\react-event-15.jpg)
 
 ## 关于react v17版本的事件系统
 
@@ -801,7 +801,7 @@ React v17 整体改动不是很大，但是事件系统的改动却不小，首�
 
 **1 事件统一绑定container上，ReactDOM.render(app， container);而不是document上，这样好处是有利于微前端的，微前端一个前端系统中可能有多个应用，如果继续采取全部绑定在`document`上，那么可能多应用下会出现问题。**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\react-event-16.png)
+![](../../\imgs\react-event-16.png)
 
 **2 对齐原生浏览器事件**
 

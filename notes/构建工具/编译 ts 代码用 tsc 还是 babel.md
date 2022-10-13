@@ -4,7 +4,7 @@
 
 typescript compiler 的编译流程是这样的：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-1.png)
+![](../../\imgs\tsc-babel-1.png)
 
 源码要先用 Scanner 进行词法分析，拆分成一个个不能细分的单词，叫做 token。
 
@@ -20,15 +20,15 @@ typescript compiler 的编译流程是这样的：
 
 tsc 生成的 AST 可以用 astexplorer.net 可视化的查看：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-2.png)
+![](../../\imgs\tsc-babel-2.png)
 
 生成的目标代码和 d.ts 和报错信息也可以用 ts playground 来直接查看：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-3.png)
+![](../../\imgs\tsc-babel-3.png)
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-4.png)
+![](../../\imgs\tsc-babel-4.png)
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-5.png)
+![](../../\imgs\tsc-babel-5.png)
 
 大概了解了 tsc 的编译流程，我们再来看下 babel 的：
 
@@ -36,7 +36,7 @@ tsc 生成的 AST 可以用 astexplorer.net 可视化的查看：
 
 babel 的编译流程是这样的：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-6.png)
+![](../../\imgs\tsc-babel-6.png)
 
 源码经过 Parser 做词法分析和语法分析，生成 token 和 AST。
 
@@ -46,15 +46,15 @@ AST 会做语义分析生成作用域信息，然后会调用 Transformer 进行
 
 babel 的 AST 和 token 也可以用 astexplorer.net 可视化的查看：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-7.png)
+![](../../\imgs\tsc-babel-7.png)
 
 如果想看到 tokens，需要点开设置，开启 tokens：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-8.png)
+![](../../\imgs\tsc-babel-8.png)
 
 而且 babel 也有 playground（babel 的叫 repl） 可以直接看编译之后生成的代码：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-9.png)
+![](../../\imgs\tsc-babel-9.png)
 
 其实对比下 tsc 的编译流程，区别并不大：
 
@@ -94,7 +94,7 @@ Promise.resolve;
 
 babel 的 @babel/preset-env 可以根据 targets 的配置来自动引入需要的插件，引入需要用到的 core-js 模块，
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-10.png)
+![](../../\imgs\tsc-babel-10.png)
 
 引入方式可以通过 useBuiltIns 来配置：
 
@@ -121,7 +121,7 @@ module.exports = {
 
 使用 transform-runtime 之前：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-11.png)
+![](../../\imgs\tsc-babel-11.png)
 
 使用 transform-runtime 之后：
 
@@ -165,11 +165,11 @@ babel 是每个文件单独编译的，而 tsc 不是，tsc 是整个项目一�
 
 enum 编译之前是这样的：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-13.png)
+![](../../\imgs\tsc-babel-13.png)
 
 而 const enum 编译之后是直接替换用到 enum 的地方为对应的值，是这样的：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-14.png)
+![](../../\imgs\tsc-babel-14.png)
 
 const enum 是在编译期间把 enum 的引用替换成具体的值，需要解析类型信息，而 babel 并不会解析，所以它会把 const enum 转成 enum 来处理：
 
@@ -195,13 +195,13 @@ console.log(Guang.name2);
 
 ts 编译之后的代码是这样的：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-16.png)
+![](../../\imgs\tsc-babel-16.png)
 
 都挂到了 Guang 这个对象上，所以 name2 就能取到 name 的值。
 
 而 babel 对每个 namespace 都是单独处理，所以是这样的：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-17.png)
+![](../../\imgs\tsc-babel-17.png)
 
 因为不会做 namespace 的合并，所以 name 为 undefined。
 
@@ -229,15 +229,15 @@ ts 的 namespace 是可以导出非 const 的值的，后面可以修改：
 
 我们知道，ts 是可以做类型断言来修改某个类型到某个类型的，用 as xx 或者尖括号的方式。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-21.png)
+![](../../\imgs\tsc-babel-21.png)
 
 但是如果开启了 jsx 编译之后，尖括号的形式会和 jsx 的语法冲突，所以就不支持做类型断言了：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-22.png)
+![](../../\imgs\tsc-babel-22.png)
 
 tsc 都不支持，babel 当然也是一样：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\tsc-babel-23.png)
+![](../../\imgs\tsc-babel-23.png)
 
 babel 不支持 ts 这些特性，那是否可以用 babel 编译 ts 呢？
 

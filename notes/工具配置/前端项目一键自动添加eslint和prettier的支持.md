@@ -20,7 +20,7 @@ yarn create vite
 
 一顿操作以后项目就创建完毕了
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-1.png)
+![](../../\imgs\auto-eslint-prettier-1.png)
 
 - 安装依赖
 
@@ -42,11 +42,11 @@ yarn create vite-pretty-lint
 
 先来看没有执行命令前的文件目录
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-2.png)
+![](../../\imgs\auto-eslint-prettier-2.png)
 
 再来看执行完命令后的文件目录
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-3.png)
+![](../../\imgs\auto-eslint-prettier-3.png)
 
 可以发现文件目录中增加了eslint和prettier的相关配置，package.json中增加了相关的依赖、以及vite.config.xx文件也增加了相关配置，具体的文件变更可以查看https://github.com/lxchuan12/vite-project/commit/6cb274fded66634191532b2460dbde7e29836d2e。
 
@@ -56,7 +56,7 @@ yarn create vite-pretty-lint
 
 通过大致的查看源代码，简单总结出来的代码执行过程示意图，仅供参考
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-4.png)
+![](../../\imgs\auto-eslint-prettier-4.png)
 
 ## 3、源码调试过程
 
@@ -80,7 +80,7 @@ node lib/main.js
 
 调试成功的结果如下图所示
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-5.png)
+![](../../\imgs\auto-eslint-prettier-5.png)
 
 ### 3.3、 查看头部引入的模块
 
@@ -109,7 +109,7 @@ log(bgCustom('bgCustom'))
 
 执行效果如下图所示
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-6.png)
+![](../../\imgs\auto-eslint-prettier-6.png)
 
 - gradient 文字颜色渐变
 
@@ -130,7 +130,7 @@ console.log(gradient('cyan', 'pink')('你好啊赛利亚欢迎来到编码世界
 
 执行效果如下图所示
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-7.png)
+![](../../\imgs\auto-eslint-prettier-7.png)
 
 - child_process node.js中的子进程。
 
@@ -151,7 +151,7 @@ exec('ls',(error, stdout,stderr)=> {
 
 执行效果如下图所示
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-8.png)
+![](../../\imgs\auto-eslint-prettier-8.png)
 
 - fs fs用来操作文件的模块
 
@@ -191,7 +191,7 @@ setTimeout(() => {
 
 执行效果如下图所示（Run test在加载的一个效果）
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-9.gif)
+![](../../\imgs\auto-eslint-prettier-9.gif)
 
 - enquirer (utils.js文件)
 
@@ -221,7 +221,7 @@ if(release === 'customer') {
 
 执行效果如下图所示：先出来一个下拉选择，选择完后根据if判断进行输出
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-11.gif)
+![](../../\imgs\auto-eslint-prettier-11.gif)
 
 ### 3.4、 调试具体代码
 
@@ -351,7 +351,7 @@ const commandMap = {
 
 将`packageList`数组通过join转换为字符串，通过命令将所有拼接npm模块一起安装
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-12.png)
+![](../../\imgs\auto-eslint-prettier-12.png)
 
 ##### 3.4.7、 读取项目的vite配置文件
 
@@ -381,11 +381,11 @@ const commandMap = {
 
 上面用到了一个函数`viteEslint`,这个具体的实现可以去看`shared.js`中，主要就是读取文件内容后，传入的参数code，就是`vite.config.ts`中的所有字符
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-13.png)
+![](../../\imgs\auto-eslint-prettier-13.png)
 
 通过babel的`parseSync`转换为ast。ast对象如下图所示
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-14.png)
+![](../../\imgs\auto-eslint-prettier-14.png)
 
 对ast数据进行了一系列的处理后，再通过`babel`的`transformFromAstSync`将ast转换为代码字符串。
 
@@ -471,13 +471,13 @@ npx create-vite my-app
 npm init vite my-app
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-15.png)
+![](../../\imgs\auto-eslint-prettier-15.png)
 
 通过上面的对比可以一个小问题,`yarn create`去官网查了是存在这个指令的，官网地址可看 https://classic.yarnpkg.com/en/docs/cli/create#search
 
 而对于`npm create`这个命令在npm官网是看不到的，但是在一篇博客中发现了更新日志
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-16.png)
+![](../../\imgs\auto-eslint-prettier-16.png)
 
 意思就是说`npm create xxx`和`npm init xxx` 以及`yarn create xxx`效果是一致的。那么我们来本文的命令行
 
@@ -496,15 +496,15 @@ npx create-vite-pretty-lint
 
 假如我们只在项目中安装了`vite`,那么`node_modules`中`.bin`文件夹下是会存在`vite`指令的
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-17.png)
+![](../../\imgs\auto-eslint-prettier-17.png)
 
 如果我们想在该项目下执行该命令第一种方式便是
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-18.png)
+![](../../\imgs\auto-eslint-prettier-18.png)
 
 第二种方式就是直接在package.json的scripts属性下
 
-![](C:\Users\Administrator\Desktop\docs\imgs\auto-eslint-prettier-19.png)
+![](../../\imgs\auto-eslint-prettier-19.png)
 
 关于npx的详细说明可以看一下阮一峰大佬的精彩分享 http://www.ruanyifeng.com/blog/2019/02/npx.html
 
