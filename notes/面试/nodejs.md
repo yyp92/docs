@@ -526,7 +526,7 @@ module.exports = function () { return 'foo'; };
 
 ### 描述一下整个异步 I/O 的流程
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-nodejs-3.png)
+![](../../\imgs\interview-nodejs-3.png)
 
 ## V8 的垃圾回收机制
 

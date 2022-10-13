@@ -11,9 +11,9 @@
 
 - ts
   
-  - [typescript](notes/js/typescript.md)
-  - [ts类型操作](notes/js/TS类型操作.md)
-  - [ts学习资料](notes/js/ts学习资料.md)
+  - [typescript](notes/ts/typescript.md)
+  - [ts类型操作](notes/ts/TS类型操作.md)
+  - [ts学习资料](notes/ts/ts学习资料.md)
 
 - js-设计模式
   
@@ -40,13 +40,13 @@
 
 - react
   
-  - [hooks](notes/框架/hooks.md)
-  - [react-hooks-使用](notes/框架/react-hooks-使用.md)
-  - [react-hooks-使用大全](notes/框架/react-hooks-使用大全.md)
-  - [react](notes/框架/react.md)
-  - [react-状态管理](notes/框架/react-状态管理.md)
-  - [react-fiber](notes/框架/react-fiber.md)
-  - [react-5大富文本编辑器](notes/框架/react-5大富文本编辑器.md)
+  - [hooks](notes/react/hooks.md)
+  - [react-hooks-使用](notes/react/react-hooks-使用.md)
+  - [react-hooks-使用大全](notes/react/react-hooks-使用大全.md)
+  - [react](notes/react/react.md)
+  - [react-状态管理](notes/react/react-状态管理.md)
+  - [react-fiber](notes/react/react-fiber.md)
+  - [react-5大富文本编辑器](notes/react/react-5大富文本编辑器.md)
 
 - 微前端
   
@@ -215,14 +215,14 @@
 
 - 面试-原理
   
-  - [react-router](notes/面试/react-router.md)
-  - [mobx](notes/面试/mobx.md)
-  - [dva](notes/面试/dva.md)
-  - [浅析redux-saga中间件及用法](notes/面试/浅析redux-saga中间件及用法.md)
-  - [redux之源码分析](notes/面试/redux之源码分析.md)
-  - [redux之异步Action及操作](notes/面试/redux之异步Action及操作.md)
-  - [浅析中间件](notes/面试/浅析中间件.md)
-  - [redux之浅析中间件](notes/面试/redux之浅析中间件.md)
-  - [react结合redux实战](notes/面试/react结合redux实战.md)
-  - [immutable总结](notes/面试/immutable总结.md)
+  - [react-router](notes/面试-原理/react-router.md)
+  - [mobx](notes/面试-原理/mobx.md)
+  - [dva](notes/面试-原理/dva.md)
+  - [浅析redux-saga中间件及用法](notes/面试-原理/浅析redux-saga中间件及用法.md)
+  - [redux之源码分析](notes/面试-原理/redux之源码分析.md)
+  - [redux之异步Action及操作](notes/面试-原理/redux之异步Action及操作.md)
+  - [浅析中间件](notes/面试-原理/浅析中间件.md)
+  - [redux之浅析中间件](notes/面试-原理/redux之浅析中间件.md)
+  - [react结合redux实战](notes/面试-原理/react结合redux实战.md)
+  - [immutable总结](notes/面试-原理/immutable总结.md)
   

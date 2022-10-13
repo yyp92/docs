@@ -252,7 +252,7 @@ Registry Mirrors:
 - 启动两个软件的方式很简单，我们只需要通过操作系统的快捷访问功能查找到 `Docker for Windows` 或 `Docker for Mac` 并启动即可
 - 打开软件之后，我们会在`Windows` 的任务栏或者 `macOS` 的状态栏中看到 `Docker` 的大鲸鱼图标
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-3.png)
+![](../../\imgs\interview-docker-3.png)
 
 > `Docker Desktop` 为我们在 `Windows` 和 `macOS` 中使用 `Docker`提供了与 `Linux` 中几乎一致的方法，我们只需要打开 `Windows` 中的 `PowerShell` 获得 `macOS` 中的 Terminal，亦或者 `Git Bash`、`Cmder`、`iTerm`等控制台类软件，输入 `docker` 命令即可...
 
@@ -335,7 +335,7 @@ cogset/cron         latest              c01d5ac6fc8a        15 months ago       
 
 **容器运行的状态流转图**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-7.png)
+![](../../\imgs\interview-docker-7.png)
 
 > 图中展示了几种常见对 `Docker` 容器的操作命令，以及执行它们之后容器运行状态的变化。这里我们撇开命令，着重看看容器的几个核心状态，也就是图中色块表示的：`Created`、`Running`、`Paused`、`Stopped`、`Deleted`
 
@@ -420,7 +420,7 @@ Docker Hub 的地址是：hub.docker.com/
 
 - 由于 `Docker Hub` 提供了一套完整的 `Web` 操作界面，所以我们搜索其中的镜像会非常方便
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-10.png)
+![](../../\imgs\interview-docker-10.png)
 
 > 在 Docker Hub 的搜索结果中，有几项关键的信息有助于我们选择合适的镜像：
 
@@ -905,7 +905,7 @@ sudo docker run -d --name webapp --link mysql --network individual webapp:latest
 
 - 在 `Docker` 中，提供了一个端口映射的功能实现这样的需求...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-14.png)
+![](../../\imgs\interview-docker-14.png)
 
 - 通过 `Docker` 端口映射功能，我们可以把容器的端口映射到宿主操作系统的端口上，当我们从外部访问宿主操作系统的端口时，数据请求就会自动发送给与之关联的容器端口
 - 要映射端口，我们可以在创建容器时使用 `-p` 或者是 `--publish`选项...
@@ -933,12 +933,12 @@ bc79fc5d42a6        nginx:1.12          "nginx -g 'daemon of…"   4 seconds ago
 
 - 解决这种问题的方法很简单，只需要再加一次映射，将虚拟 `Linux` 系统中的端口映射到 `Windows` 或 `macOS` 的端口即可。...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-15.png)
+![](../../\imgs\interview-docker-15.png)
 
 - 如果我们使用 `Docker for Windows` 或 `Docker for` Mac，这个端口映射的操作程序会自动帮助我们完成，所以我们不需要做任何额外的事情，就能够直接使用 `Windows` 或 `macOS` 的端口访问容器端口了。
 - 而当我们使用 `Docker Toolbox` 时，由于其自动化能力比较差，所以需要我们在 `VirtualBox` 里单独配置这个操作系统端口到 `Linux` 端口的映射关系...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-16.png)
+![](../../\imgs\interview-docker-16.png)
 
 > 在 `VirtualBox` 配置中的端口转发一栏里，进行相关的配置即可
 
@@ -960,7 +960,7 @@ bc79fc5d42a6        nginx:1.12          "nginx -g 'daemon of…"   4 seconds ago
 
 > 基于底层存储实现，`Docker` 提供了三种适用于不同场景的文件系统挂载方式：Bind `Mount`、`Volume` 和 `Tmpfs Mount`
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-17.png)
+![](../../\imgs\interview-docker-17.png)
 
 - `Bind Mount` 能够直接将宿主操作系统中的目录和文件挂载到容器内的文件系统中，通过指定容器外的路径和容器内的路径，就可以形成挂载映射关系，在容器内外对文件的读写，都是相互可见的。
 - `Volume` 也是从宿主操作系统中挂载目录到容器内，只不过这个挂载的目录由 Docker 进行管理，我们只需要指定容器内的目录，不需要关心具体挂载到了宿主操作系统中的哪里。
@@ -1219,7 +1219,7 @@ sudo docker import ./webapp.tar webapp:1.0
 
 > `Dockerfile` 是 `Docker`中用于定义镜像自动化构建流程的配置文件，在 `Dockerfile` 中，包含了构建镜像过程中需要执行的命令和其他操作。通过 `Dockerfile` 我们可以更加清晰、明确的给定 `Docker` 镜像的制作过程，而由于其仅是简单、小体积的文件，在网络等其他介质中传递的速度极快，能够更快的帮助我们实现容器迁移和集群部署...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-18.png)
+![](../../\imgs\interview-docker-18.png)
 
 > 通常来说，我们对 `Dockerfile` 的定义就是针对一个名为`Dockerfile` 的文件，其虽然没有扩展名，但本质就是一个文本文件，所以我们可以通过常见的文本编辑器或者 `IDE` 创建和编辑它。
 
@@ -1595,7 +1595,7 @@ exec "$@"...
 - 虽然我们常把软件的版本放在 `Tag` 里作为镜像名的一部分，但对于一些复杂的应用，除了版本外，还存在很多的变量，镜像的维护者们也喜欢将这些变量一同组合到镜像的 `Tag` 里，所以我们在使用镜像前，一定要先了解不同 `Tag` 对应的不同内容。
 - 这里我们来看个例子，下面是由 Docker 官方提供的 OpenJDK 镜像的说明页面...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-22.png)
+![](../../\imgs\interview-docker-22.png)
 
 - 通常来说，镜像的维护者会在镜像介绍中展示出镜像所有的 Tag，如果没有，我们也能够从页面上的 `Tags` 导航里进入到镜像标签列表页面。
 - 在 `OpenJDK` 镜像的 `Tag` 列表里，我们可以看到同样版本号的镜像就存在多种标签。在这些不同的标签上，除了定义 `OpenJDK` 的版本，还有操作系统，软件提供者等信息。
@@ -1658,17 +1658,17 @@ sudo docker run --name mysql -e MYSQL_DATABASE=webapp -e MYSQL_USER=www -e MYSQL
 
 要在`Docker Hub` 上共享镜像，我们必须有一个`Docker Hub` 的账号，这自不必说了。在登录到我们账号的控制面板后，我们能够找到创建的按钮，在这里选择 Create Automated Build ( 创建自动构建 )。...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-24.png)
+![](../../\imgs\interview-docker-24.png)
 
 自动构建镜像是 `Docker Hub`为我们提供的一套镜像构建服务，我们只需要提供 `Dockerfile` 和相关的基本文件，`Docker Hub` 就能够在云端自动将它们构建成镜像，之后便可以让其他开发者通过 docker pull 命令拉取到这一镜像。
 
 自动构建让不需要我们再用本机进行镜像的构建，既能节约时间，又能享受高速的云端机器构建。...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-25.png)
+![](../../\imgs\interview-docker-25.png)
 
 在 `Docker Hub` 中并不直接存放我们用于构建的 `Dockerfile` 和相关文件，我们必须将 `Docker Hub` 账号授权到 `GitHub` 或是 `Bitbucket` 来从这些代码库中获取 `Dockerfile`和相关文件。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-26.png)
+![](../../\imgs\interview-docker-26.png)
 
 在连接到 `GitHub` 或 `Bitbucket` 后，我们就可以选择我们存放 `Dockerfile` 和相关文件的代码仓库用来创建自动构建了。
 
@@ -2013,7 +2013,7 @@ networks:
 - 与搭建一个软件开发项目类似，我们提倡将 `Docker Compose` 项目的组成内容聚集到一个文件目录中，这样更利于我们进行管理和迁移。
 - 这里我已经建立好了一个目录结构，虽然我们在实践的过程中不一定要按照这样的结构，但我相信这个结构一定对你有所启发...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-30.png)
+![](../../\imgs\interview-docker-30.png)
 
 > 简单说明一下这个结构中主要目录和文件的功能和作用。在这个结构里，我们可以将根目录下的几个目录分为四类
 
@@ -2230,7 +2230,7 @@ services:
 - 在介绍`Docker Compose` 的小节里，我们知道了可以通过设置网络别名 ( `alias` ) 的方式来更轻松地连接其他容器，如果我们在服务化开发里也能这么做就能减少很多烦琐操作了。
 - 要实现设置网络别名的目的，自然要先确保所有涉及的容器位于同一个网络中，这时候就需要引出我们之前在网络小节里说到的 `Overlay`网络了...
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-docker-32.png)
+![](../../\imgs\interview-docker-32.png)
 
 > `Overlay Network` 能够跨越物理主机的限制，让多个处于不同 `Docker daemon` 实例中的容器连接到同一个网络，并且让这些容器感觉这个网络与其他类型的网络没有区别。
 

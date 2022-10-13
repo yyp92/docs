@@ -3028,7 +3028,7 @@ setInterval(function, N)
 //即：每隔N秒把function事件推到消息队列中
 ```
 
-![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-6.png)
+![](../../\imgs\handwriting-js-6.png)
 
 > 上图可见，`setInterval` 每隔 `100ms` 往队列中添加一个事件；`100ms` 后，添加 `T1` 定时器代码至队列中，主线程中还有任务在执行，所以等待，`some event` 执行结束后执行 `T1`定时器代码；又过了 `100ms`，`T2` 定时器被添加到队列中，主线程还在执行 `T1` 代码，所以等待；又过了 `100ms`，理论上又要往队列里推一个定时器代码，但由于此时 `T2` 还在队列中，所以 `T3` 不会被添加（`T3` 被跳过），结果就是此时被跳过；这里我们可以看到，`T1` 定时器执行结束后马上执行了 T2 代码，所以并没有达到定时器的效果
 
@@ -3247,7 +3247,7 @@ console.log(test2);
 
 > 假如我们有一块内存，专门用来缓存我们最近发访问的网页，访问一个新网页，我们就会往内存中添加一个网页地址，随着网页的不断增加，内存存满了，这个时候我们就需要考虑删除一些网页了。这个时候我们找到内存中最早访问的那个网页地址，然后把它删掉。这一整个过程就可以称之为 `LRU` 算法
 
-![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-9.png)
+![](../../\imgs\handwriting-js-9.png)
 
 上图就很好的解释了 `LRU` 算法在干嘛了，其实非常简单，无非就是我们往内存里面添加或者删除元素的时候，遵循**最近最少使用原则**
 
@@ -3352,6 +3352,598 @@ console.log(lruCache);
 **总结**
 
 > `LRU` 算法其实逻辑非常的简单，明白了原理之后实现起来非常的简单。最主要的是我们需要使用什么数据结构来存储数据，因为 `map` 的存取非常快，所以我们采用了它，当然数组其实也可以实现的。还有一些小伙伴使用链表来实现 `LRU`，这当然也是可以的。
+
+## 数组相关
+
+### 1 实现forEach方法
+
+```js
+Array.prototype.myForEach = function(callback, context = window) {
+  // this=>arr
+  let self = this,  
+      i = 0,
+      len = self.length;
+
+  for (; i < len; i++) {
+    typeof callback == 'function' && callback.call(context, self[i], i)
+   }
+}
+```
+
+### 2 实现filter方法
+
+```js
+Array.prototype.myFilter = function(callback, context = window){
+
+  let len = this.length
+      newArr = [],
+      i=0
+
+  for(; i < len; i++){
+    if(callback.apply(context, [this[i], i , this])){
+      newArr.push(this[i]);
+    }
+  }
+
+  return newArr;
+}
+```
+
+### 3 实现find方法
+
+- `find` 接收一个方法作为参数，方法内部返回一个条件
+- `find` 会遍历所有的元素，执行你给定的带有条件返回值的函数
+- 符合该条件的元素会作为 `find` 方法的返回值
+- 如果遍历结束还没有符合该条件的元素，则返回 `undefined`
+
+```js
+var users = [
+  {id: 1, name: '张三'},
+  {id: 2, name: '张三'},
+  {id: 3, name: '张三'},
+  {id: 4, name: '张三'}
+]
+
+Array.prototype.myFind = function (callback) {
+  // var callback = function (item, index) { return item.id === 4 }
+  for (var i = 0; i < this.length; i++) {
+    if (callback(this[i], i)) {
+      return this[i]
+    }
+  }
+}
+
+var ret = users.myFind(function (item, index) {
+  return item.id === 2
+})
+
+console.log(ret)
+```
+
+### 4 实现findIndex方法
+
+```js
+var users = [
+  {id: 1, name: '张三'},
+  {id: 2, name: '张三'},
+  {id: 3, name: '张三'},
+  {id: 4, name: '张三'}
+]
+
+Array.prototype.myFindIndex = function (callback) {
+  // var callback = function (item, index) { return item.id === 4 }
+  for (var i = 0; i < this.length; i++) {
+    if (callback(this[i], i)) {
+      // 这里返回
+      return i
+    }
+  }
+}
+
+var ret = users.myFind(function (item, index) {
+  return item.id === 2
+})
+
+console.log(ret)
+```
+
+### 5 实现map方法
+
+- 回调函数的参数有哪些，返回值如何处理
+- 不修改原来的数组
+
+```js
+Array.prototype.myMap = function(callback, context){
+  // 转换类数组
+  var arr = Array.prototype.slice.call(this),// 由于是ES5所以就不用...展开符了
+      mappedArr = [], 
+      i = 0;
+
+  for (; i < arr.length; i++ ){
+    // 把当前值、索引、当前数组返回去。调用的时候传到函数参数中 [1,2,3,4].map((curr,index,arr))
+    mappedArr.push(callback.call(context, arr[i], i, this));
+  }
+  return mappedArr;
+}
+```
+
+### 6 实现reduce方法
+
+- 初始值不传怎么处理
+- 回调函数的参数有哪些，返回值如何处理。
+
+```js
+Array.prototype.myReduce = function(fn, initialValue) {
+  var arr = Array.prototype.slice.call(this);
+  var res, startIndex;
+
+  res = initialValue ? initialValue : arr[0]; // 不传默认取数组第一项
+  startIndex = initialValue ? 0 : 1;
+
+  for(var i = startIndex; i < arr.length; i++) {
+    // 把初始值、当前值、索引、当前数组返回去。调用的时候传到函数参数中 [1,2,3,4].reduce((initVal,curr,index,arr))
+    res = fn.call(null, res, arr[i], i, this); 
+  }
+  return res;
+}
+```
+
+### 7 实现every方法
+
+```js
+Array.prototype.myEvery=function(callback, context = window){
+    var len=this.length,
+        flag=true,
+        i = 0;
+
+    for(;i < len; i++){
+      if(!callback.apply(context,[this[i], i, this])){
+        flag = false;
+        break;
+      } 
+    }
+    return flag;
+  }
+
+
+  // var obj = {num: 1}
+  // var aa=arr.myEvery(function(v,index,arr){
+  //     return v.num>=12;
+  // },obj)
+  // console.log(aa)
+```
+
+### 8 实现some方法
+
+```js
+Array.prototype.mySome=function(callback, context = window){
+    var len = this.length,
+    flag = false,
+    i = 0;
+
+    for (; i < len; i++) {
+       if (callback.apply(context, [this[i], i, this])) {
+           flag = true;
+           break;
+       } 
+    }
+
+    return flag;
+}
+```
+
+### 9 实现数组扁平化flat方法
+
+题目描述: 实现一个方法使多维数组变成一维数组
+
+```js
+let ary = [1, [2, [3, [4, 5]]], 6];
+let str = JSON.stringify(ary);
+```
+
+**第0种处理:直接的调用**
+
+```js
+arr_flat = arr.flat(Infinity);
+```
+
+**第一种处理**
+
+```js
+ary = str.replace(/(\[|\])/g, '').split(',');
+```
+
+**第二种处理**
+
+```js
+str = str.replace(/(\[\]))/g, '');
+str = '[' + str + ']';
+ary = JSON.parse(str);
+```
+
+**第三种处理：递归处理**
+
+```js
+let result = [];
+let fn = function(ary) {
+  for(let i = 0; i < ary.length; i++) }{
+    let item = ary[i];
+    if (Array.isArray(ary[i])){
+      fn(item);
+    } else {
+      result.push(item);
+    }
+  }
+}
+```
+
+**第四种处理：用 reduce 实现数组的 flat 方法**
+
+```js
+function flatten(ary) {
+    return ary.reduce((pre, cur) => {
+        return pre.concat(Array.isArray(cur) ? flatten(cur) : cur);
+    }, []);
+}
+let ary = [1, 2, [3, 4], [5, [6, 7]]]
+console.log(flatten(ary))
+```
+
+**第五种处理：能用迭代的思路去实现**
+
+```js
+function flatten(arr) {
+  if (!arr.length) return;
+  while (arr.some((item) => Array.isArray(item))) {
+    arr = [].concat(...arr);
+  }
+  return arr;
+}
+// console.log(flatten([1, 2, [1, [2, 3, [4, 5, [6]]]]]));
+```
+
+**第六种处理：扩展运算符**
+
+```js
+while (ary.some(Array.isArray)) {
+  ary = [].concat(...ary);
+}
+```
+
+### 10 实现Array.isArray方法
+
+```js
+Array.myIsArray = function(o) {
+  return Object.prototype.toString.call(Object(o)) === '[object Array]';
+};
+
+console.log(Array.myIsArray([])); // true
+```
+
+### 11 实现Array.of方法
+
+> `Array.of()`方法用于将一组值，转换为数组
+
+- 这个方法的主要目的，是弥补数组构造函数`Array()`的不足。因为参数个数的不同，会导致`Array()`的行为有差异。
+- `Array.of()`基本上可以用来替代`Array()`或`new Array()`，并且不存在由于参数不同而导致的重载。它的行为非常统一
+
+```js
+Array.of(3, 11, 8) // [3,11,8]
+Array.of(3) // [3]
+Array.of(3).length // 1
+```
+
+**实现**
+
+```js
+function ArrayOf(){
+  return [].slice.call(arguments);
+}
+```
+
+### 12 数组去重方法汇总
+
+> 首先:我知道多少种去重方式
+
+**1. 双层 for 循环**
+
+```js
+function distinct(arr) {
+    for (let i=0, len=arr.length; i<len; i++) {
+        for (let j=i+1; j<len; j++) {
+            if (arr[i] == arr[j]) {
+                arr.splice(j, 1);
+                // splice 会改变数组长度，所以要将数组长度 len 和下标 j 减一
+                len--;
+                j--;
+            }
+        }
+    }
+    return arr;
+}
+```
+
+> 思想: 双重 `for` 循环是比较笨拙的方法，它实现的原理很简单：先定义一个包含原始数组第一个元素的数组，然后遍历原始数组，将原始数组中的每个元素与新数组中的每个元素进行比对，如果不重复则添加到新数组中，最后返回新数组；因为它的时间复杂度是`O(n^2)`，如果数组长度很大，效率会很低
+
+**2. Array.filter() 加 indexOf/includes**
+
+```js
+function distinct(a, b) {
+    let arr = a.concat(b);
+    return arr.filter((item, index) => {
+        //return arr.indexOf(item) === index
+        return arr.includes(item)
+    })
+}
+```
+
+> 思想: 利用`indexOf`检测元素在数组中第一次出现的位置是否和元素现在的位置相等，如果不等则说明该元素是重复元素
+
+**3. ES6 中的 Set 去重**
+
+```js
+function distinct(array) {
+   return Array.from(new Set(array));
+}
+```
+
+> 思想: ES6 提供了新的数据结构 Set，Set 结构的一个特性就是成员值都是唯一的，没有重复的值。
+
+**4. reduce 实现对象数组去重复**
+
+```js
+var resources = [
+    { name: "张三", age: "18" },
+    { name: "张三", age: "19" },
+    { name: "张三", age: "20" },
+    { name: "李四", age: "19" },
+    { name: "王五", age: "20" },
+    { name: "赵六", age: "21" }
+]
+var temp = {};
+resources = resources.reduce((prev, curv) => {
+ // 如果临时对象中有这个名字，什么都不做
+ if (temp[curv.name]) {
+
+ }else {
+    // 如果临时对象没有就把这个名字加进去，同时把当前的这个对象加入到prev中
+    temp[curv.name] = true;
+    prev.push(curv);
+ }
+ return prev
+}, []);
+console.log("结果", resources);
+```
+
+> 这种方法是利用高阶函数 `reduce` 进行去重， 这里只需要注意`initialValue`得放一个空数组[]，不然没法`push`
+
+### 13 对象数组如何去重
+
+> 根据每个对象的某一个具体属性来进行去重
+
+```js
+const responseList = [
+  { id: 1, a: 1 },
+  { id: 2, a: 2 },
+  { id: 3, a: 3 },
+  { id: 1, a: 4 },
+];
+const result = responseList.reduce((acc, cur) => {
+    const ids = acc.map(item => item.id);
+    return ids.includes(cur.id) ? acc : [...acc, cur];
+}, []);
+console.log(result); // -> [ { id: 1, a: 1}, {id: 2, a: 2}, {id: 3, a: 3} ]
+```
+
+### 14 数组中的数据根据key去重
+
+给定一个任意数组，实现一个通用函数，让数组中的数据根据 key 排重：
+
+```js
+const dedup = (data, getKey = () => {} ) => {
+  // todo
+}
+let data = [
+  { id: 1, v: 1 },
+  { id: 2, v: 2 },
+  { id: 1, v: 1 },
+];
+
+// 以 id 作为排重 key，执行函数得到结果
+// data = [
+//   { id: 1, v: 1 },
+//   { id: 2, v: 2 },
+// ];
+```
+
+**实现**
+
+```js
+const dedup = (data, getKey = () => { }) => {
+    const dateMap = data.reduce((pre, cur) => {
+        const key = getKey(cur)
+        if (!pre[key]) {
+            pre[key] = cur
+        }
+        return pre
+    }, {})
+    return Object.values(dateMap)
+}
+```
+
+**使用**
+
+```js
+let data = [
+    { id: 1, v: 1 },
+    { id: 2, v: 2 },
+    { id: 1, v: 1 },
+];
+console.log(dedup(data, (item) => item.id))
+
+// 以 id 作为排重 key，执行函数得到结果
+// data = [
+//   { id: 1, v: 1 },
+//   { id: 2, v: 2 },
+// ];
+```
+
+### 15 类数组转化为数组的方法
+
+```js
+const arrayLike=document.querySelectorAll('div')
+
+// 1.扩展运算符
+[...arrayLike]
+// 2.Array.from
+Array.from(arrayLike)
+// 3.Array.prototype.slice
+Array.prototype.slice.call(arrayLike)
+// 4.Array.apply
+Array.apply(null, arrayLike)
+// 5.Array.prototype.concat
+Array.prototype.concat.apply([], arrayLike)
+```
+
+### 16 reduce用法汇总
+
+**语法**
+
+```js
+array.reduce(function(total, currentValue, currentIndex, arr), initialValue);
+/*  total: 必需。初始值, 或者计算结束后的返回值。  currentValue： 必需。当前元素。  currentIndex： 可选。当前元素的索引；                       arr： 可选。当前元素所属的数组对象。  initialValue: 可选。传递给函数的初始值，相当于total的初始值。*/
+```
+
+> `reduceRight()` 该方法用法与`reduce()`其实是相同的，只是遍历的顺序相反，它是从数组的最后一项开始，向前遍历到第一项
+
+**1. 数组求和**
+
+```js
+const arr = [12, 34, 23];
+const sum = arr.reduce((total, num) => total + num);
+
+// 设定初始值求和
+const arr = [12, 34, 23];
+const sum = arr.reduce((total, num) => total + num, 10);  // 以10为初始值求和
+
+
+// 对象数组求和
+var result = [
+  { subject: 'math', score: 88 },
+  { subject: 'chinese', score: 95 },
+  { subject: 'english', score: 80 }
+];
+const sum = result.reduce((accumulator, cur) => accumulator + cur.score, 0); 
+const sum = result.reduce((accumulator, cur) => accumulator + cur.score, -10);  // 总分扣除10分
+```
+
+**2. 数组最大值**
+
+```js
+const a = [23,123,342,12];
+const max = a.reduce((pre,next) => pre > cur ? pre : cur, 0); // 342
+```
+
+**3. 数组转对象**
+
+```js
+var streams = [{name: '技术', id: 1}, {name: '设计', id: 2}];
+var obj = streams.reduce((accumulator, cur) => {accumulator[cur.id] = cur; return accumulator;}, {});
+```
+
+**4. 扁平一个二维数组**
+
+```js
+var arr = [[1, 2, 8], [3, 4, 9], [5, 6, 10]];
+var res = arr.reduce((x, y) => x.concat(y), []);
+```
+
+**5. 数组去重**
+
+```js
+实现的基本原理如下：
+
+① 初始化一个空数组
+② 将需要去重处理的数组中的第1项在初始化数组中查找，如果找不到（空数组中肯定找不到），就将该项添加到初始化数组中
+③ 将需要去重处理的数组中的第2项在初始化数组中查找，如果找不到，就将该项继续添加到初始化数组中
+④ ……
+⑤ 将需要去重处理的数组中的第n项在初始化数组中查找，如果找不到，就将该项继续添加到初始化数组中
+⑥ 将这个初始化数组返回
+```
+
+```js
+var newArr = arr.reduce(function (prev, cur) {
+    prev.indexOf(cur) === -1 && prev.push(cur);
+    return prev;
+},[]);
+```
+
+**6. 对象数组去重**
+
+```js
+const dedup = (data, getKey = () => { }) => {
+    const dateMap = data.reduce((pre, cur) => {
+        const key = getKey(cur)
+        if (!pre[key]) {
+            pre[key] = cur
+        }
+        return pre
+    }, {})
+    return Object.values(dateMap)
+}
+```
+
+**7. 求字符串中字母出现的次数**
+
+```js
+const str = 'sfhjasfjgfasjuwqrqadqeiqsajsdaiwqdaklldflas-cmxzmnha';
+
+const res = str.split('').reduce((pre, next) => {
+ pre[next] ? pre[next]++ : pre[next] = 1
+ return pre 
+},{})
+```
+
+```js
+// 结果
+-: 1
+a: 8
+c: 1
+d: 4
+e: 1
+f: 4
+g: 1
+h: 2
+i: 2
+j: 4
+k: 1
+l: 3
+m: 2
+n: 1
+q: 5
+r: 1
+s: 6
+u: 1
+w: 2
+x: 1
+z: 1
+```
+
+**8. compose函数**
+
+> `redux compose` 源码实现
+
+```js
+function compose(...funs) {
+    if (funs.length === 0) {
+        return arg => arg;
+    }
+    if (funs.length === 1) {
+       return funs[0];
+    }
+    return funs.reduce((a, b) => (...arg) => a(b(...arg)))
+}
+```
 
 ## 正则相关(??)
 
@@ -4275,7 +4867,7 @@ function treeToList(data) {
 
 ## 手写常见排序
 
-![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-13.png)
+![](../../\imgs\handwriting-js-13.png)
 
 ### 1 冒泡排序
 
@@ -4406,6 +4998,605 @@ function search(arr, target, start, end) {
 // } else {
 //   console.log("目标元素不在数组中");
 // }
+```
+
+## 算法数据结构(??)
+
+### 1 实现一个链表结构
+
+链表结构
+
+![](../../\imgs\handwriting-js-14.png)
+
+看图理解next层级
+
+![](../../\imgs\handwriting-js-15.png)
+
+```js
+// 链表 从头尾删除、增加 性能比较好
+// 分为很多类 常用单向链表、双向链表
+
+// js模拟链表结构：增删改查
+
+// node节点
+class Node {
+  constructor(element,next) {
+    this.element = element
+    this.next = next
+  } 
+}
+
+class LinkedList {
+ constructor() {
+   this.head = null // 默认应该指向第一个节点
+   this.size = 0 // 通过这个长度可以遍历这个链表
+ }
+
+ // 增加O(n)
+ add(index, element) {
+   if(arguments.length === 1) {
+     // 向末尾添加
+     element = index // 当前元素等于传递的第一项
+     index = this.size // 索引指向最后一个元素
+   }
+  if(index < 0 || index > this.size) {
+    throw new Error('添加的索引不正常')
+  }
+  if(index === 0) {
+    // 直接找到头部 把头部改掉 性能更好
+    let head = this.head
+    this.head = new Node(element,head)
+  } else {
+    // 获取当前头指针
+    let current = this.head
+    // 不停遍历 直到找到最后一项 添加的索引是1就找到第0个的next赋值
+    for (let i = 0; i < index-1; i++) { // 找到它的前一个
+      current = current.next
+    }
+    // 让创建的元素指向上一个元素的下一个
+    // 看图理解next层级
+    current.next = new Node(element,current.next) // 让当前元素指向下一个元素的next
+  }
+
+  this.size++;
+ }
+
+ // 删除O(n)
+ remove(index) {
+  if(index < 0 || index >= this.size) {
+    throw new Error('删除的索引不正常')
+  }
+  this.size--
+  if(index === 0) {
+    let head = this.head
+    this.head = this.head.next // 移动指针位置
+
+    return head // 返回删除的元素
+  }else {
+    let current = this.head
+    for (let i = 0; i < index-1; i++) { // index-1找到它的前一个
+      current = current.next
+    }
+    let returnVal = current.next // 返回删除的元素
+    // 找到待删除的指针的上一个 current.next.next 
+    // 如删除200， 100=>200=>300 找到200的上一个100的next的next为300，把300赋值给100的next即可
+    current.next = current.next.next 
+
+    return returnVal
+  }
+ }
+
+ // 查找O(n)
+ get(index) {
+  if(index < 0 || index >= this.size) {
+    throw new Error('查找的索引不正常')
+  }
+  let current = this.head
+  for (let i = 0; i < index; i++) {
+    current = current.next
+  }
+  return current
+ }
+}
+
+
+var ll = new LinkedList()
+
+ll.add(0,100) // Node { ellement: 100, next: null }
+ll.add(0,200) // Node { element: 200, next: Node { element: 100, next: null } }
+ll.add(1,500) // Node {element: 200,next: Node { element: 100, next: Node { element: 500, next: null } } }
+ll.add(300)
+ll.remove(0)
+
+console.log(ll.get(2),'get')
+console.log(ll.head)
+
+module.exports = LinkedList
+```
+
+### 2 实现一个队列
+
+> 基于链表结构实现队列
+
+```js
+const LinkedList = require('./实现一个链表结构')
+
+// 用链表默认使用数组来模拟队列，性能更佳
+class Queue {
+  constructor() {
+    this.ll = new LinkedList()
+  }
+  // 向队列中添加
+  offer(elem) {
+    this.ll.add(elem)
+  }
+  // 查看第一个
+  peek() {
+    return this.ll.get(0)
+  }
+  // 队列只能从头部删除
+  remove() {
+    return this.ll.remove(0)
+  }
+}
+
+var queue = new Queue()
+
+queue.offer(1)
+queue.offer(2)
+queue.offer(3)
+var removeVal = queue.remove(3)
+
+console.log(queue.ll,'queue.ll')
+console.log(removeVal,'queue.remove')
+console.log(queue.peek(),'queue.peek')
+```
+
+### 3 递归反转链表
+
+```js
+// node节点
+class Node {
+  constructor(element,next) {
+    this.element = element
+    this.next = next
+  } 
+}
+
+class LinkedList {
+ constructor() {
+   this.head = null // 默认应该指向第一个节点
+   this.size = 0 // 通过这个长度可以遍历这个链表
+ }
+ // 增加O(n)
+ add(index,element) {
+   if(arguments.length === 1) {
+     // 向末尾添加
+     element = index // 当前元素等于传递的第一项
+     index = this.size // 索引指向最后一个元素
+   }
+  if(index < 0 || index > this.size) {
+    throw new Error('添加的索引不正常')
+  }
+  if(index === 0) {
+    // 直接找到头部 把头部改掉 性能更好
+    let head = this.head
+    this.head = new Node(element,head)
+  } else {
+    // 获取当前头指针
+    let current = this.head
+    // 不停遍历 直到找到最后一项 添加的索引是1就找到第0个的next赋值
+    for (let i = 0; i < index-1; i++) { // 找到它的前一个
+      current = current.next
+    }
+    // 让创建的元素指向上一个元素的下一个
+    // 看图理解next层级 ![](http://img-repo.poetries.top/images/20210522115056.png)
+    current.next = new Node(element,current.next) // 让当前元素指向下一个元素的next
+  }
+
+  this.size++;
+ }
+ // 删除O(n)
+ remove(index) {
+  if(index < 0 || index >= this.size) {
+    throw new Error('删除的索引不正常')
+  }
+  this.size--
+  if(index === 0) {
+    let head = this.head
+    this.head = this.head.next // 移动指针位置
+
+    return head // 返回删除的元素
+  }else {
+    let current = this.head
+    for (let i = 0; i < index-1; i++) { // index-1找到它的前一个
+      current = current.next
+    }
+    let returnVal = current.next // 返回删除的元素
+    // 找到待删除的指针的上一个 current.next.next 
+    // 如删除200， 100=>200=>300 找到200的上一个100的next的next为300，把300赋值给100的next即可
+    current.next = current.next.next 
+
+    return returnVal
+  }
+ }
+ // 查找O(n)
+ get(index) {
+  if(index < 0 || index >= this.size) {
+    throw new Error('查找的索引不正常')
+  }
+  let current = this.head
+  for (let i = 0; i < index; i++) {
+    current = current.next
+  }
+  return current
+ }
+ reverse() {
+  const reverse = head=>{
+    if(head == null || head.next == null) {
+      return head
+    }
+    let newHead = reverse(head.next)
+    // 从这个链表的最后一个开始反转，让当前下一个元素的next指向自己，自己指向null
+    // ![](http://img-repo.poetries.top/images/20210522161710.png)
+    // 刚开始反转的是最后两个
+    head.next.next = head
+    head.next = null
+
+    return newHead
+  }
+  return reverse(this.head)
+ }
+}
+
+let ll = new LinkedList()
+
+ll.add(1)
+ll.add(2)
+ll.add(3)
+ll.add(4)
+
+// console.dir(ll,{depth: 1000})
+
+console.log(ll.reverse())
+```
+
+### 4 二叉树搜索
+
+```js
+// 二叉搜索树
+
+class Node {
+  constructor(element, parent) {
+    this.parent = parent // 父节点 
+    this.element = element // 当前存储内容
+    this.left = null // 左子树
+    this.right = null // 右子树
+  }
+}
+
+class BST {
+  constructor(compare) {
+    this.root = null // 树根
+    this.size = 0 // 树中的节点个数
+
+    this.compare = compare || this.compare
+  }
+  compare(a,b) {
+    return a - b
+  }
+  add(element) {
+    if(this.root === null) {
+      this.root = new Node(element, null)
+      this.size++
+      return
+    }
+    // 获取根节点 用当前添加的进行判断 放左边还是放右边
+    let currentNode = this.root 
+    let compare
+    let parent = null 
+    while (currentNode) {
+      compare = this.compare(element, currentNode.element)
+      parent = currentNode // 先将父亲保存起来
+      // currentNode要不停的变化
+      if(compare > 0) {
+        currentNode = currentNode.right
+      } else if(compare < 0) {
+        currentNode = currentNode.left
+      } else {
+        currentNode.element = element // 相等时 先覆盖后续处理
+      }
+    }
+
+    let newNode = new Node(element, parent)
+    if(compare > 0) {
+      parent.right = newNode
+    } else if(compare < 0) {
+      parent.left = newNode
+    }
+
+    this.size++
+  }
+}
+```
+
+![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-16.png)
+
+![](../../\imgs\handwriting-js-17.png)
+
+```js
+// 测试
+var bst = new BST((a, b) => b.age - a.age) // 模拟sort方法
+
+bst.add({age: 10})
+bst.add({age: 8})
+bst.add({age:19})
+bst.add({age:20})
+bst.add({age: 5})
+
+console.log(bst)
+```
+
+### 5 二叉树层次遍历
+
+```js
+// 二叉树层次遍历
+
+class Node {
+  constructor(element, parent) {
+    this.parent = parent // 父节点 
+    this.element = element // 当前存储内容
+    this.left = null // 左子树
+    this.right = null // 右子树
+  }
+}
+
+class BST {
+  constructor(compare) {
+    this.root = null // 树根
+    this.size = 0 // 树中的节点个数
+
+    this.compare = compare || this.compare
+  }
+  compare(a,b) {
+    return a - b
+  }
+  add(element) {
+    if(this.root === null) {
+      this.root = new Node(element, null)
+      this.size++
+      return
+    }
+    // 获取根节点 用当前添加的进行判断 放左边还是放右边
+    let currentNode = this.root 
+    let compare
+    let parent = null 
+    while (currentNode) {
+      compare = this.compare(element, currentNode.element)
+      parent = currentNode // 先将父亲保存起来
+      // currentNode要不停的变化
+      if(compare > 0) {
+        currentNode = currentNode.right
+      } else if(compare < 0) {
+        currentNode = currentNode.left
+      } else {
+        currentNode.element = element // 相等时 先覆盖后续处理
+      }
+    }
+
+    let newNode = new Node(element, parent)
+    if(compare > 0) {
+      parent.right = newNode
+    } else if(compare < 0) {
+      parent.left = newNode
+    }
+
+    this.size++
+  }
+  // 层次遍历 队列
+  levelOrderTraversal(visitor) {
+    if(this.root == null) {
+      return
+    }
+    let stack = [this.root]
+    let index = 0 // 指针 指向0
+    let currentNode 
+    while (currentNode = stack[index++]) {
+      // 反转二叉树
+      let tmp = currentNode.left
+      currentNode.left = currentNode.right
+      currentNode.right = tmp
+      visitor.visit(currentNode.element)
+      if(currentNode.left) {
+        stack.push(currentNode.left)
+      }
+      if(currentNode.right) {
+        stack.push(currentNode.right)
+      }
+    }
+  }
+}
+```
+
+```js
+// 测试
+var bst = new BST((a,b)=>a.age-b.age) // 模拟sort方法
+
+// ![](http://img-repo.poetries.top/images/20210522203619.png)
+// ![](http://img-repo.poetries.top/images/20210522211809.png)
+bst.add({age: 10})
+bst.add({age: 8})
+bst.add({age:19})
+bst.add({age:6})
+bst.add({age: 15})
+bst.add({age: 22})
+bst.add({age: 20})
+
+// 使用访问者模式
+class Visitor {
+  constructor() {
+    this.visit = function (elem) {
+      elem.age = elem.age*2
+    }
+  }
+}
+
+// ![](http://img-repo.poetries.top/images/20210523095515.png)
+console.log(bst.levelOrderTraversal(new Visitor()))
+```
+
+### 6 二叉树深度遍历
+
+```js
+// 二叉树深度遍历
+
+class Node {
+  constructor(element, parent) {
+    this.parent = parent // 父节点 
+    this.element = element // 当前存储内容
+    this.left = null // 左子树
+    this.right = null // 右子树
+  }
+}
+
+class BST {
+  constructor(compare) {
+    this.root = null // 树根
+    this.size = 0 // 树中的节点个数
+
+    this.compare = compare || this.compare
+  }
+  compare(a,b) {
+    return a - b
+  }
+  add(element) {
+    if(this.root === null) {
+      this.root = new Node(element, null)
+      this.size++
+      return
+    }
+    // 获取根节点 用当前添加的进行判断 放左边还是放右边
+    let currentNode = this.root 
+    let compare
+    let parent = null 
+    while (currentNode) {
+      compare = this.compare(element, currentNode.element)
+      parent = currentNode // 先将父亲保存起来
+      // currentNode要不停的变化
+      if(compare > 0) {
+        currentNode = currentNode.right
+      } else if(compare < 0) {
+        currentNode = currentNode.left
+      } else {
+        currentNode.element = element // 相等时 先覆盖后续处理
+      }
+    }
+
+    let newNode = new Node(element, parent)
+    if(compare > 0) {
+      parent.right = newNode
+    } else if(compare < 0) {
+      parent.left = newNode
+    }
+
+    this.size++
+  }
+  // 前序遍历
+  preorderTraversal(visitor) {
+    const traversal = node=>{
+      if(node === null) return 
+      visitor.visit(node.element)
+      traversal(node.left)
+      traversal(node.right)
+    }
+    traversal(this.root)
+  }
+  // 中序遍历
+  inorderTraversal(visitor) {
+    const traversal = node=>{
+      if(node === null) return 
+      traversal(node.left)
+      visitor.visit(node.element)
+      traversal(node.right)
+    }
+    traversal(this.root)
+  }
+  // 后序遍历
+  posterorderTraversal(visitor) {
+    const traversal = node=>{
+      if(node === null) return 
+      traversal(node.left)
+      traversal(node.right)
+      visitor.visit(node.element)
+    }
+    traversal(this.root)
+  }
+  // 反转二叉树：无论先序、中序、后序、层级都可以反转
+  invertTree() {
+    const traversal = node=>{
+      if(node === null) return 
+      let temp = node.left 
+      node.left = node.right 
+      node.right = temp
+      traversal(node.left)
+      traversal(node.right)
+    }
+    traversal(this.root)
+    return this.root
+  }
+}
+```
+
+先序遍历
+
+![](../../\imgs\handwriting-js-18.png)
+
+二叉树的遍历方式
+
+![](C:\Users\Administrator\Desktop\docs\imgs\handwriting-js-19.png)
+
+```js
+// 测试
+var bst = new BST((a,b)=>a.age-b.age) // 模拟sort方法
+
+bst.add({age: 10})
+bst.add({age: 8})
+bst.add({age:19})
+bst.add({age:6})
+bst.add({age: 15})
+bst.add({age: 22})
+bst.add({age: 20})
+
+// 先序遍历
+// console.log(bst.preorderTraversal(),'先序遍历')
+// console.log(bst.inorderTraversal(),'中序遍历')
+// ![](http://img-repo.poetries.top/images/20210522214837.png)
+// console.log(bst.posterorderTraversal(),'后序遍历')
+
+
+// 深度遍历：先序遍历、中序遍历、后续遍历
+// 广度遍历：层次遍历（同层级遍历）
+// 都可拿到树中的节点
+
+// 使用访问者模式
+class Visitor {
+  constructor() {
+    this.visit = function (elem) {
+      elem.age = elem.age*2
+    }
+  }
+}
+
+// bst.posterorderTraversal({
+//   visit(elem) {
+//     elem.age = elem.age*10
+//   }
+// })
+
+// 不能通过索引操作 拿到节点去操作
+// bst.posterorderTraversal(new Visitor())
+
+console.log(bst.invertTree(),'反转二叉树')
 ```
 
 ## 综合
@@ -4856,6 +6047,71 @@ dark
 
 > 通过观察以上的输出结果可知，使用 `enhancedObject` 函数处理过的对象，我们就可以方便地访问普通对象内部的深层属性。
 
+### 创建10个标签，点击的时候弹出来对应的序号
+
+```js
+var a
+for(let i=0;i<10;i++){
+ a=document.createElement('a')
+ a.innerHTML=i+'<br>'
+ a.addEventListener('click',function(e){
+     console.log(this)  //this为当前点击的<a>
+     e.preventDefault()  //如果调用这个方法，默认事件行为将不再触发。
+     //例如，在执行这个方法后，如果点击一个链接（a标签），浏览器不会跳转到新的 URL 去了。我们可以用 event.isDefaultPrevented() 来确定这个方法是否(在那个事件对象上)被调用过了。
+     alert(i)
+ })
+ const d=document.querySelector('div')
+ d.appendChild(a)  //append向一个已存在的元素追加该元素。
+}
+```
+
+### 请实现 DOM2JSON 一个函数，可以把一个 DOM 节点输出 JSON 的格式
+
+```html
+<div>
+  <span>
+    <a></a>
+  </span>
+  <span>
+    <a></a>
+    <a></a>
+  </span>
+</div>
+
+把上面dom结构转成下面的JSON格式
+
+{
+  tag: 'DIV',
+  children: [
+    {
+      tag: 'SPAN',
+      children: [
+        { tag: 'A', children: [] }
+      ]
+    },
+    {
+      tag: 'SPAN',
+      children: [
+        { tag: 'A', children: [] },
+        { tag: 'A', children: [] }
+      ]
+    }
+  ]
+}
+```
+
+实现代码如下:
+
+```js
+function dom2Json(domtree) {
+  let obj = {};
+  obj.name = domtree.tagName;
+  obj.children = [];
+  domtree.childNodes.forEach((child) => obj.children.push(dom2Json(child)));
+  return obj;
+}
+```
+
 ### 分片思想解决大数据量渲染问题
 
 题目描述: 渲染百万条结构简单的大数据时 怎么使用分片思想优化渲染
@@ -4929,6 +6185,87 @@ function add(a, b){
    }
    return sum;
 }
+```
+
+### 怎么在制定数据源里面生成一个长度为 n 的不重复随机数组 能有几种方法 时间复杂度多少（字节）
+
+**第一版 时间复杂度为 O(n^2)**
+
+```js
+function getTenNum(testArray, n) {
+  let result = [];
+  for (let i = 0; i < n; ++i) {
+    const random = Math.floor(Math.random() * testArray.length);
+    const cur = testArray[random];
+    if (result.includes(cur)) {
+      i--;
+      break;
+    }
+    result.push(cur);
+  }
+  return result;
+}
+const testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+const resArr = getTenNum(testArray, 10);
+```
+
+**第二版 标记法 / 自定义属性法 时间复杂度为 O(n)**
+
+```js
+function getTenNum(testArray, n) {
+  let hash = {};
+  let result = [];
+  let ranNum = n;
+  while (ranNum > 0) {
+    const ran = Math.floor(Math.random() * testArray.length);
+    if (!hash[ran]) {
+      hash[ran] = true;
+      result.push(ran);
+      ranNum--;
+    }
+  }
+  return result;
+}
+const testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+const resArr = getTenNum(testArray, 10);
+```
+
+**第三版 交换法 时间复杂度为 O(n)**
+
+```js
+function getTenNum(testArray, n) {
+  const cloneArr = [...testArray];
+  let result = [];
+  for (let i = 0; i < n; i++) {
+    debugger;
+    const ran = Math.floor(Math.random() * (cloneArr.length - i));
+    result.push(cloneArr[ran]);
+    cloneArr[ran] = cloneArr[cloneArr.length - i - 1];
+  }
+  return result;
+}
+const testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+const resArr = getTenNum(testArray, 14);
+```
+
+值得一提的是操作数组的时候使用交换法 这种思路在算法里面很常见
+
+**最终版 边遍历边删除 时间复杂度为 O(n)**
+
+```js
+function getTenNum(testArray, n) {
+  const cloneArr = [...testArray];
+  let result = [];
+  for (let i = 0; i < n; ++i) {
+    const random = Math.floor(Math.random() * cloneArr.length);
+    const cur = cloneArr[random];
+    result.push(cur);
+    cloneArr.splice(random, 1);
+  }
+  return result;
+}
+const testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+const resArr = getTenNum(testArray, 14);
 ```
 
 ### 基于Promise.all实现Ajax的串行和并行(??)
@@ -5151,5 +6488,251 @@ const longestCommonPrefix = function (strs) {
     index++;
   }
   return str;
+};
+```
+
+### 判断括号字符串是否有效（小米）
+
+题目描述
+
+```js
+给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+
+有效字符串需满足：
+- 左括号必须用相同类型的右括号闭合。
+- 左括号必须以正确的顺序闭合。
+
+示例 1：
+
+输入：s = "()"
+输出：true
+
+示例 2：
+
+输入：s = "()[]{}"
+输出：true
+
+示例 3：
+
+输入：s = "(]"
+输出：false
+```
+
+答案
+
+```js
+const isValid = function (s) {
+  if (s.length % 2 === 1) {
+    return false;
+  }
+  const regObj = {
+    "{": "}",
+    "(": ")",
+    "[": "]",
+  };
+  let stack = [];
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] === "{" || s[i] === "(" || s[i] === "[") {
+      stack.push(s[i]);
+    } else {
+      const cur = stack.pop();
+      if (s[i] !== regObj[cur]) {
+        return false;
+      }
+    }
+  }
+
+  if (stack.length) {
+    return false;
+  }
+
+  return true;
+};
+```
+
+### 实现一个padStart()或padEnd()的polyfil
+
+`String.prototype.padStart` 和 `String.prototype.padEnd`是`ES8`中新增的方法，允许将空字符串或其他字符串添加到原始字符串的开头或结尾。我们先看下使用语法：
+
+```js
+String.padStart(targetLength,[padString])
+```
+
+用法：
+
+```js
+'x'.padStart(4, 'ab') // 'abax'
+'x'.padEnd(5, 'ab') // 'xabab'
+
+// 1. 若是输入的目标长度小于字符串原本的长度则返回字符串本身
+'xxx'.padStart(2, 's') // 'xxx'
+
+// 2. 第二个参数的默认值为 " "，长度是为1的
+// 3. 而此参数可能是个不确定长度的字符串，若是要填充的内容达到了目标长度，则将不要的部分截取
+'xxx'.padStart(5, 'sss') // ssxxx
+
+// 4. 可用来处理日期、金额格式化问题
+'12'.padStart(10, 'YYYY-MM-DD') // "YYYY-MM-12"
+'09-12'.padStart(10, 'YYYY-MM-DD') // "YYYY-09-12"
+```
+
+polyfill实现：
+
+```js
+String.prototype.myPadStart = function (targetLen, padString = " ") {
+  if (!targetLen) {
+    throw new Error('请输入需要填充到的长度');
+  }
+  let originStr = String(this); // 获取到调用的字符串, 因为this原本是String{}，所以需要用String转为字符串
+  let originLen = originStr.length; // 调用的字符串原本的长度
+  if (originLen >= targetLen) return originStr; // 若是 原本 > 目标 则返回原本字符串
+  let diffNum = targetLen - originLen; // 10 - 6 // 差值
+  for (let i = 0; i < diffNum; i++) { // 要添加几个成员
+    for (let j = 0; j < padString.length; j++) { // 输入的padString的长度可能不为1
+      if (originStr.length === targetLen) break; // 判断每一次添加之后是否到了目标长度
+      originStr = `${padString[j]}${originStr}`;
+    }
+    if (originStr.length === targetLen) break;
+  }
+  return originStr;
+}
+console.log('xxx'.myPadStart(16))
+console.log('xxx'.padStart(16))
+```
+
+还是比较简单的，而`padEnd`的实现和它一样，只需要把第二层`for`循环里的`${padString[j]}${orignStr}`换下位置就可以了。
+
+### 设计一个方法提取对象中所有value大于2的键值对并返回最新的对象
+
+实现：
+
+```js
+var obj = { a: 1, b: 3, c: 4 }
+foo(obj) // { b: 3, c: 4 }
+```
+
+方法有很多种，这里提供一种比较简洁的写法，用到了`ES10`的`Object.fromEntries()`：
+
+```js
+var obj = { a: 1, b: 3, c: 4 }
+function foo (obj) {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([key, value]) => value > 2)
+  )
+}
+var obj2 = foo(obj) // { b: 3, c: 4 }
+console.log(obj2)
+```
+
+```js
+// ES8中 Object.entries()的作用：
+var obj = { a: 1, b: 2 }
+var entries = Object.entries(obj); // [['a', 1], ['b', 2]]
+// ES10中 Object.fromEntries()的作用：
+Object.fromEntries(entries); // { a: 1, b: 2 }
+```
+
+### 实现一个拖拽
+
+```html
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+  }
+  #box {
+    width: 100px;
+    height: 100px;
+    background-color: red;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+  }
+</style>
+```
+
+```html
+<div id="box"></div>
+```
+
+```js
+window.onload = function () {
+  var box = document.getElementById('box');
+  box.onmousedown = function (ev) {
+    var oEvent = ev || window.event; // 兼容火狐,火狐下没有window.event
+    var distanceX = oEvent.clientX - box.offsetLeft; // 鼠标到可视区左边的距离 - box到页面左边的距离
+    var distanceY = oEvent.clientY - box.offsetTop;
+    document.onmousemove = function (ev) {
+      var oEvent = ev || window.event;
+      var left = oEvent.clientX - distanceX;
+      var top = oEvent.clientY - distanceY;
+      if (left <= 0) {
+        left = 0;
+      } else if (left >= document.documentElement.clientWidth - box.offsetWidth) {
+        left = document.documentElement.clientWidth - box.offsetWidth;
+      }
+      if (top <= 0) {
+        top = 0;
+      } else if (top >= document.documentElement.clientHeight - box.offsetHeight) {
+        top = document.documentElement.clientHeight - box.offsetHeight;
+      }
+      box.style.left = left + 'px';
+      box.style.top = top + 'px';
+    }
+    box.onmouseup = function () {
+      document.onmousemove = null;
+      box.onmouseup = null;
+    }
+  }
+}
+```
+
+### 修改嵌套层级很深对象的 key
+
+```js
+// 有一个嵌套层次很深的对象，key 都是 a_b 形式 ，需要改成 ab 的形式，注意不能用递归。
+
+const a = {
+  a_y: {
+    a_z: {
+      y_x: 6
+    },
+    b_c: 1
+  }
+}
+// {
+//   ay: {
+//     az: {
+//       yx: 6
+//     },
+//     bc: 1
+//   }
+// }
+```
+
+**方法1：序列化 JSON.stringify + 正则匹配**
+
+```js
+const regularExpress = (obj) => {
+  try {
+    const str = JSON.stringify(obj).replace(/_/g, "");
+    return JSON.parse(str);
+  } catch (error) {
+    return obj;
+  }
+};;
+```
+
+**方法2：递归**
+
+```js
+const recursion = (obj) => {
+  const keys = Object.keys(obj);
+  keys.forEach((key) => {
+    const newKey = key.replace(/_/g, "");
+    obj[newKey] = recursion(obj[key]);
+    delete obj[key];
+  });
+  return obj;
 };
 ```

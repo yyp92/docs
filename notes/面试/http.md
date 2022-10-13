@@ -572,7 +572,7 @@ Connection:Upgrade
 
 1. HTTP 是非持久协议，客户端想知道服务端的处理进度只能通过长轮询或者是 long poll 的方式，但是前者对服务器压力大，后者则会因为一直等待响应造成阻塞。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-http-6.png)
+![](../../\imgs\interview-http-6.png)
 
 2. 虽然 http1.1 默认开启了 keep-alive 长连接保持了这个 TCP 通道使得在一个 HTTP 连接中可以发送多个请求，接受多个响应，但是一个请求只能有一个响应，而且这个响应也是被动的，不能主动发起
 

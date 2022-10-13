@@ -6,7 +6,7 @@
 
 JavaScript 的数据类型有下图所示
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-1.png)
+![](../../\imgs\interview-js-1.png)
 
 > 其中，前 7 种类型为基础类型，最后 `1 种（Object）为引用类型`，也是你需要重点关注的，因为它在日常工作中是使用得最频繁，也是需要关注最多技术细节的数据类型
 
@@ -1065,7 +1065,7 @@ function fn() {
 
 > 这里为什么要说可能，是因为 JS 是门动态类型语言，一个变量声明时可以是原始类型，马上又可以赋值为对象类型，然后又回到原始类型。这样频繁的在堆栈上切换存储位置，内部引擎是不是也会有什么优化手段，或者干脆全部都丢堆上？只有 const 声明的原始类型才一定存在栈上？当然这只是笔者的一个推测，暂时没有深究，读者可以忽略这段瞎想
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-10.png)
+![](../../\imgs\interview-js-10.png)
 
 因此笔者对于原始类型存储位置的理解为：局部变量才是被存储在栈上，全局变量存在静态区域上，其它都存储在堆上。
 
@@ -1318,7 +1318,7 @@ console.log(p.name) // Jack
 
 > 因此我们总结一下：`new 关键词执行之后总是会返回一个对象，要么是实例对象，要么是 return 语句指定的对象`
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-11.png)
+![](../../\imgs\interview-js-11.png)
 
 **手工实现New的过程**
 
@@ -2795,7 +2795,7 @@ asyncFun(func);
 - 在执行的过程中，判断一个函数的`promise`是否完成，如果已经完成，将结果传入下一个函数，继续重复此步骤
 - 每一个 `next()` 方法返回值的 `value` 属性为一个 `Promise` 对象，所以我们为其添加 `then` 方法， 在 `then` 方法里面接着运行 `next` 方法挪移遍历器指针，直到 `Generator`函数运行完成
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-24.png)
+![](../../\imgs\interview-js-24.png)
 
 ## 事件循环
 
@@ -2817,7 +2817,7 @@ asyncFun(func);
 
 > 自动执行的情况 会输出 listener1 listener2 task1 task2
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-28.png)
+![](../../\imgs\interview-js-28.png)
 
 ![](../../\imgs\interview-js-29.png)
 
@@ -2911,7 +2911,7 @@ console.log(5)
 
 > `JS` 在执行的过程中会产生执行环境，这些执行环境会被顺序的加入到执行栈中。如果遇到异步的代码，会被挂起并加入到 `Task`（有多种 `task`） 队列中。一旦执行栈为空，`Event` `Loop` 就会从 `Task` 队列中拿出需要执行的代码并放入执行栈中执行，所以本质上来说 `JS` 中的异步还是同步行为
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-32.png)
+![](../../\imgs\interview-js-32.png)
 
 ```js
 console.log('script start');
@@ -2954,7 +2954,7 @@ console.log('script end');
 - `Object.observe`
 - `MutationObserver`
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-33.png)
+![](../../\imgs\interview-js-33.png)
 
 **宏任务**
 
@@ -2968,7 +2968,7 @@ console.log('script end');
 
 > 宏任务中包括了 `script` ，浏览器会先执行一个宏任务，接下来有异步代码的话就先执行微任务
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-34.png)
+![](../../\imgs\interview-js-34.png)
 
 **所以正确的一次 Event loop 顺序是这样的**
 
@@ -2995,7 +2995,7 @@ console.log('script end');
 - `Node` 中的 `Event loop` 和浏览器中的不相同。
 - `Node` 的 `Event loop` 分为`6`个阶段，它们会按照顺序反复运行
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-36.png)
+![](../../\imgs\interview-js-36.png)
 
 ![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-37.png)
 
@@ -3052,7 +3052,7 @@ console.log('2');
 
 **事件循环的主要包含微任务和宏任务。具体是怎么进行循环的呢**
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-40.png)
+![](../../\imgs\interview-js-40.png)
 
 - **微任务**：在 Node.js 中微任务包含 2 种——`process.nextTick` 和 `Promise`。`微任务在事件循环中优先级是最高的`，因此在同一个事件循环中有其他任务存在时，优先执行微任务队列。并且`process.nextTick 和 Promise`也存在优先级，`process.nextTick` 高于 `Promise`
 - **宏任务**：在 Node.js 中宏任务包含 4 种——`setTimeout`、`setInterval`、`setImmediate` 和 `I/O`。宏任务在微任务执行之后执行，因此在同一个事件循环周期内，如果既存在微任务队列又存在宏任务队列，那么优先将微任务队列清空，再执行宏任务队列
@@ -3219,7 +3219,7 @@ process.nextTick(() => {
 
 > 对于 `microtask` 来说，它会在以上每个阶段完成前清空 `microtask` 队列，下图中的 `Tick` 就代表了 `microtask`
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-44.png)
+![](../../\imgs\interview-js-44.png)
 
 **谁来启动这个循环过程，循环条件是什么？**
 
@@ -3253,7 +3253,7 @@ process.nextTick(() => {
 
 但是 `requestIdlecallback` 却是一个更好理解的概念。当宏任务队列中没有任务可以处理时，浏览器可能存在“空闲状态”。这段空闲时间可以被 `requestIdlecallback` 利用起来执行一些优先级不高、不必立即执行的任务，如下图所示：
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-45.png)
+![](../../\imgs\interview-js-45.png)
 
 ## 垃圾回收
 
@@ -4153,7 +4153,7 @@ foo('jack', '18', 'male');
 
 这段代码比较容易，就是直接将这个函数的 arguments 在函数内部打印出来，那么我们看下这个 arguments 打印出来的结果，请看控制台的这张截图。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-56.png)
+![](../../\imgs\interview-js-56.png)
 
 > 从结果中可以看到，`typeof` 这个 `arguments` 返回的是 `object`，通过 `Object.prototype.toString.call` 返回的结果是 `'[object arguments]'`，可以看出来返回的不是 `'[object array]'`，说明 `arguments` 和数组还是有区别的。
 
@@ -4245,7 +4245,7 @@ console.log(Object.prototype.toString.call(list));
 
 > 从上面的代码执行的结果中可以发现，我们是通过有 CheckBox 的页面执行的代码，在结果可中输出了一个 NodeList 类数组，里面有一个 CheckBox 元素，并且我们判断了它的类型，和上面的 arguments 与 HTMLCollection 其实是类似的，执行结果如下图所示。
 
-![](C:\Users\Administrator\Desktop\docs\imgs\interview-js-59.png)
+![](../../\imgs\interview-js-59.png)
 
 **4. 类数组应用场景**
 
