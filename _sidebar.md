@@ -226,4 +226,6 @@
   - [redux之浅析中间件](notes/面试-原理/redux之浅析中间件.md)
   - [react结合redux实战](notes/面试-原理/react结合redux实战.md)
   - [immutable总结](notes/面试-原理/immutable总结.md)
+  - [react16为什么要更改生命周期上](notes/面试-原理/react16为什么要更改生命周期上.md)
+  - [react16为什么要更改生命周期下](notes/面试-原理/react16为什么要更改生命周期下.md)
   
