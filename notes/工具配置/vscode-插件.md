@@ -1,3 +1,5 @@
+# vscode插件
+
 *创建代码块的快捷键 --> ```[语言名]*
 
 ## react模板 - (ES7)
@@ -185,3 +187,11 @@ interface RootObject {
 ```bash
 # 再代码行上打上书签，方便调试
 ```
+
+## Svg Preview
+
+效果预览，需要选中 `.svg` 后缀的文件，右上角才会有按钮进入预览。
+
+## Image preview
+
+在链接上悬浮显示图片。
