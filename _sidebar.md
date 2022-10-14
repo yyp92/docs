@@ -228,4 +228,8 @@
   - [immutable总结](notes/面试-原理/immutable总结.md)
   - [react16为什么要更改生命周期上](notes/面试-原理/react16为什么要更改生命周期上.md)
   - [react16为什么要更改生命周期下](notes/面试-原理/react16为什么要更改生命周期下.md)
+  - [react-hooks设计动机与工作模式](notes/面试-原理/react-hooks设计动机与工作模式.md)
+  - [深入react-hooks工作机制](notes/面试-原理/深入react-hooks工作机制.md)
+  - [真正理解虚拟DOM](notes/面试-原理/真正理解虚拟DOM.md)
+  - [react中的栈调和stack-reconciler过程是怎样的](notes/面试-原理/react中的栈调和stack-reconciler过程是怎样的.md)
   
