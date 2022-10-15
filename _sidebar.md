@@ -235,4 +235,6 @@
   - [setState到底是同步的还是异步的](notes/面试-原理/setState到底是同步的还是异步的.md)
   - [如何理解fiber架构的迭代动机与设计思想](notes/面试-原理/如何理解fiber架构的迭代动机与设计思想.md)
   - [reactDOM-render是如何串联渲染链路的](notes/面试-原理/reactDOM-render是如何串联渲染链路的.md)
+  - [剖析fiber架构下concurrent模式的实现原理](notes/面试-原理/剖析fiber架构下concurrent模式的实现原理.md)
+  - [react事件与DOM事件有何不同](notes/面试-原理/react事件与DOM事件有何不同.md)
   
