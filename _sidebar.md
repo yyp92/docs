@@ -232,4 +232,7 @@
   - [深入react-hooks工作机制](notes/面试-原理/深入react-hooks工作机制.md)
   - [真正理解虚拟DOM](notes/面试-原理/真正理解虚拟DOM.md)
   - [react中的栈调和stack-reconciler过程是怎样的](notes/面试-原理/react中的栈调和stack-reconciler过程是怎样的.md)
+  - [setState到底是同步的还是异步的](notes/面试-原理/setState到底是同步的还是异步的.md)
+  - [如何理解fiber架构的迭代动机与设计思想](notes/面试-原理/如何理解fiber架构的迭代动机与设计思想.md)
+  - [reactDOM-render是如何串联渲染链路的](notes/面试-原理/reactDOM-render是如何串联渲染链路的.md)
   
