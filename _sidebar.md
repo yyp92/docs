@@ -107,7 +107,7 @@
   - [webpack-dev-server运行原理](notes/构建工具/webpack-dev-server运行原理.md)
   - [编译ts代码用tsc还是babel](notes/构建工具/编译ts代码用tsc还是babel.md)
   - [sourceMap](notes/构建工具/sourceMap.md)
-  - [由 Babel 理解前端编译原理](notes/构建工具/由 Babel 理解前端编译原理.md)
+  - [由Babel理解前端编译原理](notes/构建工具/由Babel理解前端编译原理.md)
 
 - 部署
   
@@ -118,13 +118,14 @@
   - [ssh](notes/部署/ssh.md)
   - [使用CI-CD优化前端构建的五种策略](notes/部署/使用CI-CD优化前端构建的五种策略.md)
   - [shell](notes/部署/shell.md)
+  - [jenkins部署前端项目](notes/部署/jenkins部署前端项目.md)
 
 - 包管理工具
   
   - [包管理工具](notes/包管理工具/包管理工具.md)
   - [lerna](notes/包管理工具/lerna.md)
   - [npm-常用包](notes/包管理工具/npm-常用包.md)
-  - [npm-install 安装机制](notes/包管理工具/npm-install安装机制.md)
+  - [npm-install安装机制](notes/包管理工具/npm-install安装机制.md)
   - [npm包的发布流程](notes/包管理工具/npm包的发布流程.md)
   - [npm&yarn&pnpm包管理机制](notes/包管理工具/npm&yarn&pnpm包管理机制.md)
   - [npm&yarn包管理机制](notes/包管理工具/npm&yarn包管理机制.md)
