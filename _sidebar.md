@@ -139,6 +139,7 @@
   - [nodejs异步IO和事件循环](notes/nodejs/nodejs异步IO和事件循环.md)
   - [nodemon-pm2](notes/nodejs/nodemon-pm2.md)
   - [数据库](notes/nodejs/数据库.md)
+  - [node.js底层原理](notes/nodejs/node.js底层原理.md)
 
 - 网络
   
