@@ -127,6 +127,7 @@
   - [使用CI-CD优化前端构建的五种策略](notes/部署/使用CI-CD优化前端构建的五种策略.md)
   - [shell](notes/部署/shell.md)
   - [jenkins部署前端项目](notes/部署/jenkins部署前端项目.md)
+  - [nginx基础知识](notes/部署/nginx基础知识.md)
 
 - 包管理工具
   
