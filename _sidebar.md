@@ -8,6 +8,7 @@
   - [练习题](notes/js/练习题.md)
   - [js-基础知识](notes/js/js-基础知识.md)
   - [js工具函数助力高效开发](notes/js/js工具函数助力高效开发.md)
+  - [js比较符](notes/js/js比较符.md)
 
 - ts
   
@@ -28,6 +29,7 @@
   - [图片加载](notes/网页效果实现/图片加载.md)
   - [前端处理过多数据](notes/网页效果实现/前端处理过多数据.md)
   - [前端实现VR全景看房的方案](notes/网页效果实现/前端实现VR全景看房的方案.md)
+  - [拖拽](notes/网页效果实现/拖拽.md)
 
 - 样式
   
@@ -52,6 +54,9 @@
   - [react-fiber](notes/react/react-fiber.md)
   - [react-5大富文本编辑器](notes/react/react-5大富文本编辑器.md)
   - [mobx的实现原理](notes/react/mobx的实现原理.md)
+  - [各流派react状态管理对比和原理实现](notes/react/各流派react状态管理对比和原理实现.md)
+  - [react的页面传值-路由跳转](notes/react/react的页面传值-路由跳转.md)
+  - [深入理解react-scheduler执行过程](notes/react/深入理解react-scheduler执行过程.md)
 
 - 微前端
   
@@ -87,6 +92,7 @@
   - [前端缓存](notes/浏览器/前端缓存.md)
   - [浏览器渲染原理及流程](notes/浏览器/浏览器渲染原理及流程.md)
   - [前后端所有鉴权方案](notes/浏览器/前后端所有鉴权方案.md)
+  - [devTools用法总结](notes/浏览器/devTools用法总结.md)
 
 - 源码学习
   
@@ -191,15 +197,10 @@
 - 其他
   
   - [待处理问题](notes/其他/待处理问题.md)
-  
   - [待学习目录](notes/其他/待学习目录.md)
-  
   - [攻击](notes/其他/攻击.md)
-  
   - [日常总结](notes/其他/日常总结.md)
-  
   - [总结](notes/其他/总结.md)
-  
   - [书籍](notes/其他/书籍.md)
 
 - 算法
