@@ -68,6 +68,7 @@
   - [single-spa](notes/微前端/single-spa.md)
   - [Satumjs](notes/微前端/Satumjs.md)
   - [手写迷你版微前端](notes/微前端/手写迷你版微前端.md)
+  - [微前端如何做样式隔离](notes/微前端/微前端如何做样式隔离.md)
 
 - webGL
   
