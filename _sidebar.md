@@ -74,6 +74,10 @@
   
   - [资料](notes/webGL/资料.md)
 
+- threejs
+  
+  - [基础知识](notes/threejs/基础知识.md)
+
 - 音视频
   
   - [资料](notes/音视频/音视频介绍.md)
