@@ -56,7 +56,6 @@
   - [mobx的实现原理](notes/react/mobx的实现原理.md)
   - [各流派react状态管理对比和原理实现](notes/react/各流派react状态管理对比和原理实现.md)
   - [react的页面传值-路由跳转](notes/react/react的页面传值-路由跳转.md)
-  - [深入理解react-scheduler执行过程](notes/react/深入理解react-scheduler执行过程.md)
   - [react和vue框架的区别](notes/react/react和vue框架的区别.md)
 
 - 微前端
@@ -107,6 +106,7 @@
   - [react-router(v6)](notes/源码学习/react-router(v6).md)
   - [react-事件原理](notes/源码学习/react-事件原理.md)
   - [react-requestIdleCallback调度能力](notes/源码学习/react-requestIdleCallback调度能力.md)
+  - [深入理解react-scheduler执行过程](notes/源码学习/深入理解react-scheduler执行过程.md)
 
 - 脚手架
   
