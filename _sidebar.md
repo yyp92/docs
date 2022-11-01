@@ -107,6 +107,7 @@
   - [react-事件原理](notes/源码学习/react-事件原理.md)
   - [react-requestIdleCallback调度能力](notes/源码学习/react-requestIdleCallback调度能力.md)
   - [深入理解react-scheduler执行过程](notes/源码学习/深入理解react-scheduler执行过程.md)
+  - [react技术揭秘](notes/源码学习/react技术揭秘.md)
 
 - 脚手架
   
@@ -258,5 +259,4 @@
   - [如何打造高性能的react应用](notes/面试-原理/如何打造高性能的react应用.md)
   - [跟react学设计模式](notes/面试-原理/跟react学设计模式.md)
   - [react全部api解读](notes/面试-原理/react全部api解读.md)
-  - [各流派react状态管理对比和原理实现](notes/面试-原理/各流派react状态管理对比和原理实现.md)
   
