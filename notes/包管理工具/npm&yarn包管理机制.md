@@ -277,9 +277,3 @@ npm 和 yarn 作为两款相似的包管理工具，在一些功能实现上它�
 [4] NPM vs. Yarn: Which Package Manager Should You Choose?:  https://www.whitesourcesoftware.com/free-developer-tools/blog/npm-vs-yarn-which-should-you-choose/
 
 [5] Lockfiles should be committed on all projects:  https://classic.yarnpkg.com/blog/2016/11/24/lockfiles-for-all/
-
-
-
-
-
-
