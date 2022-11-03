@@ -50,6 +50,10 @@
 
 ### useEffect
 
-- 在`Layout阶段`完成调度`useEffect`的`销毁`与`回调`函数
+- before mutation 阶段调度useEffect。
+
+- mutation阶段的 - 当`Fiber节点`含有`Deletion effectTag`调度`useEffect`的销毁函数。
+
+- 在`Layout阶段`完成调度`useEffect`的`销毁`与`回调`函数。
 
 - `useEffect`则需要先调度，在`Layout阶段`完成后再异步执行。
