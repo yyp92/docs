@@ -195,3 +195,7 @@ interface RootObject {
 ## Image preview
 
 在链接上悬浮显示图片。
+
+## Prettier
+
+美化工具。

@@ -970,6 +970,24 @@ Child5.prototype.constructor = Child5;
 
 > 这是最推荐的一种方式，接近完美的继承。
 
+### es6的继承
+
+```js
+class Parent {
+    constructor(name) {
+        this.name = name
+        this.arr = [1, 2, 3]
+    }
+}
+
+class Child extends Parent {
+    constructor(name, age) {
+        super(name)
+        this.age = age
+    }
+}
+```
+
 ## 实现Promise相关方法
 
 ### 实现 Promise的resolve
@@ -2132,7 +2150,7 @@ class LazyMan {
             this.next()
         })
     }
-    
+
     sleep(time) {
         this.cb.push(() => {
             setTimeout(() => {
@@ -2143,7 +2161,7 @@ class LazyMan {
 
         return this
     }
-  
+
     sleepFirst(time) {
         this.cb.unshift(() => {
             setTimeout(() => {
@@ -2154,7 +2172,7 @@ class LazyMan {
 
         return this
     }
-  
+
     eat(time) {
         this.cb.push(() => {
             setTimeout(() => {
@@ -2165,7 +2183,7 @@ class LazyMan {
 
         return this
     }
-  
+
     drink(time) {
         this.cb.push(() => {
             setTimeout(() => {
@@ -2176,7 +2194,7 @@ class LazyMan {
 
         return this
     }
-  
+
     next() {
         const fn = this.cb.shift()
         fn && fn()
