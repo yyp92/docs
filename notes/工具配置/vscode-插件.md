@@ -199,3 +199,7 @@ interface RootObject {
 ## Prettier
 
 美化工具。
+
+## Flow Language Support
+
+支持facebook flow(类似于ts)语言，看react源码不提示类型错误。

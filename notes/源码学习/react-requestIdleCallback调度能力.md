@@ -75,7 +75,7 @@ var Work = {
 
     onOneUnit: function () {  for (var i = 0; i <= 500000; i++) {} },
 
-    
+
 
     // 处理任务
 
@@ -340,7 +340,7 @@ window.requestIdleCallback = function (cb) {
 
   let isMessageLoopRunning = false;
 
- 
+
   const channel = new MessageChannel();
 
   // port2 发送
