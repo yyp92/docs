@@ -2,6 +2,10 @@
 
 *创建代码块的快捷键 --> ```[语言名]*
 
+## 防止flow语言提示错误
+
+在设置(最好在当前工作区下) --> "javascript.validate.enable" --> 设置成false
+
 ## react模板 - (ES7)
 
 ```js
@@ -200,6 +204,18 @@ interface RootObject {
 
 美化工具。
 
-## Flow Language Support
+## Flow Language Support（不重要）
 
 支持facebook flow(类似于ts)语言，看react源码不提示类型错误。
+
+## CodeSnap
+
+CodeSnap 是一个代码截图插件，只需选中项目中相应的代码段，即可快速创建代码的截图。
+
+## CSS Peek
+
+CSS Peek 插件允许我们在 HTML 中选择某个 class 或者 id 名称按住Ctrl键+鼠标左键可以直接定位到该名称的CSS的位置。
+
+## vscode-mindmap
+
+xmind编辑图。
