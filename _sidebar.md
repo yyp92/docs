@@ -64,6 +64,7 @@
   - [magic](notes/微前端/magic.md)
   - [qainkun](notes/微前端/qainkun.md)
   - [single-spa](notes/微前端/single-spa.md)
+  - [wujie](notes/微前端/wujie.md)
   - [Satumjs](notes/微前端/Satumjs.md)
   - [手写迷你版微前端](notes/微前端/手写迷你版微前端.md)
   - [微前端如何做样式隔离](notes/微前端/微前端如何做样式隔离.md)
