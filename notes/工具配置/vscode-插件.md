@@ -21,6 +21,10 @@ const $1 = () => {
 export default $1
 ```
 
+## React Hooks Snippets
+
+react hooks的快捷键。
+
 ## Postcode - vscode postman
 
 ```js
@@ -219,3 +223,34 @@ CSS Peek 插件允许我们在 HTML 中选择某个 class 或者 id 名称按住
 ## vscode-mindmap
 
 xmind编辑图。
+
+## better comments
+
+代码注释高亮。
+
+正常注释，前面使用相应的前缀即可（vs code 会结合插件自动用配置的颜色去渲染，插件自带5种高亮注释）
+
+```js
+// ! 红色的高亮注释  
+// ? 蓝色的高亮注释  
+// * 绿色的高亮注释  
+// todo 橙色的高亮注释  
+// // 灰色带删除线的注释  
+// 普通的注释
+
+/**  
+ // ! 红色的高亮注释  
+ // ? 蓝色的高亮注释  
+ // * 绿色的高亮注释  
+ // todo 橙色的高亮注释  
+ // // 灰色带删除线的注释  
+*/
+```
+
+## Regex Previewer
+
+这是一个用于实时测试正则表达式的实用工具。它可以将正则表达式模式应用在任何打开的文件上，并高亮所有的匹配项。
+
+#### VS Code JavaScript(ES6) snippets
+
+当前最流行的，已有超过 120 万的下载量。这个插件为 JavaScript、TypeScript、HTML、React 和 Vue 提供了 ES6 的语法支持。
