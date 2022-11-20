@@ -1,0 +1,176 @@
+{
+    "root": {
+        "data": {
+            "id": "cohaj7nuogg0",
+            "created": 1668964484630,
+            "text": "react vdom diff"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cohajqkk0jc0",
+                    "created": 1668964525789,
+                    "text": "1. 从左边往右遍历，比较新老节点，如果节点可以复用，继续往右，否则就停止"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cohake3bwf40",
+                    "created": 1668964576990,
+                    "text": "2. 新节点没了，老节点还有。则删除剩余的老节点即可"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cohakog92io0",
+                    "created": 1668964599539,
+                    "text": "3.新节点还有，老节点没了"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cohakxkhpiw0",
+                            "created": 1668964619387,
+                            "text": "3.1 初次渲染阶段 没有老节点"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cohal216lbk0",
+                            "created": 1668964629103,
+                            "text": "3.2 更新阶段 经过step1 老节点已经(匹配)完成"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cohaln6z63k0",
+                    "created": 1668964675166,
+                    "text": "4. 新老节点都还有节点，但是因为老fiber是链表，不方便快速get与delete，\n因此把老fiber链表中的节点放入Map中，后续操作这个Map的get与delete",
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cohasaamvq00",
+                            "created": 1668965195638,
+                            "text": "4.1 把剩下的old单链表构建哈希表"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cohangbw5ns0",
+                            "created": 1668964816954,
+                            "text": "4.2 遍历新节点，通过新节点的key去哈希表中查找节点，\n找到就复用节点，并且删除哈希表中对应的节点",
+                            "layout": null
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cohasnsgk6g0",
+                    "created": 1668965225014,
+                    "text": "5. 如果是组件更新阶段，此时新节点已经遍历完了，能复用的老节点都用完了，\n  则最后查找Map里是否还有元素，如果有，则证明是新节点里不能复用的，也就是要被删除的元素，此时删除这些元素就可以了"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cohasttnyr40",
+                    "created": 1668965238148,
+                    "text": "与Vue VDOM DIFF比较"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cohati9cdk00",
+                            "created": 1668965291338,
+                            "text": "1. 子节点数据结构上"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohaubn3q3c0",
+                                    "created": 1668965355297,
+                                    "text": "React的old是单链表，Vue的old是数组"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohauilq2q00",
+                                            "created": 1668965370452,
+                                            "text": "React只单向查找，Vue双向查找"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohatjo6vk00",
+                            "created": 1668965294413,
+                            "text": "2. 哈希表"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohaupvg6a00",
+                                    "created": 1668965386277,
+                                    "text": "为了快速通过key值找到节点，双方都用到了Map"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohautxwkkg0",
+                                            "created": 1668965395132,
+                                            "text": "React中根据old做出Map，Vue中则是根据new做成Map"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cohav4l5oco0",
+                                                    "created": 1668965418306,
+                                                    "text": "延伸：为什么是Map，而不是Object"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohatklp50o0",
+                            "created": 1668965296439,
+                            "text": "3. 如果old和new其中一方已经遍历完毕，两者处理相同。这也是必然的。"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cohatn9lak80",
+                            "created": 1668965302237,
+                            "text": "4. Vue用到了LIS，注意掌握其算法。"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

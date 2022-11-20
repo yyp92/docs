@@ -1,0 +1,146 @@
+{
+    "root": {
+        "data": {
+            "id": "coha7pwmzbk0",
+            "created": 1668963583973,
+            "text": "vue vdom diff",
+            "expandState": "expand"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "coha8yhsa7s0",
+                    "created": 1668963681030,
+                    "text": "1. 左边按序查找，如果节点不能复用，则停止",
+                    "expandState": "expand",
+                    "layout": null
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cohabmdbho80",
+                    "created": 1668963889731,
+                    "text": "2. 右边按序查找，如果节点不能复用，则停止",
+                    "expandState": "expand",
+                    "layout": null
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cohad2i0h000",
+                    "created": 1668964003208,
+                    "text": "3.1. 老节点没了",
+                    "expandState": "expand",
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cohaf8ev4l40",
+                            "created": 1668964172806,
+                            "text": "如果新节点还有，则新增这些新节点"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cohadjuh0bs0",
+                    "created": 1668964040966,
+                    "text": "3.2.新节点没了",
+                    "expandState": "expand",
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cohafqg0mhs0",
+                            "created": 1668964212058,
+                            "text": "如果老节点还有，则删除这些老节点"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cohadnymbd40",
+                    "created": 1668964049924,
+                    "text": "3.3.新老节点都还有， 则新增、删除、移动节点",
+                    "expandState": "expand",
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cohag4adhj40",
+                            "created": 1668964242192,
+                            "text": "1. 因为剩下的这些新老节点顺序是“乱的”，所以为了方便接下来的查找，可以把新节点做成key:index的Map图"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohah7prn4g0",
+                                    "created": 1668964328017,
+                                    "text": "涉及到的知识点：散列表（拉链法、红黑树）"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohaghzlduw0",
+                            "created": 1668964272015,
+                            "text": "2. 遍历老节点数组"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohahfvrhtc0",
+                                    "created": 1668964345794,
+                                    "text": "1. 通过这些老节点key去新节点的Map中判断是否需要被复用，如果需要，则patch，不要则删除。"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cohaho2t7fc0",
+                                    "created": 1668964363634,
+                                    "text": "2. 判断是否有节点移动",
+                                    "font-weight": "bold"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohago8dvbc0",
+                            "created": 1668964285607,
+                            "text": "3. 遍历新节点数组",
+                            "font-weight": "bold"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohaib585h40",
+                                    "created": 1668964413846,
+                                    "text": "1. 获取新节点的最长递增子序列，这些节点不动，剩下节点移动或者新增",
+                                    "font-weight": "bold"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
