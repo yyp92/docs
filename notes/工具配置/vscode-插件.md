@@ -251,6 +251,9 @@ xmind编辑图。
 
 这是一个用于实时测试正则表达式的实用工具。它可以将正则表达式模式应用在任何打开的文件上，并高亮所有的匹配项。
 
-#### VS Code JavaScript(ES6) snippets
+## VS Code JavaScript(ES6) snippets
 
 当前最流行的，已有超过 120 万的下载量。这个插件为 JavaScript、TypeScript、HTML、React 和 Vue 提供了 ES6 的语法支持。
+
+## Git Blame
+可以快速的查看某一行最近的一次修改是谁、什么时候、哪次提交修改的

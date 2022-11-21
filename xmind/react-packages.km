@@ -1,0 +1,1036 @@
+{
+    "root": {
+        "data": {
+            "id": "cohaykgtexs0",
+            "created": 1668965687965,
+            "text": "react/packages"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cohaz5gce5k0",
+                    "created": 1668965733649,
+                    "text": "shared：react中公用文件，包含了很多的基本类型数据结构和公用方法"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cohazamtn4w0",
+                            "created": 1668965744924,
+                            "text": "ReactVersion.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohazi93xxc0",
+                                    "created": 1668965761509,
+                                    "text": "React版本号，可通过React.version查看"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohaznottow0",
+                            "created": 1668965773344,
+                            "text": "ReactElementType.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohazrmfbk00",
+                                    "created": 1668965781906,
+                                    "text": "ReactElement的数据结构"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohna940lw80",
+                            "created": 1669000456935,
+                            "text": "ReactTypes.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnaih6b7s0",
+                                    "created": 1669000477322,
+                                    "text": "ReactNode、ReactFragment、ReactContext、ReactProvider等的数据结构"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnar3vbq00",
+                            "created": 1669000496108,
+                            "text": "shallowEqual.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnavzhzjs0",
+                                    "created": 1669000506728,
+                                    "text": "浅比较函数，如PureComponent中内置的shouldComponentUpdate进行浅比较的时候有用到"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnb5smgqo0",
+                            "created": 1669000528080,
+                            "text": "isValidElementType.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnbc6zvi80",
+                                    "created": 1669000542010,
+                                    "text": "检查是否是有效的Element，主要看type值"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnbingxvs0",
+                            "created": 1669000556067,
+                            "text": "ReactSymbols.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnbxgrmwg0",
+                                    "created": 1669000588313,
+                                    "text": "标记ReactElement的type，同时做了Symbol的兼容"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnbk3czo00",
+                            "created": 1669000559204,
+                            "text": "objectIs.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnc3v3hyg0",
+                                    "created": 1669000602240,
+                                    "text": "Object.is函数"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnble7g3s0",
+                            "created": 1669000562037,
+                            "text": "ExecutionEnvironment.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohncjcxjyw0",
+                                    "created": 1669000635970,
+                                    "text": "赋值canUseDOM，标记当前执行环境"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cohnctexwyo0",
+                    "created": 1669000657860,
+                    "text": "react/src：React API"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cohnd0buvq80",
+                            "created": 1669000672911,
+                            "text": "React.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnd9566zs0",
+                                    "created": 1669000692097,
+                                    "text": "返回React对象，包含Component、PureComponent、createContext、useState、Fragment等"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohndm7n3n40",
+                            "created": 1669000720545,
+                            "text": "ReactBaseClasses.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohndratrxk0",
+                                    "created": 1669000731621,
+                                    "text": "定义并返回Component、PureComponent"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohndtt371c0",
+                            "created": 1669000737079,
+                            "text": "ReactNoopUpdateQueue.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohndviam000",
+                                    "created": 1669000740780,
+                                    "text": "更新队列的抽象API"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnevyd1dc0",
+                            "created": 1669000820116,
+                            "text": "ReactElement.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnf3zt8lk0",
+                                    "created": 1669000837618,
+                                    "text": "定义ReactElement、createElement、cloneElement、createFactory、isValidElement等"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnfa8xpcg0",
+                            "created": 1669000851230,
+                            "text": "ReactCreateRef.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnfglmz8g0",
+                                    "created": 1669000865059,
+                                    "text": "定义createRef方法"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnflkuc080",
+                            "created": 1669000875895,
+                            "text": "ReactHooks.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnfn7p9ig0",
+                                    "created": 1669000879454,
+                                    "text": "定义hooks API，useState等，但是注意要看Hooks API的具体实现，不在这里，在react-reconciler/src/ReactFiberHooks.js"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohng3ud5gw0",
+                            "created": 1669000915652,
+                            "text": "ReactContext.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohng7nt5e00",
+                                    "created": 1669000923963,
+                                    "text": "定义createContext方法"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohngc76sw80",
+                            "created": 1669000933842,
+                            "text": "ReactMemo.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohngii09140",
+                                    "created": 1669000947557,
+                                    "text": "定义React.memo方法，这个方法有点像函数组件版的PureComponent，React.memo默认浅比较props，但是自己可以拓展这个比较"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohngxn9brk0",
+                            "created": 1669000980526,
+                            "text": "ReactChildren.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohngzo6h140",
+                                    "created": 1669000984937,
+                                    "text": "定义了React.Children的方法，提供了map、forEach等几种方法处理this.props.children"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnh51ycoo0",
+                            "created": 1669000996652,
+                            "text": "ReactForwardRef.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnh8r3aso0",
+                                    "created": 1669001004703,
+                                    "text": "定义了转发ref的forwardRef方法"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnh68z86o0",
+                            "created": 1669000999254,
+                            "text": "ReactElementValidator.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnh7l4c480",
+                                    "created": 1669001002165,
+                                    "text": "一些校验函数"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cohnhzo0eko0",
+                    "created": 1669001063289,
+                    "text": "react-dom/src"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cohnihorjgo0",
+                            "created": 1669001102517,
+                            "text": "/client：ReactDOM API"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnimois200",
+                                    "created": 1669001113386,
+                                    "text": "ReactDOM.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnirtl1s00",
+                                            "created": 1669001124576,
+                                            "text": "定义ReactDOM对象并返回"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohniucqvw80",
+                                    "created": 1669001130089,
+                                    "text": "ReactDOMRoot.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnj08uilc0",
+                                            "created": 1669001142914,
+                                            "text": "定义react18要用的createRoot等方法"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnjblkwfc0",
+                                    "created": 1669001167628,
+                                    "text": "ReactDOMLegacy.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnjgj2aqo0",
+                                            "created": 1669001178360,
+                                            "text": "定义ReactDOM.render等方法，react18之后不建议再使用"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnkc6qa5c0",
+                                    "created": 1669001247271,
+                                    "text": "ReactDOMComponent.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnkiqufv40",
+                                            "created": 1669001261548,
+                                            "text": "用于把虚拟DOM节点同步更新到真实DOM节点，如果你见过我写的简版react，这个就相当于updateNode的复杂版"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnkzscu1k0",
+                                    "created": 1669001298645,
+                                    "text": "ReactDOMComponentTree.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnl56bl0o0",
+                                            "created": 1669001310373,
+                                            "text": "用于把虚拟DOM节点树同步更新到真实DOM节点树，如添加事件、找到某真实DOM节点最近的祖先原生标签节点或者祖先文本节点等"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnlknqpf40",
+                                    "created": 1669001344078,
+                                    "text": "ReactDOMEventHandle.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnlx7l1tk0",
+                                            "created": 1669001371399,
+                                            "text": "事件处理，如给DOM节点注册事件等"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnllpj06o0",
+                                    "created": 1669001346363,
+                                    "text": "ReactDOMHostConfig.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnmfg9fao0",
+                                            "created": 1669001411106,
+                                            "text": "原生标签节点(如div、p标签等)的一些处理，如父节点中插入appendChild、往前插入insertBefore、删除removeChild、更新文本节点commitTextUpdate等"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnlmr2vbs0",
+                                    "created": 1669001348634,
+                                    "text": "ReactDOMInput.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnlmr2vbs0",
+                                            "created": 1669001348634,
+                                            "text": "处理input标签节点，如设置默认值setDefaultValue、更新checked属性updateChecked等"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnlnt3au80",
+                                    "created": 1669001350932,
+                                    "text": "ReactDOMOption.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnnbgn01s0",
+                                            "created": 1669001480786,
+                                            "text": "处理option标签节点的属性，抚平option的兼容性，如不支持option的selected属性等"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnnjjec740",
+                                    "created": 1669001498367,
+                                    "text": "ReactDOMSelect.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnnrsbsds0",
+                                            "created": 1669001516321,
+                                            "text": "处理select标签节点，如更新option节点updateOptions等"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnnkuxpe80",
+                                    "created": 1669001501241,
+                                    "text": "setInnerHTML.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohno2oo9so0",
+                                            "created": 1669001540045,
+                                            "text": "DANGEROUSLY_SET_INNER_HTML属性设置的实现方法setInnerHTML"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnnm9u3zk0",
+                                    "created": 1669001504319,
+                                    "text": "setTextContent.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnogxs8280",
+                                            "created": 1669001571071,
+                                            "text": "给节点设置文本"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnpd8dxm80",
+                            "created": 1669001641369,
+                            "text": "/events 合成事件，除了提升性能之外，合成事件的的一个重点就是考虑兼容性"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnplbks2o0",
+                                    "created": 1669001658976,
+                                    "text": "DOMEventNames.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnpvzkc3k0",
+                                            "created": 1669001682194,
+                                            "text": "原生事件类型，如click、drag等"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnpy3yhag0",
+                                    "created": 1669001686813,
+                                    "text": "EventListener.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnqcyea5s0",
+                                            "created": 1669001719129,
+                                            "text": "事件添加与移除方法，如addEventBubbleListener、removeEventListener等"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnpz8f74g0",
+                                    "created": 1669001689260,
+                                    "text": "getEventCharCode.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnqyv8rlk0",
+                                            "created": 1669001766827,
+                                            "text": "获取charCode，如enter键、tab键等，这里做了浏览器的兼容性"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnq0e7uzk0",
+                                    "created": 1669001691787,
+                                    "text": "getEventTarget.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnr76mskw0",
+                                            "created": 1669001784930,
+                                            "text": "获取事件对象，这里主要做不同浏览器的兼容性，如最后一行代码 target.nodeType === TEXT_NODE ? target.parentNode : target; \n这里就兼容了Safari下文本也可能会有事件，这个时候返回的就是父节点"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnq1h0l280",
+                                    "created": 1669001694133,
+                                    "text": "getListener.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohns7yiebs0",
+                                            "created": 1669001864980,
+                                            "text": "获取fiber节点上的事件（如果有事件的话）"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnq2mgas00",
+                                    "created": 1669001696639,
+                                    "text": "isEventSupported.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnsw2m6qo0",
+                                            "created": 1669001917471,
+                                            "text": "判断当前环境里是否支持某个事件"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnq3p7w5c0",
+                                    "created": 1669001698983,
+                                    "text": "ReactDOMEventListener.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnt5hjqls0",
+                                            "created": 1669001937965,
+                                            "text": "派发合成事件"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohntfcirds0",
+                                    "created": 1669001959429,
+                                    "text": "ReactDOMUpdateBatching.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnto8hdyo0",
+                                            "created": 1669001978776,
+                                            "text": "处理批量更新事件"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohntgngmgg0",
+                                    "created": 1669001962267,
+                                    "text": "SyntheticEvent.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohntxh4jag0",
+                                            "created": 1669001998890,
+                                            "text": "合成事件对象定义"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnthz6mko0",
+                                    "created": 1669001965153,
+                                    "text": "DOMPluginEventSystem.js"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cohnu76y8bk0",
+                                            "created": 1669002020042,
+                                            "text": "子主题"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cohnup3yo940",
+                    "created": 1669002059044,
+                    "text": "react-reconciler/src： 协调"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cohnv1t33ls0",
+                            "created": 1669002086684,
+                            "text": "ReactChildFiber.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnv6l0juw0",
+                                    "created": 1669002097080,
+                                    "text": "定义子节点协调方法reconcileChildFiber（React的diff重点在于数组情况下的协调方法reconcileChildrenArray）"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnvddy7ag0",
+                            "created": 1669002111890,
+                            "text": "ReactFiber.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnw2nz3vs0",
+                                    "created": 1669002166916,
+                                    "text": "定义Fiber、FiberNode数据结构"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cohnw3qfh8g0",
+                                    "created": 1669002169241,
+                                    "text": "定义创建fiber方法createFiber"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnvekr0ig0",
+                            "created": 1669002114478,
+                            "text": "ReactFiberBeginWork.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cohnwm061nk0",
+                                    "created": 1669002209012,
+                                    "text": "不同节点的更新方法与子节点协调方法reconcileChildren，节点更新方法如updateFunctionComponent、updateClassComponent、updateFragment等，\n其实节点的更新就是更新自身和协调子节点，如函数组件就是处理context、检查自身props、处理hook等，然后执行本函数，再协调子节点。 "
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnvfrvqlk0",
+                            "created": 1669002117086,
+                            "text": "ReactFiberClassComponent.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "coho39xzq740",
+                                    "created": 1669002731308,
+                                    "text": "关于类组件的方法，如实例化类、执行生命周期等"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnvgx44080",
+                            "created": 1669002119579,
+                            "text": "ReactFiberCommitWork.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "coho3ykmcg00",
+                                    "created": 1669002784919,
+                                    "text": "commit阶段执行的方法，如commitPlacement处理插入的节点"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnvicilrk0",
+                            "created": 1669002122687,
+                            "text": "ReactFiberContext.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "coho4mowhf40",
+                                    "created": 1669002837421,
+                                    "text": "处理跨层级通信context"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnvjknge80",
+                            "created": 1669002125356,
+                            "text": "ReactFiberFlags.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "coho4t0242o0",
+                                    "created": 1669002851156,
+                                    "text": "定义fiber的flag值，如Placement插入、Update更新等"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cohnvkuuejk0",
+                            "created": 1669002128149,
+                            "text": "ReactFiberHooks.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "coho52rsokg0",
+                                    "created": 1669002872425,
+                                    "text": "hooks的处理，如执行函数组件里的renderWithHooks等"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "coho5iswt400",
+                            "created": 1669002907320,
+                            "text": "ReactFiberLane.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "coho5qcwlco0",
+                                    "created": 1669002923767,
+                                    "text": "fiber的lane，可以标记fiber的任务"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "coho5jwfjm00",
+                            "created": 1669002909710,
+                            "text": "ReactFiberReconciler.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "coho640hz2o0",
+                                    "created": 1669002953492,
+                                    "text": "fiber节点的协调方法，如ReactDOM.createRoot会走到的updateContainer等"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "coho5ky44kg0",
+                            "created": 1669002911989,
+                            "text": "ReactFiberWorkLoop.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "coho6e8crrk0",
+                                    "created": 1669002975734,
+                                    "text": "处理fiber节点的更新，如更新都会走到的方法scheduleUpdateOnFiber等"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "coho5m0v22w0",
+                            "created": 1669002914332,
+                            "text": "ReactWorkTags.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "coho70kr3mw0",
+                                    "created": 1669003024373,
+                                    "text": "work的tags值，FunctionComponent、ClassComponent、HostRoot等的值"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "coho5nasfo00",
+                            "created": 1669002917109,
+                            "text": "ReactFiberRoot.js "
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "coho7isi7xs0",
+                                    "created": 1669003064024,
+                                    "text": "定义返回了FiberRoot"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "coho855vp9k0",
+                    "created": 1669003112722,
+                    "text": "scheduler/src： 调度"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "coho8pfvckw0",
+                            "created": 1669003156862,
+                            "text": "/forks/Scheduler.js"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "coho8wxnv1s0",
+                                    "created": 1669003173175,
+                                    "text": "调度逻辑。（如果学习react任务调度，看这个文件就可以了）"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "coho98j8ylc0",
+                            "created": 1669003198425,
+                            "text": "SchedulerMinHeap.js （任务是以最小堆排序的，每次push或者pop任务，都需要重新平衡这个最小堆，这个文件里就是最小堆的操作函数，如push等）"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "coho8f7i5z40",
+                    "created": 1669003134588,
+                    "text": "react-is/src: 判断React元素类型，如ReactIs.isContextConsumer(<ThemeContext.Consumer />); // true"
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
