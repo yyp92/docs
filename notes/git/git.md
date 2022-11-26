@@ -166,3 +166,9 @@ git rebase -i HEAD~4
 ## git 解决冲突
 
 <img title="" src="../../imgs/vscode-git-chongtu.png" alt="" data-align="inline">
+
+## git 修改远程仓库名称
+
+```bash
+git remote set-url origin <新git仓库地址>
+```
