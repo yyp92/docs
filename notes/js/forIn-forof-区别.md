@@ -1,3 +1,19 @@
+# for in 和 for of的区别
+
+## 区别
+
+### for in
+
+- 一般用于遍历对象自身的和继承的可枚举属性。以及对象从构造函数原型中继承的属性。对于每个不同的属性，语句都会被执行。
+- 不建议使用for... in 遍历数组，因为输出的顺序是不固定的。
+- 如果迭代的对象的变量值是null或者undefined, for... in不执行循环体，建议在使用for... in循环之前，先检查该对象的值是不是null或者undefined。
+
+### for of
+
+- for…of 语句在可迭代对象（包括 Arry，Map，Seta，String，TypedArray，arguments 对象等）上创建一个迭代循环，调用自定义迭代钩子，并为每个不同属性的值执行语句。
+- for…of 语句遍历可迭代对象定义要迭代的数据（非自定义属性）。
+- for…of循环可以使用的范围包括数组、Set 和 Map 结构、某些类似数组的对象、Generator 对象，以及字符串。
+
 ## for in
 
 ```javascript
@@ -30,7 +46,7 @@ for(let index in myObject){
 name,age,str,sayHello
 
 // 首先输出的是对象的属性名，再是对象原型中的属性和方法，
-// 如果不想让其输出原型中的属性和方法，可以使用hasOwnProperty方法进行过滤
+// 如果不想让其输出原型中的属性和方法，可以使用hasOwnProperty方法进行过滤或者设置成不可枚举的
 for(let index in myObject){
     if(myObject.hasOwnProperty(index)){
         console.log(index)

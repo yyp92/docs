@@ -491,6 +491,47 @@ console.log(sum(1)(2)(3)()) // 6
 console.log(sum(1, 2, 4)(4)()) // 11
 ```
 
+### 图片懒加载
+
+**概念:** 图片懒加载就是开始加载页面的时候把图片的 src 给替换,在图片出现在页面的可视区域内的时候再加载图片的 src
+
+**思路**
+
+1. 获取所有的 img 标签,获取并替换所有 src 数据,将 src 替换成 data-src
+2. 判断当前图片是否进入可视区域内,进入后进行展示
+
+`getBoundingClientRect` 方法返回元素的大小及其相对于视口的位置
+
+```js
+let imgList = [...document.querySelectorAll('img')]
+let length = imgList.length
+const imgLazyLoad = (function() {
+   let count = 0
+
+   return function() {
+        let deleteIndexList = []
+
+        imgList.forEach((img, index) => {
+            let rect = img.getBoundingClientRect()
+            if (rect.top < window.innerHeight) {
+                img.src = img.dataset.src
+                deleteIndexList.push(index)
+                count++
+                // 优化图片全部加载完成后移除事件监听
+                if (count === length) {
+                    document.removeEventListener('scroll', imgLazyLoad)
+                }
+            }
+        })
+
+        // 当img加载完图片后将他从imglist中移除
+        imgList = imgList.filter((img, index) => !deleteIndexList.includes(index))
+   }
+ })()
+
+document.addEventListener('scroll', imgLazyLoad)
+```
+
 ## 进阶
 
 ### 实现 repeat 方法

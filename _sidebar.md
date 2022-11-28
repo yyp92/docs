@@ -10,6 +10,7 @@
   - [js-基础知识](notes/js/js-基础知识.md)
   - [js工具函数助力高效开发](notes/js/js工具函数助力高效开发.md)
   - [js比较符](notes/js/js比较符.md)
+  - [事件机制](notes/js/事件机制.md)
 
 - ts
   
