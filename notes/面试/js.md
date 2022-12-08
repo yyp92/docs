@@ -621,7 +621,8 @@ function getType(obj){
   if (type !== "object") {
     return type;
   }
-  return Object.prototype.toString.call(obj).replace(/^$/, '$1');
+  // 注意正则中间有个空格
+  return Object.prototype.toString.call(obj).replace(/^\[object (\S+)\]$/, '$1');  
 }
 ```
 

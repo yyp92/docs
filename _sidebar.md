@@ -74,6 +74,8 @@
 - webGL
   
   - [资料](notes/webGL/资料.md)
+  - [webGl入门](notes/webGL/webGl入门.md)
+  - [着色器](notes/webGL/着色器.md)
 
 - webGIS
   

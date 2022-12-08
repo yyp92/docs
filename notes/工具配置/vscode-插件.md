@@ -262,3 +262,37 @@ xmind编辑图。
 ## Live Server
 
 是一个为静态和动态页面启动具有实时重新加载功能的开发本地服务器。
+
+## WebGl Syntax Hint
+
+webgl语法提示。
+
+## WebGL GLSL Editor
+
+WebGL GLSL着色器编辑器扩展。
+
+## webgl-wuweierwei-plugin
+
+**WebGL上下文必须命名为gl，才能触发插件相关功能**
+
+- 插件提供WebGL属性及常量的智能提示和自动补全功能
+
+- 鼠标悬停提示属性的详情和参考链接等
+
+### Dot Log
+
+用法：变量.log --> console.log('变量',  变量)
+
+## vscode 支持shader配置
+
+https://zhuanlan.zhihu.com/p/151384233
+
+### Shader languages support for VS Code
+
+### glsl-canvas
+
+### GLSL Lint
+
+## Three.JS Snippets
+
+threejs代码片段。

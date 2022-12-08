@@ -269,7 +269,7 @@ const _completeDeepClone = (target, map = new WeakMap()) => {
   if (/^(Function|RegExp|Date|Map|Set)$/i.test(constructor.name)) return new constructor(target)
 
   // map标记每一个出现过的属性，避免循环引用
-  if (map.get(target)) return map.get(target)
+  if (map.get(target)) return target
   map.set(target, true) 
 
   const cloneTarget = Array.isArray(target) ? [] : {}
@@ -553,6 +553,141 @@ function repeat(fn, times, delay) {
 const repeatFn = repeat(console.log, 4, 1000)
 // 函数调用四次，每次间隔 1s 打印 hello
 repeatFn('hello')
+```
+
+### 实现 Promise的resolve
+
+> 实现 resolve 静态方法有三个要点:
+> 
+> - 传参为一个 `Promise`, 则直接返回它。
+> 
+> - 传参为一个 `thenable` 对象，返回的 `Promise` 会跟随这个对象，采用它的最终状态作为自己的状态。
+> 
+> - 其他情况，直接返回以该值为成功状态的`promise`对象。
+
+```js
+Promise.resolve = (param) => {
+    // 传参为一个 Promise, 则直接返回它
+    if (param instanceof Promise) return param; 
+
+    return new Promise((resolve, reject) => {
+        // 传参为一个 `thenable` 对象，返回的 `Promise` 会跟随这个对象，采用它的最终状态作为自己的状态
+        if (param && param.then && typeof param.then === 'function') {
+            // param 状态变为成功会调用resolve，将新 Promise 的状态变为成功，反之亦然
+            param.then(resolve, reject);
+        } 
+        // 其他情况，直接返回以该值为成功状态的`promise`对象
+        else {
+            resolve(param);
+        }
+  })
+}
+```
+
+### 实现 Promise.reject
+
+> Promise.reject 中传入的参数会作为一个 reason 原封不动地往下传
+
+```js
+Promise.reject = function (reason) {
+    return new Promise((resolve, reject) => {
+        reject(reason);
+    });
+}
+```
+
+### 实现 Promise.prototype.finally
+
+> 前面的`promise`不管成功还是失败，都会走到`finally`中，并且`finally`之后，还可以继续`then`（说明它还是一个then方法是关键），并且会将初始的`promise`值原封不动的传递给后面的`then`.
+
+**Promise.prototype.finally最大的作用**
+
+- `finally`里的函数，无论如何都会执行，并会把前面的值原封不动传递给下一个`then`方法中
+- 如果`finally`函数中有`promise`等异步任务，会等它们全部执行完毕，再结合之前的成功与否状态，返回值
+
+**Promise.prototype.finally六大情况用法**
+
+```js
+// 情况1
+Promise.resolve(123).finally((data) => { // 这里传入的函数，无论如何都会执行
+  console.log(data); // undefined
+})
+
+// 情况2 (这里，finally方法相当于做了中间处理，起一个过渡的作用)
+Promise.resolve(123).finally((data) => {
+  console.log(data); // undefined
+}).then(data => {
+  console.log(data); // 123
+})
+
+// 情况3 (这里只要reject，都会走到下一个then的err中)
+Promise.reject(123).finally((data) => {
+  console.log(data); // undefined
+}).then(data => {
+  console.log(data);
+}, err => {
+  console.log(err, 'err'); // 123 err
+})
+
+// 情况4 (一开始就成功之后，会等待finally里的promise执行完毕后，再把前面的data传递到下一个then中)
+Promise.resolve(123).finally((data) => {
+  console.log(data); // undefined
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('ok');
+    }, 3000)
+  })
+}).then(data => {
+  console.log(data, 'success'); // 123 success
+}, err => {
+  console.log(err, 'err');
+})
+
+// 情况5 (虽然一开始成功，但是只要finally函数中的promise失败了，就会把其失败的值传递到下一个then的err中)
+Promise.resolve(123).finally((data) => {
+  console.log(data); // undefined
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject('rejected');
+    }, 3000)
+  })
+}).then(data => {
+  console.log(data, 'success');
+}, err => {
+  console.log(err, 'err'); // rejected err
+})
+
+// 情况6 (虽然一开始失败，但是也要等finally中的promise执行完，才能把一开始的err传递到err的回调中)
+Promise.reject(123).finally((data) => {
+  console.log(data); // undefined
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('resolve');
+    }, 3000)
+  })
+}).then(data => {
+  console.log(data, 'success');
+}, err => {
+  console.log(err, 'err'); // 123 err
+})
+```
+
+**源码实现**
+
+```js
+Promise.prototype.finally = function (callback) {
+  return this.then((data) => {
+    // 让函数执行 内部会调用方法，如果方法是promise，需要等待它完成
+    // 如果当前promise执行时失败了，会把err传递到，err的回调函数中
+
+    // data 上一个promise的成功态
+    return Promise.resolve(callback()).then(() => data);
+  }, err => {
+    return Promise.resolve(callback()).then(() => {
+      throw err; // 把之前的失败的err，抛出去
+    });
+  })
+}
 ```
 
 ### 实现 Promise.all/race/allSettled/any
