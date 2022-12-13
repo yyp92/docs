@@ -415,6 +415,62 @@ function throttle(fn, wait) {
 }
 ```
 
+节流常用方式及控制第一次和最后一次触发：
+
+```js
+// 节流 定时器 (最后一次也触发)
+function throttle1(fn, wait) {
+    let timer = null;
+    return function () {
+        if (!timer) {
+            timer = setTimeout(() => {
+                timer = null;
+                fn()
+            }, wait);
+        }
+    }
+}
+
+// 节流 时间戳 (第一次就触发)
+function throttle2(fn, wait) {
+    let pre = 0;
+    return function () {
+        let now = Date.now()
+        if (now - pre > wait) {
+            fn()
+            pre = now
+        }
+    }
+}
+
+// 节流 控制最后一次和第一次
+function throttle3(fn, wait, op = {}) {
+    let timer = null;
+    let pre = 0;
+    return function () {
+        let now = Date.now();
+        if (now - pre > wait) {
+            if (pre == 0 && !op.bengin) {
+                pre = now
+                return
+            }
+            if (timer) {
+                clearTimeout(timer)
+                timer = null
+            }
+            fn()
+            pre = now
+        }
+        else if (!timer && op.end) {
+            timer = setTimeout(() => {
+                fn();
+                timer = null
+            }, wait)
+        }
+    }
+}
+```
+
 ### 防抖
 
 事件响应函数在一段时间后才执行，如果这段时间内再次调用，则重新计算执行时间。
@@ -1092,4 +1148,457 @@ const timeout = i => new Promise(resolve => {
 asyncPool(2, [1000, 5000, 3000, 2000], timeout).then(res => {
   console.log(res)
 })
+```
+
+## 编程
+
+### JS实现树形与数组相互转换
+
+数据：
+
+```js
+const arr =[
+    {id: 2, name: '部门B', parentId: 0},
+    {id: 3, name: '部门C', parentId: 1},
+    {id: 1, name: '部门A', parentId: 2},
+    {id: 4, name: '部门D', parentId: 1},
+    {id: 5, name: '部门E', parentId: 2},
+    {id: 6, name: '部门F', parentId: 3},
+    {id: 7, name: '部门G', parentId: 2},
+    {id: 8, name: '部门H', parentId: 4}
+];
+```
+
+#### 数组转树形
+
+```js
+function toTree (data, pId) {
+  const loop = parentId => {
+    const res = [] 
+
+    data.forEach(item => {
+      if (item.parentId === parentId) {
+        item.children = loop(item.id)
+        res.push(item)
+      }
+    }) 
+
+    return res
+  } 
+
+  return loop(pId)
+}
+```
+
+#### 数组转树形
+
+```js
+function treeToArr(data) {
+  const result = []; 
+
+  data.forEach(item => {
+      const loop = data => {
+          result.push({
+            id: data.id,
+            name: data.name,
+            parentId: data.parentId
+          }); 
+
+          let child = data.children 
+
+          if (child) {
+            for (let i = 0; i < child.length; i++) {
+              loop(child[i])
+            }
+          }
+      } 
+
+      loop(item);
+  }) 
+
+  return result;
+}
+```
+
+### 去除字符串中出现次数最少的字符，不改变原字符串的顺序
+
+```js
+// “ababac” —— “ababa”
+// “aaabbbcceeff” —— “aaabbb”
+
+const changeStr = (str) => {
+  let obj = {};
+  const _str = str.split(""); 
+
+  _str.forEach(item => {
+    if (obj[item]) {
+      obj[item]++;
+    } else {
+      obj[item] = 1;
+    }
+  })
+
+  var _obj = Object.values(obj).sort();
+  var min = _obj[0]; 
+
+  for (let key in obj) {
+    if (obj[key] <= min) {
+      var reg = new RegExp(key, "g")
+      str = str.replace(reg, "")
+    }
+  } 
+
+  return str;
+}
+
+console.log(changeStr("aaabbbcceeff")); // aaabbb
+```
+
+### 写出一个函数trans，将数字转换成汉语的输出，输入为不超过10000亿的数字
+
+```js
+// trans(123456) —— 十二万三千四百五十六
+// trans（100010001）—— 一亿零一万零一
+
+// 将数字（整数）转为汉字，从零到一亿亿，
+// 需要小数的可自行截取小数点后面的数字直接替换对应arr1的读法就行了
+const convertToChinaNum = (num) => {
+    var arr1 = new Array(
+        '零',
+        '一',
+        '二',
+        '三',
+        '四',
+        '五',
+        '六',
+        '七',
+        '八',
+        '九'
+    );
+    // 可继续追加更高位转换值
+    var arr2 = new Array(
+        '',
+        '十',
+        '百',
+        '千',
+        '万',
+        '十',
+        '百',
+        '千',
+        '亿',
+        '十',
+        '百',
+        '千',
+        '万',
+        '十',
+        '百',
+        '千',
+        '亿'
+    );
+
+    if (!num || isNaN(num)) {
+        return "零";
+    }
+
+    var english = num.toString().split("")
+    var result = "";
+
+    for (var i = 0; i < english.length; i++) {
+        // 倒序排列设值
+        var des_i = english.length - 1 - i;
+        result = arr2[i] + result; 
+
+        var arr1_index = english[des_i];
+        result = arr1[arr1_index] + result;
+    }
+
+    // 将【零千、零百】换成【零】 【十零】换成【十】
+    result = result.replace(/零(千|百|十)/g, '零').replace(/十零/g, '十');
+    // 合并中间多个零为一个零
+    result = result.replace(/零+/g, '零');
+    // 将【零亿】换成【亿】【零万】换成【万】
+    result = result.replace(/零亿/g, '亿').replace(/零万/g, '万');
+    // 将【亿万】换成【亿】
+    result = result.replace(/亿万/g, '亿');
+    // 移除末尾的零
+    result = result.replace(/零+$/, '')
+    // 将【零一十】换成【零十】
+    // result = result.replace(/零一十/g, '零十');//貌似正规读法是零一十
+    // 将【一十】换成【十】
+    result = result.replace(/^一十/g, '十');  
+
+    return result;
+}
+```
+
+### 给几个数组, 可以通过数值找到对应的数组名称
+
+```js
+// 比如这个函数输入一个1，那么要求函数返回A
+const A = [1, 2, 3];
+const B = [4, 5, 6];
+const C = [7, 8, 9];
+
+const test = (num) => {
+  const newArr = [A, B, C];
+  let i = 0; 
+
+  while (i < newArr.length) {
+    if (newArr[i].includes(num)) return newArr[i];
+    i++;
+  } 
+
+  return [];
+}
+
+console.log(test(1));
+```
+
+### 不定长二维数组的全排列
+
+```js
+// 输入 [['A', 'B', ...], [1, 2], ['a', 'b'], ...]
+// 输出 ['A1a', 'A1b', ....]
+
+
+let res = arr.reduce((prev, cur) => {
+    if (!Array.isArray(prev) || !Array.isArray(cur)) {
+        return
+    }
+
+    if (prev.length === 0) {
+        return cur
+    }
+
+    if (cur.length === 0) {
+        return prev
+    }
+
+    const emptyVal = []
+    prev.forEach(val => {
+        cur.forEach(item => {
+            emptyVal.push(`${val}${item}`)
+        })
+    })
+
+    return emptyVal
+}, [])
+console.log(res); 
+```
+
+### sleep函数
+
+- 由于js是单线程可以直接用循环阻塞进程
+
+```js
+function sleep(delay) {
+  var start = (new Date()).getTime();
+  while ((new Date()).getTime() - start < delay) {
+    continue;
+  }
+}
+
+function test() {
+  console.log('111');
+  sleep(2000);
+  console.log('222');
+}
+```
+
+- 使用定时器执行callback
+
+```js
+function sleep(ms, callback) {
+  setTimeout(callback, ms)
+}
+sleep(2000, () => {
+  console.log("sleep")
+})
+```
+
+- 使用promise 微任务
+
+```js
+const sleep = time => {
+ return new Promise(resolve => setTimeout(resolve, time))
+} 
+ sleep(1000).then(()=>{ console.log(1) })
+```
+
+- 使用generator
+
+```js
+function sleepGenerator(time) {
+    yield new Promise(function(resolve, reject){
+        setTimeout(resolve, time);
+     }) 
+} 
+sleepGenerator(1000).next().value.then(()=>{console.log(1)}) 
+```
+
+- 使用asnyc/await
+
+```js
+function sleep(time) {
+    return new Promise(resolve =>
+      setTimeout(resolve, time)) 
+} 
+async function output() {
+    let out = await sleep(1000); 
+    console.log(1);
+    return out;
+} 
+output();
+```
+
+### 给一个字符串, 找到第一个不重复的字符
+
+```js
+function getOnceChar(str) {
+    const map = {};
+
+    for (let i = 0; i < str.length; i++) {
+        if (!map[str[i]] && str.indexOf(str[i], i + 1) === -1) {
+            return str[i];
+        }
+
+        map[str[i]] = true;
+    }
+}
+getOnceChar('aaaabbbcddcerr'); // e
+```
+
+### 虚拟dom转真实dom
+
+```js
+const vnode = {
+    tag: 'DIV',
+    attrs: {
+        id: 'app'
+    },
+    children: [{
+            tag: 'SPAN',
+            children: [{
+                tag: 'A',
+                children: []
+            }]
+        },
+        {
+            tag: 'SPAN',
+            children: [{
+                    tag: 'A',
+                    children: []
+                },
+                {
+                    tag: 'A',
+                    children: []
+                }
+            ]
+        }
+    ]
+}
+
+function render (vnode, container){
+    return container.appendChild(_render(vnode));
+}
+function _render(vnode){
+    if (typeof vnode === 'number') {
+        vnode = String(vnode);
+    } 
+
+    // 处理文本节点
+    if (typeof vnode === 'string') {
+        const textNode = document.createTextNode(vnode)
+        return textNode;
+    } 
+
+    // 处理组件
+    if (typeof vnode.tag === 'function') {
+        const component = createComponent(vnode.tag, vnode.attrs);
+        setComponentProps(component, vnode.attrs);
+        return component.base;
+    } 
+
+    // 普通的dom
+    const dom = document.createElement(vnode.tag);
+    if (vnode.attrs) {
+        Object.keys(vnode.attrs).forEach(key => {
+            const value = vnode.attrs[key];
+            // 设置属性
+            setAttribute(dom, key, value);    
+        } );
+    }  
+
+    // 递归渲染子节点
+    vnode.children.forEach(child => render(child, dom));    
+    return dom ;    // 返回虚拟dom为真正的DOM
+} 
+
+// 实现dom挂载到页面某个元素
+const ReactDOM = {
+    render: (vnode, container) => {
+        container.innerHTML = '';
+        return render(vnode, container);
+    }
+}
+```
+
+### 实现一个函数, fetchWithRetry 会自动重试3次，任意一次成功直接返回
+
+```js
+const fetchWithRetry = async (
+  url, 
+  options, 
+  retryCount = 0,
+) => {
+  const { maxRetries = 3, ...remainingOptions } = options;
+  try {
+    return await fetch(url, remainingOptions);
+  } catch (error) {
+    // 如果重试次数没有超过，那么重新调用
+    if (retryCount < maxRetries) {
+      return fetchWithRetry(url, options, retryCount + 1);
+    }
+
+    // 超过最大重试次数
+    throw error;
+  }
+}
+
+// 补充超时和取消
+// 创建一个 reject 的 promise 
+// `timeout` 毫秒
+const throwOnTimeout = (timeout) => 
+  new Promise((_, reject) => 
+    setTimeout(() => 
+     reject(new Error("Timeout")),
+     timeout
+    ),
+  );
+
+const fetchWithTimeout = (
+  url, 
+  options = {},
+) => {
+  const { timeout, ...remainingOptions } = options;
+  // 如果超时选项被指定，那么 fetch 调用和超时通过 Promise.race 竞争
+  if (timeout) {
+    return Promise.race([
+      fetch(url, remainingOptions), 
+      throwOnTimeout(timeout),
+    ]);
+  }
+  return fetch(url, remainingOptions);
+}
+
+// 取消
+const fetchWithCancel = (url, options = {}) => {
+  const controller = new AbortController();
+  const call = fetch(
+    url, 
+    { ...options, signal: controller.signal },
+  );
+  const cancel = () => controller.abort();
+  return [call, cancel];
+};
 ```
