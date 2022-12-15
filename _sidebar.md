@@ -32,6 +32,7 @@
   - [前端处理过多数据](notes/网页效果实现/前端处理过多数据.md)
   - [前端实现VR全景看房的方案](notes/网页效果实现/前端实现VR全景看房的方案.md)
   - [拖拽](notes/网页效果实现/拖拽.md)
+  - [前端文件下载的正确打开方式](notes/网页效果实现/前端文件下载的正确打开方式.md)
 
 - 样式
   
@@ -39,7 +40,9 @@
   - [css-module原理](notes/样式/css-module原理.md)
   - [less](notes/样式/less.md)
   - [scss](notes/样式/scss.md)
+  - [Grid布局](notes/样式/Grid布局.md)
   - [42种前端常用布局方案](notes/样式/42种前端常用布局方案.md)
+  - [常用CSS知识点整理](notes/样式/常用CSS知识点整理.md)
 
 - 框架
   
@@ -126,6 +129,7 @@
   
   - [前端模块化简介](notes/构建工具/前端模块化简介.md)
   - [前端模块化](notes/构建工具/前端模块化.md)
+  - [CommonJS和ES-Module的区别](notes/构建工具/CommonJS和ES-Module的区别.md)
   - [打包工具简介](notes/构建工具/打包工具简介.md)
   - [vite](notes/构建工具/vite.md)
   - [webpack-dev-server运行原理](notes/构建工具/webpack-dev-server运行原理.md)

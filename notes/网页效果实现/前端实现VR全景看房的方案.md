@@ -400,5 +400,23 @@ pano2vr是一款所见即所得的全景VR制作软件（正版149欧元），�
 整体的交互体验都非常好，但默认的信息点样式不喜欢，我们可以通过下面的代码来修改信息点图片
 
 ```js
+pano.readConfigUrlAsync("pano.xml",()=>{
+    var pois=pano.getPointHotspotIds();
 
+    var hotScale = 0.2;
+
+    for(var i=0;i<pois.length;i++){
+            var ids=pois[i];
+            var hotsopt=pano.getHotspot(ids);
+            hotsopt.div.firstChild.src="images/hot.png";
+            hotsopt.div.firstChild.style.width = 207*hotScale+"px";
+            hotsopt.div.firstChild.style.height = 162*hotScale+"px";
+            hotsopt.div.onmouseover = null;
+            hotsopt.div.setAttribute("ids",ids);
+            hotsopt.div.onclick=function() {
+                   //在这里可以响应信息点的点击事件啦
+                   console.log(this.getAttribute("ids"));
+            };
+    }
+});
 ```
