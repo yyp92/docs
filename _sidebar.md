@@ -40,6 +40,7 @@
   - [css-module原理](notes/样式/css-module原理.md)
   - [less](notes/样式/less.md)
   - [scss](notes/样式/scss.md)
+  - [flex布局](notes/样式/flex布局.md)
   - [Grid布局](notes/样式/Grid布局.md)
   - [42种前端常用布局方案](notes/样式/42种前端常用布局方案.md)
   - [常用CSS知识点整理](notes/样式/常用CSS知识点整理.md)
