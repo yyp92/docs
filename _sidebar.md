@@ -37,6 +37,7 @@
 - 样式
   
   - [css](notes/样式/css.md)
+  - [css变量](notes/样式/css变量.md)
   - [css-module原理](notes/样式/css-module原理.md)
   - [less](notes/样式/less.md)
   - [scss](notes/样式/scss.md)
