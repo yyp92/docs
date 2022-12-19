@@ -10,7 +10,7 @@
 
 ### for of
 
-- for…of 语句在可迭代对象（包括 Arry，Map，Seta，String，TypedArray，arguments 对象等）上创建一个迭代循环，调用自定义迭代钩子，并为每个不同属性的值执行语句。
+- for…of 语句在可迭代对象（包括 Arry，Map，Set，String，TypedArray，arguments 对象等）上创建一个迭代循环，调用自定义迭代钩子，并为每个不同属性的值执行语句。
 - for…of 语句遍历可迭代对象定义要迭代的数据（非自定义属性）。
 - for…of循环可以使用的范围包括数组、Set 和 Map 结构、某些类似数组的对象、Generator 对象，以及字符串。
 
