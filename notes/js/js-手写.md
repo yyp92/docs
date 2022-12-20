@@ -852,20 +852,29 @@ Promise.any = function (promiseList = []) {
 
 ```js
 function toThousands(num) {
-  num = num.toString()
-  let result = '' 
+    num = num.toString()
+    let result = '' 
 
-  while (num.length > 3) {
-    result = ',' + num.substring(num.length - 3) + result
-    num = num.substring(0, num.length - 3)
-  } 
+    // 小数部分
+    const index = num.indexOf('.')
+    let floatNum = ''
+    if (index > -1) {
+        floatNum = num.substring(index)
+        num = num.substring(0, index)
+    }
 
-  result = num + result
-  return result
+    while (num.length > 3) {
+        result = ',' + num.substring(num.length - 3) + result
+        num = num.substring(0, num.length - 3)
+    } 
+
+    result = num + result + floatNum 
+    return result
 } 
 
 console.log(toThousands(1234567)) // 1,234,567
 console.log(toThousands(123456)) // 123,456
+console.log(toThousands(1234567.123)) // 1,234,567.123
 ```
 
 ### 洗牌函数
