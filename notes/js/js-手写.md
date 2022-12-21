@@ -1199,7 +1199,7 @@ function toTree (data, pId) {
 }
 ```
 
-#### 数组转树形
+#### 树形转数组
 
 ```js
 function treeToArr(data) {
