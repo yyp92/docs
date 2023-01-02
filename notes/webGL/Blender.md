@@ -99,3 +99,7 @@
 ### 快捷键
 
 ![](../../\images\blender-10.png)
+
+### 修改器
+
+![](C:\Users\Administrator\Desktop\docs\images\blender-11.png)
