@@ -98,7 +98,7 @@ rm -rf https://github.com/NeroSolomon/VLearning.git
 
 ```bash
 # 删除的命令慎用
-# 删除远程仓库， git remote remove origin
+# 取消与远程仓库的连接， git remote remove origin
 git remote remove <仓库名称>
 # 删除远程仓库
 # git remote rm 不会从服务器中删除远程仓库。 它只是从本地仓库中删除远程及其引用
