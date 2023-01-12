@@ -291,6 +291,44 @@ function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
 }
 ```
 
+### typeof 和 keyof 一起使用
+
+```ts
+const COLORS = {
+  red: 'red',
+  blue: 'blue'
+}
+
+// 首先通过typeof操作符获取color变量的类型，然后通过keyof操作符获取该类型的所有键，
+// 即字符串字面量联合类型 'red' | 'blue'
+type Colors = keyof typeof COLORS 
+let color: Colors;
+color = 'red' // Ok
+color = 'blue' // Ok
+
+// Type '"yellow"' is not assignable to type '"red" | "blue"'.
+color = 'yellow' // Error
+```
+
+如果直接 keyof 一个对象变量的话，获取到的并不是该对象的属性组成的联合类型，而会是该对象的方法及属性的联合类型，比如除了属性还会有 “valueOf” “toString” 等。
+
+**思考：**
+
+```ts
+interface StringIndexArray {
+  [index: string]: string;
+}
+
+interface NumberIndexArray {
+  [index: number]: string;
+}
+
+type K1 = keyof StringIndexArray // type K1 = string | number
+type K2 = keyof NumberIndexArray // type K2 = number
+```
+
+[typescript - Keyof inferring string | number when key is only a string - Stack Overflow](https://stackoverflow.com/questions/51808160/keyof-inferring-string-number-when-key-is-only-a-string)
+
 ### in
 
 > `in` 操作符用于遍历目标类型的公开属性名。类似 `for .. in` 的机制。
@@ -548,7 +586,6 @@ const obj = {
 const baz = obj?.foo?.bar?.baz; // 42
 const unSafe =  obj.qux.baz; //由于obj中没有qux属性，程序会停止执行并且抛出异常
 const safe = obj?.qux?.baz; // 由于有可选链操作符，所以会返回undefined，程序正常执行
-
 ```
 
 可选链除了支持可选属性的访问之外，它还支持可选元素的访问，它的行为类似于可选属性的访问，只是可选元素的访问允许我们访问非标识符的属性，比如任意字符串、数字索引和 `Symbol`：
@@ -918,7 +955,7 @@ interface IRoles extends User{
 
 }
 class Roles extends User{
-  
+
 }
 ```
 
@@ -939,12 +976,12 @@ class Roles extends User{
 
 ```ts
 let notSure: any
- 
+
 // 可以被赋值任意类型
 notSure = 'sisterAn!'
 notSure = 512
 notSure = { hello: () => 'Hello sisterAn!' }
- 
+
 // 它也兼容任何类型
 let num: number = 12
 notSure = num
@@ -957,7 +994,7 @@ num = notSure
 
 ```ts
 let notSure: unknown = 'sisterAn!'
- 
+
 // 可以被赋值任意类型
 notSure = 'sisterAn!'
 notSure = 512
@@ -971,13 +1008,13 @@ let notSure: unknown = 'sisterAn'
 let notSure1: unknown = 'Hello'
 let any1: any = 12
 let num: number = 12
- 
+
 notSure = notSure1
 notSure = any1
- 
+
 num = notSure
 // error: Type 'unknown' is not assignable to type 'number'.
- 
+
 notSure.toLowerCase()
 // error: Object is of type 'unknown'.
 ```
@@ -988,7 +1025,7 @@ notSure.toLowerCase()
 
 ```ts
 let notSure: unknown = 'sisterAn'
- 
+
 console.log((notSure as string).toLowerCase())
 ```
 
@@ -996,7 +1033,7 @@ console.log((notSure as string).toLowerCase())
 
 ```ts
 let notSure: unknown = 'sisterAn'
- 
+
 if (typeof notSure === 'string') {
     console.log((notSure as string).toLowerCase())
 }
@@ -1012,7 +1049,7 @@ if (typeof notSure === 'string') {
 function error(msg: string): never {
     throw new Error(msg);
 } // 抛出异常会直接中断程序运行，这样程序就运行不到返回值那一步了，即具有不可达的终点，也就永不存在返回了
- 
+
 // 死循环
 function loopForever(): never {
     while (true) {};
@@ -1023,16 +1060,16 @@ function loopForever(): never {
 
 ```ts
 let never1: never
- 
+
 // any 也不能分配给 never
 let any1: any = 'sisterAn'
 never1 = any1 // Error
- 
+
 // 作为函数返回类型的 never
 let never2: never = (() => {
   throw new Error('Throw error');
 })();
- 
+
 never1 = never2
 ```
 
@@ -1053,7 +1090,7 @@ let void1: void
 let null1: null = null
 let und1: undefined = undefined
 let void2: void
- 
+
 void1 = void2
 void1 = und1 
 void1 = null1 // Type 'null' is not assignable to type 'void'.
@@ -1089,16 +1126,14 @@ void1 = null1 // Type 'null' is not assignable to type 'void'.
 // never: 从未出现的值的类型
 // 如果 T 是 U 的子类型的话，那么就会返回 X，否则返回 Y
 // 构造条件类型 : T extends U ? X : Y
- 
+
 type Exclude<T, U> = T extends U ? never : T;
- 
+
 // 相当于: type A = 'a'
 type A = Exclude<'x' | 'a', 'x' | 'y' | 'z'>
 ```
 
 - `void` 常用于表示函数没有返回值
-
-
 
 ## 参考资料
 
