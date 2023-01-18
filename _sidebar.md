@@ -172,6 +172,7 @@
   - [npm&yarn包管理机制](notes/包管理工具/npm&yarn包管理机制.md)
   - [package.json](notes/包管理工具/package.json.md)
   - [package-入口文件](notes/包管理工具/package-入口文件.md)
+  - [现代JavaScript库打包指南](notes/包管理工具/现代JavaScript库打包指南.md)
 
 - nodejs
   
