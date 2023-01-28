@@ -54,3 +54,34 @@ export default function SuspensePage(props) {
   );
 }
 ```
+
+## 强制更新组件
+
+```ts
+ // ! 方法1
+ const [count, forceUpdate] = useState(0);
+ // 调用 - 缺点：每次都得使用count+1，而且每个地方都得写一遍
+ forceUpdate(count + 1);
+
+
+ // ! 方法2
+ const [, foceUpdate] = useReducer((x) => x + 1, 0);
+ // 调用 - 缺点：每个地方都得写一遍
+ forceUpdate();
+
+
+ // ! 方法3 完美-自定义hooks
+ function useForceUpdate() {
+     const [state, setState] = useState(0);
+     // const [, setState] = useReducer((x) => x + 1, 0);
+
+     const update = useCallback(() => {
+         setState((prev) => prev + 1);
+         // setState();
+     }, []);
+
+     return update;
+ } 
+ // 调用 - 只需要引用调用一次就行
+ forceUpdate();
+```

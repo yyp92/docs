@@ -33,3 +33,15 @@ https://juejin.cn/post/6972893133243695141
 ## useMemo和useCallBack的区别
 
 ![](../../imgs/useCallBack和usememo的区别seMemo.jpeg)
+
+## useDeferredValue 和 useTransition的区别
+
+延迟更新界面。
+
+| 名称                   | 区别            |
+| -------------------- | ------------- |
+| `useDeferredValue()` | 延迟的是状态值       |
+| `useTransition()`    | 延迟的是状态组装界面的过程 |
+
+- **相同：** useDeferredValue 本质上和内部实现与 useTransition 一样都是标记成了延迟更新任务。
+- **不同：** useTransition 是把更新任务变成了延迟更新任务，而 useDeferredValue 是产生一个新的值，这个值作为延时状态。
