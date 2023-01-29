@@ -18,7 +18,7 @@ React Fiber版本的源码中使用到链表的数据结构（为了实现低优
 function buildQueue(queue,action){
     const update = {action,next:null}
     const pending = queue.pending
- 
+
     if(!pending){
         queue.pending = update
     }else{
@@ -31,14 +31,13 @@ function buildQueue(queue,action){
         current.next = update
     }
 }
- 
+
 // excute
 let queue = {pending:null}
 buildQueue(queue,'hooks1')
 buildQueue(queue,'hooks2')
- 
-// output: queue.pending = {action:'hooks1',next:{action:'hooks2',next:null}}
 
+// output: queue.pending = {action:'hooks1',next:{action:'hooks2',next:null}}
 ```
 
 ## 环状链表代码实现
@@ -48,23 +47,28 @@ function dispatchAction(queue,action){
      const update = {action,next:null}
      const pending = queue.pending
      if(pending === null){
-        update.next = update // 自己与自己创建一个环状链表
+        // pending 为空，说明这是第一个 update
+        // 自己与自己创建一个环状链表
+        update.next = update 
      }else{
+        // 否则这个 update 会被添加到链表称为尾节点
+        // 先将这个 update 指向头节点
         update.next = pending.next
+        // 再将当前的尾节点指向该节点
         pending.next = update
      }
      queue.pending = update
 }
- 
+
 let queue = {pending:null}
- 
+
 /**
  * update.next === update
  * queue.pending === update(action) 
  */
 dispatchAction(queue,'action')
- 
- 
+
+
 /**
  * update(action1).next -> update(action).next [update(action)]    
  * update1 的next 指向 update
@@ -88,5 +92,3 @@ dispatchAction(queue,'action1')
 ## 参考资料
 
 [React Fiber - updateQueue 原理分析 - 掘金](https://juejin.cn/post/7093082885363597349)
-
-
