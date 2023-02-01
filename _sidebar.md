@@ -2,6 +2,7 @@
 
   - [js-手写](notes/js/js-手写.md)
   - [js-正则学习](notes/js/js-正则学习.md)
+  - [js-正则小结](notes/js/js-正则小结.md)
   - [promise原理](notes/js/promise原理.md)
   - [创建Object区别](notes/js/创建Object区别.md)
   - [forIn-forof-区别](notes/js/forIn-forof-区别.md)
@@ -12,6 +13,7 @@
   - [js比较符](notes/js/js比较符.md)
   - [事件机制](notes/js/事件机制.md)
   - [迭代器_可迭代对象_生成器](notes/js/迭代器_可迭代对象_生成器.md)
+  - [js-循环遍历方法](notes/js/js-循环遍历方法.md)
 
 - ts
   
