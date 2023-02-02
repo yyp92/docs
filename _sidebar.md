@@ -251,6 +251,10 @@
   
   - [资料](notes/算法/资料.md)
 
+- linux
+  
+  - [主从DNS部署](notes/linux/主从DNS部署.md)
+
 - 面试
   
   - [大纲](notes/面试/大纲.md)
