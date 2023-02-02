@@ -14,6 +14,7 @@
   - [事件机制](notes/js/事件机制.md)
   - [迭代器_可迭代对象_生成器](notes/js/迭代器_可迭代对象_生成器.md)
   - [js-循环遍历方法](notes/js/js-循环遍历方法.md)
+  - [js-reduce的妙用](notes/js/js-reduce的妙用.md)
 
 - ts
   
@@ -40,6 +41,7 @@
   - [前端文件下载的正确打开方式](notes/网页效果实现/前端文件下载的正确打开方式.md)
   - [前端重新部署如何通知用户刷新网页](notes/网页效果实现/前端重新部署如何通知用户刷新网页.md)
   - [长连接](notes/网页效果实现/长连接.md)
+  - [react实现自动上报pv_click的埋点hooks](notes/网页效果实现/react实现自动上报pv_click的埋点hooks.md)
 
 - 样式
   
