@@ -1,5 +1,5 @@
 - js
-
+  
   - [js-手写](notes/js/js-手写.md)
   - [js-正则学习](notes/js/js-正则学习.md)
   - [js-正则小结](notes/js/js-正则小结.md)
@@ -42,6 +42,7 @@
   - [前端重新部署如何通知用户刷新网页](notes/网页效果实现/前端重新部署如何通知用户刷新网页.md)
   - [长连接](notes/网页效果实现/长连接.md)
   - [react实现自动上报pv_click的埋点hooks](notes/网页效果实现/react实现自动上报pv_click的埋点hooks.md)
+  - [封装axios](notes/网页效果实现/封装axios.md)
 
 - 样式
   
@@ -124,6 +125,7 @@
   - [输入URL的详细过程](notes/浏览器/输入URL的详细过程.md)
   - [浏览器知识点](notes/浏览器/浏览器知识点.md)
   - [前端缓存](notes/浏览器/前端缓存.md)
+  - [深入理解浏览器的缓存机制](notes/浏览器/深入理解浏览器的缓存机制.md)
   - [浏览器渲染原理及流程](notes/浏览器/浏览器渲染原理及流程.md)
   - [前后端所有鉴权方案](notes/浏览器/前后端所有鉴权方案.md)
   - [devTools用法总结](notes/浏览器/devTools用法总结.md)
@@ -250,10 +252,6 @@
 - 算法
   
   - [资料](notes/算法/资料.md)
-
-- linux
-  
-  - [主从DNS部署](notes/linux/主从DNS部署.md)
 
 - 面试
   
