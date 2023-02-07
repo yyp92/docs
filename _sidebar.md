@@ -48,6 +48,7 @@
   - [封装axios](notes/网页效果实现/封装axios.md)
   - [同域下多窗口之间sessionStorage](notes/网页效果实现/同域下多窗口之间sessionStorage.md)
   - [前端主题切换方案](notes/网页效果实现/前端主题切换方案.md)
+  - [电子签名组件](notes/网页效果实现/电子签名组件.md)
 
 - 样式
   
