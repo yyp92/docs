@@ -46,6 +46,7 @@
   - [长连接](notes/网页效果实现/长连接.md)
   - [react实现自动上报pv_click的埋点hooks](notes/网页效果实现/react实现自动上报pv_click的埋点hooks.md)
   - [封装axios](notes/网页效果实现/封装axios.md)
+  - [同域下多窗口之间sessionStorage](notes/网页效果实现/同域下多窗口之间sessionStorage.md)
 
 - 样式
   
