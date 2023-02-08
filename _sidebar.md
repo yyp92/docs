@@ -15,6 +15,7 @@
   - [迭代器_可迭代对象_生成器](notes/js/迭代器_可迭代对象_生成器.md)
   - [js-循环遍历方法](notes/js/js-循环遍历方法.md)
   - [js-reduce的妙用](notes/js/js-reduce的妙用.md)
+  - [web-worker](notes/js/web-worker.md)
 
 - ts
   
