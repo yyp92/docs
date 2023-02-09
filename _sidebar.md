@@ -16,6 +16,8 @@
   - [js-循环遍历方法](notes/js/js-循环遍历方法.md)
   - [js-reduce的妙用](notes/js/js-reduce的妙用.md)
   - [web-worker](notes/js/web-worker.md)
+  - [service-worker](notes/js/service-worker.md)
+  - [web-worker与service-worker区别](notes/js/web-worker与service-worker区别.md)
 
 - ts
   
