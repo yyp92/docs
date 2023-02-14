@@ -14,6 +14,7 @@
   - [事件机制](notes/js/事件机制.md)
   - [迭代器_可迭代对象_生成器](notes/js/迭代器_可迭代对象_生成器.md)
   - [js-循环遍历方法](notes/js/js-循环遍历方法.md)
+  - [js-条件语句](notes/js/js-条件语句.md)
   - [js-reduce的妙用](notes/js/js-reduce的妙用.md)
   - [web-worker](notes/js/web-worker.md)
   - [service-worker](notes/js/service-worker.md)
@@ -233,6 +234,7 @@
 - 性能优化
   
   - [前端性能优化知识体系](notes/性能优化/前端性能优化知识体系.md)
+  - [主流时间库对比](notes/性能优化/主流时间库对比.md)
 
 - rust
   
