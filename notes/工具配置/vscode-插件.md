@@ -92,6 +92,8 @@ command + p  --> 输入 >create  --> 选择如下图所示
 
 ```js
 // todo 高亮
+TODO:
+FIXME:
 ```
 
 ## open in browser

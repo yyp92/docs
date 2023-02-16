@@ -182,7 +182,13 @@ Flex 布局是一个完整的模块，它包括了一套完整的属性。其中
 
 ![](../../\images\css-flex-19.png)
 
-### 6. align-content
+### 6.place-items
+
+`place-items` 是一个简写属性。
+
+[`align-items`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/align-items) 和 [`justify-items`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/justify-items) 属性) 。如果未提供第二个值，则第一个值作为第二个值的默认值。
+
+### 7. align-content
 
 `align-content`：多根轴线对齐方式。如果元素只有一根轴线，该属性不起作用。它有六个属性值：
 
