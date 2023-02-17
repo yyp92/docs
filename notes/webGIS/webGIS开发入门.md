@@ -160,7 +160,7 @@ OGC 是一个制定空间信息和基于位置服务相关标准的国际化组�
 
 - 中心定位点为天安门，也就是 GCJ02坐标系下的 `116.397588,39.908775`
 
-- Web墨卡托投影正方形的边长<img src="file:///C:/Users/Administrator/Desktop/docs/images/gis-baisc-10-1.png" title="" alt="" data-align="inline">
+- Web墨卡托投影正方形的边长![](../../\images\gis-baisc-10-1.png)
 
 ### 计算 container 要展示出的地图区域
 

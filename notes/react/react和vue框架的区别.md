@@ -50,7 +50,7 @@ Vue与React都使用了 Virtual DOM + Diff算法， 不管是Vue的Template模�
 
 当每一次UI更新时，总会根据render重新生成最新的VNode，然后跟以前缓存起来老的VNode进行比对，再使用Diff算法（框架核心）去真正更新真实DOM（虚拟DOM是JS对象结构，同样在JS引擎中，而真实DOM在浏览器渲染引擎中，所以操作虚拟DOM比操作真实DOM开销要小的多）
 
-../../\imgs\react-vs-vue-1.jpg)
+![](../../\images\react-vs-vue-1.jpg)
 
 #### 两者对diff算法的优化基本上思路是相同的：
 
@@ -58,7 +58,7 @@ Vue与React都使用了 Virtual DOM + Diff算法， 不管是Vue的Template模�
 - 只比较同一层级，不跨级比较
 - 同一层级的节点用key唯一标识，tag和key都相同则认为是同一节点
 
-../../\imgs\react-vs-vue-2.jpg)
+![](../../\images\react-vs-vue-2.jpg)
 
 #### diff 算法源码实现相同之处
 
@@ -118,9 +118,9 @@ react 会自顶向下全diff。vue会跟踪每一个组件的依赖关系,不需
      
      - newChildren与oldFiber都没遍历完：这意味着有节点在这次更新中改变了位置。
 
-../../\imgs\react-vs-vue-3.jpg)
+![](../../\images\react-vs-vue-3.jpg)
 
-../../\imgs\react-vs-vue-4.jpg)
+![](../../\images\react-vs-vue-4.jpg)
 
 - index： 新集合的遍历下标。
 

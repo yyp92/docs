@@ -146,7 +146,7 @@ checkout 才是撤销文件的最佳选择？
 ```bash
 # 找到要文件修改的前一个 commit hash
 git log 或 git reflog
-# 回滚文件
+# 回滚文件（path/to/file就是文件路径）
 git checkout {{hash}} path/to/file
 ```
 
