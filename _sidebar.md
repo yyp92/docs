@@ -227,6 +227,7 @@
   - [同时链接gitee和github](notes/git/同时链接gitee和github.md)
   - [git-commit规范](notes/git/git-commit规范.md)
   - [git设置别名](notes/git/git设置别名.md)
+  - [git技巧](notes/git/git技巧.md)
 
 - 监控
   
