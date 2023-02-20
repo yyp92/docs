@@ -272,6 +272,10 @@
   
   - [资料](notes/算法/资料.md)
 
+- chatGPT
+
+  - [资料](notes/chatGPT/资料.md)
+
 - 面试
   
   - [大纲](notes/面试/大纲.md)

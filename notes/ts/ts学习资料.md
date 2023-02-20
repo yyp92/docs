@@ -42,6 +42,8 @@ TypeScript Deep Dive 中文版。
 
 **Github:** https://github.com/xcatliu/typescript-tutorial
 
+[ts-入门教程](https://ts.xcatliu.com/advanced/declaration-merging.html)
+
 ## 6. TypeScript 类型挑战
 
 高质量的类型可以提高项目的可维护性并避免一些潜在的漏洞。本项目意在于让你更好地了解 TS 的类型系统，编写你自己的类型工具，或者只是单纯的享受挑战的乐趣！
