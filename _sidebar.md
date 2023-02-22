@@ -45,6 +45,8 @@
   - [图片类型及Picture标签的使用](notes/网页效果实现/图片类型及Picture标签的使用.md)
   - [图片炫酷加载(上)](notes/网页效果实现/图片炫酷加载(上).md)
   - [图片炫酷加载(下)](notes/网页效果实现/图片炫酷加载(下).md)
+  - [响应式图片方案](notes/网页效果实现/响应式图片方案.md)
+  - [CSS背景图和HTML的img标签](notes/网页效果实现/CSS背景图和HTML的img标签.md)
   - [前端处理过多数据](notes/网页效果实现/前端处理过多数据.md)
   - [前端实现VR全景看房的方案](notes/网页效果实现/前端实现VR全景看房的方案.md)
   - [拖拽](notes/网页效果实现/拖拽.md)
@@ -57,6 +59,7 @@
   - [同域下多窗口之间sessionStorage](notes/网页效果实现/同域下多窗口之间sessionStorage.md)
   - [前端主题切换方案](notes/网页效果实现/前端主题切换方案.md)
   - [电子签名组件](notes/网页效果实现/电子签名组件.md)
+  - [react-svga组件封装](notes/网页效果实现/react-svga组件封装.md)
 
 - 样式
   
