@@ -25,6 +25,7 @@
   
   - [typescript](notes/ts/typescript.md)
   - [ts类型操作](notes/ts/TS类型操作.md)
+  - [ts-入门](notes/ts/ts-入门.md)
   - [ts学习资料](notes/ts/ts学习资料.md)
 
 - js-设计模式
@@ -272,9 +273,10 @@
   
   - [资料](notes/算法/资料.md)
 
-- chatGPT
-
-  - [资料](notes/chatGPT/资料.md)
+- 人工智能
+  
+  - [chatGPT](notes/人工智能/chatGPT.md)
+  - [tensorflow](notes/人工智能/tensorflow.md)
 
 - 面试
   
