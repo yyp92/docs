@@ -20,6 +20,7 @@
   - [web-worker](notes/js/web-worker.md)
   - [service-worker](notes/js/service-worker.md)
   - [web-worker与service-worker区别](notes/js/web-worker与service-worker区别.md)
+  - [ES2023~ES2013-JavaScript新特性](notes/js/ES2023~ES2013-JavaScript新特性.md)
 
 - ts
   
