@@ -119,4 +119,22 @@ const D = 123;
 export { D as default };
 ```
 
-# 
+## 导入导出ts类型
+
+```ts
+// type.ts
+export interface Props {
+    name: string
+    age: number
+}
+```
+
+```ts
+// user.ts
+export {type Props } from './type
+```
+
+```ts
+// userComp.tsx
+import type {Props} from './user
+```
