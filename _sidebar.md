@@ -9,19 +9,20 @@
   - [proxy和reflect](notes/js/proxy和reflect.md)
   - [练习题](notes/js/练习题.md)
   - [js-基础知识](notes/js/js-基础知识.md)
-  - [js工具函数助力高效开发](notes/js/js工具函数助力高效开发.md)
-  - [js比较符](notes/js/js比较符.md)
-  - [事件机制](notes/js/事件机制.md)
-  - [迭代器_可迭代对象_生成器](notes/js/迭代器_可迭代对象_生成器.md)
+  - [js-比较符](notes/js/js-比较符.md)
+  - [js-数据类型转换](notes/js/js-数据类型转换.md)
   - [js-循环遍历方法](notes/js/js-循环遍历方法.md)
   - [js-条件语句](notes/js/js-条件语句.md)
   - [js-异步解决方案](notes/js/js-异步解决方案.md)
   - [ES6-导入导出](notes/js/ES6-导入导出.md)
   - [js-reduce的妙用](notes/js/js-reduce的妙用.md)
+  - [事件机制](notes/js/事件机制.md)
+  - [迭代器_可迭代对象_生成器](notes/js/迭代器_可迭代对象_生成器.md)
   - [formData](notes/js/formData.md)
   - [web-worker](notes/js/web-worker.md)
   - [service-worker](notes/js/service-worker.md)
   - [web-worker与service-worker区别](notes/js/web-worker与service-worker区别.md)
+  - [js工具函数助力高效开发](notes/js/js工具函数助力高效开发.md)
   - [ES2023~ES2013-JavaScript新特性](notes/js/ES2023~ES2013-JavaScript新特性.md)
 
 - ts
@@ -64,7 +65,6 @@
   - [同域下多窗口之间sessionStorage](notes/网页效果实现/同域下多窗口之间sessionStorage.md)
   - [前端主题切换方案](notes/网页效果实现/前端主题切换方案.md)
   - [电子签名组件](notes/网页效果实现/电子签名组件.md)
-  - [react-svga组件封装](notes/网页效果实现/react-svga组件封装.md)
 
 - 样式
   
@@ -92,11 +92,14 @@
 - react
   
   - [hooks](notes/react/hooks.md)
+  - [react-fiber](notes/react/react-fiber.md)
   - [react-hooks-使用](notes/react/react-hooks-使用.md)
   - [react-hooks-使用大全](notes/react/react-hooks-使用大全.md)
   - [react](notes/react/react.md)
   - [react-状态管理](notes/react/react-状态管理.md)
-  - [react-fiber](notes/react/react-fiber.md)
+  - [react-封装组件](notes/react/react-封装组件.md)
+  - [react-svga组件封装](notes/react/react-svga组件封装.md)
+  - [react-拖拽排序组件库对比](notes/react/react-拖拽排序组件库对比.md)
   - [react-5大富文本编辑器](notes/react/react-5大富文本编辑器.md)
   - [各流派react状态管理对比和原理实现](notes/react/各流派react状态管理对比和原理实现.md)
   - [react的页面传值-路由跳转](notes/react/react的页面传值-路由跳转.md)

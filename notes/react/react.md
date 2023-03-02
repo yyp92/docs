@@ -1,8 +1,10 @@
-# 动画：react-transition-group
+# React
+
+## 动画：react-transition-group
 
 [使用-掘金](https://juejin.cn/post/6844903869894524942 )
 
-# 深入React合成事件机制原理
+## 深入React合成事件机制原理
 
 https://segmentfault.com/a/1190000039108951
 
@@ -23,9 +25,9 @@ v17 之前，合成事件和原生事件的执行顺序与冒泡/捕获模式无
 
 v17 后，合成事件和原生事件的执行顺序与冒泡/捕获模式相关，冒泡模式，原生事件早于合成事件，捕获模式，合成事件早于原生事件。
 
-# react 基本知识点
+## react 基本知识点
 
-## 为什么不用this.state去更改状态？
+### 为什么不用this.state去更改状态？
 
 React强烈不建议直接修改state，究其原因可以从两方面进行阐述
 
