@@ -186,6 +186,7 @@
   - [编译ts代码用tsc还是babel](notes/构建工具/编译ts代码用tsc还是babel.md)
   - [sourceMap](notes/构建工具/sourceMap.md)
   - [由Babel理解前端编译原理](notes/构建工具/由Babel理解前端编译原理.md)
+  - [前端构建工具对比](notes/构建工具/前端构建工具对比.md)
 
 - 部署
   
@@ -273,6 +274,7 @@
 
 - 其他
   
+  - [学习任务](notes/其他/学习任务.md)
   - [待处理问题](notes/其他/待处理问题.md)
   - [待学习目录](notes/其他/待学习目录.md)
   - [攻击](notes/其他/攻击.md)
