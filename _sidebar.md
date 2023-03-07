@@ -96,6 +96,7 @@
   - [react-hooks-使用](notes/react/react-hooks-使用.md)
   - [react-hooks-使用大全](notes/react/react-hooks-使用大全.md)
   - [react](notes/react/react.md)
+  - [react-render阶段中Fiber树的初始化与对比更新](notes/react/react-render阶段中Fiber树的初始化与对比更新.md)
   - [react-状态管理](notes/react/react-状态管理.md)
   - [react-封装组件](notes/react/react-封装组件.md)
   - [react-svga组件封装](notes/react/react-svga组件封装.md)
