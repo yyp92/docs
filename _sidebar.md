@@ -209,6 +209,7 @@
   - [npm-常用包](notes/包管理工具/npm-常用包.md)
   - [npm-install安装机制](notes/包管理工具/npm-install安装机制.md)
   - [npm包的发布流程](notes/包管理工具/npm包的发布流程.md)
+  - [依赖管理](notes/包管理工具/依赖管理.md)
   - [npm&yarn&pnpm包管理机制](notes/包管理工具/npm&yarn&pnpm包管理机制.md)
   - [npm&yarn包管理机制](notes/包管理工具/npm&yarn包管理机制.md)
   - [package.json](notes/包管理工具/package.json.md)
