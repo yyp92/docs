@@ -4,6 +4,7 @@
   - [js-正则学习](notes/js/js-正则学习.md)
   - [js-正则小结](notes/js/js-正则小结.md)
   - [promise原理](notes/js/promise原理.md)
+  - [async-await](notes/js/async-await.md)
   - [创建Object区别](notes/js/创建Object区别.md)
   - [forIn-forof-区别](notes/js/forIn-forof-区别.md)
   - [proxy和reflect](notes/js/proxy和reflect.md)
