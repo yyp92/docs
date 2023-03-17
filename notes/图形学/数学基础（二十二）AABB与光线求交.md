@@ -2,7 +2,7 @@
 
 包围盒常用来做物体的碰撞监测，光线的相交测试等。尤其在光线追踪中，包围盒常用来做光线与物体相交测试。基本思想是这样的，我们将包围盒的长方体看做是三对互相平行的平面相交所形成的区域。尤其对于AABB，每一对平行面都是与一个轴对齐的。根据这个特性，先以二维空间举例：
 
-![](C:\Users\Administrator\Desktop\docs\images\graphics-mathematics-basic-22-vector-1.jpg)
+![](../../\images\graphics-mathematics-basic-22-vector-1.jpg)
 
 $AABB$ 由两对平面构成，分别是平行于 $x$ 轴和 $y$ 轴。根据光线公式可知：
 
@@ -16,7 +16,7 @@ $$
 
 与$x$ 轴垂直的一对平面的交点：
 
-![](C:\Users\Administrator\Desktop\docs\images\graphics-mathematics-basic-22-vector-2.jpg)
+![](../../\images\graphics-mathematics-basic-22-vector-2.jpg)
 
 $$
 T_{xmin}d_x  + o_x = x_0 \Rightarrow T_{xmin} = \frac{x_0 - o_x}{d_x} \\
@@ -25,7 +25,7 @@ $$
 
 与 $y$ 轴垂直的一对平面的交点：
 
-![](C:\Users\Administrator\Desktop\docs\images\graphics-mathematics-basic-22-vector-3.jpg)
+![](../../\images\graphics-mathematics-basic-22-vector-3.jpg)
 
 $$
 T_{ymin}d_y  + o_y = y_0 \Rightarrow T_{ymin} = \frac{y_0 - o_y}{d_y} \\
@@ -34,7 +34,7 @@ $$
 
 现在我们想象空间中的一条光线，只有当光线进入了所有的“平面对”，才算进入了盒子，光线只要离开了任何“平面对”，就算离开了盒子，因此光线进入盒子的时间实际上是进入所有“平面对”的最大值，即**最小时间的最大值**，而离开盒子的时间是光线离开“平面对”的最小值，即**最大时间的最小值**。（求交）
 
-![](C:\Users\Administrator\Desktop\docs\images\graphics-mathematics-basic-22-vector-4.jpg)
+![](../../\images\graphics-mathematics-basic-22-vector-4.jpg)
 
 考虑三维情况下光线与 $AABB$  求交。关键点：
 

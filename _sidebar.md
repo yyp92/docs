@@ -150,6 +150,9 @@
   - [数学基础（二十一）包围盒(Bounding-Box)](notes/图形学/数学基础（二十一）包围盒(Bounding-Box).md)
   - [数学基础（二十二）AABB与光线求交](notes/图形学/数学基础（二十二）AABB与光线求交.md)
   - [数学基础（二十三）立体角](notes/图形学/数学基础（二十三）立体角.md)
+  - [数学基础（二十四）辐射度量学](notes/图形学/数学基础（二十四）辐射度量学.md)
+  - [数学基础（二十五）插值](notes/图形学/数学基础（二十五）插值.md)
+  - [数学基础（二十六）step和smoothStep](notes/图形学/数学基础（二十六）step和smoothStep.md)
 
 - webGL
   
