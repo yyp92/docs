@@ -215,6 +215,9 @@
   - [浏览器渲染原理及流程](notes/浏览器/浏览器渲染原理及流程.md)
   - [前后端所有鉴权方案](notes/浏览器/前后端所有鉴权方案.md)
   - [跨域](notes/浏览器/跨域.md)
+  - [Cookie属性详解](notes/浏览器/Cookie属性详解.md)
+  - [XSS攻防](notes/浏览器/XSS攻防.md)
+  - [CSRF攻防](notes/浏览器/CSRF攻防.md)
   - [devTools用法总结](notes/浏览器/devTools用法总结.md)
 
 - 源码学习
