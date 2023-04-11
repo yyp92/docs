@@ -99,6 +99,7 @@
   - [react-hooks-使用](notes/react/react-hooks-使用.md)
   - [react-hooks-使用大全](notes/react/react-hooks-使用大全.md)
   - [react](notes/react/react.md)
+  - [react-ref](notes/react/react-ref.md)
   - [react-render阶段中Fiber树的初始化与对比更新](notes/react/react-render阶段中Fiber树的初始化与对比更新.md)
   - [react-状态管理](notes/react/react-状态管理.md)
   - [react-封装组件](notes/react/react-封装组件.md)
@@ -218,6 +219,7 @@
   - [Cookie属性详解](notes/浏览器/Cookie属性详解.md)
   - [XSS攻防](notes/浏览器/XSS攻防.md)
   - [CSRF攻防](notes/浏览器/CSRF攻防.md)
+  - [style标签和外部样式加载](notes/浏览器/style标签和外部样式加载.md)
   - [devTools用法总结](notes/浏览器/devTools用法总结.md)
 
 - 源码学习
