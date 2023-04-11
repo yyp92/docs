@@ -293,6 +293,8 @@
   - [CDN加速原理](notes/网络/CDN加速原理.md)
   - [dns-cdn原理](notes/网络/dns-cdn原理.md)
   - [http](notes/网络/http.md)
+  - [http和https的区别](notes/网络/http和https的区别.md)
+  - [深入理解HTTPS工作原理](notes/网络/深入理解HTTPS工作原理.md)
   - [http-contentType](notes/网络/http-contentType.md)
   - [content-type](notes/网络/content-type.md)
   - [跨域的请求在服务端会不会真正执行](notes/网络/跨域的请求在服务端会不会真正执行.md)
