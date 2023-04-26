@@ -25,6 +25,10 @@ export default $1
 
 react hooks的快捷键。
 
+## Vue Language Features (Volar)
+
+vue语言高亮。
+
 ## Postcode - vscode postman
 
 ```js
