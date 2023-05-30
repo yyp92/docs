@@ -299,6 +299,20 @@ https://zhuanlan.zhihu.com/p/151384233
 
 ### GLSL Lint
 
+### Comment tagged templates
+
+- glsl语言高亮
+
+- ```js
+  // vertexShader.js
+  const vertexShader /* glsl */`
+      void main() {
+          gl_Position = vec4(position, 1.0);
+      }
+  `;
+  export default vertexShader;
+  ```
+
 ## Three.JS Snippets
 
 threejs代码片段。
@@ -306,3 +320,7 @@ threejs代码片段。
 ## ChatGPT中文版
 
 一个人工智能系统。
+
+## Auto Import
+
+自动导入。
