@@ -171,3 +171,12 @@ git rebase -i HEAD~4
 ```bash
 git remote set-url origin <新git仓库地址>
 ```
+
+## git 修改github单文件上传的大小
+
+```bash
+git config http.postBuffer 524288000
+
+# 查看git配置
+git config -l
+```
