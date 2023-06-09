@@ -1,0 +1,249 @@
+{
+    "root": {
+        "data": {
+            "id": "ct845ueiuyw0",
+            "created": 1686313262964,
+            "text": "React Hooks"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ct8464v4qi80",
+                    "created": 1686313285736,
+                    "text": "v18之前"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "ct8467cji140",
+                    "created": 1686313291142,
+                    "text": "v18"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ct846y0jqzk0",
+                            "created": 1686313349190,
+                            "text": "useSyncExternalStore"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ct847j2sbao0",
+                                    "created": 1686313395038,
+                                    "text": "介绍：会通过强制的同步状态更新，使得外部store可以支持并发读取"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ct847kakvvc0",
+                                    "created": 1686313397686,
+                                    "text": "Params"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ct849qbahhk0",
+                                            "created": 1686313567518,
+                                            "text": "subscribe: 订阅函数，用于注册一个回调函数，当存储值发生更改时被调用"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ct849rm493k0",
+                                            "created": 1686313570350,
+                                            "text": "getSnapshot: 返回当前存储值的函数。必须返回缓存的值。"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ct849sj2nk00",
+                                            "created": 1686313572342,
+                                            "text": "getServerSnapshot: 返回服务端（hydration模式下）渲染期间使用的存储值得函数"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ct847lnj1ko0",
+                                    "created": 1686313400646,
+                                    "text": "Result  state:数据源，用于渲染UI层的数据源"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ct84dp64uj40",
+                            "created": 1686313878486,
+                            "text": "useTransition"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ct84equ9dm00",
+                                    "created": 1686313960486,
+                                    "text": "介绍：返回一个状态值表示过度更新任务的等待状态，以及一个启动该过渡更新任务的函数。"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ct84errby480",
+                                    "created": 1686313962486,
+                                    "text": "Result"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ct84gbpoumg0",
+                                            "created": 1686314084286,
+                                            "text": "isPending: 布尔值，过渡状态的标志，为true时表示等待状态"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ct84gcvmgv40",
+                                            "created": 1686314086822,
+                                            "text": "startTransition: 可以将里面的任务变成过渡更新任务"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ct84dy7lls00",
+                            "created": 1686313898166,
+                            "text": "useDeferredValue"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ct84ij0kh940",
+                                    "created": 1686314256910,
+                                    "text": "介绍：可以让状态滞后派生，与 useTransition 类似。允许用户推迟屏幕更新优先级不分高低。"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ct84ik76yfs0",
+                                    "created": 1686314259487,
+                                    "text": "Params"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ct84kli56zk0",
+                                            "created": 1686314419054,
+                                            "text": "value: 接受一个可变的值，如 useState 所创建的值"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ct84il49aq00",
+                                    "created": 1686314261486,
+                                    "text": "Result"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ct84lbv5nww0",
+                                            "created": 1686314476438,
+                                            "text": "deferredValue: 返回一个延迟状态的值"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ct84impo7140",
+                                    "created": 1686314264958,
+                                    "text": "扩展：什么场景下使用 useDeferredValue 和 useTransition ?"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ct84e02ortk0",
+                            "created": 1686313902222,
+                            "text": "useInsertionEffect"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ct84mmcoth40",
+                                    "created": 1686314577630,
+                                    "text": "介绍：与 useEffect 一样，但它在所有 DOM 突变之前同步触发"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ct84mnnjt0g0",
+                                    "created": 1686314580463,
+                                    "text": "与 useEffect 和 useLayoutEffect 的区别"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ct84e1645080",
+                            "created": 1686313904606,
+                            "text": "useId"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ct84nx84ie00",
+                                    "created": 1686314679662,
+                                    "text": "topic"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ct84nyfrsbk0",
+                                    "created": 1686314682303,
+                                    "text": "Result "
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ct84o50lwe00",
+                                            "created": 1686314696622,
+                                            "text": "id: 生成一个服务端和客户端统一的id"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
