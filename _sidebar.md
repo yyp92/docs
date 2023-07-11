@@ -184,6 +184,12 @@
   - [着色器](notes/webGL/着色器.md)
   - [Blender](notes/webGL/Blender.md)
 
+- threejs-dev154源码
+  
+  - [WebGLRenderer](notes/threejs-dev154源码/WebGLRenderer.md)
+  - [WebGLExtensions](notes/threejs-dev154源码/WebGLExtensions.md)
+  - [WebGLCapabilities](notes/threejs-dev154源码/WebGLCapabilities.md)
+
 - webGIS
   
   - [资料](notes/webGIS/资料.md)
