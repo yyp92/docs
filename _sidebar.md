@@ -189,6 +189,9 @@
   - [WebGLRenderer](notes/threejs-dev154源码/WebGLRenderer.md)
   - [WebGLExtensions](notes/threejs-dev154源码/WebGLExtensions.md)
   - [WebGLCapabilities](notes/threejs-dev154源码/WebGLCapabilities.md)
+  - [WebGLUtils](notes/threejs-dev154源码/WebGLUtils.md)
+  - [WebGLState](notes/threejs-dev154源码/WebGLState.md)
+  - [WebGLInfo与WebGLProperties](notes/threejs-dev154源码/WebGLInfo与WebGLProperties.md)
 
 - webGIS
   
