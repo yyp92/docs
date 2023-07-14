@@ -192,6 +192,7 @@
   - [WebGLUtils](notes/threejs-dev154源码/WebGLUtils.md)
   - [WebGLState](notes/threejs-dev154源码/WebGLState.md)
   - [WebGLInfo与WebGLProperties](notes/threejs-dev154源码/WebGLInfo与WebGLProperties.md)
+  - [WebGLTextures](notes/threejs-dev154源码/WebGLTextures.md)
 
 - webGIS
   
