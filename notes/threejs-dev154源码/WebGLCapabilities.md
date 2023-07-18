@@ -74,5 +74,61 @@ function getMaxPrecision(precision) {
 ## 检测 WebGL 环境的性能和特性，并初始化一些性能相关的参数
 
 ```js
+const isWebGL2 = typeof WebGL2RenderingContext !== 'undefined' && gl.constructor.name === 'WebGL2RenderingContext';
 
+let precision = parameters.precision !== undefined ? parameters.precision : 'highp';
+const maxPrecision = getMaxPrecision( precision );
+
+if ( maxPrecision !== precision ) {
+    console.warn( 'THREE.WebGLRenderer:', precision, 'not supported, using', maxPrecision, 'instead.' );
+    precision = maxPrecision;
+}
+
+const drawBuffers = isWebGL2 || extensions.has( 'WEBGL_draw_buffers' );
+
+const logarithmicDepthBuffer = parameters.logarithmicDepthBuffer === true;
+
+const maxTextures = gl.getParameter( gl.MAX_TEXTURE_IMAGE_UNITS );
+const maxVertexTextures = gl.getParameter( gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS );
+const maxTextureSize = gl.getParameter( gl.MAX_TEXTURE_SIZE );
+const maxCubemapSize = gl.getParameter( gl.MAX_CUBE_MAP_TEXTURE_SIZE );
+
+const maxAttributes = gl.getParameter( gl.MAX_VERTEX_ATTRIBS );
+const maxVertexUniforms = gl.getParameter( gl.MAX_VERTEX_UNIFORM_VECTORS );
+const maxVaryings = gl.getParameter( gl.MAX_VARYING_VECTORS );
+const maxFragmentUniforms = gl.getParameter( gl.MAX_FRAGMENT_UNIFORM_VECTORS );
+
+const vertexTextures = maxVertexTextures > 0;
+const floatFragmentTextures = isWebGL2 || extensions.has( 'OES_texture_float' );
+const floatVertexTextures = vertexTextures && floatFragmentTextures;
+
+const maxSamples = isWebGL2 ? gl.getParameter( gl.MAX_SAMPLES ) : 0;
+
+return {
+    isWebGL2: isWebGL2,
+
+    drawBuffers: drawBuffers,
+
+    getMaxAnisotropy: getMaxAnisotropy,
+    getMaxPrecision: getMaxPrecision,
+
+    precision: precision,
+    logarithmicDepthBuffer: logarithmicDepthBuffer,
+
+    maxTextures: maxTextures,
+    maxVertexTextures: maxVertexTextures,
+    maxTextureSize: maxTextureSize,
+    maxCubemapSize: maxCubemapSize,
+
+    maxAttributes: maxAttributes,
+    maxVertexUniforms: maxVertexUniforms,
+    maxVaryings: maxVaryings,
+    maxFragmentUniforms: maxFragmentUniforms,
+
+    vertexTextures: vertexTextures,
+    floatFragmentTextures: floatFragmentTextures,
+    floatVertexTextures: floatVertexTextures,
+
+    maxSamples: maxSamples,
+};
 ```
