@@ -1,0 +1,179 @@
+{
+    "root": {
+        "data": {
+            "id": "cu4dkga8xnk0",
+            "created": 1689589716296,
+            "text": "hooks 运行机制"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cu4dkununwg0",
+                    "created": 1689589747593,
+                    "text": "Hooks 出现的本质：取代class，用更加简洁、维护性更高的方式解决代码问题"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cu4dkvtnskw0",
+                    "created": 1689589750121,
+                    "text": "useState为视角引入"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu4dz60qu680",
+                            "created": 1689590869416,
+                            "text": "resolveDispatcher()"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu4dz70gt880",
+                            "created": 1689590871576,
+                            "text": "ReactCurrentDispatcher"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu4dkwk8u880",
+                    "created": 1689589751729,
+                    "text": "函数组件运行机制：renderWithHooks"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu4e0vmqmxc0",
+                            "created": 1689591003529,
+                            "text": "从 beginWork 到 mountIndeterminateComponent，函数式执行 renderWithHooks"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu4e0wmuvug0",
+                            "created": 1689591005713,
+                            "text": "入参"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu4xsgyyci80",
+                                    "created": 1689646766901,
+                                    "text": "current 树"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu4xsik8nd40",
+                                    "created": 1689646770365,
+                                    "text": "workInProgress 树"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu4zhvp8bog0",
+                                    "created": 1689651579179,
+                                    "text": "Component 函数组件本身"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu4zhwm6p1k0",
+                                    "created": 1689651581171,
+                                    "text": "props：自身的props"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu4zhxd13ag0",
+                                    "created": 1689651582795,
+                                    "text": "secondArg：上下文"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu4zhy8dy280",
+                                    "created": 1689651584691,
+                                    "text": "nextRenderLanes：渲染优先级"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu4dkxmhkgw0",
+                    "created": 1689589754041,
+                    "text": "Hooks 运行的三种策略（useState的视角）"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu4zknyj3xs0",
+                            "created": 1689651797419,
+                            "text": "HooksDispatcherOnMount：初始化状态，与Fiber之间产生关联"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu4zkoz1fz40",
+                            "created": 1689651799627,
+                            "text": "HooksDispatcherOnUpdate：更新状态，与Fiber的桥梁已建立，对桥梁的维护"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu4zkprm7mw0",
+                            "created": 1689651801355,
+                            "text": "ContextOnlyDispatcher：异常处理，判断是否在React内部调用，如果不是，则抛出异常"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu4dkyfc05k0",
+                    "created": 1689589755785,
+                    "text": "其他"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu4zo1ocrmo0",
+                            "created": 1689652062371,
+                            "text": "Hooks规则：时序问题"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu4zo2oh0j40",
+                            "created": 1689652064555,
+                            "text": "Hooks的实现与Fiber的必然关系"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
