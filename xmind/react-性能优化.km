@@ -1,0 +1,248 @@
+{
+    "root": {
+        "data": {
+            "id": "cu61a3csvjc0",
+            "created": 1689758171105,
+            "text": "react 性能优化"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cu61aj1l9i80",
+                    "created": 1689758205255,
+                    "text": "源码阶段"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu61azypq140",
+                            "created": 1689758242087,
+                            "text": "初始化阶段"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu61buikrl40",
+                                    "created": 1689758308591,
+                                    "text": "mountMemo"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu61bvn6hgg0",
+                                    "created": 1689758311046,
+                                    "text": "mountCallback"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cu61b0ybh7s0",
+                            "created": 1689758244239,
+                            "text": "更新阶段"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu61c6h34iw0",
+                                    "created": 1689758334622,
+                                    "text": "updateMemo"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu61c7mcurs0",
+                                    "created": 1689758337118,
+                                    "text": "updateCallback"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cu61b1w1hvk0",
+                            "created": 1689758246279,
+                            "text": "useMemo 和 useCallback 的关系"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu61ajy8qco0",
+                    "created": 1689758207230,
+                    "text": "性能优化的方案"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu61co7guq00",
+                            "created": 1689758373223,
+                            "text": "类组件的性能优化"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu61dv56rvc0",
+                                    "created": 1689758466687,
+                                    "text": "shouldComponentUpdate(nextProps, nextState)"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu61dwb4svk0",
+                                    "created": 1689758469223,
+                                    "text": "PureComponent"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu61dxckn9k0",
+                                    "created": 1689758471487,
+                                    "text": "shouldComponentUpdate 和 PureComponent 的区别"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu61dyolhe00",
+                                    "created": 1689758474391,
+                                    "text": "allowEqual 浅比较"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cu61cp91ta00",
+                            "created": 1689758375495,
+                            "text": "React.memo 高阶组件"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu61g2921pc0",
+                                    "created": 1689758638886,
+                                    "text": "使用方法"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu61g3ba9y80",
+                                    "created": 1689758641198,
+                                    "text": "接受范围：类组件和函数组件"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cu61cq8djo80",
+                            "created": 1689758377631,
+                            "text": "函数组件的性能优化"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu61gw3e4fs0",
+                                    "created": 1689758703847,
+                                    "text": "useCallback"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cu61hd7dy880",
+                                            "created": 1689758741094,
+                                            "text": "绝大多数场景不推荐"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cu61hsb19og0",
+                                                    "created": 1689758773966,
+                                                    "text": "很难看到优化后的效果"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "cu61hte72600",
+                                                    "created": 1689758776334,
+                                                    "text": "使用起来较为麻烦"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "cu61hugp0qg0",
+                                                    "created": 1689758778662,
+                                                    "text": "对新手不友好"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "cu61hvi09i80",
+                                                    "created": 1689758780918,
+                                                    "text": "代码可读性变差"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cu61heh62200",
+                                            "created": 1689758743862,
+                                            "text": "使用场景"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cu61inwq08w0",
+                                                    "created": 1689758842758,
+                                                    "text": "设计一个及其复杂的组件"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "cu61iozraqg0",
+                                                    "created": 1689758845118,
+                                                    "text": "自定义 Hooks 的设计"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cu61gxoo9ps0",
+                                    "created": 1689758707311,
+                                    "text": "useMemo 适当使用"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

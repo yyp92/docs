@@ -1,0 +1,94 @@
+{
+    "root": {
+        "data": {
+            "id": "cu0w2qoz34w0",
+            "created": 1689235689660,
+            "text": "常用的自定义 hooks"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cu0w3k69hoo0",
+                    "created": 1689235753833,
+                    "text": "useDebounceFn：用来处理防抖函数的 Hooks。"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cu0w3vbf0dk0",
+                    "created": 1689235778089,
+                    "text": "useDebounce：用来处理防抖值得 Hooks。"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cu0w3w9f4cw0",
+                    "created": 1689235780145,
+                    "text": "useThrottleFn：用来处理节流函数的 Hooks。"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cu0w3x3zg5s0",
+                    "created": 1689235781993,
+                    "text": "useThrottle：用来处理节流值的 Hooks。"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cu0w40gww6g0",
+                    "created": 1689235789305,
+                    "text": "useLockFn：竞态锁，防止异步函数并发执行。"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cu0w41hk3zc0",
+                    "created": 1689235791521,
+                    "text": "useFullscreen：设置 DOM 元素是否全屏。"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cu0w42cdvbs0",
+                    "created": 1689235793385,
+                    "text": "useCopy：用于复制信息，复制按钮。"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cu0w4365vwo0",
+                    "created": 1689235795185,
+                    "text": "useTextSelection：实时获取用户当前选取的文本内容及位置。"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cu0w43zeg4o0",
+                    "created": 1689235796953,
+                    "text": "useResponsive：获取浏览器窗口的响应信息。"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cu0w450b2d40",
+                    "created": 1689235799185,
+                    "text": "useTrackedEffect：可监听 useEffect 中的 deps 中的哪个发生变化。"
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

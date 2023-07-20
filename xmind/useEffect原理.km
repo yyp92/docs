@@ -1,0 +1,190 @@
+{
+    "root": {
+        "data": {
+            "id": "cu57nqbnafk0",
+            "created": 1689674606538,
+            "text": "useEffect原理篇"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cu57o67rnxs0",
+                    "created": 1689674641132,
+                    "text": "初始化阶段：mountEffect"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu57pnvoyh40",
+                            "created": 1689674757948,
+                            "text": "pushEffect：形成一个effect list 链表"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu57pp21fvs0",
+                            "created": 1689674760508,
+                            "text": "不同的Effect，如何连接"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu57o7g3keo0",
+                    "created": 1689674643812,
+                    "text": "更新阶段：updateEffect"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu57qq6bc6w0",
+                            "created": 1689674841308,
+                            "text": "deps类型影响"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu57qwk51wg0",
+                                    "created": 1689674855204,
+                                    "text": "deps 不存在"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu57qxpjuqo0",
+                                    "created": 1689674857708,
+                                    "text": "空数组时"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu57qytrn4g0",
+                                    "created": 1689674860140,
+                                    "text": "数组、对象、函数时"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu57o8byqy80",
+                    "created": 1689674645739,
+                    "text": "commit阶段：commitRoot"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu57rjxol740",
+                            "created": 1689674906089,
+                            "text": "scheduleCallback 调度器"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu57rkucngw0",
+                            "created": 1689674908065,
+                            "text": "flushPassiveEffects"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu57rm7z2s80",
+                            "created": 1689674911065,
+                            "text": "commitPassiveMountEffects"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu57t022lbk0",
+                                    "created": 1689675019547,
+                                    "text": "commitHookEffectListMount 的作用"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cu57rn83io80",
+                            "created": 1689674913249,
+                            "text": "commitPassiveUnmountEffects"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu57u0k4qg80",
+                                    "created": 1689675099003,
+                                    "text": "commitHookEffectListUnmount 的作用"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu57o96a15k0",
+                    "created": 1689674647572,
+                    "text": "经典的闭包问题"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu57uf41yf40",
+                            "created": 1689675130683,
+                            "text": "何时产生"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu57ug0c3vk0",
+                            "created": 1689675132635,
+                            "text": "为何产生"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu57ugzseg00",
+                            "created": 1689675134779,
+                            "text": "如何解决"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu57uu0jv400",
+                                    "created": 1689675163123,
+                                    "text": "设置 deps 真的能够解决？"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu57uv0jjvc0",
+                                    "created": 1689675165299,
+                                    "text": "解决方案：useLaster"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

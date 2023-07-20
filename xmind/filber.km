@@ -1,0 +1,121 @@
+{
+    "root": {
+        "data": {
+            "id": "cu1qafhma9c0",
+            "created": 1689320925482,
+            "text": "知悉Fiber"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cu1qb21yhz40",
+                    "created": 1689320974601,
+                    "text": "前置概念"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu1qc0puwjk0",
+                            "created": 1689321050056,
+                            "text": "element、fiber、DOM元素三者的关系"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu1qc1qxluw0",
+                            "created": 1689321052298,
+                            "text": "为什么 React v18将 render方法替换为createRoot方法"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu1qc2k5ob40",
+                            "created": 1689321054065,
+                            "text": "fiber架构的三个阶段：reconcile、schdule、commit"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu1qb31yb6o0",
+                    "created": 1689320976777,
+                    "text": "虚拟DOM转化Fiber的过程"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu1qdw3w0o00",
+                            "created": 1689321196749,
+                            "text": "beginWork方法"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu1qdx3uxls0",
+                            "created": 1689321198924,
+                            "text": "element与fiber对应的关系，通过tag判断"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu1qdz7eoiw0",
+                            "created": 1689321203492,
+                            "text": "链表之间如何关联"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu1qb3urr4g0",
+                    "created": 1689320978520,
+                    "text": "Fiber保存的关系"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu1qfhcvp280",
+                            "created": 1689321321369,
+                            "text": "Instance：存储element元素属性"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu1qfidrrfk0",
+                            "created": 1689321323600,
+                            "text": "Fiber：存储关于fiber链表的内容和对应的props和state"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu1qfjl6ig00",
+                            "created": 1689321326225,
+                            "text": "Effect：副作用相关的内容"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu1qfkltgvc0",
+                            "created": 1689321328440,
+                            "text": "topic"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

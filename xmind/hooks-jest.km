@@ -1,0 +1,420 @@
+{
+    "root": {
+        "data": {
+            "id": "ctzyjzv8wmg0",
+            "created": 1689141124085,
+            "text": "hooks-jest"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ctzykaf02200",
+                    "created": 1689141147047,
+                    "text": "单元测试"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ctzyld3rezs0",
+                            "created": 1689141231262,
+                            "text": "保证质量"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "ctzyldyzryg0",
+                            "created": 1689141233150,
+                            "text": "提升个人实力"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "ctzyler61g00",
+                            "created": 1689141234854,
+                            "text": "描述代码"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ctzykbeb2sw0",
+                    "created": 1689141149182,
+                    "text": "测试求和函数"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ctzym4cnmy80",
+                            "created": 1689141290573,
+                            "text": "全局设定"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ctzymk3z9sw0",
+                                    "created": 1689141324877,
+                                    "text": "describe"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ctzynkk1z940",
+                                            "created": 1689141404213,
+                                            "text": "描述块，将一组功能相关的测试用例组合在一块"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ctzyml7xzc80",
+                                    "created": 1689141327293,
+                                    "text": "it"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ctzyp23wao00",
+                                            "created": 1689141520782,
+                                            "text": "别名test，用来存放测试用例，可以说有几个it就会有几个测试用例"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ctzymmdcylc0",
+                                    "created": 1689141329797,
+                                    "text": "afterAll"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ctzyts4zwdc0",
+                                            "created": 1689141890902,
+                                            "text": "所有的测试用例执行完执行的方法"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ctzymn8fpy80",
+                                    "created": 1689141331677,
+                                    "text": "beforeAll"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ctzyuwgmf480",
+                                            "created": 1689141978676,
+                                            "text": "所有的测试用例执行之前执行的方法"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ctzymo4bv000",
+                                    "created": 1689141333605,
+                                    "text": "afterEach"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ctzyv4bmb800",
+                                            "created": 1689141995788,
+                                            "text": "可以在每个测试用例完成后都运行一遍"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ctzymovl1n40",
+                                    "created": 1689141335253,
+                                    "text": "beforeEach"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ctzyvs9hx2g0",
+                                            "created": 1689142047902,
+                                            "text": "可以在每个测试用例完成前都运行一遍"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ctzym5fp2wg0",
+                            "created": 1689141292933,
+                            "text": "断言"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ctzyw1jkcd40",
+                                    "created": 1689142068102,
+                                    "text": "expect，我们在测试的时候常常需要判断，是否满足一个结果"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ctzym6cmy6o0",
+                            "created": 1689141294925,
+                            "text": "覆盖率报告"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ctzywttnk1s0",
+                                    "created": 1689142129662,
+                                    "text": "Statements"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ctzyxzsgf4o0",
+                                            "created": 1689142221014,
+                                            "text": "语句覆盖率"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ctzywutn3v40",
+                                    "created": 1689142131838,
+                                    "text": "Branches"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ctzyxvbfjvc0",
+                                            "created": 1689142211278,
+                                            "text": "分支覆盖率"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ctzywvv3p540",
+                                    "created": 1689142134103,
+                                    "text": "Functions"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ctzyxqbdbps0",
+                                            "created": 1689142200390,
+                                            "text": "函数覆盖率"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ctzywwpis4w0",
+                                    "created": 1689142135942,
+                                    "text": "Lines"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ctzyxj3dy4w0",
+                                            "created": 1689142184670,
+                                            "text": "行覆盖率"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ctzykc5kmw00",
+                    "created": 1689141150830,
+                    "text": "useCounter"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ctzyy91zpnc0",
+                            "created": 1689142241182,
+                            "text": "renderHook"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ctzyyix3fco0",
+                                    "created": 1689142262654,
+                                    "text": "用来渲染 hooks 组件，解决 hooks 只能使用在React中的问题"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ctzyyjw13340",
+                                    "created": 1689142264766,
+                                    "text": "入参"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ctzyzlmt4mg0",
+                                            "created": 1689142346926,
+                                            "text": "render"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ctzyzmko7gg0",
+                                            "created": 1689142348974,
+                                            "text": "options"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ctzyzta9mo00",
+                                                    "created": 1689142363582,
+                                                    "text": "initiaProps"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "ctzyzu9u48o0",
+                                                    "created": 1689142365733,
+                                                    "text": "wrapper"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ctzyyksftrc0",
+                                    "created": 1689142266726,
+                                    "text": "出参"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ctzz09z09ao0",
+                                            "created": 1689142399906,
+                                            "text": "result"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ctzz0cwib7c0",
+                                            "created": 1689142406286,
+                                            "text": "render"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ctzz0dzo1ag0",
+                                            "created": 1689142408654,
+                                            "text": "unmount"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ctzyy9z36fs0",
+                            "created": 1689142243183,
+                            "text": "act"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ctzz0q18u9k0",
+                                    "created": 1689142434870,
+                                    "text": "通过这个函数，我们可以将所有会更新到组件状态的操作"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ctzykd2ifvk0",
+                    "created": 1689141152822,
+                    "text": "useEventListener"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ctzz1weuxe00",
+                            "created": 1689142527118,
+                            "text": "topic"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "ctzz1xc765s0",
+                            "created": 1689142529134,
+                            "text": "测试方法：document.createElemwnt 模拟 div"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "ctzz1y9t2600",
+                            "created": 1689142531166,
+                            "text": "useRef 的测试方法"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "ctzz1z3p4s00",
+                            "created": 1689142532974,
+                            "text": "扩展：useEffectWithTarget"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

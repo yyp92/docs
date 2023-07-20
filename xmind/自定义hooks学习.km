@@ -1,0 +1,150 @@
+{
+    "root": {
+        "data": {
+            "id": "ctzvoa6jpuo0",
+            "created": 1689132996663,
+            "text": "自定义hooks"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ctzvp49ryzc0",
+                    "created": 1689133062161,
+                    "text": "useLatest"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ctzw05hotbs0",
+                            "created": 1689133926822,
+                            "text": "永远返回最新的值，可以避免闭包问题"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ctzvp5bhrh40",
+                    "created": 1689133064442,
+                    "text": "useMount"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ctzw0pa0vaw0",
+                            "created": 1689133969895,
+                            "text": "只在组件初始化执行的hook"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ctzvp65wup40",
+                    "created": 1689133066281,
+                    "text": "useUnmount"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ctzw13cvda00",
+                            "created": 1689134000542,
+                            "text": "只在组件卸载时执行的hook"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ctzvp74vayo0",
+                    "created": 1689133068395,
+                    "text": "useUnmountedRef"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ctzw1d5c8pc0",
+                            "created": 1689134021854,
+                            "text": "获取当前组件是否卸载"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ctzvp7z4pa00",
+                    "created": 1689133070225,
+                    "text": "useSafeState"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ctzw1s8pyxs0",
+                            "created": 1689134054710,
+                            "text": "在组件卸载后异步回调内的 setState 不再执行，这样可以避免因组件卸载后更新状态而导致的内存泄露"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ctzvp8zdt400",
+                    "created": 1689133072417,
+                    "text": "useUpdate"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ctzw36g04h40",
+                            "created": 1689134163990,
+                            "text": "强制组件重新渲染，最终返回一个函数"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ctzvp9v06c00",
+                    "created": 1689133074329,
+                    "text": "useCreation"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ctzy3dq676o0",
+                            "created": 1689139822062,
+                            "text": "强化 useMemo 和 useRef，替换 useMemo，一般用于性能优化"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ctzvpb1h7co0",
+                    "created": 1689133076897,
+                    "text": "useReactive"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ctzy4ivz4ns0",
+                            "created": 1689139911661,
+                            "text": "一种具备响应式的 useState"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
