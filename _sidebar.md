@@ -199,6 +199,9 @@
   - [WebGLObjects_WebGLMorphtargets_WebGLClipping](notes/threejs-dev154源码/WebGLObjects_WebGLMorphtargets_WebGLClipping.md)
   - [WebGlPrograms](notes/threejs-dev154源码/WebGlPrograms.md)
   - [WebGLProgram](notes/threejs-dev154源码/WebGLProgram.md)
+  - [WebGLMaterials_WebGLRenderLists](notes/threejs-dev154源码/WebGLMaterials_WebGLRenderLists.md)
+  - [WebGLRenderStates_WebGLBackground_WebGLShadowMap](notes/threejs-dev154源码/WebGLRenderStates_WebGLBackground_WebGLShadowMap.md)
+  - [WebGLUniformsGroup_WebGLBufferRenderer_WebGLIndexedBufferRenderer](notes/threejs-dev154源码/WebGLUniformsGroup_WebGLBufferRenderer_WebGLIndexedBufferRenderer.md)
 
 - webGIS
   
