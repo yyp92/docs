@@ -1,0 +1,189 @@
+{
+    "root": {
+        "data": {
+            "id": "cu6v5ha0lpc0",
+            "created": 1689842442888,
+            "text": "全方面解刨 Ref"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cu6v61nyi8w0",
+                    "created": 1689842487266,
+                    "text": "Ref 的使用"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu6v6s0u2zk0",
+                            "created": 1689842544641,
+                            "text": "React.createRef（类组件）源码"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu6v6steoy80",
+                            "created": 1689842546369,
+                            "text": "React.useRef（函数组件）源码"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu6v7nn2pw80",
+                                    "created": 1689842613466,
+                                    "text": "mountRef 初始化"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu6v7oq3rj40",
+                                    "created": 1689842615826,
+                                    "text": "updateRef 更新"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu6v62ltxxs0",
+                    "created": 1689842489314,
+                    "text": "useRef"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu6v86bp1v40",
+                            "created": 1689842654137,
+                            "text": "useRef 的为何诞生"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu6v87amh3k0",
+                            "created": 1689842656249,
+                            "text": "高级用法"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu6v8kdilwg0",
+                                    "created": 1689842684722,
+                                    "text": "缓存数据：对比 useState"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu6v8l8vl0g0",
+                                    "created": 1689842686618,
+                                    "text": "跨层级获取实例与通信"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu6v63gdy740",
+                    "created": 1689842491162,
+                    "text": "探索 Ref 的奥秘"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu6v9abzjvc0",
+                            "created": 1689842741226,
+                            "text": "明确点：createRef 和 useRef 属于对 Ref 属性的创建和使用，而非是 Ref 属性"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu6v9d06dhc0",
+                            "created": 1689842747042,
+                            "text": "commitRootImpl"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu6vavie5mo0",
+                                    "created": 1689842865690,
+                                    "text": "BeforeMutation 阶段"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu6vawhuhk00",
+                                    "created": 1689842867834,
+                                    "text": "Mutation 阶段"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu6vaxl0nwo0",
+                                    "created": 1689842870202,
+                                    "text": "Layout 阶段"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cu6v9dwlc540",
+                            "created": 1689842749002,
+                            "text": "Ref 属性的操作"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu6vbm4aaq00",
+                                    "created": 1689842923610,
+                                    "text": "置空操作（safelyDetachRef）"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu6vbno8ylc0",
+                                    "created": 1689842926994,
+                                    "text": "标记操作（markRef）"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu6vbonb7z40",
+                                    "created": 1689842929114,
+                                    "text": "更新操作（commitAttachRef）"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu6vbpro6sg0",
+                                    "created": 1689842931554,
+                                    "text": "卸载操作（safelyDetachRef）"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

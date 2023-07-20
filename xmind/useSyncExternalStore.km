@@ -1,0 +1,114 @@
+{
+    "root": {
+        "data": {
+            "id": "cu6wwjh495s0",
+            "created": 1689847384613,
+            "text": "useSyncExternalStore"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cu6wz2j6jnk0",
+                    "created": 1689847582825,
+                    "text": "使用示例"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu6x0ki2et40",
+                            "created": 1689847700304,
+                            "text": "数据撕裂"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu6x18amfds0",
+                                    "created": 1689847752096,
+                                    "text": "同步渲染"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu6x194x9bc0",
+                                    "created": 1689847753928,
+                                    "text": "并发渲染"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cu6x0ld16lk0",
+                            "created": 1689847702176,
+                            "text": "为什么不能用 useState 和 useEffect 代替？"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu6wzj9ajs00",
+                    "created": 1689847619232,
+                    "text": "源码"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu6x1kw0xyo0",
+                            "created": 1689847779512,
+                            "text": "mountSyncExternalStore（初始化阶段）"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu6x2j2h2j40",
+                                    "created": 1689847853912,
+                                    "text": "pushStoreConsistencyCheck：检查一致性"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu6x2k80iw80",
+                                    "created": 1689847856424,
+                                    "text": "subscribeToStore"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu6x2l4avjc0",
+                                    "created": 1689847858376,
+                                    "text": "updateStoreInstance"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cu6x1m0n66w0",
+                            "created": 1689847781968,
+                            "text": "updateSyncExternalStore（更新阶段）"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu6wzk24q4o0",
+                    "created": 1689847620976,
+                    "text": "实现 useSyncExternalStore：useState + useEffect + useLayoutEffect"
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
