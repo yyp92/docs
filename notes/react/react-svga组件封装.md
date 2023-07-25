@@ -1,5 +1,7 @@
 # react svga 组件封装
 
+移动端支持动画的图片文件，因为svga是文件，所以不能直接使用img标签加载。
+
 ```js
 import React from 'react';
 import { isFunction } from 'lodash';
@@ -55,7 +57,7 @@ const SvgaImg: React.FC<SvgaImgProps> = ({
         <div
             id={`svga-${id}`}
             onClick={() => isSuccess && isFunction(goPage) && goPage()}
-/>
+        />
       </div>
     );
   };
