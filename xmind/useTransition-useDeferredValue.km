@@ -1,0 +1,205 @@
+{
+    "root": {
+        "data": {
+            "id": "cu7gztk23s00",
+            "created": 1689904063849,
+            "text": "useTransition 和 useDeferredValue"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cu7h0m9altc0",
+                    "created": 1689904126325,
+                    "text": "useTransition 的诞生"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu7h1gq815s0",
+                            "created": 1689904192652,
+                            "text": "任务划分"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu7h1w53t0w0",
+                                    "created": 1689904226204,
+                                    "text": "紧急更新任务"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu7h1xdfq7s0",
+                                    "created": 1689904228884,
+                                    "text": "过渡更新任务"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cu7h1hyylqo0",
+                            "created": 1689904195357,
+                            "text": "useTransition 使用场景"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu7h2a7gh0g0",
+                                    "created": 1689904256821,
+                                    "text": "对比防抖、节流、定时器"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu7h2bbetrs0",
+                                    "created": 1689904259237,
+                                    "text": "与 setTimeout 的区别"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu7h2ceyvkg0",
+                                    "created": 1689904261629,
+                                    "text": "设备性能影响"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu7h0mwb1q00",
+                    "created": 1689904127716,
+                    "text": "useTransition 源码"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu7h32hnb7s0",
+                            "created": 1689904318387,
+                            "text": "mountTransiton（初始化）"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cu7h46qk0j40",
+                                    "created": 1689904405997,
+                                    "text": "startTransition"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cu7h47wd6wg0",
+                                    "created": 1689904408525,
+                                    "text": "isPending 工作原理"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cu7h33awic00",
+                            "created": 1689904320156,
+                            "text": "updateTransition（更新）"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu7h3437lw80",
+                            "created": 1689904321867,
+                            "text": "对比 startTransition"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu7h0nl1pcw0",
+                    "created": 1689904129212,
+                    "text": "useDeferredValue"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu7h4t5rdlk0",
+                            "created": 1689904454805,
+                            "text": "使用示例"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu7h4u1ig280",
+                            "created": 1689904456725,
+                            "text": "mountDeferredValue（初始化）"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu7h4v8ms0w0",
+                            "created": 1689904459333,
+                            "text": "updateDeferredValue（更新）"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cu7h0od34hs0",
+                    "created": 1689904130908,
+                    "text": "使用场景"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cu7h5xosqu80",
+                            "created": 1689904543028,
+                            "text": "适用于处理数据量大的场景"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu7h5yngknc0",
+                            "created": 1689904545124,
+                            "text": "相同场景下，只需要使用两者中的一个即可"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu7h5zhrhcw0",
+                            "created": 1689904546956,
+                            "text": "能使用 useTransition 就使用 useTransition"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cu7h60j8n080",
+                            "created": 1689904549222,
+                            "text": "topic"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
