@@ -183,6 +183,7 @@
   - [webGl入门](notes/webGL/webGl入门.md)
   - [着色器](notes/webGL/着色器.md)
   - [Blender](notes/webGL/Blender.md)
+  - [虹彩效应](notes/webGL/虹彩效应.md)
 
 - threejs-dev154源码
   
