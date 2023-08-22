@@ -379,6 +379,11 @@
   - [chatGPT](notes/人工智能/chatGPT.md)
   - [tensorflow](notes/人工智能/tensorflow.md)
 
+- 数据库
+  
+  - [mysql](notes/数据库/mysql.md)
+  - [redis](notes/数据库/redis.md)
+
 - 面试
   
   - [大纲](notes/面试/大纲.md)
