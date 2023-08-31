@@ -308,6 +308,7 @@
   - [nodemon-pm2](notes/nodejs/nodemon-pm2.md)
   - [数据库](notes/nodejs/数据库.md)
   - [node.js底层原理](notes/nodejs/node.js底层原理.md)
+  - [nestjs](notes/nodejs/nestjs.md)
 
 - 网络
   
