@@ -289,6 +289,7 @@
 - 包管理工具
   
   - [包管理工具](notes/包管理工具/包管理工具.md)
+  - [Node.js-版本管理工具](notes/包管理工具/Node.js-版本管理工具.md)
   - [lerna](notes/包管理工具/lerna.md)
   - [npm-常用包](notes/包管理工具/npm-常用包.md)
   - [npm-install安装机制](notes/包管理工具/npm-install安装机制.md)

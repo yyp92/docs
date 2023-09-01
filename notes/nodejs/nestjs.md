@@ -1,5 +1,9 @@
 # nestjs学习
 
+## nest 的核心实现原理
+
+**通过装饰器给 class 或者对象添加 metadata，并且开启 ts 的 emitDecoratorMetadata 来自动添加类型相关的 metadata，然后运行的时候通过这些元数据来实现依赖的扫描，对象的创建等等功能。**
+
 ## 命令
 
 ```bash
