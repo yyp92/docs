@@ -180,6 +180,7 @@
   
   - [资料](notes/webGL/资料.md)
   - [threejs-基础知识](notes/webGL/threejs-基础知识.md)
+  - [threejs-进阶](notes/webGL/threejs-进阶.md)
   - [webGl入门](notes/webGL/webGl入门.md)
   - [着色器](notes/webGL/着色器.md)
   - [Blender](notes/webGL/Blender.md)
