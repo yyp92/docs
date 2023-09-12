@@ -265,3 +265,114 @@ TWEEN.update()
 - 本文中使用 `Intersection Observer` 来辨识当前处于哪个页面以更新相机位置。
 - `IntersectionObserver` 接口提供了一种异步观察目标元素与其祖先元素或顶级文档视窗 `viewport` 交叉状态的方法。
 - 可以使用它来检测元素在页面上的可视状态或者两个元素之间的相对可视状态。应用这一特性可以用它来实现页面滚动加载、图片懒加载等功能。
+
+## 粒子系统
+
+### 精灵材质 THREE.SpriteMaterial
+
+`THREE.SpriteMatrial` 对象的一些可修改属性及其说明。
+
+- `color`：粒子的颜色。
+- `map`：粒子所用的纹理，可以是一组 `sprite sheet`。
+- `sizeAttenuation`：如果该属性设置为 `false`，那么距离摄像机的远近不影响粒子的大小，默认值为 `true`。
+- `opacity`：该属性设置粒子的不透明度。默认值为 `1`，不透明。
+- `blending`：该属性指定渲染粒子时所用的融合模式。
+- `fog`：该属性决定粒子是否受场景中雾化效果影响。默认值为 `true`。
+
+### 点材质 THREE.PointsMaterial
+
+使用 `THREE.PointsMaterial` 来样式化粒子，它是 `THREE.Points` 使用的默认材质，下面列举了 `THREE.PointsMaterial` 中所有可设置属性及其说明。
+
+- `color`: 粒子系统中所有粒子的颜色。将 `vertexColors` 属性设置为 `true`，并且通过颜色属性指定了几何体的颜色来覆盖该属性。默认值为 `0xFFFFFF`。
+- `map`: 通过这个属性可以在粒子材质，比如可以使用 `canvas`、贴图等。
+- `size`：该属性指定粒子的大小，默认值为 `1`。
+- `sizeAnnutation`: 如果该属性设置为 `false`，那么所有的粒子都将拥有相同的尺寸，无论它们距离相机有多远。如果设置为 `true`，粒子的大小取决于其距离摄像机的距离的远近，默认值为`true`。
+- `vertexColors`：通常 `THREE.Points` 中所有的粒子都拥有相同的颜色，如果该属性设置为 `THREE.VertexColors`，并且几何体的颜色数组也有值，那就会使用颜色数组中的值，默认值为 `THREE.NoColors`。
+- `opacity`：该属性与 `transparent` 属性一起使用，用来设置粒子的不透明度。默认值为 `1`（完全不透明）。
+- `transparent`：如果该属性设置为 `true`，那么粒子在渲染时会根据 `opacity` 属性的值来确定其透明度，默认值为 `false`。
+- `blending`：该属性指定渲染粒子时的融合模式。
+- `fog`：该属性决定粒子是否受场景中雾化效果影响，默认值为 `true`。
+
+### dat.GUI
+
+`dat.GUI` 是一个轻量级的 `JavaScript` 图形用户界面控制库，它可以轻松地即时操作变量和触发函数，通过设定好的控制器去快捷的修改设定的变量。下面是它的一些基本使用方法：
+
+```js
+// 初始化
+const gui = new dat.GUI({ name: 'name'});
+// 初始化控件属性
+const ctrls = {
+  name: 'acqui',
+  speed: 0.5,
+  color1: '#FF0000',
+  color2: [0, 128, 255],
+  color3: [0, 128, 255, 0.3],
+  color4: { h: 350, s: 0.9, v: 0.3 },
+  test: ',
+  test2: ',
+  cb: () => {},
+  gender:true
+};
+// gui.add(控件对象变量名，对象属性名，其它参数)，控制字符类型或数字
+gui.add(ctrls, 'name');
+// 缩放区间[0,100],变化步长10
+gui.add(ctrls, 'speed', 0, 100, 10);
+// 创建一个下拉选择
+gui.add(ctrls, 'test', { 低速: 0.005, 中速: 0.01, 高速: 0.1 }).name('转速');
+gui.add(ctrls, 'test2', ['低速', '中速', '高速']).name('转速2');
+//  创建按钮
+gui.add(ctrls, 'cb').name('按钮');
+gui.add(ctrls, 'gender').name('性别');
+// 控制颜色属性
+gui.addColor(ctrls, 'color1');
+// 通过name可设置别名
+gui.addColor(ctrls, 'color2').name('颜色2');
+// 创建一个Folder
+const folder = gui.addFolder('颜色组');
+folder.addColor(ctrls, 'color3');
+folder.addColor(ctrls, 'color4');
+// 可以通过onChange方法来监听改变的值，从而修改样式
+gui.addColor(ctrls, 'color2').onChange(callback);
+```
+
+### Canvas纹理CanvasTexture
+
+用于从 `Canvas` 元素中创建纹理贴图。
+
+**构造函数**:
+
+```js
+CanvasTexture(canvas: HTMLElement, mapping: Constant, wrapS: Constant, wrapT: Constant, magFilter: Constant, minFilter: Constant, format: Constant, type: Constant, anisotropy: Number )
+```
+
+- `canvas`：将会被用于加载纹理贴图的 `Canvas` 元素。
+- `mapping`：纹理贴图将被如何应用到物体上。
+- `wrapS`：默认值是 `THREE.ClampToEdgeWrapping`。
+- `wrapT`：默认值是 `THREE.ClampToEdgeWrapping`。
+- `magFilter`：当一个纹素覆盖大于一个像素时贴图将如何采样，默认值为 `THREE.LinearFilter`。
+- `minFilter`：当一个纹素覆盖小于一个像素时贴图将如何采样，默认值为 `THREE.LinearMipmapLinearFilter`。
+- `format`：在纹理贴图中使用的格式。
+- `type`：默认值是 `THREE.UnsignedByteType`。
+- `anisotropy`：沿着轴，通过具有最高纹素密度的像素的样本数。 默认情况下，这个值为 `1`。设置一个较高的值将会产生比基本的 `mipmap` 更清晰的效果，代价是需要使用更多纹理样本。
+
+**属性和方法**：
+
+- `.isCanvasTexture[Boolean]`：检查是否是 `CanvasTexture` 类型纹理的只读属性。
+- `.needsUpdate[Boolean]`：是否需要更新，默认值为 `true`，以便使得 `Canvas`中的数据能够载入。
+- 其他属性和方法继承于 `Texture`。
+
+### 雾化效果Fog和FogExp2
+
+为了增强场景的真实性，示例中使用了 `FogExp2` 雾化效果，那么 `THREE.Fog` 和 `THREE.FogExp2` 有什么不同呢？
+
+- **雾Fog**
+  - 定义：表示线性雾，雾的密度是随着距离线性增大的，即场景中物体雾化效果随着随距离线性变化。
+  - 构造函数：`Fog(color, near, far)`
+    - `.color`：表示雾的颜色，场景中远处物体为黑色，场景中最近处距离物体是自身颜色，最远和最近之间的物体颜色是物体本身颜色和雾颜色的混合效果。
+    - `.near`：表示应用雾化效果的最小距离，距离活动摄像机长度小于 `.near` 的物体将不会被雾所影响。
+    - `.far`： 表示应用雾化效果的最大距离，距离活动摄像机长度大于 `.far` 的物体将不会被雾所影响。
+- **指数雾FogExp2**
+  - 定义：表示指数雾，即雾的密度随着距离指数而增大。
+  - 构造函数：`FogExp2(color, density)`
+    - `.color`：表示雾的颜色。
+    - `.density`：表示雾的密度的增速，默认值为 `0.00025`。
