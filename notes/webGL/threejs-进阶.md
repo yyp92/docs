@@ -376,3 +376,51 @@ CanvasTexture(canvas: HTMLElement, mapping: Constant, wrapS: Constant, wrapT: Co
   - 构造函数：`FogExp2(color, density)`
     - `.color`：表示雾的颜色。
     - `.density`：表示雾的密度的增速，默认值为 `0.00025`。
+
+## 后期处理
+
+### three.js 后期处理通道汇总
+
+下面列举了 `Three.js` 中内置的一些后期处理通道，我们在开发完页面优化过程中，可以选择合适的通道给页面场景添加后期滤镜。它们的具体用法可以查看本文最后的**附录**，在附录中我总结汇总了它们的构造函数、参数含义、属性、示例等基本用法。不幸的是，`Three.js` 对大多数后期处理效果都没有给出详细的使用文档，如果想要完全了解它们，就必须仔细阅读[官网文档](https://threejs.org/examples/#webgl_animation_keyframes)提供的示例或者源码，可以在文档中通过 `postprocessing` 进行检索。
+
+- `AdaptiveToneMappingPass`：该通道可以根据场景的光照度自动调节场景的亮度。
+- `BloomPass`：该通道通过增强场景中明亮的区域来模拟真实世界中的摄像机。
+- `BokehPass`：该通道可以实现类似大光圈镜头的景深效果。
+- `ClearPass`：该通道清空当前纹理缓存。
+- `CubeTexturePass`：用于渲染天空盒。
+- `DotScreenPass`：将黑点图层应用于屏幕的原始图片上。
+- `FilmPass`：通过扫描线和失真来模拟电视屏幕效果。
+- `GlitchPass`：随机在屏幕上显示电脉冲。
+- `HalftonePass`：用于模拟传统印刷术的半色调效果。
+- `MaskPass`：在图片上显示掩码，后续通道只会影响到掩码区域。
+- `OutlinePass`：勾勒出场景中的物体轮廓。
+- `RenderPass`：在当前场景和摄像机的基础上渲染出一个新场景。
+- `SAOPass`：实现实时环境光遮挡效果。
+- `SMAAPass`：全屏反锯齿效果。
+- `SSAARenderPass`：使用另一种算法实现全屏反锯齿效果。
+- `SSAOPass`：使用另一种算法实现实时环境光遮挡效果
+- `SavePass`：该通道执行时会赋值当前渲染结果，在后续步骤中可以使用。
+- `ShaderPass`：自定义着色器通道，可以传入自定义着色器作为参数，以生成一个高级、自定义的后期处理通道。
+- `TAARenderPass`：也是一个全屏反锯齿效果。
+- `TexturePass`：将合成器的当前状态保存为纹理，然后将其作为参数传入到其他的 `EffectComposer` 组合器中。
+- `UnrealBloomPass`：该通道与 `Bloom` 类似，但是它实现的效果更接近于虚幻引擎的 `Bloom` 效果。
+
+## media
+
+### AudioListener
+
+**属性**：
+
+- `.context[AudioContext]`：`listener` 构造函数中的 `AudioContext`。
+- `.gain[GainNode]`：使用 `AudioContext.createGain()` 创建 `GainNode`。
+- `.filter[AudioNode]`：默认为 `null`。
+- `.timeDelta[Number]`：`audio` 实体的时间差值，默认是 `0`。
+
+**方法**：
+
+- `.getInput()`：返回 `gainNode`。
+- `.removeFilter()`：设置 `filter` 属性为 `null`。
+- `.getFilter()`：返回filter属性的值。
+- `.setFilter(value: AudioNode)`：设置 `filter` 属性的值。
+- `.getMasterVolume()`: 返回音量。
+- `.setMasterVolume(value: Number)`：设置音量。
