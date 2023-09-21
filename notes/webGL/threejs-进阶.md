@@ -424,3 +424,79 @@ CanvasTexture(canvas: HTMLElement, mapping: Constant, wrapS: Constant, wrapT: Co
 - `.setFilter(value: AudioNode)`：设置 `filter` 属性的值。
 - `.getMasterVolume()`: 返回音量。
 - `.setMasterVolume(value: Number)`：设置音量。
+
+## 全景图实现三维全景功能
+
+### 球体
+
+在球体内添加 `HDR` 全景照片可以实现三维全景功能，全景照片是一张用球形相机拍摄的图片，如下图所示：
+
+```js
+const geometry = new THREE.SphereGeometry(500, 60, 40);
+geometry.scale(- 1, 1, 1);
+const texture = new THREE.TextureLoader().load( 'textures/hdr.jpg');
+const material = new THREE.MeshBasicMaterial({ map: texture });
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
+```
+
+![](D:\project\docs\threejs-imgs\threejs-panorama-sphere-1.png)
+
+> `🔗` [球体全景图 Three.js 官方示例](https://threejs.org/examples/?q=panorama#webgl_panorama_equirectangular)
+
+### 立方体
+
+在立方体内添加全景图贴图的方式也可以实现三维全景图功能，此时需要对 `HDR` 全景照片进行裁切，分割成 `6` 张来分别对应立方体的 `6` 个面。
+
+```js
+const textures = cubeTextureLoader.load([
+  '/textures/px.jpg',
+  '/textures/nx.jpg',
+  '/textures/py.jpg',
+  '/textures/ny.jpg',
+  '/textures/pz.jpg',
+  '/textures/nz.jpg'
+]);
+
+const materials = [];
+for ( let i = 0; i < 6; i ++ ) {
+  materials.push( new THREE.MeshBasicMaterial( { map: textures[ i ] } ) );
+}
+const skyBox = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), materials );
+skyBox.geometry.scale( 1, 1, - 1 );
+scene.add( skyBox );
+```
+
+![](D:\project\docs\threejs-imgs\threejs-panorama-cube-1.png)
+
+> `🔗` [立方体全景图 Three.js 官方示例](https://threejs.org/examples/?q=panorama#webgl_panorama_cube)
+
+### 环境贴图
+
+使用环境贴图也可以实现全景图功能，像下面这样加载全景图片，然后将它赋值给 `scene.background` 和 `scene.environment` 即可：
+
+```js
+const environmentMap = cubeTextureLoader.load([
+    '/textures/px.jpg',
+    '/textures/nx.jpg',
+    '/textures/py.jpg',
+    '/textures/ny.jpg',
+    '/textures/pz.jpg',
+    '/textures/nz.jpg'
+]);
+environmentMap.encoding = THREE.sRGBEncoding;
+scene.background = environmentMap;
+scene.environment = environmentMap;
+```
+
+### 其他
+
+除了使用 `Three.js` 自己实现全景图功能之外，也有一些其他功能完备的全景图库可以很方便的实现三维全景场景，比如下面几个就比较不错，其中后两个是 `GUI` 客户端，可以在客户端内非常方便的在全景图上添加交互热点、实现多个场景的漫游路径等，大家感兴趣的话都可以试试。
+
+- [panolens.js](https://github.com/pchen66/panolens.js)
+- [pannellum](https://github.com/mpetroff/pannellum)
+- [Photo-Sphere-Viewer](https://github.com/JeremyHeleine/Photo-Sphere-Viewer)
+- [krpano](https://krpano.com/home/)
+- [Pano2VR](https://ggnome.com/pano2vr/)
+
+![](D:\project\docs\threejs-imgs\threejs-panorama-other-1.png)
