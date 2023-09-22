@@ -440,7 +440,7 @@ const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 ```
 
-![](D:\project\docs\threejs-imgs\threejs-panorama-sphere-1.png)
+![](../../\threejs-imgs\threejs-panorama-sphere-1.png)
 
 > `🔗` [球体全景图 Three.js 官方示例](https://threejs.org/examples/?q=panorama#webgl_panorama_equirectangular)
 
@@ -467,7 +467,7 @@ skyBox.geometry.scale( 1, 1, - 1 );
 scene.add( skyBox );
 ```
 
-![](D:\project\docs\threejs-imgs\threejs-panorama-cube-1.png)
+![](../../\threejs-imgs\threejs-panorama-cube-1.png)
 
 > `🔗` [立方体全景图 Three.js 官方示例](https://threejs.org/examples/?q=panorama#webgl_panorama_cube)
 
@@ -499,4 +499,128 @@ scene.environment = environmentMap;
 - [krpano](https://krpano.com/home/)
 - [Pano2VR](https://ggnome.com/pano2vr/)
 
-![](D:\project\docs\threejs-imgs\threejs-panorama-other-1.png)
+![](../../\threejs-imgs\threejs-panorama-other-1.png)
+
+## 螺旋上升的曲线
+
+### 实现方式 ①：Line2
+
+在 `Three.js` 使用 `Line` 类绘制线条时，无法为线条设置宽度，此时可以使用 `Three.js` 自带的 `Line2` 类来实现宽线效果。我们可以像下面这样简单使用 `Line2` 来创建一个螺旋形状，单独引入需要用到的资源 `LineMaterial`、`LineGeometry`、`Line2` 来创建用于宽线的材质、几何体和网格模型。首先通过循环调用三角函数创建了一组在空间中螺旋上升的 `THREE.Vector3` 点数组 `points`，然后使用该数组，通过 `THREE.CatmullRomCurve3` 创建曲线，最后使用 `Line2` 将曲线转换渲染为网格模型并添加到场景中。
+
+```js
+import { Line2 } from "three/addons/lines/Line2.js";
+import { LineMaterial } from "three/addons/lines/LineMaterial.js";
+import { LineGeometry } from "three/addons/lines/LineGeometry.js";
+
+const positions = [];
+const colors = [];
+const points = [];
+for (let i = 0; i < 100; i++) {
+  const t = i / 3;
+  points.push(new THREE.Vector3(t * Math.sin(2 * t), t, t * Math.cos(2 * t)));
+}
+const spline = new THREE.CatmullRomCurve3(points);
+const divisions = Math.round(3 * points.length);
+const point = new THREE.Vector3();
+const color = new THREE.Color();
+for (let i = 0, l = divisions; i < l; i++) {
+  const t = i / l;
+  spline.getPoint(t, point);
+  positions.push(point.x, point.y, point.z);
+  color.setHSL(t, 1.0, 0.5, THREE.SRGBColorSpace);
+  colors.push(color.r, color.g, color.b);
+}
+const lineGeometry = new LineGeometry();
+lineGeometry.setPositions(positions);
+lineGeometry.setColors(colors);
+const line = new Line2(lineGeometry, matLine);
+line.computeLineDistances();
+line.scale.set(1, 1, 1);
+scene.add(line);
+
+```
+
+> `💡` **THREE.CatmullRomCurve3**：是 Three.js 中表示三维空间中的 Catmull-Rom 曲线的一个类，它通过给定的一组点来创建曲线。可以通过 getPoints() 方法获取曲线上的一系列点，该方法返回一个包含指定数目点的数组，这些点均匀的分布在曲线上。
+
+该方法可以生成螺旋上升的曲线模型，它也是[Three.js 官方宽线示例](https://threejs.org/examples/?q%253Dline#webgl_lines_fat_raycasting)的用法，大家可以通过以下链接查看源码详细实现。
+
+### 实现方式 ②：THREE.Curve
+
+另一种实现螺旋上升的曲线的方法是使用 `THREE.Curve`，它是 `Three.js` 中表示曲线的一个基类，我们可以像下面这样通过继承 `THREE.Curve` 来实现用于创建螺旋上升曲线的类，它接收 `4` 个参数 `radiusTop, radiusBottom, height, turns`，分别表示螺旋曲线顶部圆的半径、底部圆的半径、高度，螺旋的次数，然后在 `getPoint` 方法中使用上述参数，通过三角函数构建螺旋上升的曲线形状，并返回组成曲线的点。
+
+```js
+class SpiralCurve extends THREE.Curve {
+  constructor(radiusTop, radiusBottom, height, turns) {
+    super();
+    this.radiusTop = radiusTop;
+    this.radiusBottom = radiusBottom;
+    this.height = height;
+    this.turns = turns;
+  }
+  getPoint(t) {
+    const angle = this.turns * 2 * Math.PI * t;
+    const radius = (this.radiusTop - this.radiusBottom) * t + this.radiusBottom;
+    const x = Math.cos(angle) * radius;
+    const y = t * this.height;
+    const z = Math.sin(angle) * radius;
+    return new THREE.Vector3(x, y, z);
+  }
+} 
+
+```
+
+> `💡` **THREE.Curve**：可以创建自定义曲线，除了可以自定义 getPoint() 方法创建不同的曲线效果之外，还可以自定义 getTangent() 等方法来获取每个点的切线向量等来控制曲线的外观和行为。
+
+## 发光且半透明渐变的纹理
+
+#### 实现方式 ① 光线拖尾轨迹发生器
+
+首先想到的方式是通过建模的方法解决这个问题，通过搜索大量资料发现[Blender插件-光线拖尾轨迹发生器Light Trails Generator 1.1](https://blendermarket.com/products/light-trails-generator)正好满足我的需求，它是一款**免费**的 `Blender` 插件，使用它可以非常容易地创建出漂亮的光线效果。But，但是导出的时候模型的材质丢失了，只能导出白模，我试着导出 `gltf`、`glb`、`obj`、`fbx` 等格式都不行，于是放弃了，打算通过代码实现。
+
+### 实现方式 ② 着色器
+
+半透明、渐变色、且具有流动动画……通过 `Three.js` 现有的基础材质是无法满足需求的，只能通过支持加载自定义着色器的 `THREE.ShaderMaterial` 着色器材质来实现。在片段着色器中，我们可以通过纹理采样、噪声、颜色插值等方式对每个像素的纹理信息和其他参数进行处理，实现最终神庙能量光环动态的光环效果。
+
+```js
+void main() {
+  vec2 olduv = gl_FragCoord.xy/resolution.xy ;
+  vec2 uv = vUv ;
+  vec2 imguv = uv;
+  float scale = 1.;
+
+  vec3 rgbcolor0 = rgbcol(color0);
+  vec3 rgbcolor1 = rgbcol(color1);
+
+  // 设置纹理
+  vec2 newUv = vec2(cor.x + time,cor.x+cor.y);
+  vec3 noisetex = texture2D(perlinnoise,mod(newUv,1.)).rgb;
+  vec3 noisetex2 = texture2D(sparknoise,mod(newUv,1.)).rgb;
+  vec3 noisetex3 = texture2D(waterturbulence,mod(newUv,1.)).rgb;
+
+  // 设置纹理色调
+  float tone0 =  1. - smoothstep(0.3,0.6,noisetex.r);
+  float tone1 =  smoothstep(0.3,0.6,noisetex2.r);
+  float tone2 =  smoothstep(0.3,0.6,noisetex3.r);
+
+  // 设置每个色调的不透明度
+  float opacity0 = setOpacity(tone0,tone0,tone0,.29);
+  float opacity1 = setOpacity(tone1,tone1,tone1,.49);
+  float opacity2 = setOpacity(tone2,tone2,tone2,.69);
+
+  // 设置噪声
+  float gradienttone = 1. - smoothstep(0.196,0.532,pct);
+  vec4 circularnoise = vec4( vec3(gradienttone)*noisetexvUv*1.4, 1.0 );
+  float gradopacity = setOpacity(circularnoise.r,circularnoise.g,circularnoise.b,0.19);
+
+  // ...
+  gl_FragColor += vec4(108.0)*result*(y*0.02);
+  gl_FragColor *= vec4(gradopacity);
+}
+
+```
+
+## AI生成塞尔达风格全景HDR ✨
+
+本文示例页面的塞尔达风格全景背景图，是使用 `🤖` `AI绘图工具` 生成的，[skybox.blockadelabs.com](https://skybox.blockadelabs.com/) 网站可以免费生成卡通风格的全景图，我们只需在页面底部的输入框中输入描述**正向关键字**和**反向关键字**即可根据文案生成对应的全景图片，比如在本实例中，我输入的正向关键字是 `breath of the wild, zelda, link, tree, flower, forest, river`，AI就生成了如下所示的全景 `HDR` 图片，我们还可以选在左侧下拉框中的的绘制模型风格，比如有**电子艺术、迪士尼画风、水彩等**多种风格可以选择。生成图片后还可以在以当前图片为基础，在上面添加或修改。
+
+![](../../\threejs-imgs\threejs-ai-1.png)
