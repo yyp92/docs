@@ -381,6 +381,7 @@
   
   - [chatGPT](notes/人工智能/chatGPT.md)
   - [tensorflow](notes/人工智能/tensorflow.md)
+  - [ai-绘画](notes/人工智能/ai-绘画.md)
 
 - 数据库
   
