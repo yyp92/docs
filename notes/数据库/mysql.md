@@ -34,3 +34,11 @@ UPDATE `users` SET `address` = "广州" WHERE `address` = '深圳'
 # 使用Join进行联表查询
 SELECT `users.name` AS `user`, `products.name` AS `favorite` FROM `users` JOIN `products` ON `users.favorite_product` = products.id
 ```
+
+## sql 类型
+
+- DDL：创建数据库、创建表等修改结构的 sql 叫做 DDL（Data Definition Language）
+
+- DML：增删改那种叫做 DML（Data Manipulate Language）
+
+- DQL： 查询数据的叫做 DQL（Data Query Language）
