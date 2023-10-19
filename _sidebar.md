@@ -33,6 +33,8 @@
   - [ts类型操作](notes/ts/TS类型操作.md)
   - [ts-入门](notes/ts/ts-入门.md)
   - [ts学习资料](notes/ts/ts学习资料.md)
+  - [ts-内置工具类型](notes/ts/ts-内置工具类型.md)
+  - [ts-类型挑战](notes/ts/ts-类型挑战.md)
 
 - js-设计模式
   
