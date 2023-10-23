@@ -1294,3 +1294,474 @@ type LengthOfString<S extends string, K extends any[] = []> =
 首先需要明确一点，只有[元组类型](https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types)才可以推断出具体的长度，因为元组中的元素个数是已知的。
 
 使用模板字符串进行推断是可以获得字符串的第一个字符的，所以依赖这个特性，将字符串遍历到底，并将每个字符放到一个数组中，这样当循环结束，就可以通过元组类型获取长度了。
+
+### Flatten
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00459-medium-flatten/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAsCsCcEC0EBiAbAhgF2wUwDtJklSziAjATwgC8ALAewFcqBLAWzYIHMIAKAAIBjehQBOjAJQQAxIFo5QJLeczOPGYqxYrJ0RAGRmA7ty1RAFOqBN+MBUcoERjQBhG8wDD-gA3lAAOmBAyMCZioAA5C4FLjQOvKgA6mgCN+gCFugN4+gNHq9oBueoAocoAr8YB7aoCCRoDOeoBoyiHBkYBADMYQgNHygEGaAFz5AAaV2ADOxNhUAA54EABmWLiEEAC8aO34BAA8ANoAjAA0EABME0MAzBPQALozQ0OwixuLAHwQwMAQoxPTEPMwE+vEleX5OyYQAOJs2PTMFBCAUHKAp+aA0O6AWP-0uAa1RKexqogAdAArargxjiHjAODwYAMJAAYQAcmAQMAwHjQBAAPrEkmkkkQRwhQDHcoBADyJZIZhIgOLx9SavRw-QGABUIHgAB79AAm1QgmAIVCG226EGIvIFwtFQ24LTw4jQE3BWpVaogAFFFrKoAB+A5a8H8VB8wWEEViiVSiCmjCcwgDVA7YglA6oRZSTVal0dQZ6raG71SvFgAmMhkQQDStoBV6MAFK4Femx8kszgNOHYCAAb31AEdmJh0BM9fymsI8wBfVqSDgQADkgjZeCQojL6EIPDw1WAzGwbHQ1WbrMazWEmGq-ZlQ2Iler2AGepLZfdfTdUq2M22u8XVbwNdX6-Qm9dg0OUwmpyWu4O4xvJwW+7Gh+Xp9L56DXOvQ0mDYH2vQCtgPKAl2PFc12-C9g2GJ9jjmV8VjWTZthmRDbwWc43w-KCvw3X9t3zFpGEYb1mwoVRmwAbimb0RgABlrCZmzIxhqPEZsMIOUjyMori6IYiBmNYlsOKEvDFijaMQHTDMmUAaDlPEAU2sFIzZlcVAYgdkAMCVAGq5SlAGPIwAVb3+QFgVBaoIWhWF4URBBgHFaoAHc1RReh0SxKAdh+MyLOwIEQWAMF6ChGE4QRJFgGqRh0CHNhGAIWpfIgQAXs0ALE1DEC4LrNsyKHNRTFsVxMAgA)
+
+#### 题意
+
+在这个挑战中，你需要写一个接受数组的类型，并且返回扁平化的数组类型。
+
+例如:
+
+```ts
+type flatten = Flatten<[1, 2, [3, 4], [[[5]]]]> // [1, 2, 3, 4, 5]
+```
+
+#### 题解
+
+```ts
+type Flatten<T extends any[]> = 
+  T extends [infer F, ...infer E] 
+    ? [
+      ...(
+        F extends any[]
+          ? Flatten<F> 
+          : [F]
+      ),
+      ...Flatten<E>
+    ]
+    : []
+```
+
+- 要数组元素进行扁平化，那么就要对数组进行遍历，所以可以通过 `rest` 特性来进行迭代，也就是 `[infer F, ...infer E]`
+- 迭代数组元素时，还要判断该元素是否为数组，是就通过 `Flatten` 继续处理
+- 通过对数组元素进行递归处理，然后又通过 `...` 运算符进行解构，就可以达到扁平化的效果了
+
+### Append to object
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00527-medium-append-to-object/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgsAUABFCsBMB2KBaKBBADpgpgOwBMoAXAeylICMArHAY2MhhRdZSakoE8NCAnHDwDSfAIYBnUgDdxAax4AKAAKUBAZgAMssQDYAnHXEBKKAGJAtHKBJbzNVaDFLMHiOHU26iAMjMB3bi+hRAedqADc6AAHKAVHKAXHKApcaAx8qA37aABUphgA2mgOragK3WgCFugN4+gNHqgEAMgKfRuZGAbKaAkHKhgEPKgA6mgDD-gCvxgHtqgGR6gJDmqZkxuXm+MIDR8oBBmgBcvVAABhPEzn7EXLhQACo44sRQALxQAN5QAJYEQ1AA5ACMh1AAvhyz8wBKywCuADarG1i4hAukAPI09MQAPEsVgAaI5SUSPe44Q6ggAsAD4oMBgFAcAAPXAMHBEMicHBbXb7I6nUHgyE4A6wi4cCZjUaIwAU6lAAOI7YgAC3ulCggCg5QCn5oBod0AWP-s4jETDiIbIqZ0dkAOmo4jlpD4AHNgAhEMAAF7slAAYQAcpAQMBIOaIKAoAB9W12+12qCAA3kMoBjuUAgB42h3e61QU0W674t74AifH52AELUFCVFo4gh8RQFZ8HZ4VWggBqiI2mw4AG0AAq7PBQRxcUgAM0WUAAPlAhABdA5F9HxwiJsuV6sAfkWhabUAzAG5IJcIBbIFafd6oIBpW0Aq9GAClc+l7p47-RAdgBbTAq1bbACiAEd7hDQQeMX8LlAK3xSFujkpAyhZRDHvhVctgPdiDtHuJDgDOZ8XjFZjnWLYODLA5DjoURiEAvwyShGDVQEfBELHSBAxIZZiAvTFiHAnMoMEGC4IQjhkIpI40JwDCOHZe8aMoUhSHfUQ8FHID5lA4h4Ag3M-Ggo4CFIVUzjre5CBwCtU2xKiIRQo4AHd2TZaEOHEaSDmIPgoW48cIBwviCL+ASSOEsjRPEySoGkghZPkghFPJGC1I0xCYG0vBdP0nBGOYg5jkM7DgNwlY1EE0iuHI0gVK8qBqJgrgcEeR54sSnyDgrCFxACiAsOM8LTMvBgossmARNgzLXOUw5UvS2q-Gym88oKmAdnEABZUgORwPgbnucRxB2UQcva2t7JkuS8AUwqePxOD8sTDY8w4MyGH+Y9T0ef5gw+b5fi2vjjlBQ4mK3aFQVY9icE4+FQVKwjjnhR6NrKgEdohfbsBDMNjoBPj4HOy7rqgV6nrwzb+Le4EPsI7aTx+g7QyOiN-j4tRzq63r+sG4bRtEGE2v-fEpJm5zHoi-DPrUOHIAbCcjKnNdHUAaDlgkAU2tVzZv0zUtcA-ERQAwJUAarkXUAY8jABVvEUxQlKVgBleVFWVNUNSQYBOPEFSBp1PUjQ4RFBRluXxUlaVxFlBUlRVdVNWASRIV-Ug8GmGBEUAF7NACxNbwzYVy3rdVu39YNY0IA3SAgA)
+
+#### 题意
+
+实现一个为接口添加一个新字段的类型。该类型接收三个参数，返回带有新字段的接口类型。
+
+例如:
+
+```ts
+type Test = { id: '1' } 
+
+// expected to be { id: '1', value: 4 }
+type Result = AppendToObject<Test, 'value', 4>
+```
+
+#### 题解
+
+```ts
+type AppendToObject<T, K extends string, V> = {
+    [P in keyof T | K]: P extends keyof T ? T[P]: V;
+}
+```
+
+- 遍历对象类型 `T` ，然后将 `K` 和 `T` 的 `key` 联合起来，也就有了 `keyof T | K`
+- 而设置值类型时，只要对 `key` 进行判断就好了
+
+### Absolute
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00529-medium-absolute/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCsBMCcEC0ECCAjAzgewDYFcAXAU0mSQsrPQE80A7AEwCdi6BpZgQxwDdMA1nQAUAAXSsAzAAYB3AGzwAxpgCUEAMSBaOUCS3poC2XQgAtNJfQAdcR4klwBLEt1xkyG9xEAZGYDu3V1EB52oANzoAAcoBUcoClxoBsppiEzPb0AOYANPT4+ujEzIBoRuj2CQCS9ISA3j6A0eqAQ8qADqaAIW4ABhg4BCS1ZUmAK-GAe2phgMbWlYDq2oBk3oBMcoBADH4QgNHygEGa47VzhJhkhDQWxBAAKsQxEAC8yACM0tIA3EsrawBKW-i4hLtoWHhExAA8mzEAfMcQwMAQxAAPVZKEiMCCEbAQDIQABEh2kMLIc1q4w+EEAFOoQADijmM+HQEEAUHKAU-NANDugCx-4yEQgWTAALl+CyUxgAdAArTAs7DMBLAODwYAAL2MSAAwgA5MAgYBgWWgCAAfSVypVyoggAN5aqAY7lAIAeitVBoVEGlsuWqwejWeb3+AJITEwEFS6UyEAAPhAYnFEm6oXl4oQkhALvdagASADe6wAvrU0Xtg4C7YwHbUkBH4gAzF0AURjEAA-BBsxA6UHTrKwPLDQaIIBpW0Aq9GAClcJvrq2qTfZLNy7uGiwBHfBcXCB7NA4ggiBRiAZ5jYfQQADkojNtmZQ9wxESW2ARHsuEwC9N5wgSh4W3uAG0yKPgYQXtmB0OXg0niQXtIPoGF9IFx9P9exxBe9H1wZ9HiaV4kA-L8fz-JIANvYDB1Al8IJeQ5P0XQ5f3-KAb3HO8H2QsDLTfJBoEwhdoBw+C8MAwiQJI19Xm-X8YJohCCKQp9UKtBcoLYxdYNwot6O4lDwL47DKOkkT8KAoieMkt9+Ooyi1LksTFIk0jIP2BUjmkAyjnoGTDMMji6MQ7SmLQ+AFXgRzTK-RzHI4gBdCtKxAVs2yNQBoOWCQBTa18ttjRlUAyDRQAwJUAarlNUAY8jABVvSlqVpBlgCZVkOS5Hk+QQYAuHoTAAHdMiFEUJSiiAyWS1KaXpRlMGZdlOW5Xl+WAUj7GwYrqsAF7NACxNHx6vSpqWpy9qKrFSUTTAIA)
+
+#### 题意
+
+实现一个接收 `string,number 或 bigInt` 类型参数的 `Absolute` 类型,返回一个正数字符串。
+
+例如：
+
+```ts
+type Test = -100;
+// expected to be "100"
+type Result = Absolute<Test>; 
+```
+
+#### 题解
+
+```ts
+type Absolute<T extends number | string | bigint, R = `${T}`> = R extends `-${infer E}` ? E : R;
+```
+
+- 已经确定要返回的结果为字符串类型，所以可以通过定义一个泛型`R`通过字符串模板进行转换。这样使用泛型还可以简化代码，相当于占个位嘛
+- 之后就是通过条件类型将`-`去掉就好啦
+
+### String to Union
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00531-medium-string-to-union/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCsDMCMEC0EDKAXATgSwHYHMJ0B7CAVV22N0mSXodoCMBPCAQVwBNMBTNgNKYAhgGdiAN1EBrNgAoAAkz6wADNJEA2AJwBjUQEoIAYkC0coElvEwFdK1E6Kx58tWsbcRAGRmA7txdRAedqADc6AAHKAVHKAYDqApcaAbKaADEqAIW4YOASAQ8qADqaANvGARsaAXHKhgOragLPWFFS4cYDePoDR6oBADL4QgNHygEGatQAGreiitOgsAA68EAAqvA4QALwQAOTwAEyw4wDcnT19AEpDVgA26KNojgT9xMXUADyDDgB8cxDAwBC8AB69uui8XESkTH0ARPCfEAA+EE+U1+AM+sE+tFazVqZwggAp1CAAcWw6AAFlYmBBAFBygFPzQDQ7oAsf9R6HQ3VEAC5ru1dKiAHQAK1EtOImHwwDg8GAAC9UUgAMIAOTAIGAYDFoAgAH1pTLZTKIIADeTigGO5QCAHlK5ZrJRAReKbl1egMDrZcCdbndntxRBBhLgWABtAC6sLG0n4xAAZhAAN5ga5QCD2gAKEDwA3tuCsAFsPphHY7yRAgwt-QBfP36pY7JL4faHU39c2WrjWhw5gA0EGW2ydLoGRd4VogzQAJN68B7eJgIAAxVNtjtdiAAUVTzQgAH4jfmjvae5XaYv7YknHmTUdh2d47DE7heBIuwswAa+iu9saSmb7sXS7t8JXq2Nvam64Xr42S82B7hO92+9-fxHMdJ2zVcL2OYdK29YNQ1wXsE17VMIAAMirHcIDdFhPSrI8xT9EANS1WUIEAaVtAFXowAKVzqQiiOlHVRWwKNuhZLZvRHABHKxhHWSthweXgnggJCPUwYgowmBQTyQGluPWRt8CGYArHQbB1lEcYxRPCBdDEIYa1oPjHnQDdOO4o4z1zcDTU+T4zkrPcD0wM47IM-inhMrj1nMu810vT50Fsyt-NslyoEMgTjOHUyvIs3zjk+VFeHWdZiECwFURBQFeEyz51hyvL-kBVLnPLVyjI8szYqso5Pl0FlqGECRsEwKxRDS2qctSwrPkwTqctwHLhByiQcuwHLeu6qwcrakqwEdPD8Jo2iIEAaDkgkAU2slqI+j8NoWFADAlQBquSVQBjyMAFW8iRJMlKWAak6UZZlWXZBBgFtUQAHcu25XlBT2iB8XOy7SQpKlRBpBkmRZNkOWAcR1mUkoOigWFABezQAsTW8IHrtB8GHqh77+SFXUwCAA)
+
+#### 题意
+
+实现一个将接收到的String参数转换为一个字母Union的类型。
+
+例如：
+
+```ts
+type Test = '123';
+// expected to be "1" | "2" | "3"
+type Result = StringToUnion<Test>; 
+```
+
+#### 题解
+
+```ts
+type StringToUnion<T extends string, R = {}> = 
+  T extends `${infer F}${infer E}` 
+    ? StringToUnion<E, { [P in F]: F } & R> 
+    : keyof R;
+```
+
+- 我这里是把每个字符遍历出来，并组装成一个对象类型
+- 最后使用`keyof`来获取最终对象类型的键值的联合类型
+
+我的写得复杂了点，在[解答区](https://github.com/type-challenges/type-challenges/issues/537)看到一个简洁一些的：
+
+```ts
+type StrintToUnion<T extends string> = T extends `${infer Letter}${infer Rest}`
+  ? Letter | StrintToUnion<Rest>
+  : never;
+```
+
+- 就是直接用联合类型的运算符`|`来拼接所有的字符类型
+
+### Merge
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00599-medium-merge/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCsCcsQLQQLIFMBOBzNkmIMLwCMBPCALQE0BlAL1IGcIAKAAWvqYEoIBiQLRygSW9+Ae2IArNAGMALnjx8lEQBkZgO7cFUQGA6gEjlAVHKBvH0DR6oAgVQG56gBCNAAHKGjgGH-ANN6AYuVuAQt0B0qYCx5QGGRgNbcHNsYegEAMmhCA0fKAQZphAAZxsox4sqQADmgQAGaiohAAvBAA3nhQAHYAhgC2aABcEIyyGACWJVgA3MUQZTi19U0t7VAAvmHJaRDS2XmFHV01ECUArhXEmANQdWgAHj0NzVh4w1BJqekASmiMCwA2slPo2GgAPFmiADQTogB8rRDAwBBbNJyNAAEwgshyK0K5SqOz6WFenW68yWKwwiMYWzhe0OEDiMTCnwggAp1CAAcUasgAFgtiBBAFBygFPzQDQ7oAsf6pslkKUY1T+CWkVIAdBJGILRNhgHBYMA6FTEABhAByYBAwDA6tAEAA+jrdXrdRBAAbyrkAx3KAQA9tfqrVqIKr1aN0vccI8AGKImhE-JFKAAbQAChBmhAANZoUiiDKsF0QABkEBo3AAurUA1tZGgSiDmKHw5GaBAAPzx-3JqOx+PcEtgYbqsCa61WiCAaVtAKvRgApXcKWhsGu2NCopcW3AoQACiAEcFmUroiR5sgbdBpkMKIKhAAORsB2IAVTq4ZnCMYALWSNK6MNf2k4QF2TL14Mq1RbLVYkbH9avtB0QABCZQwU29CBiEfVEXygaRamIbI9zKEp2kGdowC-aQykxZh8h9PBZ3nR5x0nK5HidJ4bzeH8-0+REigASAfFFnwwdoqOAui0UYiCgOgtBYLWQZPk+MBE1rOsQC7bsbUAaDkrEAU2tRO7W01VAPAiUAMCVAGq5Y1AGPIwAVb3ZTluV5YB+SFEUxQlKVgFgxgAHdMBlOUlSUiAWW03SuR5PlGAFYVRXFLBJXgYBGFEK5j0aUQSkSKAiUAF7NACxNdRXP0jyvJM3y7IVZU7TAIA)
+
+#### 题意
+
+将两个类型合并成一个类型，第二个类型的键会覆盖第一个类型的键。
+
+例如：
+
+```ts
+type foo = {
+  name: string;
+  age: string;
+}
+
+type coo = {
+  age: number;
+  sex: string
+}
+
+// expected to be {name: string, age: number, sex: string}
+type Result = Merge<foo,coo>; 
+```
+
+#### 题解
+
+```ts
+type Merge<F, S> = {
+  [P in keyof (F & S)]: P extends keyof S ? S[P]: (F & S)[P]
+}
+```
+
+- 首先通过交叉类型操作符 `&` 把 `F` 和 `S` 变为交叉类型，然后通过 `keyof` 就可以拿到键的联合类型了
+- 由于 `S` 需要覆盖 `F` 的 `key` ，所以在设置对象的值类型时，需要进行判断，优先使用 `S` 的值 
+
+### CamelCase
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/00114-hard-camelcase/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?ssl=21&ssc=7&pln=16&pc=1#code/PQKgUABBBsCMAMEC0EDCBDAtgUwDYYGdtJkkzySAjATwgCkB7ACwDsCGW0mBXCACgACAK2ZsOAYwYATbEwDWASggBiHFICW3TCoAu2TAAdc6PUlzq9AJ3S4SJZQ4gBFbtgI71HO1AAGAMwZLJEp0IJCALx9kAD4If0CAIVCkyO8IWIA1dWwAdwgOCABxCwAJbkoALggmHR0DAgrgYB0CcSYAOiECdsCAc2A4eDAQYDAx0AgAfWmZ2ZmIAE0Gbks0aWwIEuxLDbm96YgRsZ1qAw2MHHx0IgAeAGUIbAAPPRYpAgh3S3UWXtiAXhID2er3ecQAJABvH5+bYQABiAF8kFCYXCAKKInwkAD8EMhSKh6MeL2wbw+GAMFhs6nC2Bu6OiJCgeJ8KMhFzwhHpjKxzIgVU5V1ulOp5jpDOi0T5UCqdwA3GMwBN9nsIAAVNw6NDXNxTVWzQ6jdSGQLayEQdEAR24NgANJanmdxNrERA-JYGNoAOQCE5nJBtGy4Mm9NzAbgeXAEb3HU4bcS6j7-CAAbRI6Kd2BdDJtNhuQu5N29AQYwVC5fC3uiDpLDAYSUsKWrNYzWZz1ttuALWC5uuLpaQjaH6CrNYgdbLw+bUrtbedOlzXZ7lyLk5HYVH1drg8bM9bUEzC6X+cL-fXIUs24npcbLbnh-bi87p97wvpk8ml+vn+-s-n2bPnm3Znrc67lkE5ARD+u4VmQ+4Po6x4viBb5rugwSBj+6AJKg94AR2wErn2YEYZQgZINhuGUf+j7IURoEfgAgrhP4sXhtFIYBJ6oau540bWNEHlxhHLoxxY-vhdHcShxHvsWgC8G4AcHs-sp+EALpKsqID6gaBzwisOhMHCdx6PUul6Ua2kkLEdxMKEGzUMsqzsLgkaeGwVQ1HUDRNC0bSdN0fQDAgwDoGwOTbDZEBZLknwMG5HgcA01S1PUjTNK0HRdD0lj9IMwCue5yXRQAsoE5z2bgIa-G4Xlpb5mUBTlfTDKMYBAA)
+
+#### 题意
+
+实现 `CamelCase<T>` ，将 `snake_case` 类型的表示的字符串转换为 `camelCase` 的表示方式。
+
+例如：
+
+```ts
+// 预期为 'helloWorldWithTypes'
+type camelCase1 = CamelCase<"hello_world_with_types">
+
+// 期望与前一个相同
+type camelCase2 = CamelCase<"HELLO_WORLD_WITH_TYPES"> 
+```
+
+#### 题解
+
+```ts
+type CamelCase<S extends string> = S extends Lowercase<S>
+  ? S extends `${infer F}_${infer RF}${infer R}`
+    ? `${F}${Uppercase<RF>}${CamelCase<R>}`
+    : S
+  : CamelCase<Lowercase<S>>
+```
+
+- `CamelCase` 是内置的工具类型，用来将字符串的首字母变为大写
+
+### KebabCase
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00612-medium-kebabcase/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBsCMBMEC0EDSBTARgQ0wYWwGd1JklyLTMBPCAKQHsALAO0IZYjyYFcIAKAAIArZmw4BjBgBN0TANYBKCAGIAtumkBLHmtUAXdGoAOAG2yGkprYYBO2U6VIqXEAIo90hfVo5OoAAYAYgwMAELYthEAXgHIAHwQAQBmoUg4tunYsf4QiQBqWugA7hAcEADiNgASPJgAXBBM+vrGhPXAwPqEEkwAdMKEfQy2AObAcPBgIMBgc6AQAPrLK6srEACaDDy2XDLoENXotgdrZ8sQM3P61MYHGDj4ROgAPADKEOgAHoYs0oQQby2LQsUaJAC8EFIH2+v3+SQAJABvEHJY4QIIAX2RqPRAFFMQFSAB+CB4z4-dB-AEAVRYEmwxhsDi00VeePipCgpICyLpDKZ+hZbJeQXi2KRD1wBGILw5hK5EEavKR-MZzOsIrFmKQyKlT1l8qJUEabwA3HNLQtzmcIAAVLz6LjPAE2taXWZaEwjJ1IskARx4DgANGSvncJE7MRBkrYGHoAOSCG53JC9BymKmjLzAHg+UyEBPXW4HBnEAGQgDapDx4fQkblgYcL31MteCZC4UiMQT8VDCdSDCymRw0V7fZrdYbeKbphbWGlzxeA9CESi2V7-cHw6yY-iE6gtYj+kbQbnraXK6HGU3ECvw-Hwcnx9PzYvsqvixvfbvg6-kUfZ96xPGcz3nR422XTskDXW97wffcn0PKcQNncDFw-ABBMI8Dg7B0jTQDkJfUC3wXA12yQOCqMQoDpzQ992zgoiwxIhjyMghNAF4NwA4Pbg3jAIAXUtMBrTddYgh2fQmHRN5DDaJZxIuK5QFIRI3iYSIDmobZdnYUw818NhGmaVp2k6bpegGIYRnGSZgGwNhimONSIEKEpAQYAyfA4domhaNoOi6Hp+kGYYxgmBBgH0wzfNcgBZEYDm4DMsy8EyAvM4KrLC2zplmMAgA)
+
+#### 题意
+
+将camelCase或PascalCase字符串替换为烤肉串大小写。
+
+例如：
+
+```ts
+type FooBarBaz = KebabCase<"FooBarBaz">
+const foobarbaz: FooBarBaz = "foo-bar-baz"
+
+type DoNothing = KebabCase<"do-nothing">
+const doNothing: DoNothing = "do-nothing"
+```
+
+#### 题解
+
+```ts
+type KebabCase<S extends string> = 
+  S extends `${infer F}${infer E}`
+    ? E extends Uncapitalize<E>
+      ? `${Uncapitalize<F>}${KebabCase<E>}`
+      : `${Uncapitalize<F>}-${KebabCase<E>}`
+    : S
+```
+
+> Uncapitalize 用于将字符串的首字母变为小写
+
+- 因为要处理的字符没有特别的规律，所以就要对字符串进行遍历，使用条件就是 `` `${infer F}${infer E}` ``
+
+泛型 `E` 为什么是使用 `Uncapitalize` 进行判断处理，而不是 `Capitalize` 呢？看下代码示例：
+
+```ts
+type T<S extends string> = S extends Capitalize<S> ? true : false;
+// type A = true
+type A = T<'-'>;
+```
+
+因为用`Capitalize`没法准确排除 `-` 、 `''` 、😎 等字符，所以通过 `Uncapitalize` 才能准确判断出当前字符串是不是一个大写字母开头的字符串。
+
+搞清楚后，拼接字符串就根据是不是大写开头来加个 `-` 就行了。
+
+### Diff
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00645-medium-diff/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBsAsCsEC0EAiBLAZpyyn4NwCMBPCALQE0BlALxIGcIAKAASrsYEoIBiQWjlAkt58A9kQBWAUwDGAF1y5eSiIAyMwHduCqIHbgwGvKgEjlAVHKBS40DHyoG8fQNHq-QCFugO91APAqA9HUDkBoCAGTRAAG32Q1yySAAdJCAAxEREIAF4IAG9cKABDAC4IBlkAJ3QAOwBzAG4EiCJU7IBXAFsiSQzCqABffyCQgCFEjOi4opS0zJyCoulUogiAG0lE7NxGqCbgiAAlSQYy0dkARk6MbAAecJEAGjaMgD4IYGA44tLK6oyDiCHisYnsiBmIAPmllbWAJi2WEwO2OB32ZwuVxKEHKVRqDyeIxE40m7w83k8HjOgAp1CAAcXQsgAFmUiBBAFBygFPzQDQ7oAsf6JslkgQYyQuvmkRIAdOIGJyRBlcsA4PBgLQiUgAMIAOTAIGAYAVoAgAH1VWr1WqIIADeWsgGO5QCAHiqNcblRA5QqviFtsCAPIPG3rM4xG0VQk7G0QABkEAdDwA1pISCJMCwPQAfH3rLgnQoKsBKk3GiCAaVtAKvRgApXQDR8kbE5rzegKoF+bIrgBRACOZUSowepYAHsE5O8IJgMiIKhAAOSsS1IDnV8Z5ZbAMqydCjBidi3NMIRTrxKDZRIVSSpdJZPK4RK5Ve9De5MCNS0QY7z3BLldrvqbpI7q-73A77IAExqNzhGUPYGPErnMQXMLLru679I+kgvm+MK3DUX7fjO0iJAwyydAA2rg9aNrIOwVlWow7NaewRA8xwnA8sQQE+r4ZO+dzvCcpHoQ2MhYTh1b4UCILtA84JkRR4FUTRNR0QxUAYcx2GVmxBH7A8v4iKRVzbsB165A8lGQbCtH1PRByMZhEm4exuxydxEQKeRSn3v0an8Rp0EdNpDEALpxvGIA5rmpqANBygAAcoAptYebmZryqAuBnIAYEqANVyOqAMeRgAq3vSjLMqywDslyPJ8gKQoIMAkwMAA7jUoritKYUQDS8WJUyLJsgwHLcry-KCsKwAMMio7oCI2R+FAZyAC9mgBYmuoVXJbV9UZU1xWSjK5pgEAA)
+
+#### 题意
+
+获取两个接口类型中的差值属性。
+
+```ts
+type Foo = {
+  a: string;
+  b: number;
+}
+type Bar = {
+  a: string;
+  c: boolean
+}
+
+type Result1 = Diff<Foo,Bar> // { b: number, c: boolean }
+type Result2 = Diff<Bar,Foo> // { b: number, c: boolean }
+```
+
+#### 题解
+
+```ts
+type Diff<O, O1> = Omit<O & O1, keyof (O | O1)>;
+```
+
+> Omit<T, K>：从 T 对象类型中排除类型为 K 的键，返回新的对象类型
+
+首先来看个例子：
+
+```ts
+// 结果：type a = "toString" | "valueOf"
+type a = keyof (string | number);
+```
+
+使用联合类型运算符 `|` 将两个集合关联起来时，那么使用 `keyof` 取到的值是 `string` 和 `number` 都有的属性，这是取的并集。
+
+所以使用 `keyof (O | O1)` 就能获取两个对象中都有的属性，那么剩下的属性就是我们想要的了，通过 `Omit` 就可以得到新的对象类型了。
+
+> 答案参考自[解答区](https://github.com/type-challenges/type-challenges/issues/3014)，里面也有相关的解
+
+### AnyOf
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/00949-medium-anyof/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCcAs0QLQQIIDsCeB5AZpJihR+ARhhGgK4A21EAFAAIDWGaApjpcwJQQDEAW3YATAJaVBAgIYAnWdIz58-VRACKldgGcALmID2aZVACSggA7V2wtLogAFDLoAWRiNTHNREAAbTMXwguNABjfXcxNAhXdhiMCzjtDD0bADpUeMSY6W9tGJc4lHlFCACRCFl2XUpZNHzfXVktILEcMswIdmtbewN22NQS8jF8pq0M0wHCoYUR-JsLXQwAGkrq2ujfHGlqbXZfNJMIADEDWS6AD2lLawAuY98n3W18ZeyAZRurdgBGCAAvKhMLgADwAbV+awARNC1js9uw1uCALprADeAF8UQA+ADcEGAwCuiXCPl0BggJDi43YRyg7ziX1u7AATIDgdgcBCAAwwuHBXb7ZFoiBY3EEokk9hkioUqlxBH7el+J7HHEQABqYnYAHcIO4AOJiXQACUoJDuEBcul0Fm0dyJL1CLjSACttGlzgBzYBwaBgEDAMAh0AQAD6kaj0ajEAAmgZahAAMIGERxU3sKoRmO58MQIMhxmcsEAFSuunYaBE+Sq0hERmo5ACGFRGqBpfBVEE1NkKIrVZrDAA5MOIAAfCA8ieCxEz1Ez9EQcHeDBWvSyKLelFWjgANyzEExfAA-LP9hArbS8SGwGG87mIKWdPZk9J9vkHzGC8GxJZzvYS4AKIAI6ULsaxAZcpL2JiwSyAYUjDowjKIC6uzWGg3o6MAlD6Hsw5FgkcShO+OgcuC+BQTBoKgeB1CgugXIQlCEDDpWejDmstLIr8opLmgNzsFa7EvmOmIYhAvwiRxujibi3HNOwOI4isVHQTKui0WBuyMSC3KQmso7wkKSLLvx2KqTESkqWpUDUZp2n0XpzHgnybGyVx55maiGKWYpWi2epNF0bpTFgm5RleTx5l+Qp1mBapwWOaFDHhQZ7nGd5vEWfFtJBfZGnhE5YX6byUUmYiIqSYJwgyWJR55TZSWFSFOlpWVkVsV5So+fxUn1ZxjVWflLUQA5xWpS5EWZT1pnVWKFBCYNclHpJ0keQ1-kJcpY0TVpU3peV3WVcKsVittvUFeNRUHe100GfFV1JSit53iAOZfpGpy1LEFwfJW9qfV9P7vfgGofC4chxBgiYXNoBjUHhhj1FaNp2g6TraC67qej6frwMAATaLqWbg1qOr6gjSMRKj1q2vajrAM6roel6si+v6wDU8jRivFAGoALLnHEyZQ7QVbYQ69MY0zLO4+z3qBsGYBAA)
+
+#### 题意
+
+在类型系统中实现类似于 Python 中 `any` 函数。类型接收一个数组，如果数组中任一个元素为真，则返回 `true`，否则返回 `false`。如果数组为空，返回 `false`。
+
+例如：
+
+```ts
+type Sample1 = AnyOf<[1, '', false, [], {}]> // expected to be true.
+type Sample2 = AnyOf<[0, '', false, [], {}]> // expected to be false.
+```
+
+#### 题解
+
+```ts
+type AnyOf1<T extends readonly any[]> = 
+  T[number] extends ('' | 0 | false | [] | { [key: string]: never }) 
+    ? false 
+    : true
+```
+
+通过[索引访问类型](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html)可以获取数组中所有元素的联合类型，例如：
+
+```ts
+type a<T extends readonly any[]> = T[number]
+// type b = 3 | 1 | 2
+type b = a<[1, 2, 3]>
+```
+
+为了识别出一个空的字面量类型，所以通过声明一个对象类型，并且在里面将值的类型设置为 `never` ，也就是：
+
+```ts
+{ 
+  [key: string]: never
+}
+
+// 也可以使用内置类型来声明
+Record<string, never>
+```
+
+### IsNever
+
+[挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/01042-medium-isnever/README.md)
+
+[在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAMAsAmCBaCBJAzgOQKYDdcAnSVFci0gIwE8IALASyIHsaBDCRxgLwFcA1pwAUAASasO3fkICUEAMQBbXABNGfJYr4A7Rix3aALowA2mUqQXWIART65MJg5ajolAB1O4VOoxE4jGg9cDBwCYgAaCAB3JgBjeggjdgFHLh0PPn8gkIgAAwAVfIA6UnQAM2T6UNzQliqiRxZTQkxklgKdCKJ86KajPiJDfKMiBz6IFiMaohjGTFD8ivZzXFLXCAAxFiIIXAAPdk9vAC5N-MujCyg6iABBCABeMLxCIgAebveAPihgYD7A4heJGNQdCBUWrjXCkO4AIWerx6H10qlwFUY3VUfwBQJBYNUEKhEBWazhwVCAGEkVg3sQvnxTKZcYDDgTwUZOiSyYsKXkACK08LvD4AbQAuqz8bhQZzuaFebDbpSIABRYX0z46TRQojS9mywnExWrPlQS75TZ-ABqjFwMSmhgA4owjAAJPhUU4MIxGDyYU4A66JEoAK0wJV2AHNgHAkGAQMAwCnQBAAPqZrPZrMQACaLCGECpLHREHdxFCOermYgSZTdzpKMKfxeYsKEqBYJ0qnaYu+xE7AH5kjCID6lQBuFNgNM16sQQqOfxU9iLdrznN15OMTy7fwAb3VAEc+KtomrgUaIABfUmsLQAclEdRQiVW3h00ccwGyZkwj4Nqq8RrukbakJeBIfGqp6rB8TaigO+rRGMDg-D8kQQVeoLQbBpjwSKDJIRAAA+EBOEQWLRhhpJmrg6GYVAkFGrhZ74QhDIAEScTRSoMVhUEwWxBFaqiPYYliai8XR-FMdhRisXBHHakyLLRHxGECSxQlKYRnyStJayyeq8mKexekfAeN6GYs-ESjOs4gBmm65lsQwzMQEAAMpggGzkuem26OaQfxefQ7BNBANCFnsmAtH+BiBr6-qBsGmChhGUZELG8aIMA7A6JgMTECFEB2g65Hxc4hU+vQfoBkGwAhvQ4aRjGcYIHlcWmAlhWlQAsrs1LhcyuBfo4tX1alTXpS1mUxomyZgEAA)
+
+#### 题意
+
+实现一个类型 `IsNever`，它接受输入类型 `T` 。如果的类型解析为 `never` ，则返回 `true` ，否则为 `false` 。
+
+例如：
+
+```ts
+type A = IsNever<never> // expected to be true
+type B = IsNever<undefined> // expected to be false
+type C = IsNever<null> // expected to be false
+type D = IsNever<[]> // expected to be false
+type E = IsNever<number> // expected to be false
+```
+
+#### 题解
+
+```ts
+type IsNever<T> = [T] extends [never] ? true : false;
+```
+
+使用泛型 + 条件判断时，如果传入的值是联合类型，会出现[分布](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types)，例如：
+
+```ts
+type IsNever<T> = T extends never ? true : false;
+type a = IsNever<never | string>;
+
+// 相当于
+type a = never extends never ? true : false | string  extends never ? true : false
+```
+
+上面发生分布的时确定的值是 `never | string` ，`never` 是永远不存在的值，它会丢失，为了不让 `IsNever` 发生分布的行为，就需要在 `extends` 左右两侧的类型上加上 `[]` ，让它变为一个元组类型，或者直接变成一个数组类型也可以（`T[]`）。
+
+### IsUnion
+
+[挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/01097-medium-isunion/README.md)
+
+[在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAMCcB2CBaCBJAzgVQHYEsB7XSVFci0gIwE8JcBXAGyYgAoABKgU1wGNCAJwCUEAMQBbbgBN8DCRFKkxKiAEUG3TABciJKKXQSADk25Tc2iAEMI2mse4QABljx7nAGggB3ABb4fH521gDWWja4EPi4xgxW9o4uACrOkdIQgtzaDIK4mL5+2UWCKWlZmIRMAG4R2oQ2EAwExHYO3AB0SlAAYkIQ3AAe1iZmAFykBlBQzrPamJNtSXzWmNzQEAC8GDgtuAA8OoIxAOYAfFDAwBAAZtZMa4uJTitrAExbO+7Eh9rHuCcAD6MCQ8QQXCBXOyCTRPdoQV7cADMnzce32AG0jqdgfIwQBdCFQu4PbiLWbOboQC4ANXw3B8EFaAHF8NoABIMKhjCB+bTaYyYMZXeZBDoAK0wHSEJ2AcCQYBAwDAKtAEAA+pqtdqtRAAJqEXIQADChGkTnZ3CyGp1tvVECVKueX3RyW8ACFPskLttkgNBtpeNICp6APwQDHu-H+wO4YMR5LR8MktYQHl-TRp+jcWqCADcKsLarttogyS0VmNqwiJZ1DuV+BMQisAG8IABRACODHu3nbg0cfCsAF9boJCAoAOQcZ4oIL3MwArTAeL4B6Tp3wxEFbYY0j9wfafZdntMfZovS-f7nbwp7hnM6efcD7hD4-d+7n3aX7EAiCA+g8StR9oU0B8nygA9XyPE9PwvH5J2sSd-wgScqGQgDJz4DDUOkScQIze9H2fQ931PL9vgOZpzRuGIZBQxgWBQ6pCHwDJMPw7xCPAkjoLIuDvx+NtrB5X8TggUcAOEnkQTBCSCJhIiII7F831gs94IOaSIDEhigNKYcQLvHjINUmCPw0wSDixP5Tj00ErUJW97jWEzIWuKs1gKfwrScP0KiqWoCnqRpcGIFBmj0JZOl4tSLIo9FdIA3Ac2A5zSTcqC4vIzSrzsgDmlCMKfFwIyXKU2LzJyqy8r-ADrFwGgyoy4jTNI9SEp-Wy6tQpDmtc4j8ULMBi1rXUelybQSggABlQNBRtMb7UdUBSAuGa-Gsa0aENUpKiYVdiCFXl+UFYVgFFPwJSlGU5QQRBgAazAfCtNaIDpBkdKqQ78h5PkBSFEVMDFSVpUEWV5Qe-afoWKALgAWSEJxjU2lheBOLQ-tOwGLuBq7QZlRVlTAIA)
+
+#### 题意
+
+实现一个类型 `IsUnion` ，它接受一个输入类型 `T` 并返回 `T` 是否解析为联合类型。
+
+例如：
+
+```ts
+type case1 = IsUnion<string> // false
+type case2 = IsUnion<string | number> // true
+type case3 = IsUnion<[string | number]> // false
+```
+
+#### 题解
+
+```ts
+type IsUnion1<T, B = T> = T extends B
+  ? [B] extends [T]
+    ? false
+    : true
+  : never
+```
+
+答案参考自[解答区](https://github.com/type-challenges/type-challenges/issues/1227)，👍比较多的一个，也比较简洁。
+
+刚开始看到这个答案还是有点懵的，然后把每个`case`都分析了一遍就明白了。里面的知识主要涉及到[条件类型](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types)。
+
+我们通过挑战中的`case`来看看：
+
+**第一种**：`T` 不是联合类型的。
+
+```ts
+// case 如下，期望 false
+Expect<Equal<IsUnion<string>, false>>
+
+// 1.代入到类型中
+type IsUnion<string, B = string> = 
+  string extends string 
+    ? [string] extends [string] 
+      ? false 
+      : true
+    : never;
+
+// 2.string extends string 为 true，进入第二个表达式：
+[string] extends [string] ? false : true
+
+// 3.第二步的表达式成立，所以最后返回结果为：true
+IsUnion<string> == true
+```
+
+**第二种：** `T` 为一般的联合类型：
+
+```ts
+// case 如下，期望 true
+Expect<Equal<IsUnion<'a' | 'b'>, true>>
+
+// 1.由于 T 为联合类型，所以会发生分布的行为
+'a' extends 'a' | 'b' 
+  ? ['a' | 'b'] extends ['a'] 
+    ? false 
+    : true 
+  : never
+|
+'b' extends 'a' | 'b' 
+  ? ['a' | 'b'] extends ['b'] 
+    ? false 
+    : true 
+  : never; 
+
+// 2.执行完第 1 步后的结果为：
+true | true
+true // 最终就是 true
+```
+
+**第三种：** `T` 为特殊的联合类型：
+
+```ts
+// case 如下，期望 false
+Expect<Equal<IsUnion<string | never>, false>>
+
+// never 是永远不存在的值，在联合类型中，它不是一个有效的值
+// 例如下面 T  的类型就是 stirng
+type T = string | never;
+
+// 所以上面的 case 可以看做：
+Expect<Equal<IsUnion<string | never>, false>> == Expect<Equal<IsUnion<string>, false>>
+```
