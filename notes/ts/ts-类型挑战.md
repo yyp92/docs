@@ -1637,9 +1637,9 @@ Record<string, never>
 
 ### IsNever
 
-[挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/01042-medium-isnever/README.md)
-
-[在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAMAsAmCBaCBJAzgOQKYDdcAnSVFci0gIwE8IALASyIHsaBDCRxgLwFcA1pwAUAASasO3fkICUEAMQBbXABNGfJYr4A7Rix3aALowA2mUqQXWIART65MJg5ajolAB1O4VOoxE4jGg9cDBwCYgAaCAB3JgBjeggjdgFHLh0PPn8gkIgAAwAVfIA6UnQAM2T6UNzQliqiRxZTQkxklgKdCKJ86KajPiJDfKMiBz6IFiMaohjGTFD8ivZzXFLXCAAxFiIIXAAPdk9vAC5N-MujCyg6iABBCABeMLxCIgAebveAPihgYD7A4heJGNQdCBUWrjXCkO4AIWerx6H10qlwFUY3VUfwBQJBYNUEKhEBWazhwVCAGEkVg3sQvnxTKZcYDDgTwUZOiSyYsKXkACK08LvD4AbQAuqz8bhQZzuaFebDbpSIABRYX0z46TRQojS9mywnExWrPlQS75TZ-ABqjFwMSmhgA4owjAAJPhUU4MIxGDyYU4A66JEoAK0wJV2AHNgHAkGAQMAwCnQBAAPqZrPZrMQACaLCGECpLHREHdxFCOermYgSZTdzpKMKfxeYsKEqBYJ0qnaYu+xE7AH5kjCID6lQBuFNgNM16sQQqOfxU9iLdrznN15OMTy7fwAb3VAEc+KtomrgUaIABfUmsLQAclEdRQiVW3h00ccwGyZkwj4Nqq8RrukbakJeBIfGqp6rB8TaigO+rRGMDg-D8kQQVeoLQbBpjwSKDJIRAAA+EBOEQWLRhhpJmrg6GYVAkFGrhZ74QhDIAEScTRSoMVhUEwWxBFaqiPYYliai8XR-FMdhRisXBHHakyLLRHxGECSxQlKYRnyStJayyeq8mKexekfAeN6GYs-ESjOs4gBmm65lsQwzMQEAAMpggGzkuem26OaQfxefQ7BNBANCFnsmAtH+BiBr6-qBsGmChhGUZELG8aIMA7A6JgMTECFEB2g65Hxc4hU+vQfoBkGwAhvQ4aRjGcYIHlcWmAlhWlQAsrs1LhcyuBfo4tX1alTXpS1mUxomyZgEAA)
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/01042-medium-isnever/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAMAsAmCBaCBJAzgOQKYDdcAnSVFci0gIwE8IALASyIHsaBDCRxgLwFcA1pwAUAASasO3fkICUEAMQBbXABNGfJYr4A7Rix3aALowA2mUqQXWIART65MJg5ajolAB1O4VOoxE4jGg9cDBwCYgAaCAB3JgBjeggjdgFHLh0PPn8gkIgAAwAVfIA6UnQAM2T6UNzQliqiRxZTQkxklgKdCKJ86KajPiJDfKMiBz6IFiMaohjGTFD8ivZzXFLXCAAxFiIIXAAPdk9vAC5N-MujCyg6iABBCABeMLxCIgAebveAPihgYD7A4heJGNQdCBUWrjXCkO4AIWerx6H10qlwFUY3VUfwBQJBYNUEKhEBWazhwVCAGEkVg3sQvnxTKZcYDDgTwUZOiSyYsKXkACK08LvD4AbQAuqz8bhQZzuaFebDbpSIABRYX0z46TRQojS9mywnExWrPlQS75TZ-ABqjFwMSmhgA4owjAAJPhUU4MIxGDyYU4A66JEoAK0wJV2AHNgHAkGAQMAwCnQBAAPqZrPZrMQACaLCGECpLHREHdxFCOermYgSZTdzpKMKfxeYsKEqBYJ0qnaYu+xE7AH5kjCID6lQBuFNgNM16sQQqOfxU9iLdrznN15OMTy7fwAb3VAEc+KtomrgUaIABfUmsLQAclEdRQiVW3h00ccwGyZkwj4Nqq8RrukbakJeBIfGqp6rB8TaigO+rRGMDg-D8kQQVeoLQbBpjwSKDJIRAAA+EBOEQWLRhhpJmrg6GYVAkFGrhZ74QhDIAEScTRSoMVhUEwWxBFaqiPYYliai8XR-FMdhRisXBHHakyLLRHxGECSxQlKYRnyStJayyeq8mKexekfAeN6GYs-ESjOs4gBmm65lsQwzMQEAAMpggGzkuem26OaQfxefQ7BNBANCFnsmAtH+BiBr6-qBsGmChhGUZELG8aIMA7A6JgMTECFEB2g65Hxc4hU+vQfoBkGwAhvQ4aRjGcYIHlcWmAlhWlQAsrs1LhcyuBfo4tX1alTXpS1mUxomyZgEAA)
 
 #### 题意
 
@@ -1675,9 +1675,9 @@ type a = never extends never ? true : false | string  extends never ? true : fal
 
 ### IsUnion
 
-[挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/01097-medium-isunion/README.md)
-
-[在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAMCcB2CBaCBJAzgVQHYEsB7XSVFci0gIwE8JcBXAGyYgAoABKgU1wGNCAJwCUEAMQBbbgBN8DCRFKkxKiAEUG3TABciJKKXQSADk25Tc2iAEMI2mse4QABljx7nAGggB3ABb4fH521gDWWja4EPi4xgxW9o4uACrOkdIQgtzaDIK4mL5+2UWCKWlZmIRMAG4R2oQ2EAwExHYO3AB0SlAAYkIQ3AAe1iZmAFykBlBQzrPamJNtSXzWmNzQEAC8GDgtuAA8OoIxAOYAfFDAwBAAZtZMa4uJTitrAExbO+7Eh9rHuCcAD6MCQ8QQXCBXOyCTRPdoQV7cADMnzce32AG0jqdgfIwQBdCFQu4PbiLWbOboQC4ANXw3B8EFaAHF8NoABIMKhjCB+bTaYyYMZXeZBDoAK0wHSEJ2AcCQYBAwDAKtAEAA+pqtdqtRAAJqEXIQADChGkTnZ3CyGp1tvVECVKueX3RyW8ACFPskLttkgNBtpeNICp6APwQDHu-H+wO4YMR5LR8MktYQHl-TRp+jcWqCADcKsLarttogyS0VmNqwiJZ1DuV+BMQisAG8IABRACODHu3nbg0cfCsAF9boJCAoAOQcZ4oIL3MwArTAeL4B6Tp3wxEFbYY0j9wfafZdntMfZovS-f7nbwp7hnM6efcD7hD4-d+7n3aX7EAiCA+g8StR9oU0B8nygA9XyPE9PwvH5J2sSd-wgScqGQgDJz4DDUOkScQIze9H2fQ931PL9vgOZpzRuGIZBQxgWBQ6pCHwDJMPw7xCPAkjoLIuDvx+NtrB5X8TggUcAOEnkQTBCSCJhIiII7F831gs94IOaSIDEhigNKYcQLvHjINUmCPw0wSDixP5Tj00ErUJW97jWEzIWuKs1gKfwrScP0KiqWoCnqRpcGIFBmj0JZOl4tSLIo9FdIA3Ac2A5zSTcqC4vIzSrzsgDmlCMKfFwIyXKU2LzJyqy8r-ADrFwGgyoy4jTNI9SEp-Wy6tQpDmtc4j8ULMBi1rXUelybQSggABlQNBRtMb7UdUBSAuGa-Gsa0aENUpKiYVdiCFXl+UFYVgFFPwJSlGU5QQRBgAazAfCtNaIDpBkdKqQ78h5PkBSFEVMDFSVpUEWV5Qe-afoWKALgAWSEJxjU2lheBOLQ-tOwGLuBq7QZlRVlTAIA)
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/01097-medium-isunion/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAMCcB2CBaCBJAzgVQHYEsB7XSVFci0gIwE8JcBXAGyYgAoABKgU1wGNCAJwCUEAMQBbbgBN8DCRFKkxKiAEUG3TABciJKKXQSADk25Tc2iAEMI2mse4QABljx7nAGggB3ABb4fH521gDWWja4EPi4xgxW9o4uACrOkdIQgtzaDIK4mL5+2UWCKWlZmIRMAG4R2oQ2EAwExHYO3AB0SlAAYkIQ3AAe1iZmAFykBlBQzrPamJNtSXzWmNzQEAC8GDgtuAA8OoIxAOYAfFDAwBAAZtZMa4uJTitrAExbO+7Eh9rHuCcAD6MCQ8QQXCBXOyCTRPdoQV7cADMnzce32AG0jqdgfIwQBdCFQu4PbiLWbOboQC4ANXw3B8EFaAHF8NoABIMKhjCB+bTaYyYMZXeZBDoAK0wHSEJ2AcCQYBAwDAKtAEAA+pqtdqtRAAJqEXIQADChGkTnZ3CyGp1tvVECVKueX3RyW8ACFPskLttkgNBtpeNICp6APwQDHu-H+wO4YMR5LR8MktYQHl-TRp+jcWqCADcKsLarttogyS0VmNqwiJZ1DuV+BMQisAG8IABRACODHu3nbg0cfCsAF9boJCAoAOQcZ4oIL3MwArTAeL4B6Tp3wxEFbYY0j9wfafZdntMfZovS-f7nbwp7hnM6efcD7hD4-d+7n3aX7EAiCA+g8StR9oU0B8nygA9XyPE9PwvH5J2sSd-wgScqGQgDJz4DDUOkScQIze9H2fQ931PL9vgOZpzRuGIZBQxgWBQ6pCHwDJMPw7xCPAkjoLIuDvx+NtrB5X8TggUcAOEnkQTBCSCJhIiII7F831gs94IOaSIDEhigNKYcQLvHjINUmCPw0wSDixP5Tj00ErUJW97jWEzIWuKs1gKfwrScP0KiqWoCnqRpcGIFBmj0JZOl4tSLIo9FdIA3Ac2A5zSTcqC4vIzSrzsgDmlCMKfFwIyXKU2LzJyqy8r-ADrFwGgyoy4jTNI9SEp-Wy6tQpDmtc4j8ULMBi1rXUelybQSggABlQNBRtMb7UdUBSAuGa-Gsa0aENUpKiYVdiCFXl+UFYVgFFPwJSlGU5QQRBgAazAfCtNaIDpBkdKqQ78h5PkBSFEVMDFSVpUEWV5Qe-afoWKALgAWSEJxjU2lheBOLQ-tOwGLuBq7QZlRVlTAIA)
 
 #### 题意
 
@@ -1765,3 +1765,595 @@ type T = string | never;
 // 所以上面的 case 可以看做：
 Expect<Equal<IsUnion<string | never>, false>> == Expect<Equal<IsUnion<string>, false>>
 ```
+
+### ReplaceKeys
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/01130-medium-replacekeys/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgsAUABFCMsGYAMUC0UBKBTADgGwEMBjLAaSwE8BnSGVeh1WqAIwqkEZYjqACgAE8AVzyE2AK0EA7LAEooAYgC2WACYBLQYqjNm8vVACKgrFQAuagPaSd0KAElF+LMsmmoBKKYo4smXIRJyagAaTwALAjcAJ39iXwBrSiooNUkoKUs0rx8qULUAMygqC2VPb18I5MkLN1MwtWTEilCJMyL4tRwoGPxiVIBzYOYAQTKfTwJE5LqY3wIo-s0sVyoAOm1bGxgAMQsoqCwADwJHPCwALi2oAANb0xpbbN8AOQsVLFGAXigAb2YYJ7nKAAcmGwP+UEkJwuRVMUQGEPyhH6QMkmhYWCizAAvlcnlBXu8AEJQb5-WwA8pA4FE8EUlIqVHozGI5FMxQYrG2XGbR7lAlvLAAYVJvwhgJBQrpMBgUOUQLM8Mk-VZBBRkOZXJgPJgeP5hJMooNowAPgLiVAzQahXrxtheiQVAbkt97QEyEkADzO0LAuVYYGWkFItXA0I-f3szmhEPqxUDbEAPigwGAvwloLDkOhUcxMbZsKV-WxQZ+GdpeUZGo5eagsYVcITpYzUtCker0brBfjypLqagAHcLMIVN1YiRs6V8lESoWBp4LB3az13V21XWZ1o0TX9qZFz3+qtbb43XEnTUAKKHBqmIIuvwOj3Ub2C3Ig-1Zn4EAi5qJJlNpmWVIgmCbY5pCWAAG61vWS5-kGBokmaQE+NSraTjC0jQVE+Zqr+fZpkOI5jo+GELhB2HMLc1xXMmABqahYAOUBWFAADiaimAAEoILBAmEpimDgVDnKm9xEGEqxiGsez9MA8DIJAIDAJAqkQKAUAAPraTpuk6VAACaw77EKgpQFxmK+Hp1naVAylqfip6BF6ACqoQACoHIcpjLCoyQHqEBnJt8kAuV5PmSH5UBhZAAD8Yr0gA2gACikaRNBYhQuQAukCqVHBFUWefFPD5d5vmNJQmWGVA8UGSl2VQKiUGYnIQIuQ1OIbO1ADcamQBpNnWVA7kmG4QoEFQhpDXpdkqRAaiOHstT8j8UAXgAjoIBB4KEV4+EQbgltOs7AnwTyoBJO1nMqJjAII5h4FQdKQPixqiuSlKoSB0oYQ2RbMLB26cpAPKvfqgokmSzDlr9ahVsDLK2EDmqgw5EPvCK0N8t9wJSsw7YHoDBaI1yYMQI546qO92NfTCmYE+BpPE3hc7KmjEDg3aVPnhatNjPTtLMPDv4s3GjbsxA5OU4+vPCh9MPAXjv3tszyPdhLKpS+j4yvM80I0wldPUmCYui7YqstWTOsvBY+vKNaCs4-T+Pq6zauykzVsc1ztvvPe71WpDCGCjaFP8k51OvqKkdy6aD7unLSEJ2e1q++aJh69CRp2wbgrx1nDuhyHxI21ARCTYa3yJcw+1YIdnqbdteCepHd4vv7vofkGwKxp+f1wT1a7i0WUBJqEsfOomiZDLYdcN03O2t1T7c+u+0L99+v5jzPGdUIXWDT7P2X9Zz6kgFpM36dsghRHUmJQAAyj5wmX1fmlzQN4C2Mmj8RDEUAKDGSKBYIQ5grAiSgAJISIkxJUAklJGSCx5KICQMAAgkgqADiRjAeijFmLFDAZkSB0DhKiWAOJSS0lViyRQcgYAhCHrEOYMmAAsnsXwQoIgiGWP0Ew-FBJkLgQg6hsklLzUgEAA)
+
+#### 题意
+
+实现一个类型 `ReplaceKeys` ，用于替换联合类型中的键，如果某个类型没有这个键，只需跳过替换，一个类型需要三个参数。
+
+例如：
+
+```ts
+type NodeA = {
+  type: "A"
+  name: string
+  flag: number
+}
+
+type NodeB = {
+  type: "B"
+  id: number
+  flag: number
+}
+
+type NodeC = {
+  type: "C"
+  name: string
+  flag: number
+}
+
+type Nodes = NodeA | NodeB | NodeC
+
+// {type: 'A', name: number, flag: string} | {type: 'B', id: number, flag: string} | {type: 'C', name: number, flag: string}
+// would replace name from string to number, replace flag from number to string.
+type ReplacedNodes = ReplaceKeys<
+  Nodes,
+  "name" | "flag",
+  { name: number; flag: string }
+>  
+
+// {type: 'A', name: never, flag: number} | NodeB | {type: 'C', name: never, flag: number} // would replace name to never
+type ReplacedNotExistKeys = ReplaceKeys<Nodes, "name", { aa: number }> 
+```
+
+#### 题解
+
+```ts
+type ReplaceKeys<U, T extends string, Y> = 
+  U extends U 
+    ? {
+        [P in keyof U]:
+          P extends T
+            ? (
+                P extends keyof Y
+                  ? Y[P]
+                  : never
+              )
+            : U[P]
+      } 
+    : U
+```
+
+- `U` 将是一个联合类型，我们要对其中的每一个对象类型都进行处理，所以要让其发生分布行为，用 `U extends U` 就可以实现
+
+- 具体要处理的是对象中键对应的值类型，所以要遍历每个对象
+
+```ts
+/*
+  P extends T：用于确认是否对要当前键进行处理
+  (P extends keyof Y ? Y[P] : never)：因为不能直接使用 Y[P]，所以要进行类型推断
+*/
+{
+  [P in keyof U]: P extends T
+    ? (
+      P extends keyof Y
+        ? Y[P]
+        : never
+    )
+    : U[P]
+}
+```
+
+### Remove Index Signature
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/01367-medium-remove-index-signature/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgsAUABFCMDMA2A7FAtFASgUwLYHsA3bKASQDsATbADygGUBLAc3IEMAXAVwCdtIYaIcLQCoAIwCeUABaMe+SWyiNGALy4BrZQAoAAnIVLVG7QEooAYlzZKjLrihixl11ACKXbAGcOjfOTO0GS4AA4ANnjY5BxQAAY4BMQU1DRMrJy82AA8ACoAfHFQADRQtADG4VzUUBwyJIxUtFDeLOzcfFAAZgqO+OIAVtjlsRySoT4AdEEwAGL4PGU0bGGRAFwz8XFxm2MTUPP4UAC8UADeYjAA2prYkmstHDyNzAC6D2zkkgDcl934+B0ZgehHwjEov2CAF9duMSABBE5YPBEbApWjpdpZbKHfIwYDAJYTEa2c7-QHAqCg8FQGHBMTbHb04J4gBqjGwAHcoAEoABxRgcAASXHEDxkHA4oW8awJHG85RkkwG3kmC2YwAQKEgIGAkH1EFAUAA+qazeazVAAJr4XhQADC+BqQuwnQt7tNUF1Br2JESqPRaTamT4eTxpwuwSuAAUVOQoLdJPgulBclA2N4oDpY7QONFKJm4gASM6NLquqAAaShRQA-FWoA9yNhiDwzO9UzHXpA6QbIEaPe7Uz5YvaMz4TYPzV69RBGGEFqM4WSAKIARy4bHCpRXNGJsSh3V6UAA5HpfWhFVvIuRmD5gFw-OFvCefcvDkjI9dEw9fM9bx2nySGIXQAkCIJgpQPZvvsABCbCLBGYg3HcTYOOIrqAV8YjiAh4FUpB0EQJAvpQPBaifjheGUtSUHBLhai-k8LxESRy7lOOmanFcYi7vu2Trpu4TZP6yRNEGGQdDkuKlGc5L4bRtL5PkxS8XuwwcAJG5biJKJiakmIhjk8E8CpZK4TwCmQUpKlqfxgk6aJaLiYZUnZORZlyRZVngt8EhsIxjz-swNmqRA3bEZF-YgJOU6erMvB1BW9B5tKsVxTO0ViHi9AyAhJBJna3j4FUfgBDKsiStKsrAPKirKqq6qakgyDAJ83icq62VQOyXItCVj7+OQFUSlKMpygqSoqmqPAalqrXFaVQ3eN1ACyCwkPaeXhDed4jVV421ZNDUzcwOqzpAQA)
+
+#### 题意
+
+实现 `RemoveIndexSignature＜T＞`，从对象类型中排除索引签名。
+
+例如：
+
+```ts
+type Foo = {
+  [key: string]: any
+  foo(): void
+}
+
+// expected { foo(): void }
+type A = RemoveIndexSignature<Foo> 
+```
+
+#### 题解
+
+```ts
+type RemoveIndexSignature<T> = {
+  [P in keyof T as (P extends `${infer K}` ? K : never)]: T[P];
+}
+```
+
+- 键是可通过 `as` 进行[重新映射](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as)的，所以这时可以使用模板字符串进行扩展或条件判断
+- 而通过 `${infer K}` 可以推断出键的字面量类型，所以能够排除掉索引类型，获取到普通的键
+
+答案参考自[解答区](https://github.com/type-challenges/type-challenges/issues/3542)，大佬也有详细的解释，并对 `case` 进行了扩展。
+
+### Percentage Parser
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/01978-medium-percentage-parser/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgsAUABFCMCcB2AHFAtFACgUwE4GNsA7AFwEMBzbLM3AZz0hjRdbSagCMBPKAZQEALAK5kAlgnjwoACgACAviPGT4ASigBiALbYAJmOHaoHDpvNQAisOx0SYgPZFT0KAEltABwA22XaSw8QlJKbExaBlwAHgAVKGwADxJiPTooO1wxIgoAPgA6DgBBfHwHXANsqBIHKsFqAANgAD0ZAB0AagAfVrQ1AH42vRB+toBSfoASYHqoXGwKYW9aMRJeaqhtMhJ8QSg4siI9KCoSWrnqTe26ugLXDhi69JJcYXwSYTn0wQdFo85sABcUAA2vUfMI0mUNlkIfUADRQepEIz-XDwxHCIgreoAXQ4bgAZlAVsS0kQHKd8GRPO85noESRHnpsASyItTmI0gd4l5Vk9MtlbjAOAAxKGJMheXwAjj1OUkOgcVaeaiYPjPLIUWBQAC8UAA5PqldwVVh1QKKAAmXUG9rIACsoyNrmVqvNmoAzDb9WgHU7jaa1RrsgAWb1+50wV1m4MUe3h+2Rkwuk3UABK2r1OAIxHIVHC9DwUSDFtgORgwGA8QSKre+hBhoRjYN+rxKdNaetWaCudCBcixfd2Ut5aglerteSR2BACJ2jOETOHQuoDPRjO21HU1A017uzmQvmIkWS57R+PEpP67O0Cul-a7+vN1Vt2mw-vgnmwsfoqfQ+eq0vbA62nGc72XRcnwDdN4w-Xsj0LX8hzjACJ2AqcQTAxcINXDdZTlFwYHLAA1MRsAAdygJwoAAcRWAAJYROCBQQSBITw6ABSsFR2PIACsbjKChgAQFBIBAYBICkiBQCgAB9BTFKUxSoAATR+XAoAAYQcZkoHovBqGU4yFKgCTpOjLS6nwABrTA5gJMQEliatkkONIMk1cs9TiRI3NSW19SgToDTQIK+j2KAgSIbAADc8AAbkgSzrJsvhhAJRznN8pIUg82NvMivy8sRCYAG8sgJPAdwAX1GGYIuBNMmydHEopBGIm1bJKIGjbNPz7H8okKVySs87JCpG4r3NKsqrOAuyHKcqJKuqkUchq8rVs0gBRGqGpBEUETyE75ts9LMuWnacjaoFgWbE68jOtKMqy4abp6yBZJM4y9lsU4tLIBg0h+5SzMkiAxC8MpTmjMqoB2gBHURvARHaa3QqAaqgAlcAcYx9TkV00B2MhvF8bJbGAYR7G8OhnWS7dAYYTMG31LqurbSygewLsG3admW05xnTWZ7A935wX9VgKXWxF6gxffSWm1gAAGVWpda+XtJ52C2ZVjWWrl3qmZ5gA2G17rCpspE143tapYHLY4dHJyiJGUeLHtD2-RCokNHIETFstA5djG3nd5Gya9g8v37It9QFwOdYYEdQ9cV30Mjz3+vg32B0TmXk7Fj0cnTmBM4jj3o9zn34+iQv1adYueZDMu4TDt3q+8GOBoQgu1eboPdfbzus+73u8-r-20CkIeU+wM3R4gNtpK+kB5NBlSRQ+RlqvVbAOM3re5PB9eOHLJRaGobgNPSBxvBpxwiE4qBWPYzjuLoXiBLyISRKQMgYABw6DkUYK4EiZFKJ0Afk-Jwr934cS4sAHigh+KCVwMJUSQCYGP3sPAi+UAACyZQFaCDJhTKgCC2JIK-j-DBFBxIQ0gEAA)
+
+#### 题意
+
+实现类型 PercentageParser。根据规则 `/^(\+|\-)?(\d*)?(\%)?$/` 匹配类型 T。
+
+匹配的结果由三部分组成，分别是：[`正负号`,  `数字`,  `单位`]，如果没有匹配，则默认是空字符串。
+
+例如：
+
+```ts
+type PString1 = ''
+type PString2 = '+85%'
+type PString3 = '-85%'
+type PString4 = '85%'
+type PString5 = '85'
+
+type R1 = PercentageParser<PString1> // expected ['', '', '']
+type R2 = PercentageParser<PString2> // expected ["+", "85", "%"]
+type R3 = PercentageParser<PString3> // expected ["-", "85", "%"]
+type R4 = PercentageParser<PString4> // expected ["", "85", "%"]
+type R5 = PercentageParser<PString5> // expected ["", "85", ""]
+```
+
+#### 题解
+
+```ts
+// 检查字符串前缀
+type CheckPrefix<T extends string> = T extends '+' | '-' ? T : never;
+
+// 检查字符串中的数值与 %
+type CheckSuffix<T extends string> = T extends `${infer R}%` ? [R, '%'] : [T, ''];
+
+type PercentageParser<A extends string> = A extends `${CheckPrefix<infer F>}${infer E}`
+  ? [F, ...CheckSuffix<E>]
+  : ['', ...CheckSuffix<A>]
+```
+
+- 首先使用 `CheckPrefix<infer F>` 将字符串的第一个字符进行处理，从而判断出是不是指定的前缀
+- 之后就是根据不同的判断结果组装数组，`CheckSuffix` 专门用来处理字符串中的数值与百分比符号
+
+### Drop Char
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02070-medium-drop-char/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMAMDssIFoIBEBOB7ADhAwgBYCGGkKylV5ARgJ4HE4AuxAlgHYDyAZgAqEAQhAAUAAXxNWnXgMEBKCAGIAtgFMAJmwCuK5czUqcAG2IHkxtgYzFjyzjzVko5JW4gBFbWoDOzNlgc5OSYuBDEED44agDGbDxsmhAxJBgQPNh6EX4YnADmAHTBUABiWGlqAB7ERsZqAFzFEAAGrcw+5Mx00RCC2szWPMYMALzo2DhEpAA8AOQQNBDaEMwrEGoQaTwQdgwAhBCzADSHhwB8EMDAhzT9g8N7s+StzU0XAGqJAO4QgRAA4lYABLaGj1CCEAY4Hz1K7tFIFABWPgK5TywDgiDAIGAYDxoAgAH1iSTSSSIABNLDaNL4LAaDZApwbMms4kQHF4ro9UKTVLTADKJ3wFzG5AF60qBg4Gh8LQAJABvBxOCAlAC+SpVaQAourmhByAB+BWKkqS6WyggQE2zebgtWaxW8qYYaY64VnfWGqDggUAbjxYAJbNZEAAKr5VpIfL4iaHSRzcWwjOVVtyNoqIDqAI7aWwnHWVaIxVbq9KZQ5iDPIFK2OocPK+YD9NjGHxPMAZ5LEWNysYAbXIVwg1Z8yCqJeYE4w2Gc2eLsWY7rztmmLv5s1uA1VQzojxOdrOh+3933szOx-IRanK-zxnXE1dc1Pu4ex1OF5Pdyce8el6Oa9F1LO81w3GYtx-LZ30Pf9vx3aC6AvK8oBvJdQIfcC3XmKAFig9IHlwojDkPc54LPf8UIXW9c3vR9cGfeZFmWdN1k2dIdggfYSM-Y8bigv9kMA1DgOXWiwKfTcFiWNZVg2LZOO4j8ty-U4ZNY+SON2CADiEoCaNXTDJIg6SWLWTTtm03TD2YVSmJkqALMUnTzivABdINgxAeME3ZEoaWYQhVQFAxoR83yky88gLgFVINjoak0h8LBjFbQIYQhKEYThHwEWRVEMHRTFYGAYgOB8L4nGiiBPjUH5ktS-x0vBSFmGhWFgHhQgkRRNEMQQEqGrS8rqoAWXKDYpmMBsmwy1r2pyvLesK7FcTAIA)
+
+#### 题意
+
+从字符串中剔除指定字符。
+
+例如：
+
+```ts
+type Butterfly = DropChar<' b u t t e r f l y ! ', ' '> // 'butterfly!'
+```
+
+#### 题解
+
+```ts
+type DropChar<S, C> = S extends `${infer F}${infer E}` 
+  ? `${F extends C ? '' : F}${DropChar<E, C>}` 
+  : S
+```
+
+- 遍历字符串 `S`，然后对第一个字符 `F` 进行处理，字符串 `E` 则使用 `DropChar` 进行处理
+
+### MinusOne
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02257-medium-minusone/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBM0KwHYIFoIFkCWA7ArgZwHksBTSFZCysgIwE918AXAQwDMB7CAMWYwC8IACgACrZrT6SAtgEoIAYinEAJhhxSFU5owAWZMvMMQAijmJ5GGdln1QA4hgBuxLBGYRcU6sQBOQ5gA2AO7ieBAADux4GJbOcsxh7oy04cQAdBAAmuw4fsmpEHg6OQHKED7EjLmuusQe6t5+ysQAxhUJKhB0ENbpttzsfsQAHsxS4QHEAFz9AAbzjHhk+XUAWr6cALzo2PhExAA8AIwAfBDAwBAADMspdVwYrMlcOX7bmLiEJAdwcGcXEDgABYyPNZv0zgA1DDEII9VwORgACRw1CmEB0jEY4TwUwuixaOjSACs8GlBgBzYCwRBgEDAMCM0AQAD6bPZHPZWVeEAAwuxmhAkb46pyxWyIPSmZdAA6mgB4FQDkmoB4HUAcHKAYUVACN+gH9UwBleoAPt0Akt6AELdAARmgBAdQCf2oBDGLAKwgABEMBSYgAVdgAQR8PnEEG2AG8yAAiK6B9EAbQAugAaINHUMQMM4LAAayw7CCWGjQeg8cTKbTGajECTqfTmZjUEDAGZcyWC1gi3Wy4382Ws5WgbXW4Xi92G73Sz2mxn2xBA3Au4P+8Pp32W1P5-XR4GAGyT+uL5sDjfbrczzcjitjhDrvdz3dD8-7i+zqfLgAcp8vC5vB9vO+vn77y4AnE-32eL5fkBV6gSBd5gAAvgA3NKEAAHIQIA9GaAABygBUcoANvGAEbGgBccoA6tqAGTegBMcka8qADD-gCcFoAdsaAMHagDYSoAX3robqOEIRARqaradx8u0jDEJ63q0AAQrQAAyLgUroByISMfFYMoYQWD42AUkWABKECyS4Ck3pGvoJhGZzbDJwxyTpswACR+tgrC+NwGA+BYkFWTZdlqeYjCQeCAD89mOYwmmmdpYTJsQtDsKwDpOq6HpeuIZC+byvH8XFwliRJUnuRYRZhmkeVqUWeVpAVEBFSVZWFfllXFdV5VVaV9UVQ1aSOs6jBugJ4hhg8-kRoZZDoiQzg+GA6JqbBcGANxygDePoA0epQBAXEFB8ezfC6gVmWEniNEZPHENoKWCSJ4lYJJOgHJZfoul5ZxafJYRhq5fg9dlzVPRAWWMBGYC+Z9YaBpMp26IG32DcQw0TWAzLimKEAuh5fIdGEMOcpKDIYOMgwBXafoQAAogAjjggRFnjwypC0AWQRArA+OwGgAOTCCsyCEoEgMUuYwA4JYAR4AzjJ2i0SP6WGZBkxTjAHITxMBAcK1fIcpxFlcJwnEeEutFLMuBPLuyKz8fxFsCasa+TWvS0TusK-sBxVurMCm+L5uU5bst658ttHFcqtFj+P5O1Amuuzrcs298Rze8rECRz7TvfYyUMgKyKNclwuS1H4ADKfE4inqcsmjSdkGcWc6MwFQQOFuSFOwAQ81YWC4hiWI4niwAEkSpLkj4VI0ggwDME3QS+CXEDQrCtf15Y1jN5i2K4vieCEiSZKUtS8AD3gdcN7PY9oIMdS8uXAQc+Y6Lz23S8r93lJ0gyYBAA)
+
+#### 题意
+
+给定一个正整数作为类型的参数，要求返回的类型是该数字减 1。
+
+例如:
+
+```ts
+type Zero = MinusOne<1> // 0
+type FiftyFour = MinusOne<55> // 54
+```
+
+#### 题解
+
+```ts
+// 数值大小与元组长度相等的映射对象
+type DigitToArray = {
+  "0": [],
+  "1": [unknown],
+  "2": [unknown, unknown],
+  "3": [unknown, unknown, unknown],
+  "4": [unknown, unknown, unknown, unknown],
+  "5": [unknown, unknown, unknown, unknown, unknown],
+  "6": [unknown, unknown, unknown, unknown, unknown, unknown],
+  "7": [unknown, unknown, unknown, unknown, unknown, unknown, unknown],
+  "8": [unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown],
+  "9": [unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown]
+};
+
+// N 是一个转换为字符串的数值，根据它创建一个长度为 N 的元组
+type CreateArrayByLength<N extends string, R extends unknown[] = []> = N extends `${infer First}${infer Rest}`
+  ? First extends keyof DigitToArray
+    ? CreateArrayByLength<Rest, [...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...DigitToArray[First]]>
+    : never
+  : R;
+
+
+// 主类型   
+type MinusOne<T extends number> = CreateArrayByLength<`${T}`> extends [infer First, ...infer Rest]
+  ? Rest["length"]
+  : never;
+```
+
+我们根据实际的 `case` 进行剖析理解：
+
+**1. `Expect<Equal<MinusOne<1>, 0>>`**
+
+```ts
+// 1. T = 1，代入主类型得到：
+type MinusOne = CreateArrayByLength<`${1}`> extends [infer First, ...infer Rest]
+    ? Rest["length"]
+    : never
+```
+
+接着看 `CreateArrayByLength` 类型：
+
+```ts
+// 1.1 代入类型中，此时 N = 1，R = []，所以得到：
+type CreateArrayByLength = '1' extends `${infer First}${infer Rest}`
+? First extends keyof DigitToArray
+  ? CreateArrayByLength<Rest, [...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...DigitToArray[First]]>
+  : never
+: R;
+
+// 1.2 '1' extends `${infer First}${infer Rest}` 与 First extends keyof DigitToArray 都是成立的，所以有：
+CreateArrayByLength<'', [...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...DigitToArray['1']]>
+// 相当于
+CreateArrayByLength<'', [unknown]>;
+
+// 1.3 此时 N = ''，R = [unknown]，所以得到：
+type CreateArrayByLength = '' extends `${infer First}${infer Rest}`
+? First extends keyof DigitToArray
+  ? CreateArrayByLength<Rest, [...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...DigitToArray[First]]>
+  : never
+: R;
+// 空字符串的判断条件不成立，最后直接返回 R，也就是 [unknown]
+[unknown]         
+```
+
+根据 1.3 得到的结果，我们代入到主类型中：
+
+```ts
+type MinusOne = [unknown] extends [infer First, ...infer Rest]
+    ? Rest["length"]
+    : never
+
+// 判断条件成立，则有：
+type MinusOne = []["length"]
+```
+
+元组类型是允许推断出长度的，所以可以通过 `length` 属性获取到长度值，最后结果就是 **0。**
+
+**2. `Expect<Equal<MinusOne<55>, 54>>`**
+
+我这里就直接跳过第一步了，进入到 1.1 步骤：
+
+```ts
+// 1.1 代入类型中，此时 N = 55，R = []，所以得到：
+type CreateArrayByLength = '55' extends `${infer First}${infer Rest}`
+? First extends keyof DigitToArray
+  ? CreateArrayByLength<Rest, [...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...DigitToArray[First]]>
+  : never
+: R;
+
+// 1.2 两个判断条件都是成立的，所以有：
+CreateArrayByLength<'5', [...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...DigitToArray['5']]>
+// 相当于, 第二个参数的数组长度此时为 5
+CreateArrayByLength<'5', [unknown, unknown, unknown, unknown, unknown]>;
+
+// 1.3 根据1.2得到的结果，再次调用CreateArrayByLength
+// 此时 N = '5'，R = [ 这里面是 5 个unknown]，并且两个条件判断都会成立，所以得到：
+type CreateArrayByLength = '5' extends `${infer First}${infer Rest}`
+? '5' extends keyof DigitToArray
+  ? CreateArrayByLength<'', [...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...R, ...DigitToArray['5']]>
+  : never
+: R;
+// 相当于
+type CreateArrayByLength = CreateArrayByLength<'', [<这里有 50 个 unknown>, <这里是 5 个 unknown>]>
+
+// 1.4 空字符串的判断条件不成立，最后直接返回 R，也就是：
+[<这里有 50 个 unknown>, <这里是 5 个 unknown>]    
+```
+
+根据 1.4 得到的结果，我们代入到主类型中：
+
+```ts
+type MinusOne = [<这里有 50 个 unknown>, <这里是 5 个 unknown>] extends [infer First, ...infer Rest]
+    ? Rest["length"]
+    : never
+
+// 判断条件成立，则有：
+type MinusOne = [<这里有 54 个 unknown>]["length"]
+```
+
+最终结果就是 **54。**
+
+**总结：**
+
+- 第一步就是先将数值转为字符串，然后遍历每一个字符串，得到长度等于该数值的一个元组
+  - 每一次将调用 `CreateArrayByLength` 的时候，都会将当前的 `R` 的数量 * 10 再加上当前 `N` 值获取的元组数量，形成一个累加，再进行传递
+- 第二部就是通过条件判断 + `rest` 参数，从而达到元组长度 - 1 的效果
+- 最后根据通过新元组就能获取到对应的长度了
+
+> 参考自[解答区](https://github.com/type-challenges/type-challenges/issues/5547)，有些答案非常复杂，这个比较好理解。
+
+### PickByType
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02595-medium-pickbytype/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMCsCcsIFoIAUCWBjA1gIQE8AVAgBwFNIVkbaqAjAiAKwwEMA7AcwGcALThAAUAAVadeAjgFtyAFzYBKCAGJZAEwwBXaaoD29ZuSxyqVFRYgBFLeR5yMejmagAxAE57dAAyLeANBCk2DgQbBA88hB6AGZBnhTuDnYQAO58epEQcmTkYe55bDw8GFwcbPQANnlyehDeAKreAHQuEK567hAAogAebNKk1W3eozkUPFjuGKSmUON5APIclQR4enrVggC86CGEJBQAPADeVFDlsgBcEXLT3OcQWHpaHHI3HDr05O6PGDwAJXIbHUTlWN3oGy2zigUH+3XKVXIEKhwJhEAAvoFIZs0QA+CDAYAQE4Qf5AkFgggo3GcADcZJ4CIq1Rp0IZGKoo28bQJADUMORUtEOBAAOIYOQACS09BufDkclIPCuRLkkz4zWYPGanS4wDgiDAIGAYDNoAgAH1rTbbTaIABNF5dADCenUeSlPzydt91ogJrNCx6vSwlS0HoA0uQCEciIEGoFIxByL05OQOOoeBAcDHYhAiBBdrmCPmiATdsnU+nM9nkwB+AsAbUjAF0U2mM1mIA0II3kx9yAA3H4QQcj9x0oO5Pa4A65OMJiskqhNtBk0V9MMR8jR2Pxnt41s3Ihr1tTznmkBWv12gt2OQQF1FFK3u+BjCDTqP4Ok7oARy0NhKkCPoKBMTEIBiTxdAAchEBZkCwARKmqbg7GALQHEqHhYLNDA3h+GI2CwPIAFl3XISoVwuAZkVue4uCoZ5XneCBPmkb5fjhQFgVBFZqQgHFoSoeFEVZITUU4MBL2DLAX2zXYmyoMDjDkI4AKAyojkwOdiAXCiPRAyTaQ4PFAlJck+KpNk0QZMSWXo4S0UxPFzJU3pwPUzTgJ0-Z9OOQyqMCexGPMkl2Lom5QoIrhXPcqBVJMDTAN83T8AC8gjiC4yOK48LSRYt4Pi+UcMTc-wwFbM0rxvN9-VcLQkj4UcAGV02VOr6oDU1QCoAlWoEAoIFLJqIk2LDHA4FUIAVJUVTVDUtR1PUDQQWBgE4HhUh+fqIAFIVxvDBwnBmublVVYB1WQ5bdXcfVDQ2ngJpO6a9oo4aXRQtCuDseVFQuxabu1O6mMDMAgA)
+
+#### 题意
+
+从 `T` 中，选择一组类型可分配给 `U` 的属性。
+
+例如：
+
+```ts
+type OnlyBoolean = PickByType<{
+  name: string
+  count: number
+  isReadonly: boolean
+  isEnable: boolean
+}, boolean> // { isReadonly: boolean; isEnable: boolean; }
+```
+
+#### 题解
+
+```ts
+type ExcludeKey<T, U, K extends keyof T = keyof T> = K extends K
+  ? T[K] extends U
+    ? K
+    : never
+  : never
+
+type PickByType<T, U> = {
+  [P in ExcludeKey<T, U>]: T[P];
+}
+```
+
+- 我这里的是在使用 `in` 遍历 `T` 之前就将其中键进行过滤，主要发挥作用的是`ExcludeKey`
+
+通过具体示例来看看 `ExcludeKey` 的作用：
+
+```ts
+// 假如有：
+interface Model {
+  name: string
+  count: number
+  isReadonly: boolean
+  isEnable: boolean
+}
+type T = PickByType<Model, boolean>;
+
+// 那么直接代入到 ExcludeKey 中则有：
+// 此时 K = name | count | isReadonly | isEnable
+type ExcludeKey<T, U, K extends keyof T = keyof T> = K extends K ? T[K] extends U ? K : never : never;
+```
+
+`K extends K` 会产生分布，这样对每个键进行处理，那么最后获取的类型就是我们需要的键了。
+
+我的答案略显复杂了点，在解答区看到一个更加简洁的：
+
+```ts
+type PickByType<T, U> = {
+  [K in keyof T as T[K] extends U ? K : never]: T[K]
+}
+```
+
+在 `TS4.1` 的版本以上，可以[通过 as 来创建一个新的键类型](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as)，所以就能直接进行过滤了。
+
+### StartsWith
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02688-medium-startswith/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?ssl=24&ssc=96&pln=24&pc=1#code/PQKgUABBBMBsAc8IFoIGUAuBDAThgzgOoCWGAFpCstTZQEYCeEAVsVgHYDm+ZHEAFAAFWHbr3YBbAKbYAlBADE0gCbEArhMUYpEgA4AbLNuT7SUnFn2VKC2xACKaqfgzEA9u2tQAknv06pdgwIAANMXAIScgAeABUAGggAVQA+EIgAdzJiAGMyCGwAa2cCjLcIKQAPLBzglxxiLgKGXRKOZQgcGTUcdnxMshlBnFDY9JcI-ozSfJCkkK8IADE3EaqsPylFkJ2MFuccht0MSj3WiCwIAF50bDwiGeiAciw6HKfEl-eUiGBgCsqrVqUg6GHKdCkEAAZpZ8FsoGdIXRrrdJlEyM9Xu9Pq8nj8-gCgdpQeDIRgcE5TvsIDkUeF7ujMW8PhAXm9lHjfv8qkSQQVSdDYfDQjtFj8AGrEKQZCAeCAAcVIAAk1HQAFwQMgYDC6fBqv4EPIAOmY+CNq04wDgiDAIGAYAdoAgAH1XW73W6IABNNw9CAAYTcykhSvMkI9EddEDtDsRqIZj1iAO07GU-XqjU4iSSycCaYgGa4PxuSaqKfzIQAJABvJIAXxrhc4dfSAH4ChTIRqYfo4QBuB1gJ2RiMQWLOYL+rBw-ojj3R+3EPSrYJx6sQACiAEc1JZEhvAVJahA69CcG5NE9BIjkHlLP4uM5gGpXL2nmAl7oVxB1weiUshUSAA5NwMG3Xd9BPM8L1Za99lvXh9AfTgnxfYg31jakcmnEobgAbUoP8jwwaJwMsaJ6UiR42WxVkajxRIezhFIUniQjD1qUid3IyiHhiGiWTZBiOycFi2KgIjOLI-QKLuKj+KxQSsQ5VjBV7KQxLAABdQchxAF0509JYenIcxbikXUDMM50Fz0ygfjQXguggBhfRGfA3H0NCPD1TVtV1fVgENMgTTNC0rQQeBgA4fAMnMeyIElaUC087y+g1LUdT1A18GNU1zRwS1rSijyvNcHyEoAWVWSF-UQ5DnAy-zsqC3KQvyi1bXtMAgA)
+
+#### 题意
+
+实现 `StartsWith<T, U>` ,接收两个string类型参数,然后判断 `T` 是否以 `U` 开头,根据结果返回 `true` 或 `false` 。
+
+例如:
+
+```ts
+type a = StartsWith<'abc', 'ac'> // expected to be false
+type b = StartsWith<'abc', 'ab'> // expected to be true
+type c = StartsWith<'abc', 'abcd'> // expected to be false
+```
+
+#### 题解
+
+```ts
+type StartsWith<T extends string, U extends string> = T extends `${U}${string}` ? true : false;
+```
+
+- 这个比较简单，通过[字符串模板](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)进行条件类型判断即可。
+
+### EndsWith
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02693-medium-endswith/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMBsCcBmCBaCBRAdgEwM4HUBLAFwAtJUUrqKAjATwgCtCBDTAc11PYgAoAAi3ZcemALYBTYqwCUEAMRTshAK7jFxSeIAOAG1ZaUekpIBOrPRQoLbEAIqrJuYoQD2ma1ACSuvdslMYggAAyw8IjIAHgAVABoIAFUAPhCIAHdSQgBjUggZAGtnfPS3CEkAD1Zs4JczQk58+h1i9mwIM2lVM0xcDNJpAbNQmLTAvAySPJDEkK8IZIgANUJJdIgPCABxEgAJVVoALghSYmIdXEPgYGJcXIA6Jlx7tzMOYDgkMBBgMD-QCAAfWBINBIIgAE03N0IABhNzYSQQXbmJFg9HAiA-P7EZpI8IEKaxcoVLQ4Pp1BocBKJElkiaUziLAC8EBidPGfRCABIAN6MjgAXz5iUFaQA-PkzE4IMcAGaWXCSADcfzAAIx6LZzmCsNYSr6mrBWN+hF0r2CuJaEF5GAAjqpLAl0BUWjUIIKIHKzG4NAByARWyQoXKWfycZzAVSuPS4P1gM06C02jCuyQ1ABiiskCQAcm5iOgHZYPV6ff7A3iQzw9OGOJHo4RY-GwEGINl9cVWQBtCgut3EKJFx16IfkyKkKJ+1i0bJ+hJ+2d+5IJYjSyTJFd9tM1IfF0cEidTmdzhcn5er9ebuLbgd7kdjiJE6dLhfYC9e7PXsAAXTV6pAIEjXBDNujIcwIAAZS0C4gOAwETQAihFkgnhOggehoWGXA3D0RsPEuE4zguK4bjuUhHmeV53k+RBgHYXB0nMZDllWdYcLw1wCOOU5zkua5bgeJ4XjeD4EDojj8N6FiAFlXiRWEazrZweOI-iyKEqi3m+X4wCAA)
+
+#### 题意
+
+实现 `EndsWith<T, U>` , 接收两个string类型参数,然后判断 `T` 是否以 `U` 结尾,根据结果返回 `true` 或 `false` 。
+
+例如:
+
+```ts
+type a = EndsWith<'abc', 'bc'> // expected to be true
+type b = EndsWith<'abc', 'abc'> // expected to be true
+type c = EndsWith<'abc', 'd'> // expected to be false
+```
+
+#### 题解
+
+```ts
+type EndsWith<T extends string, U extends string> = T extends `${string}${U}` ? true : false;
+```
+
+- 这个跟 `StartsWith` 比，就是反过来了而已，所以还是一样的套路...
+
+### PartialByKeys
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02757-medium-partialbykeys/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMDsCssIFoIAUCGAnALgSwwBsAhATwGkBTUgZ0hWUafoCNSIArAgOwHMaAFhm4QAFAAEuw-kO4BbSjgwBKCAGIFAEzwBXOeoD2LDpQDGOevTXWIARR2Ua+A90tQAknIAOhSgu44EBgQvJTclFh4phAABpi4BCQU1DQAPAAqADQQ5AB8MRAA7gJRAhBKANaO5YUG5aRelEFYvHphgTHpBcKaseQxAHRufQU0jaZ4AGbsOAJNNIoQBpMQXlgGjQnVy7Fd5UKBggY6hL0LgTh1LE0bztxEAxAA6nMiMf0QeDQQ3AaBawYAG54TSUTTZPCHATHU4QOQYKpBQiEVbrTb4bZeO5ETg6JwQQh4RGzJq-LDwlFxbD4IgZfJDKD0ABiBiwEEoAA8MN5fMMYvycA1HKZIlj6HgAhFJhhTE0AKoLNkAb3oUHuCgAXBAnJE+KqgqEtdw9NcsPqMJpNFhHDQtTqJbx6ABfYaCxoQBUReI0wgAOW5TQAvOhqYkyFRaKlPVhsgBydWUWO5CDAYAQJU-AMAfg19r4AG4DZQNca5KbCxarTbczhdbwIC6oPyYsNkwA1PCUQpLEQAcUhAAkdCwtQIcDgvLbUzgaKYBAMODQBqzeMA4IgwCBgGAd6AIAB9Q9H49HiAATWObIAwgZQRABxEmifn4eIFud26mt6w8lI+l2RyOBhJo3xKk62RyhAwZVKQOzpMmwb0AA8nIkKpN+tJoFEFQZBBEAAGQQDBcG5MmhEoWhWQegRRHUCR2ThICES5PmO5sXuL7PhA6SOIEV4YAs3ycSeb7bng3ishcQrphAACiACOOhENkskcuMgROhAkzrPosbiJ+yBzkQvh8I4wA6PghA0LGYDiV4kkyap6lMkQCzZL6fwKUpKKadpBi6fpQqGUIyJhKENDmZZ1k7hKQFYNKsoeoq6b0Amdq1g69AYIaPwmhEWWWtaNC2tqGV6i6tmSvFMryoqGF+gGKVqtm6V1llOWlqaBVVsVrWZRVsVSjVSVeqGRD+goACC3CaJNoRNZmCg5qVbVQNllDLZ1+VrYV1Yrf1H7SaYAnVMGADa9BOWYOCpF5mFjUkEZpNGcYJkmEF1Q9E2UKRmSXWp123Yp90JEQ4YpFGiqvQGsYQAAPhAsY6NwFS-IU3DvSNWD1d9v3-epQPeehD3g5GL2I298OI+tmPRjjAbTbNoR41AV3mITIM+qTz2Krk2T1ZDzF4wAumxYAccJp5MjouBzGyADKQGTgekuvu+oD0Mm8tCNaECwTL2oGIQFl4C4JVjhOU7ADOc4LkuK5rggsDAMINCFNtEDtp23Y0EbJtm6O46Thq06zvOi7Li0juIMAvvG3cdBQMmACyrJNFeIUmeFgeWyH1th3bkeOu+YBAA)
+
+#### 题意
+
+实现一个通用的 `PartialByKeys<T, K>` ，它接收两个类型参数 `T` 和 `K`。
+
+`K` 指定应设置为可选的 `T` 的属性集。当没有提供 `K` 时，它就和普通的 `Partial<T>` 一样使所有属性都是可选的。
+
+例如:
+
+```ts
+interface User {
+  name: string
+  age: number
+  address: string
+}
+
+// { name?:string; age:number; address:string }
+type UserPartialName = PartialByKeys<User, 'name'> 
+```
+
+#### 题解
+
+```ts
+type PartialByKeys<T extends {}, U = keyof T> = 
+  Omit<Partial<Pick<T, U & keyof T>> & Omit<T, U & keyof T>, never>;
+```
+
+参考自[解答区](https://github.com/type-challenges/type-challenges/issues/5395)👍最多的。
+
+先通过一个具体的`case`来进行分析：
+
+```ts
+// case 如下：
+interface User {
+  name: string
+  age: number
+  address: string
+}
+
+interface UserPartialName {
+  name?: string
+  age: number
+  address: string
+}
+
+Expect<Equal<PartialByKeys<User, 'name'>, UserPartialName>>
+```
+
+1. 代入到类型中：
+
+```ts
+// 此时 T 为 User，U 为 'name'
+type PartialByKeys = Omit<Partial<Pick<T, U & keyof T>> & Omit<T, U & keyof T>, never>;
+```
+
+2. 先计算内部 `&` 右边的 `Omit` ：
+
+```ts
+Omit<User, 'name' & keyof User>
+// 相当于：（注意（），这是一个整体）
+Omit<User, 'name' & ('name' | 'age' | 'address')>;
+// & 是交叉类型运算符，返回的是交集，运算后结果为
+Omit<User, 'name'>;
+// 最终结果：
+{
+  age: number
+  address: string
+}
+```
+
+上面代码中，`'name' & keyof User` 得到 `'name'` ，因为它们的交集就是 `'name'` ，如果没有交集，则会返回 `never` ，例如：
+
+```ts
+// T 的类型为 never
+type T = 'username' & keyof User;
+// 相当于：
+type T = 'username' & keyof ('name' | 'age' | 'address');
+```
+
+3. 计算左边 Omit 中的 Pick
+
+```ts
+Pick<User, 'name' & keyof User>
+// 交叉类型运算符的结果跟第二步一样，返回 'name'
+Pick<User, 'name'>
+// 最终结果：
+{
+  name: string
+}
+```
+
+4. 根据上一步得到的结果，计算 `Partial` 的结果
+
+```ts
+Partial<{ name: string }>
+// Partial 是内置工具函数，就是将类型 T 的全部属性变为可选的，则最终结果为：
+{
+  name?: string
+}
+```
+
+5. 将 `Omit` 内部 `&` 两侧的结果代入到类型中，则有：
+
+```ts
+// 因为 { name?: string } & {  age: number, address: string } 是通过 & 运算符产生的类型
+// 是两个类型的交集，所以需要将它们融合为一个类型
+Omit<{ name?: string } & {
+  age: number
+  address: string
+}>, never>;
+
+// 使用 Omit 再进行一次运算，第二个参数可以传递 never
+// 所以就达成将两个类型融为一体的目的了：
+{
+  name?: string
+  age: number
+  address: string
+}
+```
+
+### RequiredByKeys
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02759-medium-requiredbykeys/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMDsCsBOCBaCAlApgRwK4EsAnTAEwCEBPAaUwoGdJUVmXGAjCiAK3wEMA7AOZ0AFgIgAKAAI8BwsfwC2mAC68AlBADEykvlyLtAezZdMAYxWNGW2xACKuTHRX4j-a1ACSigA4AbTGV+FQheCEFMfkxCfHMIAAMsPCJSShp6AB4AFQAaKCoAPgSIAHcROJEINQBrZ2rSo2qKX0wwwkEDKNCE7JKBEkSqBIA6TyGSulbzfAAzThURNrpVCCNZiF9CI1bCV3r1xL7qsVDRI1x-QZXQlSa2NuIU4hIRiAB1Jf4JiHw6CH4RlCWyMADd8CRSPl8GcRBcrhBFLw6mF-P5Nttdvt-k8CC9uLgXBB-PgUYs2oDCEj0UkcHjSDlimMoIwAGJGQgQTAAD14fkC4wSQpULWc5livisUHwIRis145jaAFUVpyAN6MKD8PmYAD8AC4IC5YkJNWFIgaAQYHoQzbwSCRiHQ6JbjTLBIwAL7jEWtCAqmIABV4ez4-gAcjqIABeDB01Lkai0OiZAOEfIAcm1ygzhQgwGAEDVAJ1hrdQgA3Oa9Yb+NaYlX7Y7nC6yyoTYIIN6WVAhQlxnmAGr4TClNbfADiMIAErg2IaRCoVL46PqCyo6OYRCMuHQRhzBMA4EgwCBgGAL6AIAB9W93+93iAATQunIAwkZIRBpzE2g--7eEBnhevptMk9KJhkKZ5BAVAxhAdQUIcMFKly3IqFEJD-IhyHwThGzZHm0aMAA8ooMKZOBCaZIGcQ1Dk+RwQAZP6hR5ixZEUTBzGsfk0SgjEhQVheYBXgB-4QNkzihG+vArP84kPkB574H4HK3KKRYQAAongvD+Pk2nctMoSehAszbIYGZSKBKBbvpgRCM4wC4K4-h0BmYCqb46laUZJmsvpKz5OGQK6bg+lduZlkQNZtn2WiUSRHQLluR5F4yhhhDyoq-qqkWjDZjWRrtu6jC8Batb1raUBNk6rYlR2YDel5srZQqyqqlRLyRsoBVaqWjVlbVlVWooNrlQ69WuqVpotZlcodXlMTdaQvWYAAgvwJAbZE-UlsobZNSNmBVeNMSTc2zozU1LWgRA5hyfUsYANqMP5FgqJk4X6ZR8YvOkyapqqmZFbm+RpqtJDrWxuTvcZn3fXp-h-c8aRJlkaagzqGYQAAPrFuD8DUgKlPw4PLYQUMw4UcNQB9lhIxFKNQ4DmMg7FYP47FFWYBTkP-WtOpbTtkSw-DJlM79rMYymaa03GaMkMDgniwAuiJokgDeimPqyuB7EsnIAMoYSuOu69eyla4webG2IxAQEhBtGkY-iuW4-CrhAi7Lqu66btuu77h0R4IIgwACHQpQXVAQ4jmOdBux77je77K5rsAG5bjue4HmHSDAEn7uuKntsQAAshybRvmIiVOWnS4ZwHOfBwep7nmAQA)
+
+#### 题意
+
+#### 题解
