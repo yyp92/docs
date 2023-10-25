@@ -2356,4 +2356,295 @@ Omit<{ name?: string } & {
 
 #### 题意
 
+实现一个通用的 `RequiredByKeys<T, K>` ，它接收两个类型参数 `T` 和 `K` 。
+
+`K` 指定应设为必选的 `T` 的属性集。当没有提供 `K` 时，它就和普通的 `Required<T>` 一样使所有的属性成为必选的。
+
+例如:
+
+```ts
+interface User {
+  name?: string
+  age?: number
+  address?: string
+}
+
+// { name: string; age?: number; address?: string }
+type UserRequiredName = RequiredByKeys<User, 'name'> 
+```
+
 #### 题解
+
+```ts
+type RequiredByKeys<T, K = keyof T, U extends keyof T = keyof T> =
+  Omit<Required<Pick<T, K & U>> & Omit<T, K & U>, never>;
+```
+
+道理跟 `PartialByKeys` 是一样的。
+
+- `Required<Pick<T, K & U>>` 用于从 `T` 中获取键**为** `K` 类型的字段组成新对象，并且将该对象的属性都设为必须的
+- `Omit<T, K & U>` 用于从 `T` 中获取键**不为** `K` 类型的字段组成新对象
+- 最后再使用 `Omit` 将上面两个对象组合成一个完整的新对象，就达到目的了
+
+### Mutable
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02793-medium-mutable/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMDsCcBmCBaCBZArgFwIYCMAbAU0lRQsrPwE8IArAS1wDsBzAZwAtWIAKAAJNWnHiwC2xPAEoIAYkkATRpnHyATsVyKA9i0J05O-PWIBjbCgDWxGhzJk5TiAEVMxDtkZ6HUAJLiAA4kkizYENhcxBBsxCzE6oxmEAAGaVh4RMQAPAAqAHxpKRAA7lxJXBDiuDYcELiEhBCB6jqBCV4eEIwsqWm5RVU4BCT8LDrhmtp6BtIAdL4QAGI66hDEAB64QSSLRdg07RxmiYHYZD3YCQBmuGbRuTq6EADeZFBTuvp0XtgkAFwQTyJdjvCCfGZ0RQeE6MM7eFiA4E9NhgiHfCBmHQ7KTERSA-A6HQkVhkAC+iwO7Qwwyyj2eAF4aZkSHknjp8hBgMBXhFGH9iEjsCC2ABuCDQ46nLx6IUi8VYnFXfEQQnErQscUUqBkIqLTkANUYxBKED0EAA4vyABKYfCArjYbCBDj-bnYY5cOb0DhzVZsYBwJBgEDAMDh0AQAD6MdjcdjEAAmjpMGsAMJPaLWhLReN5mMQUPhqnRDIjHK5dYbK4sRR1ABK5lWimyAAVWu11AcANK2AA09RYNHynKZbygKHRBggAG1W91ejYaDprhBcgBdQG5Ofrqs1utmkzmcIAfmZ5byO85W53orAFPDYEj+bza484TTuA4XRf8cLYcYIJVnCEteQAUQAR0wBoBzAjZ2gsCAyQga5WjUAByAQSxQMweEaOJYg4YAcEYQgOHQsBAMCYDwPg48lgab8BwAOQmSDoKaZDUOxCBMOw3CGhIdgPGIrwyIoyiwhuO4HnZABGV4yF+AEgWFFEyElWF4VlVSRTIRVglxFU1RJFgyEkPBAXHKB6hwLhVjldSoApB9QIAGUYTwICZGc5IHaAB0Qddi0OaIzC-LofLIOCEOwbJ2IabIyyybJG2mb42V0OSRwHekdGy-I+2iuiLHiqDEuS1k0q+Axsg8zwcogersBysBgrAUCEladQ6iiqBuQgLCOBQTZYpG9RurISqcnQ5F2HQwqyAGoaRpKywutWKbaVZAAGRb2ojEBo1-BMllTSIEggABlK4XWOk6o3-J9wCgTkrp4TQIGXVMgWJEi9FdCBHWdV13U9b1fX9QMEEQYBWA4EoEjIQ1jVNDg-plFhAeBl03WAD1cIhv11ADINYfRwh-qx5GMFWaI0zwoTCIdJ1cbBwmfWJ1EizAIA)
+
+#### 题意
+
+实现一个通用的类型 `Mutable<T>`，使类型 `T` 的全部属性可变（非只读）。
+
+例如：
+
+```ts
+interface Todo {
+  readonly title: string
+  readonly description: string
+  readonly completed: boolean
+}
+
+// { title: string; description: string; completed: boolean; }
+type MutableTodo = Mutable<Todo> 
+```
+
+#### 题解
+
+```ts
+type Mutable<T extends Record<PropertyKey, any>> = {
+  -readonly [P in keyof T]: T[P] extends object ? Mutable<T[P]> : T[P];
+}
+```
+
+- 使用 `T extends Record<PropertyKey, any>` 可以约束传入的参数是一个对象或数组。
+  
+  `PropertyKey` 是一个内置工具类型，代表了有效的键的类型：
+  
+  ```ts
+  type PropertyKey = string | number | symbol
+  ```
+  
+  数组的话，可以使用数字索引进行访问，所以这个类型是可以很好地检查出传入的参数是否为`{}`组成的对象或元组类型。
+
+- 通过 `-` 号可以将修饰符 `readonly` 去掉。
+  
+  关于 `-` 的知识可以查阅[官方文档](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#mapping-modifiers)
+
+- `T[P] extends object ? Mutable<T[P]> : T[P]`
+  
+  通过条件判断，可以对嵌套的对象继续进行处理，直至将 `T` 中全部的属性`readonly` 修饰符去掉。
+
+### OmitByType
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02852-medium-omitbytype/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMAcCs0IFoIHkC2BLALgIQE8AVAgBwFNIVkbaqAjAiAKywEMA7AcwGcALThAAUAAVadeAjhnI42ASggBiGQBMsAVwzKA9vWbkAxjipUl5iAEUN5Hjiw6OpqADEATju0ADH0R9eAGghSLEMAawg2CB5ZCB0AM2CPCjd7WwgAdz4dGIgcMnJIt0KOHRxInh4sLg42egAbQpwdCH8AVX8AOmcIFx03CABRAA82DFJGnv98ih5DNyxSEygZwsxcPB0dRsEAXnRsfGICgB4AbyooWpkALmicBe5LiEMdDQ4cO44tenI3Z6wPAASuQ2KpHPUCHd6Fsdk4oFBAYNag1yNDYaD4RAAL5BGHbTEAPggwGAEDOEGuaPujy4AG4Xm8Pl8fn8cVR-D1iQA1LDkDJxDgQADiuAAEhp6Hc+DgcKQeDdSTg5nxOsweJ1+lxgHBEGAQMAwEbQBAAPrmi2Wi0QACabwGAGEdKpCmK-oUrZ7zRADUbVgcNscKCciEE2sT9hcoABtAAKECwQrC5AICQgRAq6bjAF0IORhjhyBxVDwIG0IAB+SnkABubLusezdyIObpYGxRuNIDNXqt6ds5QdbBipd7fd9WHG-XK-opgwAjho2PUgiMKMYcRB4h5tAByESrZCGAT1RrcWzADT2eo8XdgSekafkobDdc4FzLmJBAByZQXS-qTdt08CB90PY9lzPLgLyvLAbzve8Pj+eI2EMQoAFlnXIQCo0pMZqTsWkqFed5PkpVl-kRYFQXBDhIXRAlOCoJEUUaBi4XbP0CheYd0n2aMqDXIwcBOf9lxOdYjhIYNMJdFcIHxOFCSCCkqTuQjE3pRlSJZDBfgGbFCWUwTX2E0TF3EyTCGk8gTlk7Cgg07hlOfEjmXIvS-gZQEQTBCEoQUjFOG8nhkTqNjAsYoVDOMqAhOMcyAIkw5rNOez5O+Ty3Bc1T8PUh5NJC3zaPoyK4RCsLUXYzEcSMgIwGzTswBNMdLV6DRUj4NkAGVC3lHtWtNH1DVAKhiW6gRiggVMOuibZYMcBUIBlOUFSVFU1Q1LUdQQaBgE4HgMj+MaIF5fk5vqBaOCWlb5UVYBlWPTbNTcbVdT2nh5vsRaTswqaHRPKDbGlWU7vWp71Rerh9UNMAgA)
+
+#### 题意
+
+从 `T` 中，选择一组类型不可分配给 `U` 的属性。
+
+例如：
+
+```ts
+type OmitBoolean = OmitByType<{
+  name: string
+  count: number
+  isReadonly: boolean
+  isEnable: boolean
+}, boolean> // { name: string; count: number }
+```
+
+#### 题解
+
+```ts
+type OmitByType<T, U> = {
+  [P in keyof T as T[P] extends U ? never : P]: T[P];
+}
+```
+
+- 关键点就是通过 [as](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as) 来创建一个新的键类型，由此通过条件判断来排除掉某些键
+
+### ObjectEntries
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02946-medium-objectentries/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMCcAsA2CBaCB5ARgKwKYGMAXAUQDtCAnAS1wGdJUUnmHMBPCbKgQ1IHNaAC14QAFAAEuvAcNIBbXIW4BKCAGIFAEyoBXOeoD2OAoQYM1FiAEUddQlQOkzUAJJyADgBtcC8hEKCuP5s7kEAbrgUtA6kEAYAZhAABilYeEQAdLjk1HQpSc4QAGIGFBC4AB7cHt4QhfmEIXT41O6mUFTkkfHc+EEAsgaauJ4QAN4MUKTVuABcELSUnXwA3JMQ3HxzEKR6mJFrUFCeBvjc9o6084vU-ADaALoQAD47Op6ehxAAvgyNoRA5EMRmQlnQIABeDDGIig3K0AA8g2GngAfBBgMAIHcAOTTBQ4gA0CyW-Cer1xm1wRLecn2FHJ2JxJzOF1ItBpN2Wjxebw+Dy++UK6IAajQAO5xWIAcSohAAEjpMPNBIRCO4rpjCLR8IIMthaBlSnxgHAkGAQMAwNbQBAAPoOx1Ox0QACaBh0ZQAwsCIPLIkFnUGHRBLdb-kEvbItiLuJ5bAiACroqETKB3AAKEE6EAA1rg2AkIImHvNM8TE5mnpVCNlNLQIDpSMN4p1cJoIAB+RvN3Ct0jtiDzSsZh4PMDfOpgCPQ9IkHI0RHJyFQKPSXCx+O4BEAJVwAEcdFQKO2k6jUXd84XEiW1tawLbg0Hi3YIF7uLRwU-naGrVQPKUhDBACYwQMQh5xsSxAVKERA-BA8QUAY+g4uIEYoLqcbePwdDADo9ieByYD-u4gHjGBMEmEUcafsSAByBgkBBoyTohyEQKh6GYR82RbLQeEEURxFdBQPR9BAyIjOMDD4tsXL8AwVLzLsdKRAwLLnDEVwkrcfA8q8uwfBO4ZNBJwKeHCi4rrismcqSfCMpSWw0ip9KOcypyaZcdm6fpfKeOO06mWcn4NlCdwMNBsGEAi4E6HGCJpCYll0Ei5mosSkkWQudDnoSkWUUQsXMYlMLzmCiIZtwFD2AlWV5WZKIpbQeUFdFxXxZ4pVzs1CKgVenbzE2LZth23wZUyV40sNfajQ8rVQFFJgdQlSWwjliL9QWQ29v2g7jcSuJTcSM17Zo80ZWAgU2iA9rfi6RSegEkQQAAyrWGp3fddq-g+4BQOir3CCeECFp6CwGPGbLaaq6qasA2q6vqhrGqaCCIMAvC0OKakAxAYq4JKtCQ-hWkqmqGqzFqOp6gaRoUCaZoY8TUNaQw6KDCDa48ThMMU-DiO0yjDMWlaYBAA)
+
+#### 题意
+
+实现类型版本 `Object.entries` 。
+
+例如：
+
+```ts
+interface Model {
+  name: string;
+  age: number;
+  locations: string[] | null;
+}
+
+// ['name', string] | ['age', number] | ['locations', string[] | null];
+type modelEntries = ObjectEntries<Model> 
+```
+
+#### 题解
+
+```ts
+type ChangeValue<T> = {
+  [P in keyof T]: [P, T[P] extends undefined ? undefined : T[P]]
+} 
+
+type ObjectEntries<T> =  ChangeValue<Required<T>>[keyof T];
+```
+
+`ObjectEntries` 最终要返回的类型是一个联合类型，那么针对一个对象，以下操作可行：
+
+```ts
+type T = {
+  a: 1,
+  b: 2,
+  c: 3
+}
+
+// T1 = 'a' | 'b' | 'c'
+type T1 = keyof T; 
+// T2 = 1 | 2 | 3
+type T2 = T[keyof T];
+```
+
+所以，根据上面代码的思路，那么我们只要将类型 `T` 的值变为 `[键, 值]` 的形式既可，最后通过索引类型就可以返回 `T` 中所有值组成的联合类型了。
+
+### Shift
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/03062-medium-shift/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDMAMBsAmCBaCBlAFgSwGYBdJUUTSiAjATwgCtsBDAOwHMBnTJiACgAE6m2HRgFsApvnoBKCAGIxAE2wBXYbPoAndfUpEiM-RACKS0a3zYA9o11QAksIAOAG1FjG+CPkyjPlBz4A3UXVWS0YIC1wIAANYgEFNbQA6djx8WOibCAAxC3UIUQAPekcXLIz8P1MAY3VsB0IoSv8IACVTJScPAF4MHAIAHgBtaAAaCERxgEYAXQA+CGBgCCHJiFmiDKyFgDVsUQB3CPCAcWx8AAklcgAuCEx8fAdWG6X8VmrMJJpWJLzmYBwJBgEDAMDg0AQAD6MNhcNhEAAmhYlPkAMIWeQ+C7BHzw-EwiCg8HNHxYNIDAAqBUK+FEjHkrAgTEoQ3mEF61KKdIZTKGLPGSSF2EYuGCEAAojMIAB+SUQO6MURBdQAbnBYEhBPxEEppg8aPorFM0O1cKJYOwjjyHlJEAA3pKAI5KehOcYSwr+aoeAC+EFw6gsqgA5DxSShPm6XCxTMAlOYnKwQ2ArQ4bQ7JV7RD7sm7jeMAHIWfASl1uiD+wPBiBhiNRpwx5hxhPYJMpsB26pGk29IZET3e-ADMuupwDcmDEbjNazObjVbTebzgfZn0j8vjyfDoYh+gh8Yh8gH2vVE8h+QhiDzBdH89nw+X5ejMAzDWakCms2E7Korzi9A6WeL9vwtD8iAWLANB8SgUXyVgLCcVsrBee5HmeV5gHeT5vl+f5AQQRBgCYVgDmCCCID2Q4IAQpDzBQu4HieF43g+L4fj+dQASBIjaOQxhWAogBZPIfDRDhG3pZtUKYjDWJwjj-hBMEwCAA)
+
+#### 题意
+
+实现类型版本 `Array.shift`。
+
+例如：
+
+```ts
+type Result = Shift<[3, 2, 1]> // [2, 1]
+```
+
+#### 题解
+
+```ts
+type Shift<T extends any[]> = T extends [any, ...infer E] ? E : never;
+```
+
+- 这个就比较简单啦，通过元组的 [rest](https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types) 元素，就可以获取到我们想要的值啦。
+
+### Tuple to Nested Object
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/03188-medium-tuple-to-nested-object/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?ssl=24&ssc=88&pln=22&pc=1#code/PQKgUABBDMCMAc8IFoIBUCuAHANgUwgBcB7CAOTwGdC8ATCAeQCMArPAY0MhWV7+6YBPCCwCWAQwB2Ac0oALKRAAUAATFTZCyQFs8hcQEoIAYl21RGbSeKsOXKN2NOIARQxVCo4pO7cA4qIAbniSEOJE2PhEglgEAAYJaAlxRAqEEN44wuze+qKSlBDUAE750tGxADRhkvThhDHxCQCqydVMGKI4daE2bJwQxRwYxZRBeFkAdL5QyQ2xlOylWPYVBOEAvOiReGjEFNR0zP2EADwA2gDk4pcAutUlZQB8EMDAEADe4gBcRYSlMgAvtx5gQmBAtphcLt9h4jrZOBdrpdqpcmHdqpJLEw8MUXm9Pj9PkxfljtDjioDgVBQRB2BDttC9gcaLRjnYLvcIExiMR8FJ8e8eXy8FJJhBRAAzVIEQg7CWFPDaFaCaosDDUQZ6EahQhyAjNNbcZIzCAvABqojwAHcMqEAoQABIYEkQOSEQhYSjfN6ERZySYsSiTYjFaTAOCIMAgYBgOOgCAAfWTKdTKYgAE1iCMIABhYi0AiO3EENNl5MQGNx2ksuinABi1QAotVmi8tvWIHgAB40WqFR4yCAAfk+EHOAAUJaF67dflD8My4WyEWcWxA2xBARBSXhgsVq41GYvYYcVydTmhW+30F3eyFaIVzvlJbiII2IJMvy+303biPyGXBtm2vHcNwAbjjeMQCTcs03QDw83ESgqFguD0yrURlVDdJaQ+CAmwARwwcQcGbbtYgGbdJWKYgrEuFRQWQdgFBwfAZCoYAME8HBKEuQ9YjpZDUK2c5uCbCiOSIkicEvHYlzPdlESuG4uUHaQnmqfCiXUrcnk08TJMRaTSLkplT1ZJSzhUlEIDRDEIDJClNLHIl8NdJy323QF9MqQzKLXYjTIXGFa3PDkbNRdFUXYBzhX5SQXO0353JSulfni0VQm8vSDKgCSAtOEzZJChTLNXTl2l5BKXMygUDNuON8hoYpJXEdgCHzHBQ0lDAcE+bgcm64pfnUyCoGQ2hfkudSUTAYFmtxNqOrzURinYKIPm4YpxHMDVSWxXFxrCSgpr+AFpHmyAwFpLqer63M1o2ggtju1q+ogAAyVb1vwSCcgKdJNk+bdkLzPl7pwR7frwSDxGmaC0PQxN3xGPU3wAZRoL0kfQytY1AbgXgxhQhggQRs2KIo+W4rwCl+d1PW9X1-UDYNQ3DSN4GAKRKGtXEiYgS0bWpnBae8b03Q9L0fWAP0WLZkMwwjBBucoGnPAlwWAFlQ061j2OkKgGel5m5dZoMlcuqswCAA)
+
+#### 题意
+
+给定一个 `T` 仅包含 string 类型和 type 的元组类型 `U` ，递归地构建一个对象。
+
+例如：
+
+```ts
+type a = TupleToNestedObject<['a'], string> // {a: string}
+type b = TupleToNestedObject<['a', 'b'], number> // {a: {b: number}}
+type c = TupleToNestedObject<[], boolean> // boolean. if the tuple is empty, just return the U type
+```
+
+#### 题解
+
+```ts
+type Nested<F, E, U> = F extends string ? { [P in F]: TupleToNestedObject<E, U> } : never
+
+type TupleToNestedObject<T, U> = T extends [infer F, ...infer E] ? Nested<F, E, U> : U;
+```
+
+- 我这里通过 `Nested` 来组装对象
+  - 通过 `F extends string` 进行条件判断只是为了把 `F` 确认为 `string` 类型
+  - 因为值是一个嵌套的过程，所以就是要遍历数组元素，递归调用，最后就能完成嵌套的效果
+
+我这里把处理嵌套对象的逻辑拆分为了一个独立的类型，并且通过条件判断来将确认键的类型，显得有点复杂，在[解答区](https://github.com/type-challenges/type-challenges/issues/3282)，我看到了一个更加简洁的答案：
+
+```ts
+type TupleToNestedObject<T, U> = 
+  T extends [infer F, ...infer R] 
+    ? {
+        [K in F & string]: TupleToNestedObject<R, U>
+      }
+    : U
+```
+
+上面代码中，使用了 `&` 运算符来解决了要将 `F` 变为可以作为键类型的问题，例如：
+
+```ts
+// T = 'a'
+type T = 'a' & string;
+
+// 这种情况下，是冲突的，会返回 never
+type T1 = string & number;
+```
+
+### Reverse
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/03192-medium-reverse/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDMCMCcAmCBaCAlApgN0wJwGdNJUUzySAjATwgCsBLAQwDsBzAgC1YgAoABRqw7cWAW0wAXJgEoIAYgkATBgFcxCyaoAOAG2JQS84xACKqzAUkMA9ixIkAkmL2YJLSREmdMX6tt9cQlsWCBsAMwgAAxiAQTw8JmoAOjwcfCIYqIcoADEbPAhMAA8mF30ALhzomMl-SwBjPAZtSRI6gIgmCABeDHTCTAAeAG0AciYxgBoIMcoxgF0APghgYAhx+ZmJxfb6iEpe-qCiUZ3trdmGxZW1jbHri+nZyYWSLOqVgDUGTAB3MKhADiDEkAAlVJQKhBOJJJNoCBU1pICA1OMk6ARkgU2MA4EgwCBgGASaAIAB9SlU6lUiAATRsqkKAGEbEpfGD8L4aTzKRAiSSOr4sCdhgAVFZ9MVFYqSTAsJQEDbJFUMFjhfAQXIzNUawoAUQWEAA-Bt9TMVckRRlhrklkboWKANwksBk3k8iBiyyeZlMIhKj00-nEhguAqeIUQADeEH1AEdVExdDN9cUAg1PABfCDhPA2DRjfhClBo5P6diWYCqay6AhjQX7Br+yxHEYkNMZyRDBNJ3RDa2DUbLGYjZZLKYd9OYTM9xPJgcDU7jSZPEf3S47ceTqCdmfd3sLwfL86zTfXdfjR5n55bpYTsBvV3uoO03JM7yagDKcoRFNffICqAJArF+3BpBA1CMoUBA2LoNYhIiMJwgiSLACiaIYliOJ4ggiDAKwBB-PgIEQD8-wQLB8HWHYSGwvCiLIqi6KYtieC4vi+FUQhtGkQAsgUvjMtwugVmwljQvRqFMZhrE4oSxJgEAA)
+
+#### 题意
+
+实现类型版本的数组反转  `Array.reverse`。
+
+例如：
+
+```ts
+type a = Reverse<['a', 'b']> // ['b', 'a']
+type b = Reverse<['a', 'b', 'c']> // ['c', 'b', 'a']
+```
+
+#### 题解
+
+```ts
+type Reverse<T> = T extends [...infer F, infer E] ? [E, ...Reverse<F>] : T;
+```
+
+- 首先利用元组的 `rest` 元素，可以很轻易得拿到最后一个元素，并把它放在数组的第一个位置。
+- 之后对 `rest` 元素 `F` 进行迭代，反复调用 `Reverse` ，就可以完成啦。
+
+### Flip Arguments
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/03196-medium-flip-arguments/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDMCMCcA2CBaCAxANgSwA4QEEAnAcwFcBbAUwDsAXAZ0lRVbeYCMBPCAK2wCGNEgwAWQiAAoAAvyEjxNanQEBKCAGJqAE2yVNA0pVqNmzDRYgBFMlQZ1sAexpmoASQq5MVavQh1RKn8uXCCANyoiBicaCEcAMwhMR20BMQByBggAA1yAfQA6eJxcXOyC1wgAFRCgsqw8YnJfRgAeKoA+MogiKgBHMmxerPiyGgBjB2dg0Jzcqu6hbR6qOjIiGiyBCBoqAHcIUYmp2LpaiD3RbHHRCHEsgKCGAWoVtY2ZoITqiA4yOhWESiVGWuEML1WkQYFSgzHQjiIECoAA8Xl4qAAuSplM6hBjjIh4OjMXFBBq4ULLAC8GBKTWM9AYrUkhhIAAYMRB7IThAAaCCs2CcmiUDiRfmsgBMnI4jkc3iE6ipHQgYUc2G0KuYwGAUlZHN+coVNAlpCFO1F4oFpGlXLoPJISpVao1zDKlRVADVsPs4rEAOLYOgACTIHE5ojodFwDAxOsYNwKvGhCJIwDgSDAIGAYFzoAgeULReLRYgAE1HOsIABhFJBYORIIl5uFiDZ3OkiAAJSoQIYVHaKppVSRyLotG0WQA2gVZ9gaPFIhh+fPF4iAKIAXQgAH4IFP1-zZwUe32B+gOtvOVUANwd87k+ktJmdCDD0fjmiTqTH1mxiCrkuAAKToAQuS5druP6zn+nKnlCA5AR0oGQded65mA+Yts21R2AC1ZpHYBbYcWbY5tgngIgCnYAN4QOuAwCJg-LrsioSTBAAC+hxEI4FAQOk0ikigNxMd4wh2MA-zYJgDDpPeszjIRWQ0lOzCsexdCtAxZBMa0j5GM+zKgbK8pUEIHT8pIJlGuZNAdJZ6lsVQkzaYxmD6XShkmEykjxHKnLcvOjpviqIoUGKRCWVI-mOIF9rBaB4WRQ5vJOZpbm6R5BnND5zL6vFDqmiQ5rJVaUoyrZiqhaq6qalZBWGmZQjFaVlpEMVtpBcIoEupqjmbhhmEgMRJGtug6yPIiADK44xqNY1kcNzAqtN4i9BAXCVoiDDytJzj-pG0axvG+KiEmKakOmCCIMAQgMHskQrRA3q+rtmD7ZsEZRjGcbAAm53JgUqbXUgwDvZ9TBQCqACyCJBNW4iYOJJB2N9x1-QDF3A6QWY5mAQA)
+
+#### 题意
+
+实现 lodash 的类型版本 `_.flip`。
+
+Type `FlipArguments<T>` 需要函数类型 `T` 并返回一个新的函数类型，该函数类型与 T 的返回类型相同但参数相反。
+
+例如：
+
+```ts
+type Flipped = FlipArguments<(arg0: string, arg1: number, arg2: boolean) => void> 
+// (arg0: boolean, arg1: number, arg2: string) => void
+```
+
+#### 题解
+
+```ts
+type Reverse<T> = T extends [...infer F, infer E] ? [E, ...Reverse<F>] : T;
+
+type FlipArguments<T> = T extends (...args: infer P) => infer R ? (...args: Reverse<P>) => R : T;
+```
+
+- 通过条件类型判断加上 `infer` 就可以去推断出函数的参数与返回值类型
+- 目的是将函数参数反转，那么通过扩展运算符，可以收集到所有的函数参数，这时它已经是个数组，只要使用 `Reverse<T>` 进行转换即可
+
+> `TypeScript` 是结构类型，不是名义类型，所以这个函数参数的名称是无关紧要的
