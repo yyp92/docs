@@ -34,7 +34,9 @@
   - [ts-入门](notes/ts/ts-入门.md)
   - [ts学习资料](notes/ts/ts学习资料.md)
   - [ts-内置工具类型](notes/ts/ts-内置工具类型.md)
-  - [ts-类型挑战](notes/ts/ts-类型挑战.md)
+  - [ts-类型挑战-简单](notes/ts/ts-类型挑战-简单.md)
+  - [ts-类型挑战-中等](notes/ts/ts-类型挑战-中等.md)
+  - [ts-类型挑战-困难](notes/ts/ts-类型挑战-困难.md)
 
 - js-设计模式
   

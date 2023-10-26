@@ -1,489 +1,12 @@
-# ts 类型体操挑战
+# ts 类型体操挑战 - 中等
 
-## 简单
-
-### 实现 Pick
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/00004-easy-pick/README.zh-CN.md) 
-> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAsELQUHnagG5wgBQJYGMDWl5yFH4BGAnhAIIB2ALgBYD21FAYgK4QAUAAgIZ0AZuwCUEAMSAA70CqyhPbUMzCSXYYANrTgZq+fOP0RAGRmA7t11QAfBEBE1oDn49ACUIgTlNA2-GBv-0CL0YApYwPOJgIAYzJFQAFQBlCEBQxUA7f0AQtwgAA0xcAB5ggBoIAGlzeMAYf8AxeUBYOUB75UBTuUB-eUAKV0Bg7QCofBAQQDm5QG8fQGj1BOD4iEBaOUBIBMBLo0AvxUA9HUByAwTMvMAQ80ACBMAEI0AAOUAqOUAG0xj2xrqIfEBo+UAgzUAsf8D409oAZ3xtWgBTACdBPiwbiGDGABNGCABvfChaDC0NQ3ABcEHOtDu2gA5n8IO8bucsFCAA4A5hgiFQ6iwqBQLCMAC2KOBt3eYJIjEYwIE+AAvoFaGQUS83p80HcbgA3DA3ADuEAAvBAALJkJI4VIfRgZADkAKBN1lEAAPhBZQTiaSbu9ZeZAgTqBCILRpWC2YwOdzeQLhb88XiFcCwbKAMI06gQO5UwmytJw-FEkk3Mlgx5qc43f1QBlQU7xQKWQAU6hAAOKA+jsEgQQBQcoBT80A0O6Hei0Wgo84g4DAC5YegAOgAVuc64w7tDgNBgAAvehwV0AOTAIGAYFHoAgAH0p9OZ9OIIADeRigGO5QCAHpPZxuJxBh6OmSzReLsJL0lkIDcAB63ajvc4QHA3MiMQSvSx2-AAbTQEG0WQAumDXk-X8AG4wDpUCxxAddNxnCBAGlbQBV6MqXZoJgqdtxHDBiVbWgfggABRABHdg+DUDJ8PPFksFwukIEEb1CXVHg9xuOBa1I4EcURYB2ABCNZV3ZkXiwPhI1vYV33wCiqNoZIiJItQ5Mom5qJ1ABGDIxQlKVPjlJ0lXMQzowI5TqLk4jSKUmSdQAJk0w8UgtPTAWBZU1Q1INtV1QzzGMqsIGY844AvGTgrub07nwLSjx0mV1X0tz1U1YMyUS2VtC5UiMG8-1f1Ha57keZ5XmlH58H0zFIRhfAESRVF0WoSrsVxCBkq8ikqQ9MD8roQqnheaSVLJNSyv+FzQXBKqcW6sACoefqTOs94bNGk1xqa6rAy1EMdQ66kblpBlRzAcc0NgwBoOUWQBTa1QtCMJO8ALAgQAwJUAarlF0AY8jABVvYtS3LStqyResmxbNsO2AARzj5e5u17Ad8EsQtvt+ssKyrGtgebVt207c5qV4xQjQRiBABezQAsTRMFH-vRoHGyxsGez7QcdzAIA)
-
-#### 题意
-
-不使用 `Pick<T, K>` ，实现 TS 内置的 `Pick<T, K>` 的功能。
-
-**从类型 `T` 中选出符合 `K` 的属性，构造一个新的类型**。
-
-例如：
-
-```ts
-interface Todo {
-  title: string
-  description: string
-  completed: boolean
-}
-
-type TodoPreview = MyPick<Todo, 'title' | 'completed'>
-
-const todo: TodoPreview = {
-    title: 'Clean room',
-    completed: false,
-}
-```
-
-#### 题解
-
-```ts
-type MyPick<T, K extends keyof T> = {
-  [P in K]: T[P];
-};
-```
-
-- 首先使用`extends`来限制`K`的类型，这样可以确保使用的时候只能传入`T`的键类型
-- 因为`K`可能是联合类型，使用`in`遍历`K`，获取到每个键类型，再通过`T[P]`就可以获取对应的值类型啦
-
-### 实现 Readonly
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/tree/main/questions/00007-easy-readonly/README.zh-CN.md) 
-> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDsELQUHnagG5wgJQKYEMAmB7AOwBsBPSeOSq8gIxIgEECAXAC0PoDEBXCACgACWFgDNuASggBiQAHegVWVpNbgEsizOMoLSATtnzF6UvDQBWGAMbqA1hhIBncuSnOIgDIzAd26OoAPgiAia0A5+IgABTQIQE5TQG34wG--QEXowApYwHnEwCAGLwhAWDlAQMjAf3lACldAUMVAO39AELcAA0xcQlIAHgAVb1LAGH-AK8DAR90UQAA5QCo5VKhyQFPoiHK9KpJSiEAseUBS40A2U26IAH1AbZtAaPVAIeVAB1MFxsA3PUAV+MA9tW7AGO1AC0UOwHYLYsBvHxXGwCvlQHozQAEjQEhzQD0dQHIDQF+EicBqiKGukqBnGz0Ad-KAB0zehByIB9OUAjDqPdKAe+VAKdygFjFQCf2v1MYBDGOKX0A0rGAHgVoeRANHygCDNQBY-2lSvTmA4oJpmBhtCIsOYMBBanh8BAAN7kKDMZTMIgYABcEDszG0mgA5sKIDgMHZzPKAA6iwjS2XyghKqAAXzS5kIsogzD5eGlAFkSBV9DVefhfABeQXK0XiqUQABEAAlbP6ADTK1XqrU6gjS-0iPDGLDaf3kU19EU2gB0PolEE9QYwRCIeH9EGAwAgAFFtNo8NppeZhAQ8MwIEC7HZlAqtFh2yMDBBNXXNWzmGRM-gs5GNcptcpCPmAzRk5xE2WK9Xa-XG83W-2sJ3u72D876MO8KPtOPyPTSmlfIAKdQgAHExaxuDQIIAoOUAp+aAaHdqVYZhmE1OxJQrRlzFYLMTDsLN6wVYBoGAAAvVg4AAYQAOTAEBgDAQjQEWBZSLI8jSIgQADeWKQBjuUAQA8SIo5iIHwwjx1HCAHSdUY6g9L0oCBM8IAAbWCCBNAgGwSDwEQeQAXWlWoxPkgBuMBTSIkAmOY8iIEAaVtAFXo3JyR03TKLY5QAFtNXrNsBWrABHbgsCIUNqwAD1HSwIGNCARDrKyIAAcgEDiMDgaDXIlQ01WAbhRSIOxgvYkhOKbOw1SXETyCrLyLGYaoq2c1zqm4gcXRtABGbx3J4gw6mq7xmvDeTCJZNkOS5HlqoEq0xQlPU5UVcgZ2jBdYxlYbDXIc0bIlVkcGlGhEwlYRyCsjBmCwaUhSgKAsAS9gGymg0jV8jTCK0szzIgQBoOQ6QBTaxu3TWII0ByF8QAwJUAarkaMAY8jABVvICQLAiDgCgmC4IQ7QkJQ4Q7AAdzZNCMJwz6IAAoGQdA8DIPVKH4MQ5DgDsPAiASiamQgXxABezQAsTQ8HGwfx6DYKJ2HUaw3C2LAIA)
-
-#### 题意
-
-不要使用内置的`Readonly<T>`，自己实现一个。
-
-泛型 `Readonly<T>` 会接收一个 *泛型参数*，并返回一个完全一样的类型，只是所有属性都会是只读 (readonly) 的。
-
-也就是不可以再对该对象的属性赋值。
-
-例如：
-
-```ts
-interface Todo {
-  title: string
-  description: string
-}
-
-const todo: MyReadonly<Todo> = {
-  title: "Hey",
-  description: "foobar"
-}
-
-todo.title = "Hello" // Error: cannot reassign a readonly property
-todo.description = "barFoo" // Error: cannot reassign a readonly property
-```
-
-#### 题解
-
-```ts
-type MyReadonly<T> = {
-  readonly [P in keyof T]: T[P];
-}
-```
-
-- 通过`in`遍历`T`对象，然后组成新的类型对象，主要是在键前面添加个`readonly`属性就好了
-
-实现`Readonly`的时候，没有要求进行递归处理，挑战中定义的类型，还特意在其中定义一个字面量对象类型，想必是想让挑战者自己去发现补充吧：
-
-![](D:\project\docs\imgs\ts-challenges-1.png)
-
-为了确保`Todo1`类型下嵌套的对象类型的属性也是`readonly`的，那么可以这么进行改进：
-
-```ts
-type MyReadonly<T> = {
-  readonly [P in keyof T]: T[P] extends object ? MyReadonly<T[P]> : T[P];
-}
-```
-
-- 通过`extends`进行条件判断，从而进行递归处理，这样确保嵌套的对象和数组都能变为`readonly`了
-
-### 元组转换为对象
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/00011-easy-tuple-to-object/README.zh-CN.md) 
-> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCM0QtBQwoqBG-QNvGCNjQXHKE-tQhjGQLzEmEBGAnhAM4CWAdgPaP0QAUAAnUywJQQBiQAHegVWUIhQgKkRAGRmA7twlQAfBEBE1oDn4iAAUAShECcpoG34wN-+gRejAFLGB5xMBADIoiACeUCmioAA5QFRyqQN4+gaPVAMP+AwHUBN+PcUb0xcPG8fIPxvQBC3QDpU4EAeBUBfhMB6M0A5uVRAWjlAWQTAMOVAL8VAU3NbKEJAaPlAIM1ALH+7AANGgBdqQgBjFmomiCaAVwAHABsAUwgAXggAbQByJuHqQYBDaYAaCGmAW0YAE2HBiABmVfWt3f2ADWPNnb2IAE1pgF0IReoIDvouuyaKftGAJ3mvUG3QmABUBiMwYwAPJkABWwzaTQAPD8-owAGY9SHDFTAYAQYYADz+yOG2wgAG8evMlgAudZzBbLNbXM6HaaM9m3I5s063S7cgUXK4i+5ck43fYPAC+hEa9TsKkAFOoQADitCaAAtemQIIAoOUAp+aAaHcatqmk1+tR6QSWm1tQA6eHUR2Mf4Ac2AsGAAC9tfAAMIAOTAIGAYEjoAgAH04-GE-GIIADeVigGO5QCAHrHEzmYxBw5H0aMIUNhtC4YjkSiwUTiXN6Ns3oDFtsWIMqF1-gwPZNHioJlTCJMtBAGBAwZN6L0NmRhv9Ho9GVowPKoyBs7mExBANK2gFXowAUrhUN5u4-mI7QNv13d0aQBRACOvUWgzWt9JSO6sogmP+jA26w4It4AdZ8RnoD15mAXomloQZqGmSMPi6HFS3GKZZjpVkpQ5PlsMFMVpQlZ5XneTomkLX5RjaV55jQyZCDfMlUQfJ9BmrXFywRD80UorEUJGJQ1hpZkGSZTDpgAbjw-YjmFQijiknlRTkjlLkU8UHhU245SUQSwEeKNCUA6h4BJJjTP+X9-jAIsiUs900JLKFYS4qtJkmaA1gAJkeITZT7SM12PE8IEAaDlnEAU2tgs3M8wFAQgVEAMCVAGq5VNAGPIwAVb3NS1rVtYB7SdF03U9b1oGARZPgAdznP0AxDBKIFNTLsqtG07WoB1nVdd0vR9ahGEGaDaE6BrABezQAsTXkFrcvazqip62qg1DAsgA)
-
-#### 题意
-
-将一个元组类型转换为对象类型，这个对象类型的键/值和元组中的元素对应。
-
-例如：
-
-```ts
-const tuple = ['tesla', 'model 3', 'model X', 'model Y'] as const
-
-type result = TupleToObject<typeof tuple> // expected { tesla: 'tesla', 'model 3': 'model 3', 'model X': 'model X', 'model Y': 'model Y'}
-```
-
-#### 题解
-
-```ts
-type TupleToObject<T extends readonly string[]> = {
-  [P in T[number]]: P
-}
-```
-
-- 挑战中要求以下代码会报错：
-  
-  ```ts
-  // @ts-expect-error
-  type error = TupleToObject<[[1, 2], {}]>
-  ```
-  
-  所以我们要限定`T`的类型为`string[]`。
-
-- 使用索引访问类型可以获取到元组中的类型。也就是通过 `T[number]` 可以获取到联合类型：`"tesla" | "model 3" | "model X" | "model Y"`
-  
-  索引访问类型使用文档：[Indexed Access Types](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html)
-
-- 后面就是常规操作啦，通过`in`来迭代联合类型，然后进行组装了
-
-### 第一个元素
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/00014-easy-first/README.zh-CN.md) 
-> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAsEFoKBpvQAHKCo5QwoqAJfSiEGF4BGAnhAIIB2ALgBYD2V5AYgK4QAUAAgIa0AzNgEoIAYkAB3oFVlcbwBOc3qTx4xaiIAyMwHduKqAD4IgImtAc-EQACgCUIgTlNA2-GBv-0CL0YApYwPOJgIAZdEQHnagBucMgFgJgBSuAAYsAJZyAM40ADwAKnohgDD-gMHagKXGgOvKGIAOpoAjfiHxIYBueoAr8YB7aqmAIW5oWNhVgN4+gNHqnlB4gNHygEGagFj-XiH9NFF4NKQADgCmEPJy0BAAvBAA2gDkvMsANBDLxBtbAMbLALrDY5PTAEzzSwDMm+eb0MdtUCMTEHTjvAAmswsR0XFptADMBgBBxgAPCZ7GjjL4QGgMCDESarZYnN4fb6XP6RGKxC4gsGQ6Gw+GI5GTa54fohLwGQAU6hAAOLhehsYgQQBQcoBT80A0O7dOg0GijKIALlBgz2dAAdAArKIyhhyADmwDgwAAXnQEABhAByYBAwDAptAEAA+lbrTbrRBAAbyVUAx3KAQA9LbaPRaIMbTa9Jv98fFwRDYVQvlEpsxFocDAt4osqGwALYouSHYOh8MQKjjABu4zkEAA-Nm8wWIGKIPGAAzHM0gd2em0QQDStoBV6KC7UbTat3pN4STo2VNAgAG8IABRACObF4ABtNhOoeMYRAAL4QARyBhJrbcP0IaXzufjKgq8ZRYBsGjhOdRdFgP0QPa8KIXq6LPBL0mxaezuexAGcSLLcED3DAMabNceh6OsX7LjCv4zvOgF4sBnCiHMBjQOcoHjrwlYxHI4RnuukFcJh2G4TBcFQN+K5xH+KFAbE0awaW+ZyDR8E-kxAEsYsbBhuMAgkXC5FCV8IliV8MFgHWT4Ftu0QfngoIQPuUQICSDHaQoyp4CxyxUAwNAUAoSjLLBalgpp2kITQenKYZaGxOO1aVqsFmkAAMuEADW4zLOuejyaa9bdj2ECANByqCAKbWkVNn2YCgHgBiAGBKgDVco6gDHkYAKt6CsKooSsAUqygqSqquqsDAPwUQAO4FlqOoGmlED8vlhUiuKkpRNK8qKsqaoalEDBzte4RMEM+gQIAL2aAFia2hdcVvX9RVQ3NXqho+mAQA)
-
-#### 题意
-
-实现一个`First<T>`泛型，它接受一个数组`T`并返回它的第一个元素的类型。
-
-例如：
-
-```ts
-type arr1 = ['a', 'b', 'c']
-type arr2 = [3, 2, 1]
-
-type head1 = First<arr1> // 应推导出 'a'
-type head2 = First<arr2> // 应推导出 3
-```
-
-#### 题解
-
-```ts
-type First<T extends any[]> = T[number] extends never ? never : T[0]
-```
-
-- 如果是空数组类型，那么`T[number]`就会返回`never`类型的
-- 而通过`T[0]`（索引类型访问）就可以获取到第一个元素的类型
-
-在`Issues`看到一个👍比较多的答案，是通过`infer`来推断类型的：
-
-```ts
-type First<T extends any[]> = T extends [infer P, ...any[]] ? P : never
-```
-
-### 获取元组长度
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/00018-easy-tuple-length/README.zh-CN.md) 
-> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAcEFoKHbgwa8qGFFQI36H9UwZXqUQSOIICMBPCAZwEsA7AewbogAoABWx5gSggGJAAd6BVZQEAXAK4AHADYBTAgX7KIgDIzAd26KoAPgiAia0Bz8RAAKAJQiBOU0Db8YG--QIvRgCljA84mAgBi0RA2EqAvvUAAcoCo5QCwEwApXQBC3AAMAGTk6AHMxAAswwBh-wFLjQHXlfzCAJzkAQwATZhlyMJDAB1NMJMAV+MA9tUBN+L8KkLw3KAJAaPlAIM1ALH-3MP6xKgIxcik5CDE5KhlciABeCABtAHJJ6dzlgBoIZYBbBny5GQgAZi2d-cPjgA1zvYOjiABNZYBdYdHxqilcgGM5a7zJbLABiAEEIgBhADyADkIABOO7gqFwiAACQAomCAGovbbLAAipjBAHE4XcAMoAFTBpkp6IAksY7uiAKoAWTB8MpxjBkMxIIijNJ6Opb3cIzGEymMyisQSQPlcXiAB41jNdMBgBA5AAPMa-Sb5CAAFg+0u+fwBysVC1taqt-2uWp1+sNxogAFYCP0wu5dIAKdQgpJoCQkpAggCg5QCn5oBod268TEYikVAAXNrBr94gA6ABWVBzDCyMWAcGAAC94ghIbCwCBgGAm6AIAB9dsdzsdiCAA3kQoBjuUAgB5truj1sQBtNqXjB2q6m6vWTOj5KgQHIFIqUXJ0ciLV66Bbz-VLlcQADeEHkCviaYg9AAZnIshBzABfCAAfhfEFvdDkADcnwAbibZsQBHMdOwgQBpW0AVeignaCDIPbCdGxoXYpGLMRzwgTEAEcJFyGRtkxA05CNCB33vLIGF2HZ2GnBBsyIq8YimYAJDEGgZCoZYm1+ZgqGwjVZgWFYRLuS5HjOAkpJuSSHmOF5XggXJVwEughLADShOoH5nSBFYURheEkQJYy0SxXF8R2YkyQpAkaTpBlmVZTluQgXl+UFYVRXFFS1IgHSxCnT4grUqZDIIUiPVVfDCJkVVZ2nBh7xldZtG2U1tEy6KyKNOKCKIpLohVdVPlSvTrRdbYvRyzYCG1CAGKoBB3XIsQ2qyGisgIWc6oaqAmpatr8s6p8er60qElVZZ4iOGQGAgAB3YsZHyZZcveUCW2QqDAGg5HxAFNrJDkNQsBQAIXRADAlQBquT7QBjyMAFW9E2TVMM2ALNcwLIsSzLWBgG3KhlqfStq1rK6IHjZ7XpTdNMyobN80LYtS3LKgGBkTiaEEyHABezQAsTQ0WH3oRpGftRsGazrScgA)
-
-#### 题意
-
-创建一个`Length`泛型，这个泛型接受一个只读的元组，返回这个元组的长度。
-
-例如：
-
-```ts
-type tesla = ['tesla', 'model 3', 'model X', 'model Y']
-type spaceX = ['FALCON 9', 'FALCON HEAVY', 'DRAGON', 'STARSHIP', 'HUMAN SPACEFLIGHT']
-
-type teslaLength = Length<tesla> // expected 4
-type spaceXLength = Length<spaceX> // expected 5
-```
-
-#### 题解
-
-```ts
-type Length<T extends readonly any[]> = T extends { length: infer R } ? R : never;
-```
-
-- 通过条件约束加上`infer`来推断长度的值类型，就可以准确返回数组的长度了
-- 当然，数组得是不可变的，所以`T`也要加上约束
-
-在官方文档中，有这么一句话，说`TS`是允许推断出最长的返回类型，所以说肯定是知道数组的长度的：
-
-> [文档地址](https://www.typescriptlang.org/docs/handbook/2/functions.html#constraints)
-> 
-> There are a few interesting things to note in this example. We allowed TypeScript to infer the return type of longest. Return type inference also works on generic functions.
-
-### Exclude
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00043-easy-exclude/README.zh-CN.md)
-> 
-> [在线示例](https://www.typescriptlang.org/play?ssl=19&ssc=48&pln=19&pc=1#code/PQKgUABBAsDMEFoIFEAeBjANgVwCYFNJEETSiAjATwgC0ALfRgOwHMIAKAAQC8HmWAlBADEgAO9Aqsojy2AJaYALghlMiRYeoiAMjMB3bqqgA+CICJrQHPxEAAoAlCIE5TQNvxgb-9Ai9GAKWMDziYCAGPREB52oAbnQFDFQDt-QBC3NCw8fAgAHgAVQBh-gFV9QG8fQGj1eMAxeUBYOUBfgMAXt0BS40B-eUAKV0Bg7UAac0BquK8DQDm5QBUAwAgVdNjAWjlAJONAEzTEkPTABCNADRV4wFNzQBDzQAIEwAA5QCo5QAbTfrS6iCJDQAp1CABxGXk6bHIIQCg5QFPzQGh3QCx-unl5AAcAZwAuYGB5e-Q6ADoAK3vPgHsAE4sYBwYC8BAAYQAcmAQMAwIjQBAAPpo9EY9EQQAG8iFAMdygEAPVGYkkoiDwxHySi3KIAWUo4RwBDiABoIMkIABeCCxCD4VDyfBMXD3dkQAD8ECY+AAbvhARBHjyANyIsDI0kkiCAaVtAKvRpUA0fLEzVYikyAC2tyB8ggAG8UABHbAAQ0wbLQNPQNoAvhAAGaA-7miAAck4VJpCA+rswQpY+HuwGw8jk9xDlOpUXQzvuCa5EAA2kQoB78F7osgna7ovTGZFogAiZ0NiAAHwgDfILfbDfQDbZTYb+ndGCZ+EbzbbHa7U97-Y7zf0S5ZxZQqE98grVcwNYZo-rg9nM57fYHk57XeHa4izMPF+7HdPC4fnaHy9XpfLlZdO9r++Z9zyICyhsO2TDYOa5DylO7DsEInKGDK-wyLgAhsgAYtgTBejI-xMFedYAUBIFTuBkHQe2sHwYhyGoRhWE4XhS7DmAAC6arqiAxommSgDQctMgCm1txJrkgioBrBAgBgSoA1XK4oAx5GACreVw3A8zyvO8Xy-ACwKgrAwDOkw9wAO7yuCdBQrCBgQOcinKXcTwvG8Hw-H8QIgmC9z-DgKZ4fcEmAC9mgBYmjodmqY5GkudpIIQjCcIImAQA)
-
-#### 题意
-
-实现内置的 `Exclude<T, U>` 类型，但不能直接使用它本身。
-
-> 从联合类型 `T` 中排除 `U` 中的类型，来构造一个新的类型。
-
-例如：
-
-```ts
-type Result = MyExclude<'a' | 'b' | 'c', 'a'> // 'b' | 'c'
-```
-
-#### 题解
-
-```ts
-type MyExclude<T, U> = T extends U ? never : T;
-```
-
-当联合类型作用于泛型的时候，会将每一个类型都分布到该条件判断中。
-
-例如：
-
-```ts
-type T = MyExclude<"a" | "b" | "c", "a">;
-
-// 执行时大概是这样：
-"a" extends "a" ? never : "a" |
-"b" extends "a" ? never : "b" |
-"c" extends "a" ? never : "c" 
-
-// 所以最后 T 的类型就是
-type T = "b" | "c"
-```
-
-查阅官方文档请参考[分配条件类型](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types)。
-
-### Awaited
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00189-easy-awaited/README.zh-CN.md)
-> 
-> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAcCcEC0ECCB3AhgSwC4FMATSZJM8kgIwE8IBZTAY23wCsIBlbAawHsAnTBAAUAAQC2TFqwDOPAZgCUEAMSAA70CqyqoAO-XuOwz8qygFdsAG1xJsAOxIkVTiIAyMwHduDqIHEFQEGagRCNAG7lASHNAADlAKjkIAAU9AyMIQE-tQEMYwBh-wE34iOj9Q2MkwCx5QBX4wD21cMBvH0Bo9UAgBkAKdQgAFQ4IQFo5ZMDAClcomOyAHlqAPibAELc6iEBTc0B540AH+PSOrLiigfKKwHfowAN5QDztQAbnUrLkwHvlQFO5QHbgwDXldMXPCEAV6x9ALH+AA0zY-C6AUQAPTHFtC3xa6m18L07slVkUIO9Pt9fv9jOcoCR+ulAIjGgAwjEaAK8DAHFyEAA2hIpGw5HxBABdYQAC1wuG0MgAXMBgABzPDk0yUAB0jH0wEkzEJ8kEygGgHDTQAHXjccQJsMzbJgLBBMPxcNhGD8yZTqXSGYR8AA3dm4Xg8phEhTATCEXWYWyMIhIXAwmSMfjYbTWfBvfD8ZhGGRIACOpnwMmVvFsSGgSAALABWbhRxQXfo1ADiLLZEEAUHKAU-NANDuNw1NPpwFwTvJ7Nk7IEjOAcHgwAAXuSkABhAByYBAwDAPdAEAA+oOh8OhxAVgNAMdygEAPAcjuf9iBdnsOgH0agYHAEQg9foAXmGHoItkIMhmTy6dgAZl6IABVfoAfjXG7wRC694gtLqAG4e72QLO87DhAgDStoAq9GtIA0fKAUBg6Lt22BfAIuAQAA3uCgZygANOCbwAowKEAL4QJeMQQAA5KIK74EgjDknKPy2IywbAKYyoWDI5HLjCEAABoQPujzdCGLpMb0YDURAACaAlnt06GXiwFiEF+timOIlA3oR4mSQAWrJQlGF0hnPCJdiMhAAA+EBqRpXq9OJEk8YwmC+rJOIkO8+G4K8mEWF0dDrlgr7brxvQ4WZYnhZ5eH4ARvmmHKAVBZub5SeFaEkUpKk2epmn8BA2nRVAXlxT5Lx+clL5bl0ukZZFFnWbZ+UOVhYAkr2wAQFRfoet5SBeno-BOaug0CLJgXVW+zX2X+YB9rBwGANByISAKbWMGwfB83gFA-SAGBKgDVcuOgDHkYAKt4FlSRYMqWdEVjIVb8DWdbmrYMjoF6jbNu2CIQHmZ0XZqxY3eWlbVrWCDADIvAWGx2BhjIP2AC9mgBYmu4ANXSWZZ3Q9NZNq2HZLmAQA)
-
-#### 题意
-
-假如我们有一个 Promise 对象，这个 Promise 对象会返回一个类型。在 TS 中，我们用 Promise 中的 T 来描述这个 Promise 返回的类型。请你实现一个类型，可以获取这个类型。
-
-例如：`Promise<ExampleType>`，请你返回 ExampleType 类型。
-
-```ts
-type ExampleType = Promise<string>
-
-type Result = MyAwaited<ExampleType> // string
-```
-
-#### 题解
-
-```ts
-type MyAwaited<T> = T extends Promise<infer U> ? MyAwaited<U> : T;
-```
-
-- 这个没啥好说的，就是通过条件判断加`infer`去进行推断
-- 需要注意下递归处理
-
-### If
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00268-easy-if/README.zh-CN.md)
-> 
-> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMBsAcEC0ECSAzSyk91gRgJ4QAKAhgG4CmANhAOI0CuAzgBYDWA9hRABQABAA5l2TAC4cAlBADEgAO9AqspyJASxossWWToiAMjMB3blqiA87UANzoAA5QFRyEAAaoAYrYiBvH0DR6oBh-wMHagUuNAbKbWgIbmgG9y7nYAws4e1oAkSoC1poBccoD47oBvpoAhboAr8YB7amG2ACpRgKdygFPKsYmA4grp2blOgEAMEc6AV8qAvwGA9GZ24gBOTFTOgGhGgKABduhkGr0edgUQgDEqdk4QgPfKha2A33KA8IbutcYQgHxygNHyAFzbtifimlDihEJUEACCEAC8aOgAPF09ADQQAORk31-ffDfAB8UGAwAgVAAHtcAMbiKgAEwg4i4EHwN1+3ywl2uEAAQo9ni8RmMAX8AUDQeDITCqPCkSi0RifkCsCdbNtQYAKdQYqnEbCY+AggCg5QCn5oBod0AWP9scTiIQsA7gs6wtgAOgAViw1VxOgBzYBweDAABebCQ4QAcmAQMAwPbQBAAPou11u10QQAG8mlAMdygEAPZ3uoNOiC2+24m4YF7hWkIgB2iJY6K4XBoVDIca+eS+DlBTxj0PjiZR3RuAH4IHkIAcIA4ANz2sCO4NBiCAaVtAKvRgApXPaBlsesOqAC2Ql14ggAG8IABRACOTFGX2ndPhEAAvhB0J0uEOfgII0hVaM03G9VQWMA1BpsWAIxBYaJz0SANpYZdw8QvOcLmgvKPvKhyX+VkQSA4FgQ+N8V0-b9Rj-V5SRYQCfgpGAILQiCwAAXQdCF9xYJBoQ-QjOm3TpbyuG4qFI3UiSjOMmBoGggMpEFGybEA+37ENAGg5CxAFNrLj+1DO1QCwUFADAlQBquW9QBjyMAFW8ZTlBUlWAFV1S1HV9UNBBgAzFgAHdqNNc0rXEiBJQUpT5UVZUWFVTVtV1A0jWAFhUzULg43OCBQUAF7NACxNQxrJUuyHM05yTIta0wzAIA)
-
-#### 题意
-
-实现一个 `IF` 类型，它接收一个条件类型 `C` ，一个判断为真时的返回类型 `T` ，以及一个判断为假时的返回类型 `F`。 `C` 只能是 `true` 或者 `false`， `T` 和 `F` 可以是任意类型。
-
-例如：
-
-```ts
-type A = If<true, 'a', 'b'>  // expected to be 'a'
-type B = If<false, 'a', 'b'> // expected to be 'b'
-```
-
-#### 题解
-
-```ts
-type If<C extends boolean, T, F> = C extends true ? T : F;
-```
-
-### Concat
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00533-easy-concat/README.zh-CN.md)
-> 
-> [在线示例](https://www.typescriptlang.org/play?ssl=22&ssc=62&pln=22&pc=1#code/PQKgUABBCsDMsQLQQMIHsB2BjAhgF0iUWJMICMBPCAQQwBMAnAUyoGkGcBnNAN04GsqACgACZZrAAM-DgDYAnFk4BKCAGJAAd6BVZXU4GHCoUJqTEQBkZgO7cjUQBTqgbx9A0eqBvn0D7foBnEwHnagBucIAKRw8OADKWAwAlgAOeBCAoYqAdv6AIW4QAAbU+jgUAHRYmLh4yRCAnaaAqzaAMP+Am-GAVHKOgKXGgOvKgCRylYBDyoAOpqWAK-GAe2oJgA2mrYAjfo6AKXqAp9GAkMaA5o6AyfGApoptgHNygGe6gAxKgM-KCYBeGYDxeoAQKoBueoBccoAAcpW9CYOAQAzWEIB8coDR8qU3yS94nIR4FBFMEABKTJwAK4AG2iAF5ULl8AAeADaAEYALoAGggsIATIiAHwQYDACBMAAe3yweCYdAgeDQEDIPwRqMxhBeyRuOJsEAA4mE8AALQFkCCAKDlAKfmgGh3QBY-zy8HgIpwAFx4t5YHmZABWnEyaAYAHNgHBYMAAF48xAoAByYBAwDANtAEAA+o6nc6nRBAAbyCUAx3KAQA8HS7-faIFabZ9vpDsDCACoEwlk+icCA4DAUWEoiAAVRjcboCaTKexEAhsMyJcjqJLmXTiIA3DawHaA-6IIBpW0Aq9GACld7n7G67g2EALYRLXRADeEAAogBHQE4YGo8fEpikiAAXwgADMGGh+xAAOQiUNMRDK2fApgYbUA4CAvBhYGcXchr4-XCcAGFtGEBckvDQqcz4FoXQCNf1TVFUyxcDsUgr9F1JP9p1nICoVAtMEWxcCkSxGCoG-Jdf3-JDgLyOF4QZNDYFRAAWDC0TIiB0VRSiIBo7DkVgn8EIA5CQLhXd4V3BlUV3WBdzQ9dZzfVEyDQNAzyTYSqLEyC0X4wSGOE0TUQk+8mGk2T5IwRTlJgxEnzDHAP2ImEwLo7FbRAbse0DQBoOWOQBTaycnsg2tUBCBxQAwJUAarkPUAY8jABVvSVpVlBVgCVFV1U1HU9XgYAk04AB3JgGCNE1zX8iAxQiqKZXlRVOGVNUNS1XV9WAbhgRvMJMHeKAcUAF7NACxNSwSpi8rKsSmrctNC1gzAIA)
-
-#### 题意
-
-在类型系统里实现 JavaScript 内置的 `Array.concat` 方法，这个类型接受两个参数，返回的新数组类型应该按照输入参数从左到右的顺序合并为一个新的数组。
-
-例如：
-
-```ts
-type Result = Concat<[1], [2]> // expected to be [1, 2]
-```
-
-#### 题解
-
-```ts
-type Concat<T extends any[], U extends any[]> = [...T, ...U];
-```
-
-- 因为数组可以拥有`rest`元素，详情请看[官方文档](https://www.typescriptlang.org/play?ssl=22&ssc=62&pln=22&pc=1#code/PQKgUABBCsDMsQLQQMIHsB2BjAhgF0iUWJMICMBPCAQQwBMAnAUyoGkGcBnNAN04GsqACgACZZrAAM-DgDYAnFk4BKCAGJAAd6BVZXU4GHCoUJqTEQBkZgO7cjUQBTqgbx9A0eqBvn0D7foBnEwHnagBucIAKRw8OADKWAwAlgAOeBCAoYqAdv6AIW4QAAbU+jgUAHRYmLh4yRCAnaaAqzaAMP+Am-GAVHKOgKXGgOvKgCRylYBDyoAOpqWAK-GAe2oJgA2mrYAjfo6AKXqAp9GAkMaA5o6AyfGApoptgHNygGe6gAxKgM-KCYBeGYDxeoAQKoBueoBccoAAcpW9CYOAQAzWEIB8coDR8qU3yS94nIR4FBFMEABKTJwAK4AG2iAF5ULl8AAeADaAEYALoAGggsIATIiAHwQYDACBMAAe3yweCYdAgeDQEDIPwRqMxhBeyRuOJsEAA4mE8AALQFkCCAKDlAKfmgGh3QBY-zy8HgIpwAFx4t5YHmZABWnEyaAYAHNgHBYMAAF48xAoAByYBAwDANtAEAA+o6nc6nRBAAbyCUAx3KAQA8HS7-faIFabZ9vpDsDCACoEwlk+icCA4DAUWEoiAAVRjcboCaTKexEAhsMyJcjqJLmXTiIA3DawHaA-6IIBpW0Aq9GACld7n7G67g2EALYRLXRADeEAAogBHQE4YGo8fEpikiAAXwgADMGGh+xAAOQiUNMRDK2fApgYbUA4CAvBhYGcXchr4-XCcAGFtGEBckvDQqcz4FoXQCNf1TVFUyxcDsUgr9F1JP9p1nICoVAtMEWxcCkSxGCoG-Jdf3-JDgLyOF4QZNDYFRAAWDC0TIiB0VRSiIBo7DkVgn8EIA5CQLhXd4V3BlUV3WBdzQ9dZzfVEyDQNAzyTYSqLEyC0X4wSGOE0TUQk+8mGk2T5IwRTlJgxEnzDHAP2ImEwLo7FbRAbse0DQBoOWOQBTaycnsg2tUBCBxQAwJUAarkPUAY8jABVvSVpVlBVgCVFV1U1HU9XgYAk04AB3JgGCNE1zX8iAxQiqKZXlRVOGVNUNS1XV9WAbhgRvMJMHeKAcUAF7NACxNSwSpi8rKsSmrctNC1gzAIA)
-
-### Includes
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00898-easy-includes/README.zh-CN.md)
-> 
-> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAcCc0QLQQJIDsDGAbArgEwFMBnSJRci0gIwE8I0cssIAKAAQGsa0CAzHDgEoIAYkAB3oFVlUQEMATrOk1SpEaoiAMjMB3bsqiAKdUDePoGj1QN8+gfb9AM4mA87UANzhABS0gG7SAyhlkBLAA4AXCIBC3CAADAEF5RQA6D0xcQiIgiEBO00BVm0AYf8BN+MAqOSNAUuNAdeVAEjlMwCHlQAdTVMAV+MA9tX8jQEDIwAk5QHozYJ9ZHAIExpag3mksIk7AIAYdCEA+OUBo+UBTc0AX6NTRoMWfEigfGi8CCA8iAAUPJjkAWQI0CABeVBj8YgAeAG0AcgBpOSIHgBoIB4BRIg88bYeD5fADq0gAtjgcMCHi5pGgfPDpA8ALqfB4AEQ8AHsHgA+CDAYAQAgADw2GB8BDwEB82IgVE2vX6gyCpEWbKgpAJuggAHEPD4ABY4KgQQBQcoBT80A0O6ALH+hT4fF4iAAuInLDBCiIAKyIEWxsgA5sA4NBgAAvIWIADCADkwCBgGBnaAIAB9D2er2eiCAA3l-IBjuUAgB7u71ht0QR3OtYbCDfACOOBZNwAGp8AJoEi6kFg3AAqeJYwjOBLzJNJVLQeCIEBTEAA-BAAIwQFUQABMwjJlerrHzheLpfLPZr6YbzdbHcEpEbbQ6pDbfQGBAA3NH1pt0NhrkR88OTr3ZARpHhsWgsHR4TQ7miIABVLMQUhl7sHmt3aK8AiyCAAMU+ESAZ+34QAASiiT5QI2CZJgMNz-veBKvlWNZzgQpBQbS7SbG2W6xLcoGfA+C4QEugxrs6YCuuGYYQIA0raAKvRgAUrhMoY0T6UYeOCXgGn4ADecaJv0nzfOSBCUhAAC+pGyNi4JfGwMYEIgmr9FgJyGsQwA4D4+xvOusYYNIgw1hcdykKJFI+DcMH9DceE7vczyvDCvz-ICMJgpC0LonCCJIqi6IvLIbx4p8aF4mFFliZSNlCVg9lXHETnBW86JuQCfyeRCUIwn5iJoMit6Yji+KfGRBCRe80VWXFsGJduyV3E2nztp8ADMnwAKyfAAbJ8ADst4DWFWEdFVNXidZtkJQ5TUtR2HXdX1g23gALKNFUTVAllTXVdlzbczWtR1t7tqNEVRTtMXTfFDX4bux2LRA7W3k2F3YdtcY3fts1JUdfGSbeAnSG2DwhA8UmbSylVXd9tUzfdjl3FQ2LYup8InS9y0QP1EBDeVMPQ8uX27bFiOHY9aFY51EA9bjq2fKj6PHmgxODKTP0U-9j0VTTON4wTpFE+Fn1w2Tt31ZT9wg2DENScDEBHieZ4XhAoNfPLkns7D1XXQjd3S3cAnK6e56XnLkNA58sua1bOucwbUs8-cTZvRAAA+HYO+LXOGy7zWex2b0+3r8N7dzjVHQwTC3jgVZ8NE1Kh5N5P+1Hj3x4QvBJ3gt4x1gKcopRVEgGx7ERoA0HKAABygCm1uX7GRk6oDchAgBgSoA1XL+oAx5GACre8qKsqarABqWq6vqRomvAwDwkQADu34WladqtzKfcD0qqrqkQmo6nqBrGqawBEOjOk4mgKwQASgAvZoAWJpaBvQ-b7v48H0vNr2lGYBAA)
-
-#### 题意
-
-在类型系统里实现 JavaScript 的 `Array.includes` 方法，这个类型接受两个参数，返回的类型要么是 `true` 要么是 `false`。
-
-例如：
-
-```ts
-type isPillarMen = Includes<['Kars', 'Esidisi', 'Wamuu', 'Santana'], 'Dio'> // expected to be `false`
-```
-
-#### 题解
-
-```ts
-// 判断两个类型是否相等
-type Equals<X, Y> = 
-  (<T>() => T extends X ? 1 : 2) extends (<T>() => T extends Y ? 1 : 2)
-  ? true
-  : false;
-
-type Includes<T extends readonly any[], U> = 
-  T extends [infer F, ...infer R] 
-  ? Equals<F, U> extends true
-    ? true : Includes<R, U>
-  : false;
-```
-
-> `<T>() => T extends X ? 1 : 2` 
-> 
-> - `<T>` 表示这是一个泛型函数类型，并且 `T` 是一个类型参数。括号中的 `() => T` 表示该函数接受零个参数并返回一个类型为 `T` 的值。
-> 
-> - 在函数体中，`T extends X ? 1 : 2` 是一个条件类型（Conditional Type），它根据类型关系来选择两者中的一个类型。具体来说，如果类型 `T` 能够赋值给类型 `X`，则条件类型的结果是数字字面量类型 `1`；否则，条件类型的结果是数字字面量类型 `2`。
-> 
-> - 因此，该泛型函数类型可以表达为：“接受一个类型参数 `T`，如果 `T` 能够赋值给类型 `X`，则返回数字字面量类型 `1`，否则返回数字字面量类型 `2`”。
-
-首先来看下`Equals`类型，可以这么来理解，我通过了一些步骤来演进代码：
-
-- ```ts
-  type Equals<X, Y> = X extends Y ? true : false;
-  
-  type T = Equals<true, boolean>;
-  ```
-  
-  上面代码中，`T` 的类型会为 `true` ，因为 `boolean` 类型兼容 `true` 类型。
-
-- ```ts
-  type Equals<X, Y> = (() => X) extends (() => Y) ? true : false;
-  
-  type T = Equals<true, boolean>;
-  ```
-  
-  上面代码中，`T` 的类型还是 `true`，函数的参数和返回值也是存在兼容的，道理和第一个一样的。
-
-- 所以最后就成这样了：
-  
-  ```ts
-  type Equals<X, Y> = 
-    (<T>() => T extends X ? 1 : 2) extends (<T>() => T extends Y ? 1 : 2)
-    ? true
-    : false;
-  ```
-
-要把括号括起来的看做是一个整体，一个定义好的类型，例如 `(<T>() => T extends X ? 1 : 2)` ，所以这时使用 `extends` 进行判断的时候，检查会要求类型定义一致，所以就能判断出类型是否相等了。
-
-挑战里测试用例用到的 `Equal` 也是这么来判断的。
-
-![](../../\imgs\ts-challenges-2.png)
-
-这时来看看 `Includes` 类型，应该好理解很多了。
-
-就是获取数组的第一个元素类型，然后对比是否相等，然后通过递归的方式，把数组中的每一个元素类型都对比了一遍。
-
-### Push
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/03057-easy-push/README.zh-CN.md)
-> 
-> [在线示例](https://www.typescriptlang.org/play?ssl=25&ssc=82&pln=25&pc=1#code/PQKgUABBDMAMCsB2CBaCAFArgZwBaVRSOIICMBPCAKwEsBDAOwHM9GIAKAAVsZd0YC2AUwAudAJQQAxIADvQKrK0ugCcldcgQJStEQBkZgO7cNUQBTqgbx9A0eqBvn0D7foBnEwHnagBudAWAmAKV0AhbhAAG3gIIq1AHQADji43p4QgEAMhhCAfHKA0fKAQZqA0HKAMP8x4SLkQULYAMZKNEEiBFk5EABKuZgANiIQALwYoQA8ANoAjAA0EABMALo9AOTQQwB8EMDAEJ09vcOj-QThMRNGEADiNCK4mKQQgFBygKfmgNDugFj-uCIiQdgAXFMi+bgBVNgBAPZKTMBwSMAAXrgUABhAByYBAwDA0NAEAA+gjEUjERBAAbybkAx3KAQA94ci8XCIJCwGUhBAALJ0IJBGjMFoAFQgQgAHiIhAwACbYCCMchtfoTJoAbwIbXQEBpEDpbQYmAEpCESn6-VuGDAAF9oSTmnh6YyWWzORAlEI6Oz3gwapQeXyegBVAXkynU2l0sZtW39PWsjlc20QAD8kogKraATDdLt-QA3NCwLD8XiIIBpW0Aq9EueK4hMook0ARBT71QUQACiAEdMHQaj1i0ycnkRNXa0J6wAxSvYIQ9UHvERlis1CBqiAAMyU7wEECGnBJKDy-BqNTZTFywEwIhoNWwQ012VJeToHa5TTaBBrdZELT7lZaWB1NogHTGPU6-Kfp6b9cv5evt9w7W6fSDJOoxPjMAHzMBQyvl077nl+-Y3q0bRDB0QxzAsUE9KQ7zvIujCgchqHoZBWE4XhDDQbBzYXleNSIXeKFoX0GFASM4zPoxxFsZRSyxvGWYoskgAAcoAptaZgJhJQqABATIAYEqANVy6KAMeRgAq3hcVw3PcwCPHOLxvJ83y-IgwCMNgADuCoAkCYIyRApyqep1x3A8Tx6R8Xw-AgxnYLha40Oa2C2YAL2aAFia+iOZpLm6a87nfICILgkSYBAA)
-
-#### 题意
-
-在类型系统里实现通用的 `Array.push` 。
-
-例如：
-
-```ts
-type Result = Push<[1, 2], '3'> // [1, 2, '3']
-```
-
-#### 题解
-
-```ts
-type Mapping<T extends any[]> = {
-  [P in T[number]]: P
-}
-
-type Push<T extends readonly any[], U> = Mapping<T>[U] extends U ? T : [...T, U];
-```
-
-- 为数组创建一个类型映射对象 `Mapping` ，`key` 和 `value` 都是数组元素本身
-- 这样就可以先判断元组中是否已经有该元素类型了没，然后再确定是否组装一个新的元组对象
-
-### Unshift
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/03060-easy-unshift/README.zh-CN.md)
-> 
-> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDMAMBssIFoIFUB2BnAFgSwDMAXSFZci0gIwE8IArPAQwwHNcWIAKAAUZfY4WAWwCmRJgEoIAYkAB3oFVlWUwBOKpjVKkZOiIAyMwHduWqIDztQA3Ogbx9A0eqAJJ0A05oBC3CAANXAQTUaAdAFds+YldnQCAGYwhAPjlAaPlAGH+woKIaAAdRLABjFTxEkigE5IgAJRSfABsiCABedH9CIgAeAG0ARgAaCAAmAF1W2AA+CGBgCHrYVpb25o7SILC+wAp1CABxPCIcHyoIQCg5QFPzQGh3QCx-nCIiRKwALgGiNJwveiwvAHsVVmA4RGAALxxkAGEAOTAQMAwMDQBAAPoQyFQyEQQAG8g5AMdygEAPcHQtFgiCA4G5URVXA1WoAFQgogAHkRRBgACZYAqiJhU+4YYo0DzqGi1Fg0HqtNB9Sr1NCtLwiwkdADcwLAoPRaIggGlbQCr0YAKV0iqNlMKxeGEiUeZQA3hAAKIARx8TGKrSNpOSqSIVptojtADELVhRK1fvciKbzcUIABfCAEFT3YQQADkPBxyFSQmKxUprBSwB8RDwxSwEexSVxqSY7tpAtI1ttdV9FtqmHxxAaXQgjR5Q0aHR6PJLjrttQrxSr1VrTVanW6TeGoyHEzbzQ7Ze7Zsr1YCdXqEcaEYnkegEa6VHu90TLFHu-39IwrVX6-Gm+3U7AkylMo1MMA0HKAADlAKbW6qfmKBoFIfUAMCVAGq5eFAGPIwAVbwOI4TnOYBLjjG47keZ5XlgYAWCwAB3UQVA+L4-n-CBdggqDjjOC4rkQh4nheBA0Kwfc0zwJksEIwAXs0ALE1DFImCKIQ25qOeT4fn+LEwCAA)
-
-#### 题意
-
-实现类型版本的 `Array.unshift`。
-
-例如：
-
-```ts
-type Result = Unshift<[1, 2], 0> // [0, 1, 2,]
-```
-
-#### 题解
-
-```ts
-type Unshift<T extends ReadonlyArray<any>, U> = [U, ...T];
-```
-
-- 这个就跟`Push`是一样的道理，就不多说啦
-
-### Parameters
-
-> [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/03312-easy-parameters/README.zh-CN.md)
-> 
-> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDM0IwCYIFoIAUCGAnDBbApgC75YDOkKyV1FARgJ4S4CWAJgPZbMBe+LEACgACLDl14sAlBADEgAO9AqsqzmAOwBmJWYQCuABwA2+WbW3N9hZKooUZtiIAyMwHdu1qIDztQA3OgUMVAdv6AQt3TYeEQkpAA8ACoAfBCA3j6A0eqAMP+AMAGAsHKA9GaAL26ApcaA-vKAFK6AwdoJgPfKgEPKgMABANrh9Lr4AMoAxly6hIAZ2oCdpoDhpoDGFgC6AgAWhIS6pABcwMAA7rMAdIS1+KTNzK36GCoA5nOcW8AcjaTAg5ustOzsANbA2oRmzIvIi3Wkc8O4+jK6gQTEZC98JJAEAMLgg0UAFOoQADij0G2loEEAUHKAU-NANDugCx-4ajCZTQgrQZzABWbz2wFgiGA3EGyAAwgA5MAgYBgVmgCAAfS53J53IggAN5XyAY7lAIAenN5Eo5EGZrMBEAAsvRMDg-iEIhB8AAPYgqVikQRzQ3YLYTCCbeiVPrSAC80XN0WtEHCGu1+F1+oEhrmxtNqg0WHQNrtKkYAH50BBxhAVPgAG4kADcrLZIHFkp5EEA0raAVei8oBo+TT6a50pZzFwuk4hAgAG8IABRACO2gw+gANPXNXVGoR23XO-huwAxFukfDt+nsQiN5v6CAAXwgaiw7FwEAA5EJAchGqd9IZtstbvd9KQ16zGuwVKQq2pLhBHQJjXAo9euNt28aEFGVNpcLQSJIUaxuwbD3tE1ZzmAF5XlWtDYPeghPlGFzsIYmwflgWxfjWGBRmuACCa5zoBEDAaBto1pB0HXhAcHcAhAgkWRrBgZRspLBAjQYKO+qOpUFB9l2hChNOLahIqypBP8YSAuwaiLpckTtpUr6qFs7Y-n+JB9JESkCf23YiU2YkSb8wRkKEsnyXBWBKRAlQoWhKjttWuHroRc46XpUCCQOwmifo4lKmZ0mWUscm0Rg3B2ZaumtmAfTJmA7JFhmgDQcoAAHKAKbWhZFiWyXgFA0SAGBKgDVcoKgDHkYAKt5YiMYyTMA+I7sSpKYeS8AIMAmykNMJBUjSDIUNE6LVbVOINU1hIkrsbUUp1pCoXczCXuQRUQIAL2aAFiaThjfVeIEi1M37NSdKMjKYBAA)
-
-#### 题意
-
-实现内置的 Parameters 类型，而不是直接使用它，可参考[TypeScript官方文档](https://www.typescriptlang.org/docs/handbook/utility-types.html#parameterstype)。
-
-例如：
-
-```ts
-const foo = (arg1: string, arg2: number): void => {}
-
-type FunctionParamsType = MyParameters<typeof foo> // [arg1: string, arg2: number]
-```
-
-#### 题解
-
-```ts
-type MyParameters<T extends (...args: any[]) => any> = T extends (...args: infer P) => any ? P : never;
-```
-
-- 主要就是利用 `extends` 和 `infer` 搭配使用，推断实际定义的类型
-
-## 中等
-
-### 获取函数返回类型
+## 获取函数返回类型
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00002-medium-return-type/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMELQUO3Bg15UL+KgHU0Cvxg9tUN4+ho9UnjhNKICMBPCAQQDsAXACwHs7qAxAVwgAoABAIaMAZlwCUEAMSBaOUCS3tICWdEQFMATtPJdFAGwZxlRIlNMRAGRmA7t2NRAsHKB-eUAUrhAAGAJVUMu6ugBVKAA6qLhCAedqADc4Q-kEAygDG6ooBDBCAIW6uHl4+0aoAPL4AfCGA2zb4gEAMNhCA0fKAQZqAWP+VLk0MAM5EcWwtKSJ0EAC8fABuAFwQ5CwsuqrCkn0FEADeRFCKIkPiy1AQ6p7evQCMm6q6LaqbUDtZvdBEAL6VDIGqEIL9EACylJl7ObmPQSw1j15sBgBBACl6gArjQA-2oAvxQgACJ9hAAD4wBFEJouSrzQAU6hAAOKKZhccgQQBQcoBT80A0O51JgMBgBFrDUGtOJMAB0ACsWhyWOoAObAaDAABeTDgAGEAHJgEDAMCK0AQAD6avVGvVEEABvKpQDHcoBAD1VmpNKog8sV-2en2+2Se+QgqgAHgxVHQACYtPgcn2CQWjYSUADaAF1ZvNA-MBr5HS63Z7vb7-S92KHwxBlGpNG4IAB+CA50Z0VSDDQAbkVYGVppNEEA0raAVejHFVjTWtRbFABbAL8lILCAAUQAjlxBLoADSDp1BOIpW4QETqFidiAAcn4Vrg7LHUzoAtULWAXAYehaq8tTwgcUEpy9AyDRAH09Us9yw9HulyXUSe8nNt2dpBLkvDpt+ygCgUkHjo+z6vu+Y65Ps0AAMx-l8AF+PaIH9PMSHIZBBTQVAT4zgwb4jghkrLgEUxOgA8uQXIvgwaG2phQHYXMEBUd2tEMUxs4EURU6keRH65AACkunaKKcuTjJM0x0IRHzoVcvycfMUnLrJeQKVMwgEYRMGifBn6aWuIgTKurEYRp6YWauVksKuQkmcxYkIciaLQLZ6n2lagILspUHuXBFGft5MB+T8AVPEFPT7G5IYXkE3HUXxjHMW8SxQIIoxBkhk5OdZKVQOQfqjKuTDHLoLlEAEOyDCBRZcJ25AaGA9xgB0dBdMFby8CMYwTAZdDpoMeYQMiow3L1-WJYNw36Upk4AO4BuwE1TTNMCVlWICtm2ZqANBygAAcoAptZHW25oKqARDzIAYEqANVyuqAMeRgAq3nSDJMiywBspyPJ8oKwrAMILRrRoYoSjKD0QDSn3fYyzKsi07Lcry-JCiKLSTMeiidHDgAvZoAWJpWEjv2o+jQNY9DUqyhaYBAA)
 
-#### 题意
+### 题意
 
 不使用 `ReturnType` 实现 TypeScript 的 `ReturnType<T>` 泛型。
 
@@ -500,7 +23,7 @@ const fn = (v: boolean) => {
 type a = MyReturnType<typeof fn> // 应推导出 "1 | 2"
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type MyReturnType<T extends (...arg: any[]) => any> = T extends (...arg: any[]) => infer R ? R : never;
@@ -508,13 +31,13 @@ type MyReturnType<T extends (...arg: any[]) => any> = T extends (...arg: any[]) 
 
 - 跟`Parameters`一样，反正只要是想获取函数类型使用时的一个实际类型，就得用`extends`+`infer`进行推导
 
-### 实现 Omit
+## 实现 Omit
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00003-medium-omit/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDMELQUHnagG5wgeQLYEsAul5yFH4BGAnhAIIB2OAFgPbUUBiArhABQACAhrQDM2ASggBiQLRygSW9xbalibiSbLABsccLNXz4xeiIAyMwHduOqIFg5QP7ygClcIAA0y5bSVABUyABwCmAZQDGAJyx3HAhAELc7BxwAHhcAGggAaQA+J0Btm0Bo9UAgBlMI7BwnQCx5QGwlQC+9QAA5QCo5QEB3QFNXOwSnCUB1bUBW63DbFydAT+1AQxjsqHxAaPlAIM1ALH+c20mcAGd8LRxPfwFeX08IFwYAEwYIAG98KBxcVU8ALghpnEDqAHMDiE3PaYCgo6Zzy+u7qChfBgx3CcFptziQGAwTvx8ABfHI4DxrDbbAAK-k8ADcsJ4AO4QAC8EAAsmRIjEtgx4gByR7PQLBBTUSkQAA+EEpRxwJ0pSRyf2olwgOHJ5yRDFRGKxuIJ+x+ED+AKBnhBEGWqmmnliMPwk1sOSSEEAFOoQADiuDobBIEEAUHKAU-NANDuozoOBw7mmp2AwBmvjoADoAFbTH0Mfw3YDQYAALzocAAwgA5MAgYBgFOgCAAfUzWezWYggAN5UKAY7lAIAeGZz5fTECTqeAEEAScaAEzT1hBAN4+6Qk4QSrfSYHhXiJZAAogAPXyqNiPGLxZL45ueYcLaibaaJCAAfgg1AxiwgIoA3Cm+2tiaS4qv54vlxcyBgwaoWRcrlobg-qGxb4t9dL8ABtZEQLQBxHMcJ08KIAGtPDIBgBHWackgAXRFP8EIPWFUxAMsK2zCBAGlbQBV6KsQYsOwzMq2TLAAWDEJdggQcAEc2F4VR4hHLxfBCaEVX8f42W4I84G9ZiTluJ5gDYI41UpQ8ETlXh1RXAkf3wNjPA4qIGKY1QNOHdjgQARniE88jJbYqRpF56SYbkkiSTUoFU9TNOYnS9KVAAmIySRM0VzKeSy3kZB9KXlQFPGBGyeQQmsIH46Y4HnPSEv8Hj-F7WTFlS2djNwUyKTZCy6UCplWUpLR0WYrBNm5FN5kWZZVnWck9nwDkTg+J9bnwQrXgZDqvnwULFWVMEIU8KF0LqpYVjWRyDJaw5jjOR8Bt+f4wuBUFwUhbRJtoeqZro3S1OBdyFsFJb+ufMB0IwkjSIgQBoOTKQBTa3u7DyLAUB8H1QAwJUAarkC0AY8jABVvR1nVdd1PWeX0AyDEMw2AfhpmxRZI2jeMfoge1QfBl03Q9L1YcDYNQ3DaYIQkhlZigfVABezQAsTWMPHIcJmH-RJhGo1jBNqzAIA)
 
-#### 题意
+### 题意
 
 不使用 `Omit` 实现 TypeScript 的 `Omit<T, K>` 泛型。
 
@@ -536,7 +59,7 @@ const todo: TodoPreview = {
 }
 ```
 
-#### 题解
+### 题解
 
 ```ts
 // 排除 T 类型中的 K 类型
@@ -551,13 +74,13 @@ type MyOmit<T, K extends symbol | string | number> = {
 - `MyExclude<keyof T, K>`就是将`K`类型从`T`的键类型中进行剔除
 - 然后就进行常规的对象类型组装
 
-### Readonly 2
+## Readonly 2
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00008-medium-readonly-2/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAcELQQEoFMCGATA9gOwDYE8IAmSeOci0gI0IEFsAXACx0IDEBXCACgAFVGAMw4BKCAGJAtHKBJbwkAnNFjyFxmKgCtkAYwZwA1snwBnUqXHmIgDIzAd26moAPgiBGV0DsMYBlrQFeBgCqVA3-6BF6MAYf8Aia0A5+IgABUQIQE5TQG34-0AKWMB5xMAgBjsIQDztQAbnQAA5QCo5QCwEwApXAAMAWXwUDBwCIgAeABUAGggAaXsSgMBg7UAyPUBIc0ASOUBZz0BvH0Bo9UAQt0Ah5UAHUxKGksAYlRLWkrSoUhWSwHBjQCztQBS9QD7owDt-QC45KqUCCfmSicA9HUByA0AxtJTAIM1AHPNAKnNABeNAbPktgKATCV9oB-eUAAkZ9R6AX4TABvKp0AV8qAb+iAoBGHUA8wqAOzMCtcLjV8I0OjlAOwW6wgpEA0fKvdIlGkMExQACWjGQckEqC0yAgDUwWAgAG9SFAGAyGLhkAAuCBGBhyJkAc0FEHQyCMWllAAdhThJdLZdgFVAoFpMABbdVihjIdCSqiYTBigSkAC+6WN2GlEAYPMwkoquOU9W5WBaAHJhaLkCGIAAfCAh5WqjVa7AhxwAXn5ivDYslACIABKGXNNRUJtUMzUM7UQXOCO1UVByYuK41mi1WyVs3BGZAlqAujZC70AOmznIzBeQuFwmFzEGAwAgAFE5HJMHJJVoBNhMAwIApUEYjAy5dgIKh94o8RB1Wv1SyGPhSF6sMOy0mq2eJw25Gw7XOF2XVd103bdd0vQ9j1Pc8IMuQhb0we85EfZ8R1bc1kEtdAIAzGUOE5QCAHlWk2Gl0kcQAKdQgABxEUmA4KgIEAKDlAFPzQBod0ALH+mAYBh1SMcUFzpLQmGHdQjGHdc5WAaBgAALyYOAAGEADkwBAYAwE00AIAAfT0-SDP0iBAAN5CZAGO5QBAD10wybJ0iB1M0x97wgP0rwDRoWlaCBkAAD0tbB0CMCADHwTBBC5HDgsMMKuXTJA3IIOpwgZLQ9A8tp7EcAAyCBCJNEV0vaTSwG02ybIgQBpW0AVeiinJayyqMhyGTNdc9z5CBaFwBkDBaJcfPvHQICdCBBDXE0414JzkDgYTUGnZB9RVYAOGFbsQ0c-BnK3HsgozABtUg+oGhg6k67rkDqVzqncoNMAARnsFp-US26Hsyvtl367QTrOgxLsqBL8EDb07tDMco1jeMVXLSscFTXqvp0K13sOxGfq6v6rrg4GsCIMGRTFCG43fCtk3hz7juRx6wAAXU0plLVZdlOVezMhQJiUpRleVSBJ2HsAAfh1bn9VIdD22tCBbXtNBsDAF0wAZlk2Q5LlvSINnYOvMdhb1A0lWhj8cCFrm9bF00MKwm07QdOWFaVpnVaO76rU1g84M9DndZ5qB3evPnkxN3UfYgcXMI7KWbdl+XNLdD0Xx9FyAeu2pGhB-GIyJqHE1Jz9U0igV2YjPNC3wZsoADz88zrNRG3L0OLYlzs5p7EsFYT0cOciydp1nedFxXNcN1DsC9wPI8TzPC8-eUG87wfJ8O8rnBu5-P8+8AweQJH7AdzHtAJ+g6fAbnxCF7ADuw6wyK8IIxdiK0kB6oauzAGg5HJAFNrZ+GvsjTQFIRwgAwJUANVyplADHkYAFW8uI8T4gJYAQkRJiQknIKSMkBBGAAO4sjkgpFSACIDsUgdA3i-FBKqkQeJSS0lgBGHtCtT89IICOEAC9mgAsTRsMQ2BZDhKiUoSgnBSlVIOTAEAA)
 
-#### 题意
+### 题意
 
 实现一个泛型`MyReadonly2<T, K>`，它带有两种类型的参数`T`和`K`。
 
@@ -583,7 +106,7 @@ todo.description = "barFoo" // Error: cannot reassign a readonly property
 todo.completed = true // OK
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type MyReadonly2<T, K extends keyof T = keyof T> = Readonly<Pick<T, K>> & Omit<T, K>
@@ -593,13 +116,13 @@ type MyReadonly2<T, K extends keyof T = keyof T> = Readonly<Pick<T, K>> & Omit<T
 - 那么另外一部分属性就使用`Omit`来创建新的类型
 - 最后通过`&`操作符组成交叉类型
 
-### 深度 Readonly
+## 深度 Readonly
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00009-medium-deep-readonly/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCcELQUI+2gyvQgJQKYEMAmB7AOwBsBPSeOSq8gIxIgEECAXAC0PoDEBXCACgACWFgDNuASggBiQLRygSW9pAJ2z5i9KXhoArDAGNmcANYYSAZ2k4MGAA7lyUhxEAZGYDu3O1AB8EQIyugdhjAMtaAV4GAFUqA3-6Ai9GAMP+ARNaAc-EQAApoEICcpoDb8RGAFLGA84mAQAzuEIB52oANzoAAcoBUcoBYCYAUroAhbgAGACJW1pi4hKQAPAAqHvWRgMHagGA6gJ-agIYxtYDz1uWAQ8qADqaAU8qAboqACtrjgEgJgEr6gAzqgH3RgFxygFfKgN-R+VDkgBUGgPfKgKdygOIKu4AU6oAm1oCIxoAYRjKAiEaAN3KAo3KAEE1AGAu41yc0AI36RQC-inNIoBvHzkgF+EwAHpoAAdMAwAGARTDcoAxeUA9GaRC6AWblAGyOt0qgHH4wBhkYA1t0AvDpXQC-AYAsTVqgFg5QAwKoAJC0A0fKAU3MPoFAI+6Zwg5B5gCDNAr1GXMUzkZgkawYCAADQgAF4IABvMVQKAADwAXDq9fqoFgTQBGcjmmgmgDkrAAlg7bRAAL7ukiO1gmN1QL3nKCK5UQACiBuV+gwOE1pvdynaaggxoT5qgSdUpAglogNozECzHXo9ogTtd7qD+uLKZ95b9JAdZurCqVKu6eHw8eaNja2ZInVVXmAwAgpnY3CIcZoKtMWAAtiqsOZ6pHo8xY-VyDLt8GIF5HhAAOLOtjcGgQQBQcoBT80A0O6ALH-WMxmNZTEbR3LdKwAHRaUw-ngigAObANAwAAF6sHAADCAByYAgMAYAoaAEAAPqYVh2FYRAgAG8rUgDHcoAgB4YTh5HoRASEoaGKq9q0Kglj0Xhatq5C1jmADaCQQM6BAQMYJB4CIEDdAAuia3TcWJEAYAam4EDg5iYLoQE4J0pjMIofHAQANBA3AEIYBB4AA7gQXgAPwQPR-ZMVJCRiV4knSQA3GAXooahIBkRR2EQIA0raAKvR1Q8r5fmYVRyHOgu1hAcwprhgAjtwWBEPp656AlHoQCIih4Au5YCLRcDfmlRAYAQwEYKYwDcMwzpEKYbpgLREC6CuNXxpx5CZfonTJalRCdLZjFqEOHgZVGWWxh4k1gGJNHtmq8ZsRaJp8JIGpeAATDttAmpp2lVeQugmmt+o4CaNB4HgFXCO6GDne6UDAc9hZQKw70fVAzomlp3AYC9GZaI6R06QGH3VoWhi+hgRBEHgkPmtDnrkF6nltX1m5xqx7FjTmeabZqu37ZmBOlodWk6fjyY5mdOqJhTEBXRAN13dgBBM3T9BPYzhYcfQb38x9gsQF9Is-WLf0QADQM-eTPMQKD5bg1VyMZqj5pi7DDbw4jGuBlW6MeV5YBoRF-mANBypSAKbW4URVF5vgJ4ECAGBKgDVcgRgDHkYAKt5Pi+b4fsAX6-v+gEgWBwDCKYpkYIokHQfB5BePefsB6+76fqY35-gBQGgeBph3fVzqEPKruAC9mzKuBnQfZ7n4cF4nsEIdRYBAA)
 
-#### 题意
+### 题意
 
 实现一个泛型 `DeepReadonly<T>`，它将对象的每个参数及其子对象递归地设为只读。
 
@@ -627,7 +150,7 @@ type Expected = {
 type Todo = DeepReadonly<X> // should be same as `Expected`
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type DeepReadonly<T> = {
@@ -637,13 +160,13 @@ type DeepReadonly<T> = {
 
 - 主要在于判断`T[P]`的值类型是不是对象，是的话要进行递归处理
 
-### 元组转合集
+## 元组转合集
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00010-medium-tuple-to-union/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAMEFoKGFFQI36Bt4wECqDG0yiEGF4BGAnhAIIB2ALgBYD2V5AYgK4QAUAAgIa0AzNgEoIAYkC0coElvcQEsqAgKYAncTTYAHADaLxbKrKZ48Y0xEAZGYDu3Y1EB52oAbnQNs2gaPUABgBVNO9wwCqBpgAedwA+V0AYf8Bg7UAV+MA9tTRAASNASHNAHgVAELccQCAGGwhAaPlAIM0c12KaAGc8GlINXQplVQBeCABtAHJoFoAaCBaAJk7ugGYWgF0cyuqId0VSmghGz21FH39DKkDa5RCIYGAIRQAPaoBjGkUAEwgaBghiXTaWiAAfbr6nwZa8YtccrcAKdQgAOKyehsYgQQBQcoBT80A0O6ALH+6DQaBpSgAuHZlI50AB0ACtSliGMoAObAODAABedAQAGEAHJgEDAMDM0AQAD6HM5XM5EEABvJpQDHcoBAD3Z3LFbIgjOZ410AFleBoNPIicE9vtTlQzqUIMpFLwzkwtOR+KQmsMto0AN54JoABQg8kmTSobAAtrdlMNhiiILaANxgAC+YBlky8Sz8ATW7jVGq1Or1BqoRogJrNFogAGtFKQGAIIPLFcrgiEA2AdpcqroFt5I6sS3NJrHFJrtRteKRAvIlKoAJKnV1bAD8EH7ildEB9VEUADcVAGK6GaxGVkEYwc49rdfrDcbmOnG+5nW6PcMy+WQKLxVyIIBpW0Aq9GACldclfrxzJUzZK6NITZpaIAAogAjmwvBaF0AGHIoJwQIGEACMoDATi03AyggmJgToVBEtMwBsDQshaKUHwhlWEBHLwpTTI2TR4JBxw0IEwGgVowThssUaBE00A9AMXQtAALAArAAbP0NDKGwijml0PEDG8gmiQ8zwSVJIQhB0dFQScTEgWBbGLBx9bcbxMkwLx6maaMzIXq+b4QIA0HKAABygCm1nZ14fheeBbIAYEqANVy-KAMeRgAq3vCiLImiwAYtieIEsSpKwMA-ClAA7ioFJUnS3kQDCIVhUiqLoqUmK4vihIkmSpQMFo+GrOUUBbIAL2aAFiaVj5RFRUlbF5UZTS9JSmAQA)
 
-#### 题意
+### 题意
 
 实现泛型`TupleToUnion<T>`，它返回元组所有值的合集。
 
@@ -655,7 +178,7 @@ type Arr = ['1', '2', '3']
 type Test = TupleToUnion<Arr> // expected to be '1' | '2' | '3'
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Mapping<T extends readonly any[]> = {
@@ -676,13 +199,13 @@ type TupleToUnion<T> = T extends Array<infer Item> ? Item : never;
 type TupleToUnion<T extends readonly any[]> = T[number];
 ```
 
-### 可串联构造器
+## 可串联构造器
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00012-medium-chainable-options/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMBMEFoKHvlQTHKBUAwIeaAIEwFmqUQSOIICMBPCAQQDsAXACwHsbKAxAVwgAoABAQ3oAzDgEoIAYkC0coElvSfwAOCgDYBLAMb86qlgQISDEQBkZgO7c9UQBTqEAFL8AbvwDK6gE6qFdCFMCIRoBu5QBH6gBx6gFjygP7ygBSuaOiAEP8Awgz8qjT8pMoApsAACu5pajRpgJD-gCFugL+KgA6mOIAAcoBUcoCf2oCGMYAw-4Bi8lYAKuQKac5uHl6NgAbygL8BgBAqgGAuRYCbfoBrcoAiaYBQcoDePoDR6oDoKoD4-+YQFoCb8dWAiMaAGEZSg8iAp3IRgN9ygPCGA4A5qoBE1kWAnaaA8PqAedqADc57K4gQAJL0NIuIT8dRpAA0EA6XQggDQjCCxZT8ADOKIggF+EwAyEYAgBgGgAB0wCBkYAF40A2fKAEjlquUIAADJgeHQ0bgAazS5ChDmUHDSohpEEAMSq0gDmaTo3F5OKsdIZLD5UgJhIiZKKEFZlEFnO5EEAlkaAVR1AMr6gFklIoNFaNQBYCYBx+OFor5gHbgwBryoAAc0AE36AZb9ADnmOK2gGj5QBBmlsaUG6CiCAATNLqZEuNIQdQsFGeeM0ISqIUALkRCSSKXSW2TiYgMZRHGUngAvHGWKmhQQoAA6enaFjcADkQiYTFbULgAGZRHWII2ZUzW8kALZpbsQVt0TppBDqBLKdI0EUo1sDqANpuMtukfguacAbwgmrSmdbAAlcsomBAAOpMFzKMOtiAAXy32-rIrF34IYBgAgQB8c0AbHMizSEsywgIoVkAejNACx-ggkjoYFQXBCAACUoNLTxj0HDsmEzGgOHHUhgUHCcLwgRM3DXQcDxcTMCO3bdz0zOiklrNiPwIPioCDGktgGQAr5SJCwVkAIR1ACN0r49kAfKUhj+QBYOSJL5LkAVXloUcYBrEcWD3kAUTTAG4EwBE+O9KACAGc5AHEFQA+6NpNU+VEwBS40AdeVAHVtQAyb1QQAYANpc8+Q8rSzTEolABazQAmdMAYO1AAJ5QAkBLg5Y-LUwlAG34rEtMAEE0xhxQAYFUAdgsVRpZyIFE4JAGqIiJKkAQmtLIgAgAD5tggABxVRGA4UgIHmQBT80AaHdEIYOg6AUFF0yAkMl3rAArFFGxcIVgDgYAAC8GAQWIADkwBAYAwEO0AIAAfTO86LvOiABiKQBjuUAQA9Tsu56TogfbDrnWF4kSZJUjSAAeNoIErY8PxakGCF3Fh-oAaQgNIAA80JoMN0S4tcoQANSalk2UzABRBGow4CNYahNUmCEaEmo5fguRozHREzb6cz+wGIAAMmwyNnzDMmIGxmmCD-cVMzaABuMA+KOkAnpei6IEAaVtAFXo8IfTl+Wzreg7VHHBRn3w6g1FZKFCa6dRPA-CAhBcJhxxnXhPoXJc6dXddgA4bRlA3Q6IyjQ9YwLTx+GZ7NfrzMAg8g6C6GgYGIH4Ahh2bUciOnPtv2TvdWyYk8zzp7lLxvFd7yfF830-TOodHajp1nedF2XN2oM3JORYHSOE08Ys8PgStE53Ec21rqFW0EJhGGBCBa+-ICIEdlEEER826CXlxbZcJPq+H-hJzr5FCxntvRXFD75zjVEoPjgBtAgzcjOh-qoY2Aadyno7w6BTYRle0jDaAmpCygPfC2T8X7-TflTHuZZYDf1-mGWAgCIRgAALpn1hCAtC-946sWtp2EiZEKKbygExFig4OK0ToPRHin4CDUU4lQ7iUt0GxkwX-PuEBcH0ModQ5hh0wDHU1grQA0HKVEAKbWGtNbawEeAKALVABgSoAarkbqAGPIwAKt7DVGuNSawBpoMDmgtZ8y1VqCBRAAd2BOtTaO1moQEGuozRY0JpTRRDNeai1jGwGACiJgXIU6hjkRAQAL2aACxNUwjjtEuLcYYpaVitq7XemAIAA)
 
-#### 题意
+### 题意
 
 在 JavaScript 中我们经常会使用可串联（Chainable/Pipeline）的函数构造一个对象，但在 TypeScript 中，你能合理的给它赋上类型吗？
 
@@ -713,7 +236,7 @@ interface Result {
 
 你可以假设 `key` 只接受字符串而 `value` 接受任何类型，你只需要暴露它传递的类型而不需要进行任何处理。同样的 `key` 只会被使用一次。
 
-#### 题解
+### 题解
 
 ```ts
 type Chainable<T = {}> = {
@@ -745,13 +268,13 @@ type Chainable<T = {}> = {
 }
 ```
 
-### 最后一个元素
+## 最后一个元素
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00015-medium-last/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?ssl=30&ssc=79&pln=30&pc=1#code/PQKgUABBCMCsEFoKABzQcCqAA5QVHKGFFQBL6UQSOIICMBPCAQQDsAXACwHsbKAxAVwgAoABAQ3oAzDgEoIAYkC0coElvSfwBOC-uQIEJGiIAyMwHduaqAD4IgRldA7DGAZa0BXgYAqlQN-+gRejAMP+Aia0Bz8RAAKAJQiBOU0Db8Q6AFLGA84mAQAz6EAaAFOqAJtaAiMaAGEZSgF96gHXRgP7ygBSuACrkAA4ApgDKAMYKAJb5dBAALAB0AAyRgHnagA3OWIBYCVkABgAy-ADOdAA8OQY9joDB2oClxoDryliADqaAI349OT2AbnqAK-GAe2qAbopoWHiAIW6A3j6A0eoRUASA0fKAQZqRPU90gwR0BYUQigrQEAC8EAA2gByfjAgA0EGBpAhUNKwIAum8Pl8lAAmf5AgDMkLRkOgSOuUHeRQgdH4FQANr8AQNhiNvtAjMBgBBCgAPIqlOiFAAmZKYEFIn2B8ORpPJVIxtKGo2+aOZrI5XJ5-LoguFMAITx6kSM0QgAHEKowOKQIIAoOUAp+aAaHdAFj-DDodHygwAXCyXqUGPUAFaDepMBQAc2AcGAAC8GAgAMIAOTAIGAYGToAgAH0M5ms5mIIADeWOgGO5QCAHuns2W0xBE8mSZ86aMcmz2TyaLzBhAFIV+LyWJTKIJyICEUYAQ2Oc3W0D6lOKjQhIUFBAvJCZ3OF30ERAAPwQPoQV0QHIAbjALLJKLrY0b47bHa7Pb7rEHw6B-chU-qOQRgJyIMphRoQaMIiCLHimICluWWYQIA0raAKvRWQ3BBkEZpWSYVAAtvkgY1AA3hAACiACOHD8JSkL4ZyhTchAAC+EBCAoTDoVCvA1ggXqkX+AGFIMwAcHQVKDMC1YoqUQw8ZigIEBRKojERJGUiMF6AjiEB4jAQ74gYBjgtJlHcnJxGkUpsojIC3DiH8RjQGiql4fw+7DJUAG0ZpED2Y5dDOUGtHabpSLJie4HIVBgDQcuggCm1khyGoUFBBGIAYEqANVy+aAMeRgAq3g6Touu6wCet6foBsGoawMAgiDAA7vOEZRnG8UQLaGVZc6boeoMXq+v6gYhmGgxMJS-EVCwryGBAgAvZoAWJq6M1OVtR1hXdTVMbxlWYBAA)
 
-#### 题意
+### 题意
 
 实现一个`Last<T>`泛型，它接受一个数组`T`并返回其最后一个元素的类型。
 
@@ -765,7 +288,7 @@ type tail1 = Last<arr1> // 应推导出 'c'
 type tail2 = Last<arr2> // 应推导出 1
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Last<T extends readonly any[]> = T extends [...infer R, infer L] ? L : T;
@@ -793,13 +316,13 @@ type A = Last<[1, 2, 3]>
 type A = [any, 1, 2, 3][3]
 ```
 
-### 出堆
+## 出堆
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00016-medium-pop/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMBsEFoKC-FQYBqUQr2MCMCeEAggHYAuAFgPYmEBiArhABQACAhuQGYMCUEAYkC0coElvQewBOE9vgwYBCiIAyMwHducqAD4IgRldA7DGAZa0BXgYAqlQN-+gRejAMP+Aia0Bz8RAAKAJQiBOU0Db8RcAUsYHnEwEAM6hAagBTqgCbWgIjGgBhGQoBfeoB10YD+8oAUrgAq+AAOAKYAygDGEgCW6WQQACwAdAAMgYB52oANzoAAcoBUcoBYCUkABg5U6QA8KRrtloDB2oClxoDrys2ADqaAI37tKe2AbnqAK-GAe2rNgIU2gJDmgADmgHAqzYDCioAEvoAhbjMBUBiA0fKAQZqB7Q9kAM4YZBmZEJIS0BAAvBAAbQA5OwgQAaCBA3DgyG5GFAgAmQIAuq93p8pAAmP6AgDMEMxEOgqMuUDeWQgEkyP3+XV6X2gWmAwAgmQAHllcmRMgiIGQqBBcB9gaCIVD4XCSXz0VTsbTuj0vpimSz2Zzubz+YLhfiIJipQ92oEQCBALkZgDRNE2ALH-ADAqgHYLSyACoNAPpygHvlQCncvV2tkKAUuGRBp0GE8KO1ADEq7QAqiQQ36A4B0FUA+P+BLTBCAAcQKlAYuAggCg5QCn5oBodytFDIZHSTwAXMznrkKOUAFZPcpUCQAc2AcGAAC8KAgAMIAOTAIGAYAnoAgAH1Z3P53OIIADeROgGO5QCAHjOF9vpxAxxPyR86X1WWzuSQEU9PrQAcitP8Uqfz5fAeU3wUSFxMhIIE4IZx8GRCAAH5fwgKsIBSABuScWQtE4wEPCAfTjE92WfK8ANve9IKfTILyvAEAIhN9yg-L8fycIDQJcCDoMQ9EHGDCg0LPfCXyw5EIQAaRwgFSJSHjkRgpDo1jf1WIw698FvHi+O4ki3xSYSJzAKcd23CBAGlbQBV6KSK4tw0xd9wKABbdI2xKABvCAAFEAEcGHYAAbCFbI5TIuQgABfCAuAkKhTMhVhDwQesXOc-D20yJ5gAYMgCmcp4gQPdFcnYJ4YpxAEMHc9UegcpznJ6Y8AV1QkYDvCEyoJO8NDBXKPK5ArHJckqFRFeFoTFOExSRCEqsBEEuolFENHqxr8sKtqUIkzqxW62Exuq8UerGiaoDyzyyBaoqSuYnoar1IkuIgSp6rxAkiQhSo6oazamp26birE305uGhbRtOxEgQu4F+shUVIUWoFJXGhrUVU9SjMXQBoOQaQBTa0MmG93HUAMC0QAwJUAarkV0AY8jABVvUty0rGtgDrBtm1bDsu1gYBOCeAB3b9e37YcMYgYtCeJitq1rJ56ybFs207bsnioZz4oKGgXk0CBABezQAsTVUHnSf5wWqZF1nBxHfcwCAA)
 
-#### 题意
+### 题意
 
 实现一个泛型`Pop<T>`，它接受一个数组`T`，并返回一个由数组`T`的前 N-1 项（N 为数组`T`的长度）以相同的顺序组成的数组。
 
@@ -813,7 +336,7 @@ type re1 = Pop<arr1> // expected to be ['a', 'b', 'c']
 type re2 = Pop<arr2> // expected to be [3, 2]
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Pop<T extends any[]> = T extends [...infer R, any] ? R : T;
@@ -832,13 +355,13 @@ type Unshift<T extends any[], K> = [K, ...T];
 
 - 道理就跟上面差不多了，利用的都是元组的特性
 
-### Promise.all
+## Promise.all
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00020-medium-promise-all/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMAMEFoIAUBOB7AtgSwM4FMA6AQwBtTJEFqbKAjATwgEEA7AFwAt1WmAxAK4QAFAAFiHAGYCAlBADEgWjlAkt4LiqVMSby6A7KXYJsrSpXnmIgDIzAd26moAPgiBGV0DsMYBlrQFeBgCqVA3-6BF6MAYf8Aia0A5+JQAJQhATlNAbfj-QApYwHnEwCAGOwhAOlTAU0VAX8VAB1MAAzQsPHxmcnyAwGDtQFLjQHXlIpwCABlsAGt8QE-tQEMY3MARvwDAFfjAPbVAHgVAFL1ALjlCjEb8AB4AFXsKwDdFRXyF-MB6M0BjyMAE80AQt0Blv0Ac8z7UqEp86-ZcSgBjHlx2CAAHGZKARggAXhQPgiEVD4XDoUgAN3wwgAzDIANwPJ4vd7FAjQX4QAAs0ARUEerGebwB+GhGNY+AA7v9UfNnqhjABzezCYTA0EQ-AAGggwIAVvh7uw5D9HABvShQAjsBbYTD4dACdiskFgyHcz6wWDcgDkknQ6G18MoAF8jZcoMBgBB8AAPV4C9j4AAmEHY6AgdHwEGmNLmAG1WAJMJ7UNzsdy6YyALrLREE5EYholEjkYR+lGzT7cjMlaDZ4nQqMQYi4CD454yK7XNKOQAU6hAAOLYLgCOgQQBQcoBT80A0O6ALH-OOx2K9cAAuS23e6cQi83CEdCoBnAODAABenAQAGEAHJgEDAMAH0AQAD6p7P57PEEABvIHQDHcoBADxPF+fx4ge4P7AY9ogCwEr1I+ALF+8wLNaNqOqwTqlhIDB+jGGLilAfrIBAxgQO0DDoJIP5RiOP7IUWtoQVB1KzHMxiSPgqAQOEjgAPw0RAeELARYDGhAB5OgKpDqF60isIK2A8KRJRlKQixgcR0G8HBzLgmQAggnhwLEE6PCkEwfqENpCxRjIeFJgQix-gBQH2os9j2AeYBHi+z4QIA0raAKvRgAUroA0fJPnZl7vrKrzzi8ooQAAogAjgIZDckFdoOhA7GSDMEDaqIn72ggk5kABrAMiCwCKvouDage5bIsSYkLCC7DfH8hmlKmfpZjA3KFsWpbFZWxVEjSZUVei1WlXVDV5iJgJsqqUKwkWJZlki7VIp1szdc8pJ9V1A3ckNNVAiqHIwjIekfsBZYliCGJ+pQUX2oKcyheF4kpfK2E5gQi2VdyNX+oNTUxpZnLndFV03WQcz3Vh82ieQ5XPBtxIfet3KBsGVHffYv1QBdDrXWFQMg49-WkJD7DQm9MMBkGIbw2TVEU4jqDI2AUbWTZICeV5r6ANBygAAcoAptYs15b77qAlCOIAYEqANVyN47IAKt79oOw5jsAE5TjOc4LkusDABIuAUlRq7rtuQsQD2Usy0Oo7jrgk7TrO86Lsu7J5U8BuAC9mgBYmjYJty+blvKzbuubju75gEAA)
 
-#### 题意
+### 题意
 
 给函数`PromiseAll`指定类型，它接受元素为 Promise 或者类似 Promise 的对象的数组，返回值应为`Promise<T>`，其中`T`是这些 Promise 的结果组成的数组。
 
@@ -853,7 +376,7 @@ const promise3 = new Promise<string>((resolve, reject) => {
 const p = PromiseAll([promise1, promise2, promise3] as const)
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type TupleType<T extends any[]> = {
@@ -876,13 +399,13 @@ type B = [1, 2, 3]
 - 而使用 `readonly` 修饰 `[...T]` 就变成了只读元组类型
 - 最后就是通过 `TupleType` 来遍历元组，把元组中的元素类型按照条件进行处理
 
-### Type Lookup
+## Type Lookup
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00062-medium-type-lookup/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgsAUABFBsBMUC0UAqBPADgUygGQHsCBrAV00hiWpqUqgCN0oBBAOwBcALAt5gMVJQAFAAEAhpwBmpAJRQAxIFo5QJLei0mwCWvRQFtxFaFHoLTUQBkZgO7d69AHxRAjK6B2GMAy1oCvAwBVKgb-9Ai9GAYf8Aia0A5+KgABQAlKEBOU0Bt+N9ACljAecTAIAYbI0BIc0A30z9ACoNAe+VAX4DAGD1AbHNATgtAO2NAN0VAPR1AcgNACnVANz1AMbSlQFPzQD8jQG8fQGj1VKN6BsATa0BEY0AMIyU-QEQjQBu5QGeDQCwEwHH4hsAVAMAIFQADAGFxDigAHygAEQIAcy2lQBwTQCJfQBtFQEdFLY4sbC3AdW1AVutAU3NAduDAGvKgA+3QApeoAQtz6yUARsaAU+VALvRgBfovwNQCncoBoOUAXJ6AaPkpnNAPjmJS2hBIAFVMAAeM7nI5QPYcAA0UAA5AATC5M2xbP6AdP0tlStn4iURiGTKRcaXTGUyAMb7Dlc3l0rYDGD0LbqjgAZ3omk42AATlJxNLcHSoABvegwV44ABczNlHCZVsY+uw2BZmvtTJYTE1mt1mkkTJpTIAyjx9dxxJp9SHjkydqR9QAbePMgBC2DY53EafoAF80jBdRwDUaTadxZajNa3t62ednbXXe7Pd6ABIEDQs9NMjP6zQcDiSdB9jOkFMpxvjggADwNzZgMGlBBTBH13oY+oIAHc2H3d1wh9g+wwU8biEuoEXBkYbbgALLoKlQAC8+GForNxypUpn9jAMAUDYHOODSmWLJQBwBCMLgfIXFsarqsWUD2A0UAAOJDlwpAMFAgBQcu0gDQ7oAWP9cMOmBekBWrSlwAB0ABWmr0Ru5zAAgwAAF5cEgOwAHKQCAwCQKJECgFAAD60kybJMlQIABvJgoAx3KAIAeUlyZpklQMJYkPp+pIUiSjKoCBc5lmwnpQJqHCDjm9gfiSZkWVZ5rQfWaA3lAAD8UBOfabDYAAbgaADcYkReJIAaVpslQIA0raAKvRgAUrliMWxdJOkiRAmi6JgG4HG5ACiACOpB5oyRVgdgEFeVIO66MyogPkgdF5im2bnNgmrAKQHCaCmmrNpApblsapr7Ba9APt6jrXtubZesyvroP6gbBqGEYFVwMZxqGSapuOnV5s2t4jXqhrjVW1I1nWdrMjO9ALR6S1Ml2PbjoOw6juOk7TuyoYZvOi70Ku66bsy257geoZHieZ4XtKV6QGdED6ewuV5u+tKTb+Fx6W8UCypq3XYwA2vQVXgRw5KleVKbksSIoUhj+gpv+7K2IyVK2FzlPVRBtNlXmjNfizWhs1Kc1czjHC8-SkAALqRZAEkZXFaKAABygCm1ulGVZar4BGPYgBgSoA1XJKYAx5GACre5GUdRwC0QxzGsfq7GcZImq7ga3G8QJdhQCRNt2xwVG2jRmp0UxLFsRx8DAJqa59dobDasbUCAC9mgBYmlYIdhxHUcu7HPF8YJEC6RAkBAA)
 
-#### 题意
+### 题意
 
 有时，您可能希望根据某个属性在联合类型中查找类型。
 
@@ -903,7 +426,7 @@ interface Dog {
 type MyDog = LookUp<Cat | Dog, 'dog'> // expected to be `Dog`
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type LookUp<U, T extends string> = U extends { type: T } ? U : never;
@@ -925,13 +448,13 @@ Cat extends { type: T } ? Cat : never | Dog extends { type: T } ? Dog : never
 
 类型结构之间，参数少的兼容参数多的，所以通过 `{ type: T }` 这个结构就可以获得想要的结果了。
 
-### Trim Left
+## Trim Left
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00106-medium-trimleft/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAMBsEC0EAqAnAlgWwgGQFMAzAF0mSUqvICMBPCAQQDsSALAe2YYDEBXCAAoAAgENWRPgEoIAYkC0coElvOSQLYADgBtRqpJsyr0ozeXKzzEQBkZgO7dTUQHnagBucIAAww5CpADyoAfC4hAGH-AYO1AUuNANlNAOw9ALO1AELdAdW1AMm9AJjlAbx9AaPVANz1AFfjAPbVAADlAKjlABtMElMDAN0V5Yryy5MACJUATNMAwuUB85STkwAB9QBZNWMAvL0BfNw7AIAY7CEBo+UAgzTGXWZIAZ3ISOnUCCBIsbAIAEwgAXjRNzxIvAHIoAAkCTU0OCAB1DnRNXYhT3whgYAhAFL1ACuNAD-agC-FN5XG53R7PV6ncizFxjD6ACnUIABxAxsPg0CCAKDlAKfmgGh3QBY-2wSCR1PMAFxfBYAYzYADoAFbzelPADmwDg8GAAC82EgAMIAOTAIGAYAloAgAH1ZXL5XKIIADeVigGO5QCAHjKFdrpRAxRLlqsIABldSiGlrA7nc4AHzeAB1mLaHSRTgBuMCGtbubDHLzGiAEAAeqmY23mEHmG0wzDZHwOAeDofDrgAJABvU3mggAXwzMaIBHQEAASjmAgB+Q4eYgnEsfCkmj0SsBSnXaiCAaVtAKvRgApXcZa9uK-U4dRPEgQdMQACiAEc+MYADQzoOrGkTnMQIjoDi4U7CL1IOnGTQEWMEebAPgkTCaeYwz0rNY00TzC-7CAAbXI09XBHXXhzgumg+EctZnFG6DvMupyQe8viLj+f4AUBxigTW3jnHBCFvNhCFIWuJyoSBPp+ucUBQNhMF4YhUC-oRgHzmhpHgeRFGQRRUDQbhGycW8vj4XRyFEUxJFgZhFGOvaE5EBwdw0KIxbcacsnyYp-GCSuDHEehvqscp8G0Vp-4icBulkRAUmujhpyGWAAC6LatiAg5DrqgDQcvkgCm1q5Q56uKoDkB8gBgSoA1XIqoAx5GACrexKkuSVLALSDLMqy6AclywDiPMADuRa8vywpBRABLRbFZKUtS8x0kyLLspyCDAPMHCaNemBcIsUAfIAL2aAFiaNhlfFlXVSldV8oKIr6mAQA)
 
-#### 题意
+### 题意
 
 实现 `TrimLeft<T>` ，它接收确定的字符串类型并返回一个新的字符串，其中新返回的字符串删除了原字符串开头的空白字符串。
 
@@ -941,7 +464,7 @@ Cat extends { type: T } ? Cat : never | Dog extends { type: T } ? Dog : never
 type trimed = TrimLeft<'  Hello World  '> // 应推导出 'Hello World  '
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Space = ' ' | '\n' | '\t';
@@ -954,13 +477,13 @@ type TrimLeft<S extends string> = S extends `${Space}${infer R}` ? TrimLeft<R> :
 
 关于模板字符串的文档请看[Template Literal Types](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)。
 
-### Capitalize
+## Capitalize
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00110-medium-capitalize/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgsAUABFCMsAYoFooGECGAHAlgFwwBscAvAU0hmWpuUqgCMBPKAQQDs8ALAe3ZYBiAVygAKAAIZOAMyEBKKAGIAtmQAmOIcqV4yyrIQy7kxXQCci9eoptQAikLIBnPDj5XoUAJL7CespxQAAaYuATE5AA8ACoAfEFQAO5cOADGXFCpfABuZGZ4TlDcZFDSOGYuUH545lA80lAYUC5mOOwA5kU8UEJYWHmpGE4lUmpVZBi5RVwlZs54jU7IOE4AdB4wAjxmUGQAHhi+FJ70QWcF9HhM-ZnY+ESk6lAAvOh34Y+RAOQzhITdiW2hDUX1iUGAwF2e36qV0Yzw3QYJS+AAkyH8AUCQaczhsoGCAGo4MiJOrsKAAcXwKKEDAAXFAuDUsE46RCCulVgArNbbdrAeAISAgYCQMUQUBQAD6MtlctlUAAmjwhDs0Dw1CU0XNpfK9VKoCLxVcbgBZbC4DovKAAb3oXwwXwZX1YXwANPaGE6oF8AELu+2pb1fNABzxfEHOgAiYZgXzIwYAorGfdJgwIU192sGKZmuMGUZmcMGvJmucGAFKZgDWwYA0pnCMGADKZ5TB02Z9jBgBymZ4wYA8pmsMGAAqZgCOwbsmbMwYASpmnMGAMqZvDB6KZoTBgCqmeywYJmcSwYA6pm9sGABqZpjBxWZkjBgBaYYAvsbriVTUxQvcERkJEq5Qro7BqIULRtO0YKvFAoH7OBkHBAAJDabTSHkUACB+6GYdhC4fgkAD8aE2gIYEBCh1ZkEw9RQOafQwVAZFMZa7QANoCAAulADK4ehREJAyq4ANzipAkr6nqUDRPMbzDIUMnyoaooQDg+jbAsNpQImk5CEQbp6dCZCwlAH6lGYPDaF84gmmQyDpEQfgdM4wBCK4hArt+NyDEp1qcfQiambCkT6YZhCRH+AEfFEXzSDwPAMBg86xMZXxbMlqWgulwWhXg4UGUQ0X-u8DzxQIg6Dr6rBLulPpVTVdW5R6nghTChURSVMXlUB3yJYiOUNZlSWMMNeXtQVRWRaVsUVcBXyghlrX5Z1M09WVYQLd8joja6sSTTAHVmV1xVRb1239V8Xojf6h1tcd03dRdW2AZ8XxBiNoYPWtp0ba983XSCI0xr9U3rS9c19R9CYjcm4NPZD53Q1dH1piNGaIyZyOzZd73xdmI25tjJ1hVD+NxYt+YjYWpPPSjlM7V8xYjaW9O45tQMfeWI1Vhz-0U29VPfLWI0NgL5OM8LzNNiNraS2deMy9d7YjZ2isA6jBOLd2I19prQvc-FA4jcOhvS8bi2jiNE4W8rVvfNOI2zvbXMw-FaUZfVR044Llse4tK4jeubuA4H3ybiN25h9rItfLuI0HrHTPXUeI0ninKsfWeI2XlnjtfNeI13gXEdfA+I1PmXaPxS+I3vuDPGSRAUkgLqKkyjhqrFDsq66CyHed2pbf0GCq5cKlJT0aqzQ8IQnluOwrKMsyrLsk4nI8qsfICogwBSE4iR5GPUBEiSc8L64fAr0yeAsmywAclw3K8mY-KCsATjz4vN+n6a2wShoEnn8AI7RnAMjvg-DeW837tGFOpSAQA)
 
-#### 题意
+### 题意
 
 实现 `Capitalize<T>` 它将字符串的第一个字母转换为大写，其余字母保持原样。
 
@@ -970,7 +493,7 @@ type TrimLeft<S extends string> = S extends `${Space}${infer R}` ? TrimLeft<R> :
 type capitalized = Capitalize<'hello world'> // expected to be 'Hello world'
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Mapping = {
@@ -1011,13 +534,13 @@ type MyCapitalize<S extends string> =
 - 通过模板字符串 `` `${infer F}${infer R}` `` 可以获取到首字母
 - 事先定义好一个大小写字母的映射类型 `Mapping`，`F` 作为键就可以获取到对应的大写字母了
 
-### Replace
+## Replace
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00116-medium-replace/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCM0GwQLQQEoFMAOAbAhgYzUiURNKICMBPCAQQDsAXACwHs7qAxAVwgAoABHIwBmXAJQQAxIFo5QJLeUhmgC22HIsRYAlooBOOLESKTjEQBkZgO7dDUQHnagBucIAA3SqCAHgDKAGggcdLJd4AKiwAfA4QgGA6gOragGTegExyju7h0oAhboA03oAAcoBUcoAK2rEJDr7+4YD-ZoBGxoBcco7B4YBADFYQgNHygEGaDQ7tDADORAyUGGgQOpi4BAAmEAC8qMP4aK4A5L39nRA4QxCidACE897zm7sQ8zgA7mid-mjzIRDAwBCA+OaA2OaA9GZHS+er66fnlztE7QcDRugAp1CAAcW0TC45AggCg5QCn5oBod0AWP9MBgMDCdABcdy6eCYADoAFadQksHQAc2AsDgwAAXkxEABhAByYBAwDA3NAEAA+gLBULBRBAAbyKUAx3KAQA9+cK5XyIJzuR9pi45u4IGgAB6KOijFadBg6TR0SneIpKTU6tB6g1Gk1miDBK26-UQQ3G003KZgC0um1u+bzCBgAD8EA1YGxEf9tscABIAN4m4RoHQ+AC+SYtWeTdFT6YAohnwkRww5s7ngrni0CoNH3ABublgXnyuUQQDStoBV6MAFK6NWXtkVKzQqCkMCCJiCFgCOXH03kLWv6eAnGY2fkt834H0QBP0WBtlPOwC4DE0WE682VfQGeBwnU+UwA2kQlyuGK5Z-OsK5nCM5n2FgWHINZDnmUCdHA4RgOuPYYJYBDrhCTw32XNBVy-Od9D-GY3CAkC1kg8DiPg2CUKOBCEOIkIULQj8sJ-XC1QWaiiLAvZoPIsjCJ0Gi6Kgd8MM-b8cP-WZWOAyDSKOcg9C4lg4MoqT2Kg2jUME9DMNE39xPw8CDIooN1LAABdFtWxAQchwVQBoOQyQBTa2sodFS5UAiBuQAwJUAarlxUAY8jABVvNEMSxXFgHxIlSXJKkaXgYAhE6M4dAZJk2Q8iBkUC4LMRxPFOgJEkyQpalaWAC4sDPTQ2G6KAbkAF7NACxNCxstCvKCqi4qUpZdklTAIA)
 
-#### 题意
+### 题意
 
 实现 `Replace<S, From, To>` 将字符串 `S` 中的第一个子字符串 `From` 替换为 `To` 。
 
@@ -1027,7 +550,7 @@ type MyCapitalize<S extends string> =
 type replaced = Replace<'types are fun!', 'fun', 'awesome'> // 期望是 'types are awesome!'
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Replace<S extends string, From extends string, To extends string> = 
@@ -1040,13 +563,13 @@ type Replace<S extends string, From extends string, To extends string> =
 
 - 主要还是基于模板字符串，然后搭配条件类型来进行处理，跟`Capitalize` 是一样的道理
 
-### ReplaceAll
+## ReplaceAll
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00119-medium-replaceall/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCM0JwQLQQEoFMAOAbAhgYzQEEstIlELKyAjATwkIDsAXACwHtH6AxAVwgAUAARwsAZrwCUEAMSBaOUCS3rOZoAtthwrEWAJYqATjlJQyMsxEAZGYDu3MmUB52oAbnCAAN0GgsSwAeAMoAaCG59dlUAgBV2AD5nCEAwHUAAOUAqOUB1bUAyb0AmORcfGLlAELdAASNASHNABW00zOcgkJjAf7NAI2NALjkXCOdAIAZbKEBo+UAgzXaXZ2dmAGcyZloMNAh9TFwCABMIAF5UafwiEi8AcmYIegwICcGNgI2II9ONyIhgYAhAfHNAbHNAejNT0fHDsn7nXsvACnUIAHE9KxeNQIIAoOUAp+aAaHdAFj-rGYzAwgwAXNchnhWAA6ABWg0x7H0AHNgLA4MAAF6sRAAYQAcmAQMAwMzQBAAPoczlczkQQAG8rlAMdygEAPdncsVsiCM5mvCZuGZrbw+fYADxUjFmgwgg2Y+h0jEJAUqqhVao1Wp1eoNEAiJrQ6s12t1+suCzARtt9vOEDAAH4IEqwMj-R6zc4ACQAbz1YjQ+kCAF9I0bE1HGDG4wBReMxMh+8MR7gpiIpuWrTxeDOG4Kha1RbNkIM+ADczLArPFYoggGlbQCr0YAKVw6oo7PKlOnUBO2EYgGYAjrwjAEM8rxnhtvGIGJq6chDLEBijFg7YS0INgLxmDosO8wDKIHgcIMT4sIABtMhLlfMCtzoxeUsedYNjEdh2GoHB9DODYwIg45gPYC5YJAuCLkiPx32XNBV2-edvH-BVNjg6DILAwlIOQ1DTkI8CULQqAP0wr9Zxwv8VgA7wgJA6CiOObjKJAhC+PYODyNQ9DP2w388PLLYdggPYDkg05jgErYxhPGixIYiTcNY-CONA8DeI2Mj+Io-SuOoyJRLojCsKYyTdOk6DkJ46jEPgszhNM6zp1sxifx09w9Ko-QQsg0DiJU4DnIMiCrNo3zxPswL5Wk6KQNC0D2Dc05qHgnioqyzKiPizS7ICligukyCarMjSAF1WzbEAh2HCVAGg5eJAFNrVrh0lJlQDIS5ADAlQBquX5QBjyMAFW84QRJFUWAdEsVxfEiRJeBgFEQYAHdYwpKk6SGiBoWm2bERRNFBgxHE8QJYlSWAQZ2Cwc8dE4YYoEuQAXs0ALE1rDO+bLuula7v2ml6SlMAgA)
 
-#### 题意
+### 题意
 
 实现 `ReplaceAll<S, From, To>` 将一个字符串 `S` 中的所有子字符串 `From` 替换为 `To`。
 
@@ -1056,7 +579,7 @@ type Replace<S extends string, From extends string, To extends string> =
 type replaced = ReplaceAll<'t y p e s', ' ', ''> // 期望是 'types'
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type ReplaceAll1<S extends string, From extends string, To extends string> =
@@ -1070,13 +593,13 @@ type ReplaceAll1<S extends string, From extends string, To extends string> =
 - 跟 `Replace` 是类似的，只不过不要进行递归处理，将所有的字符进行替换
 - 但需要注意的是，匹配后的字符，不应该再传递下去进行递归处理，所以就有了 `` `${F}${To}${ReplaceAll<E, From, To>}` `` ，这样就会将匹配到的字符一个接一个地进行替换了
 
-### 追加参数
+## 追加参数
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00191-medium-append-argument/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMCc0QLQUL-xgCpUEPKgHU0kx+DcAjATwgFkBDAYwEsBTAKwgGVaBrAewCdKIAKAAIBbGg0YBnDj0oBKCAGJAtHKBJb0WVuAcwCuw+gDsALhNy4F5iIAyMwHdupqAD4IgRlcIgykYBm2iIG--QIvRdhCAedqADc6AAHKAVHKA2zaA0eoQAAYAggAOyQYAJolaugaGADwAYvoANBCJ9vGAMP+An9qAcXKAm36AWdqAIW6Av4pYgN4+cfFFVYCncoBTypGA33KA8IZdCYlVgCvxgHtqkYANpm1YCQDi8YBADPHrEICnRoCQ5gm9EM2AAkb72IBueoAU6oDU5oB8OuhdgFxyk-En2BuB8T+GJGkSajcWjJQy4P5pCBFCAAXgElAAXBB9LoiPRuKUiEiJIZgfpNPIYY4UcI0dxAhD6BAAEr0CTaAA2hlhZVSGSyOj0RkKJQgRE4nAZ9HcjlwwGAEEA+OaAbHNAPRm8KRJLJmOxuNo+NKAA8kfzBcL9ITiaj0bgfvFAo5ADTmgERjQAYRoBTc0AV4G1CAAbREYiYUi4vAAuvwABaGQzJCQI8WaWiGAPaIgAOmonGEwFEdC90l48muEAAIvQAG5x2icCCAKDlmq7AOGmgAOvf1BkNh8XpAtxwycFM0b0yYCUdL59zUejpRCUwHA0GIeia9F0CR0xAAR20dMMxf0iAALJvYABWaiyC0QbOrKMxohlwCn5oBod0AWP-10Ph4DGagBuOSOM8TTAODQYAALwDRAAGEADkwBAYAwCg0AIAAfXghDEIQiBAAN5ZpAGO5QBADzgpDcNgiAIKgylWTSfRMmyLl8iKUpyhZaEp0MDIJAEONWI0TQwwgdUPHRCAAAVDS4-QeO4GkIAAfhY1jtTdVi4z4mjfUE6kICRIoAG4oK0mC8NwiBAGlbQBV6MACldAGj5HDdOQwjaGEZIeGZABvCAAFEl0oBlSmczU0moZkAF8IA8bgkwgAByQRKUQF93KFfE6WAbRVwZCRQqI-4qSAyg5wQOEUlI8jOVyPJ+ERZFjQxPlVTxAlYSNUl0UxAUhRFMBiNpekmRyhUyvqiqsQgHFqq1HUmv1QSlRNVr0ogTK5wAJhZPL2Qoor+EE-NOFodJSm0Mj6A8dUh3sKbIXaxlDAWuF+Bk3bmwO-Qh3Wzb0jSyFqCyukWVdXAvJ8-JXO0dy8lm+hoFKM7Ovsexih+7z6F8vIAaBkG5vBulzrmqGYd9LSwB0yzkMAaDkwkAU2sLIJgjINAXBHEAMCVAGq5NDAGPIwAVbzvYMH3FZ9X3fT9v3gHt9AkAB3dF-0A0CaYga9WfZhtH25t8JA-LR+d-CRBUStcTAcCBABezQAsTRsOXOafQEeeVvmAOAsDCLAIA)
 
-#### 题意
+### 题意
 
 实现一个泛型 `AppendArgument<Fn, A>`，对于给定的函数类型 `Fn`，以及一个任意类型 `A`，返回一个新的函数 `G`。`G` 拥有 `Fn` 的所有参数并在末尾追加类型为 `A` 的参数。
 
@@ -1087,7 +610,7 @@ type Result = AppendArgument<Fn, boolean>
 // 期望是 (a: number, b: string, x: boolean) => number
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type AppendArgument<Fn, A> = Fn extends (...args: infer P) => infer R ? (...x: [...P, A]) => R : Fn;
@@ -1096,7 +619,7 @@ type AppendArgument<Fn, A> = Fn extends (...args: infer P) => infer R ? (...x: [
 - 先利用条件判断推断出 `Fn` 的参数与返回值类型
 - 然后通过 `rest` 参数来将新函数的参数组合起来就行了
 
-### Permutation
+## Permutation
 
 - [ ] 待仔细思考？
 
@@ -1104,7 +627,7 @@ type AppendArgument<Fn, A> = Fn extends (...args: infer P) => infer R ? (...x: [
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMCcBsEC0EAKBTATgWwK4BcBDfASwHsA7SZJWu6gIwE8IA5Qs-MiASQGtcFbgAoAAgAdCFACZSyJTAEoIAYmzppJXNlWDyVKNRXGIARVzoAzqUrVqPbOIA26dRXwRxWPERsUI+ExeAQAWxAGYUpYAZmQ4lhB6lAFBVhAk7tz4IegQhJiRLNnhGQDGTrjSaV44BMT6CWTRiRQNAHR2UAAGPYFelqWYJOL41H25NToAvGjedX4APADkAIJLEAA+EEsAQutbSwDCSwB8ANwQwMAQANqrSwA023tPR0sAupu396-Hr3ufLZ3F7bNa-D5fYGPbZ-UEQoFvV5g57w76w3bQ+7vag9LqdCAnCAANRI6AA7hBkgBxEj4AASuAYAC4ICF8PhxJYmVd8AMQm0AFaWNpxADmwDg8DAIGAYDloAgAH1lSrVSqIABNMi4TAQQ5kKoQOlYXJqs3KiAyuXjWa1Xz6BYAFSeAGkIDNHYSZtQbo7PugAB74dAyBI3CjoABuWGxUAA-LdYxAWW7A8HQxA3dR47cXU82gWMHb6pQFgBRAPlSroJ2uk4nJNQFkR6OYM5y+UgJXmtUQR1WDyHQiWNI93tWkiOOIeADeEDLAEdcIQnE8K15Sh4AL4QaKYMg6JaicZIUphJwuCiiqzAAgkJyWJbW1IQUrDtIzG7UdfoTflpcrgsRY+CWFDLGsJxPHcazvPWDzfgGG74P+y5OEBcz2qW9xfBiOHHJB3zIhi4KAoRmLogCkLEXCJFUSCiJwqRdzokRlEIhRmIwXBCFIShgHAfMDq4Qcax4acUE-CitEIkRHFMdRklvPJ9EsaizGcZibFoppGmwZBPG-shi6oehxaLC2WAETcenwdiHYKmOqoQAAYjq2RYBAADKwact2jmKpasqgNQhKeWEmC5Ew2q6pYZAVH4XKsuynLcsAvJnoKwpihKCDAFEZJYCFxKkhSsXxQ0LJshyXI8nymUipg4qSsAZV3pQlhFQAsnEuSHOel7XolVUpbVGVCg1orSrKYBAA)
 
-#### 题意
+### 题意
 
 实现联合类型的全排列，将联合类型转换成所有可能的全排列数组的联合类型。
 
@@ -1113,7 +636,7 @@ type AppendArgument<Fn, A> = Fn extends (...args: infer P) => infer R ? (...x: [
 type perm = Permutation<'A' | 'B' | 'C'>; 
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Permutation<T, K = T> = 
@@ -1272,17 +795,17 @@ type X = Exclude
 
 答案参考自[解答区](https://github.com/type-challenges/type-challenges/issues/614)，这个大佬说的很详细，不过都是英文。。。
 
-### Length of String
+## Length of String
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00298-medium-length-of-string/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMCcAcEC0EAyBTAdgcwC4AsIB7AMwgGVcAnASx0mSSeYYCMBPCABRuwgDEAhjggAKAALYkABwA2w9AEoIAYgC26ACY0ArmtW50auYMNJZNQ1UGyGDFQ4gBFHegDOuGkUx2oAYSJjHUMIAnQIWSw8QlIIQQgPWhELKxsAGggAd3waAGNCVnR8QQA3dwiaAGtwgANKJOwVSJwCGoA6XwgAPggANRp0TOJMCABxSwAJHVYALgh8XFxpNxngYFw3fLaAKzc2oipsYDh4MBBgMEvQCAB9O-uH+4gATSIdKggAzXCJ9Cpwx6Au4Qc6XXDsaThDAtfAAeRI9To2AAPOQIOgAB6GTCaNwJahIjIAaXRWKwuLimHYAG0ALoQAC8EDpPSZDDRmOxFJqABIAN50Eh-AQAX35guFAFERTUGAB+NBRAjwxE4ZGSjLUtraokZfi0roMOZE6kAcma0VNtIA3JcwNcgYCIAAVdy4T6CNzlR2PEEXGjGA7uvkQSUARx06VDGMhuXdIogJCogQgpvE4MhSHyNgt7mAwRosjcprBEPCuU95SZ1IYkpj6Dj6ojNmR0OiKoJatNpq6GQADF1e7X643w5HZK2lXCEZ2UabKnoqkQexkAGyDtLD2O4JvjycwjsNZGm-50QQriAAVg3W4bO7HLbbypnR9N5DeOIAhKGdNJ8N5dDUC8AEZ1yHWk7XtEBbh9J5+HeMIPkodBlhg2Cbj9KCGB6chin+CB2DeD43CIWQC28FZ5kWZZVnWTZ8B2PYDiOE5gGENxMj+bC+gGIYSLIzwKLmBYlhWNYNi2XZ9kOY4EGAfjyMwNxuIAWQOcI-GKWRc0okSaPE+jGOk7AzguMAgA)
 
-#### 题意
+### 题意
 
 计算字符串的长度，类似于 `String#length` 。
 
-#### 题解
+### 题解
 
 ```ts
 type LengthOfString<S extends string, K extends any[] = []> = 
@@ -1295,13 +818,13 @@ type LengthOfString<S extends string, K extends any[] = []> =
 
 使用模板字符串进行推断是可以获得字符串的第一个字符的，所以依赖这个特性，将字符串遍历到底，并将每个字符放到一个数组中，这样当循环结束，就可以通过元组类型获取长度了。
 
-### Flatten
+## Flatten
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00459-medium-flatten/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAsCsCcEC0EBiAbAhgF2wUwDtJklSziAjATwgC8ALAewFcqBLAWzYIHMIAKAAIBjehQBOjAJQQAxIFo5QJLeczOPGYqxYrJ0RAGRmA7ty1RAFOqBN+MBUcoERjQBhG8wDD-gA3lAAOmBAyMCZioAA5C4FLjQOvKgA6mgCN+gCFugN4+gNHq9oBueoAocoAr8YB7aoCCRoDOeoBoyiHBkYBADMYQgNHygEGaAFz5AAaV2ADOxNhUAA54EABmWLiEEAC8aO34BAA8ANoAjAA0EABME0MAzBPQALozQ0OwixuLAHwQwMAQoxPTEPMwE+vEleX5OyYQAOJs2PTMFBCAUHKAp+aA0O6AWP-0uAa1RKexqogAdAArargxjiHjAODwYAMJAAYQAcmAQMAwHjQBAAPrEkmkkkQRwhQDHcoBADyJZIZhIgOLx9SavRw-QGABUIHgAB79AAm1QgmAIVCG226EGIvIFwtFQ24LTw4jQE3BWpVaogAFFFrKoAB+A5a8H8VB8wWEEViiVSiCmjCcwgDVA7YglA6oRZSTVal0dQZ6raG71SvFgAmMhkQQDStoBV6MAFK4Femx8kszgNOHYCAAb31AEdmJh0BM9fymsI8wBfVqSDgQADkgjZeCQojL6EIPDw1WAzGwbHQ1WbrMazWEmGq-ZlQ2Iler2AGepLZfdfTdUq2M22u8XVbwNdX6-Qm9dg0OUwmpyWu4O4xvJwW+7Gh+Xp9L56DXOvQ0mDYH2vQCtgPKAl2PFc12-C9g2GJ9jjmV8VjWTZthmRDbwWc43w-KCvw3X9t3zFpGEYb1mwoVRmwAbimb0RgABlrCZmzIxhqPEZsMIOUjyMori6IYiBmNYlsOKEvDFijaMQHTDMmUAaDlPEAU2sFIzZlcVAYgdkAMCVAGq5SlAGPIwAVb3+QFgVBaoIWhWF4URBBgHFaoAHc1RReh0SxKAdh+MyLOwIEQWAMF6ChGE4QRJFgGqRh0CHNhGAIWpfIgQAXs0ALE1DEC4LrNsyKHNRTFsVxMAgA)
 
-#### 题意
+### 题意
 
 在这个挑战中，你需要写一个接受数组的类型，并且返回扁平化的数组类型。
 
@@ -1311,7 +834,7 @@ type LengthOfString<S extends string, K extends any[] = []> =
 type flatten = Flatten<[1, 2, [3, 4], [[[5]]]]> // [1, 2, 3, 4, 5]
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Flatten<T extends any[]> = 
@@ -1331,13 +854,13 @@ type Flatten<T extends any[]> =
 - 迭代数组元素时，还要判断该元素是否为数组，是就通过 `Flatten` 继续处理
 - 通过对数组元素进行递归处理，然后又通过 `...` 运算符进行解构，就可以达到扁平化的效果了
 
-### Append to object
+## Append to object
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00527-medium-append-to-object/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgsAUABFCsBMB2KBaKBBADpgpgOwBMoAXAeylICMArHAY2MhhRdZSakoE8NCAnHDwDSfAIYBnUgDdxAax4AKAAKUBAZgAMssQDYAnHXEBKKAGJAtHKBJbzNVaDFLMHiOHU26iAMjMB3bi+hRAedqADc6AAHKAVHKAXHKApcaAx8qA37aABUphgA2mgOragK3WgCFugN4+gNHqgEAMgKfRuZGAbKaAkHKhgEPKgA6mgDD-gCvxgHtqgGR6gJDmqZkxuXm+MIDR8oBBmgBcvVAABhPEzn7EXLhQACo44sRQALxQAN5QAJYEQ1AA5ACMh1AAvhyz8wBKywCuADarG1i4hAukAPI09MQAPEsVgAaI5SUSPe44Q6ggAsAD4oMBgFAcAAPXAMHBEMicHBbXb7I6nUHgyE4A6wi4cCZjUaIwAU6lAAOI7YgAC3ulCggCg5QCn5oBod0AWP-s4jETDiIbIqZ0dkAOmo4jlpD4AHNgAhEMAAF7slAAYQAcpAQMBIOaIKAoAB9W12+12qCAA3kMoBjuUAgB42h3e61QU0W674t74AifH52AELUFCVFo4gh8RQFZ8HZ4VWggBqiI2mw4AG0AAq7PBQRxcUgAM0WUAAPlAhABdA5F9HxwiJsuV6sAfkWhabUAzAG5IJcIBbIFafd6oIBpW0Aq9GAClc+l7p47-RAdgBbTAq1bbACiAEd7hDQQeMX8LlAK3xSFujkpAyhZRDHvhVctgPdiDtHuJDgDOZ8XjFZjnWLYODLA5DjoURiEAvwyShGDVQEfBELHSBAxIZZiAvTFiHAnMoMEGC4IQjhkIpI40JwDCOHZe8aMoUhSHfUQ8FHID5lA4h4Ag3M-Ggo4CFIVUzjre5CBwCtU2xKiIRQo4AHd2TZaEOHEaSDmIPgoW48cIBwviCL+ASSOEsjRPEySoGkghZPkghFPJGC1I0xCYG0vBdP0nBGOYg5jkM7DgNwlY1EE0iuHI0gVK8qBqJgrgcEeR54sSnyDgrCFxACiAsOM8LTMvBgossmARNgzLXOUw5UvS2q-Gym88oKmAdnEABZUgORwPgbnucRxB2UQcva2t7JkuS8AUwqePxOD8sTDY8w4MyGH+Y9T0ef5gw+b5fi2vjjlBQ4mK3aFQVY9icE4+FQVKwjjnhR6NrKgEdohfbsBDMNjoBPj4HOy7rqgV6nrwzb+Le4EPsI7aTx+g7QyOiN-j4tRzq63r+sG4bRtEGE2v-fEpJm5zHoi-DPrUOHIAbCcjKnNdHUAaDlgkAU2tVzZv0zUtcA-ERQAwJUAarkXUAY8jABVvEUxQlKVgBleVFWVNUNSQYBOPEFSBp1PUjQ4RFBRluXxUlaVxFlBUlRVdVNWASRIV-Ug8GmGBEUAF7NACxNbwzYVy3rdVu39YNY0IA3SAgA)
 
-#### 题意
+### 题意
 
 实现一个为接口添加一个新字段的类型。该类型接收三个参数，返回带有新字段的接口类型。
 
@@ -1350,7 +873,7 @@ type Test = { id: '1' }
 type Result = AppendToObject<Test, 'value', 4>
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type AppendToObject<T, K extends string, V> = {
@@ -1361,13 +884,13 @@ type AppendToObject<T, K extends string, V> = {
 - 遍历对象类型 `T` ，然后将 `K` 和 `T` 的 `key` 联合起来，也就有了 `keyof T | K`
 - 而设置值类型时，只要对 `key` 进行判断就好了
 
-### Absolute
+## Absolute
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00529-medium-absolute/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCsBMCcEC0ECCAjAzgewDYFcAXAU0mSQsrPQE80A7AEwCdi6BpZgQxwDdMA1nQAUAAXSsAzAAYB3AGzwAxpgCUEAMSBaOUCS3poC2XQgAtNJfQAdcR4klwBLEt1xkyG9xEAZGYDu3V1EB52oANzoAAcoBUcoClxoBsppiEzPb0AOYANPT4+ujEzIBoRuj2CQCS9ISA3j6A0eqAQ8qADqaAIW4ABhg4BCS1ZUmAK-GAe2phgMbWlYDq2oBk3oBMcoBADH4QgNHygEGa47VzhJhkhDQWxBAAKsQxEAC8yACM0tIA3EsrawBKW-i4hLtoWHhExAA8mzEAfMcQwMAQxAAPVZKEiMCCEbAQDIQABEh2kMLIc1q4w+EEAFOoQADijmM+HQEEAUHKAU-NANDugCx-4yEQgWTAALl+CyUxgAdAArTAs7DMBLAODwYAAL2MSAAwgA5MAgYBgWWgCAAfSVypVyoggAN5aqAY7lAIAeitVBoVEGlsuWqwejWeb3+AJITEwEFS6UyEAAPhAYnFEm6oXl4oQkhALvdagASADe6wAvrU0Xtg4C7YwHbUkBH4gAzF0AURjEAA-BBsxA6UHTrKwPLDQaIIBpW0Aq9GAClcJvrq2qTfZLNy7uGiwBHfBcXCB7NA4ggiBRiAZ5jYfQQADkojNtmZQ9wxESW2ARHsuEwC9N5wgSh4W3uAG0yKPgYQXtmB0OXg0niQXtIPoGF9IFx9P9exxBe9H1wZ9HiaV4kA-L8fz-JIANvYDB1Al8IJeQ5P0XQ5f3-KAb3HO8H2QsDLTfJBoEwhdoBw+C8MAwiQJI19Xm-X8YJohCCKQp9UKtBcoLYxdYNwot6O4lDwL47DKOkkT8KAoieMkt9+Ooyi1LksTFIk0jIP2BUjmkAyjnoGTDMMji6MQ7SmLQ+AFXgRzTK-RzHI4gBdCtKxAVs2yNQBoOWCQBTa18ttjRlUAyDRQAwJUAarlNUAY8jABVvSlqVpBlgCZVkOS5Hk+QQYAuHoTAAHdMiFEUJSiiAyWS1KaXpRlMGZdlOW5Xl+WAUj7GwYrqsAF7NACxNHx6vSpqWpy9qKrFSUTTAIA)
 
-#### 题意
+### 题意
 
 实现一个接收 `string,number 或 bigInt` 类型参数的 `Absolute` 类型,返回一个正数字符串。
 
@@ -1379,7 +902,7 @@ type Test = -100;
 type Result = Absolute<Test>; 
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Absolute<T extends number | string | bigint, R = `${T}`> = R extends `-${infer E}` ? E : R;
@@ -1388,13 +911,13 @@ type Absolute<T extends number | string | bigint, R = `${T}`> = R extends `-${in
 - 已经确定要返回的结果为字符串类型，所以可以通过定义一个泛型`R`通过字符串模板进行转换。这样使用泛型还可以简化代码，相当于占个位嘛
 - 之后就是通过条件类型将`-`去掉就好啦
 
-### String to Union
+## String to Union
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00531-medium-string-to-union/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCsDMCMEC0EDKAXATgSwHYHMJ0B7CAVV22N0mSXodoCMBPCAQVwBNMBTNgNKYAhgGdiAN1EBrNgAoAAkz6wADNJEA2AJwBjUQEoIAYkC0coElvEwFdK1E6Kx58tWsbcRAGRmA7txdRAedqADc6AAHKAVHKAYDqApcaAbKaADEqAIW4YOASAQ8qADqaANvGARsaAXHKhgOragLPWFFS4cYDePoDR6oBADL4QgNHygEGatQAGreiitOgsAA68EAAqvA4QALwQAOTwAEyw4wDcnT19AEpDVgA26KNojgT9xMXUADyDDgB8cxDAwBC8AB69uui8XESkTH0ARPCfEAA+EE+U1+AM+sE+tFazVqZwggAp1CAAcWw6AAFlYmBBAFBygFPzQDQ7oAsf9R6HQ3VEAC5ru1dKiAHQAK1EtOImHwwDg8GAAC9UUgAMIAOTAIGAYDFoAgAH1pTLZTKIIADeTigGO5QCAHlK5ZrJRAReKbl1egMDrZcCdbndntxRBBhLgWABtAC6sLG0n4xAAZhAAN5ga5QCD2gAKEDwA3tuCsAFsPphHY7yRAgwt-QBfP36pY7JL4faHU39c2WrjWhw5gA0EGW2ydLoGRd4VogzQAJN68B7eJgIAAxVNtjtdiAAUVTzQgAH4jfmjvae5XaYv7YknHmTUdh2d47DE7heBIuwswAa+iu9saSmb7sXS7t8JXq2Nvam64Xr42S82B7hO92+9-fxHMdJ2zVcL2OYdK29YNQ1wXsE17VMIAAMirHcIDdFhPSrI8xT9EANS1WUIEAaVtAFXowAKVzqQiiOlHVRWwKNuhZLZvRHABHKxhHWSthweXgnggJCPUwYgowmBQTyQGluPWRt8CGYArHQbB1lEcYxRPCBdDEIYa1oPjHnQDdOO4o4z1zcDTU+T4zkrPcD0wM47IM-inhMrj1nMu810vT50Fsyt-NslyoEMgTjOHUyvIs3zjk+VFeHWdZiECwFURBQFeEyz51hyvL-kBVLnPLVyjI8szYqso5Pl0FlqGECRsEwKxRDS2qctSwrPkwTqctwHLhByiQcuwHLeu6qwcrakqwEdPD8Jo2iIEAaDkgkAU2slqI+j8NoWFADAlQBquSVQBjyMAFW8iRJMlKWAak6UZZlWXZBBgFtUQAHcu25XlBT2iB8XOy7SQpKlRBpBkmRZNkOWAcR1mUkoOigWFABezQAsTW8IHrtB8GHqh77+SFXUwCAA)
 
-#### 题意
+### 题意
 
 实现一个将接收到的String参数转换为一个字母Union的类型。
 
@@ -1406,7 +929,7 @@ type Test = '123';
 type Result = StringToUnion<Test>; 
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type StringToUnion<T extends string, R = {}> = 
@@ -1428,13 +951,13 @@ type StrintToUnion<T extends string> = T extends `${infer Letter}${infer Rest}`
 
 - 就是直接用联合类型的运算符`|`来拼接所有的字符类型
 
-### Merge
+## Merge
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00599-medium-merge/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCsCcsQLQQLIFMBOBzNkmIMLwCMBPCALQE0BlAL1IGcIAKAAWvqYEoIBiQLRygSW9+Ae2IArNAGMALnjx8lEQBkZgO7cFUQGA6gEjlAVHKBvH0DR6oAgVQG56gBCNAAHKGjgGH-ANN6AYuVuAQt0B0qYCx5QGGRgNbcHNsYegEAMmhCA0fKAQZphAAZxsox4sqQADmgQAGaiohAAvBAA3nhQAHYAhgC2aABcEIyyGACWJVgA3MUQZTi19U0t7VAAvmHJaRDS2XmFHV01ECUArhXEmANQdWgAHj0NzVh4w1BJqekASmiMCwA2slPo2GgAPFmiADQTogB8rRDAwBBbNJyNAAEwgshyK0K5SqOz6WFenW68yWKwwiMYWzhe0OEDiMTCnwggAp1CAAcUasgAFgtiBBAFBygFPzQDQ7oAsf6pslkKUY1T+CWkVIAdBJGILRNhgHBYMA6FTEABhAByYBAwDA6tAEAA+jrdXrdRBAAbyrkAx3KAQA9tfqrVqIKr1aN0vccI8AGKImhE-JFKAAbQAChBmhAANZoUiiDKsF0QABkEBo3AAurUA1tZGgSiDmKHw5GaBAAPzx-3JqOx+PcEtgYbqsCa61WiCAaVtAKvRgApXcKWhsGu2NCopcW3AoQACiAEcFmUroiR5sgbdBpkMKIKhAAORsB2IAVTq4ZnCMYALWSNK6MNf2k4QF2TL14Mq1RbLVYkbH9avtB0QABCZQwU29CBiEfVEXygaRamIbI9zKEp2kGdowC-aQykxZh8h9PBZ3nR5x0nK5HidJ4bzeH8-0+REigASAfFFnwwdoqOAui0UYiCgOgtBYLWQZPk+MBE1rOsQC7bsbUAaDkrEAU2tRO7W01VAPAiUAMCVAGq5Y1AGPIwAVb3ZTluV5YB+SFEUxQlKVgFgxgAHdMBlOUlSUiAWW03SuR5PlGAFYVRXFLBJXgYBGFEK5j0aUQSkSKAiUAF7NACxNdRXP0jyvJM3y7IVZU7TAIA)
 
-#### 题意
+### 题意
 
 将两个类型合并成一个类型，第二个类型的键会覆盖第一个类型的键。
 
@@ -1455,7 +978,7 @@ type coo = {
 type Result = Merge<foo,coo>; 
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Merge<F, S> = {
@@ -1466,13 +989,13 @@ type Merge<F, S> = {
 - 首先通过交叉类型操作符 `&` 把 `F` 和 `S` 变为交叉类型，然后通过 `keyof` 就可以拿到键的联合类型了
 - 由于 `S` 需要覆盖 `F` 的 `key` ，所以在设置对象的值类型时，需要进行判断，优先使用 `S` 的值 
 
-### CamelCase
+## CamelCase
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/00114-hard-camelcase/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?ssl=21&ssc=7&pln=16&pc=1#code/PQKgUABBBsCMAMEC0EDCBDAtgUwDYYGdtJkkzySAjATwgCkB7ACwDsCGW0mBXCACgACAK2ZsOAYwYATbEwDWASggBiHFICW3TCoAu2TAAdc6PUlzq9AJ3S4SJZQ4gBFbtgI71HO1AAGAMwZLJEp0IJCALx9kAD4If0CAIVCkyO8IWIA1dWwAdwgOCABxCwAJbkoALggmHR0DAgrgYB0CcSYAOiECdsCAc2A4eDAQYDAx0AgAfWmZ2ZmIAE0Gbks0aWwIEuxLDbm96YgRsZ1qAw2MHHx0IgAeAGUIbAAPPRYpAgh3S3UWXtiAXhID2er3ecQAJABvH5+bYQABiAF8kFCYXCAKKInwkAD8EMhSKh6MeL2wbw+GAMFhs6nC2Bu6OiJCgeJ8KMhFzwhHpjKxzIgVU5V1ulOp5jpDOi0T5UCqdwA3GMwBN9nsIAAVNw6NDXNxTVWzQ6jdSGQLayEQdEAR24NgANJanmdxNrERA-JYGNoAOQCE5nJBtGy4Mm9NzAbgeXAEb3HU4bcS6j7-CAAbRI6Kd2BdDJtNhuQu5N29AQYwVC5fC3uiDpLDAYSUsKWrNYzWZz1ttuALWC5uuLpaQjaH6CrNYgdbLw+bUrtbedOlzXZ7lyLk5HYVH1drg8bM9bUEzC6X+cL-fXIUs24npcbLbnh-bi87p97wvpk8ml+vn+-s-n2bPnm3Znrc67lkE5ARD+u4VmQ+4Po6x4viBb5rugwSBj+6AJKg94AR2wErn2YEYZQgZINhuGUf+j7IURoEfgAgrhP4sXhtFIYBJ6oau540bWNEHlxhHLoxxY-vhdHcShxHvsWgC8G4AcHs-sp+EALpKsqID6gaBzwisOhMHCdx6PUul6Ua2kkLEdxMKEGzUMsqzsLgkaeGwVQ1HUDRNC0bSdN0fQDAgwDoGwOTbDZEBZLknwMG5HgcA01S1PUjTNK0HRdD0lj9IMwCue5yXRQAsoE5z2bgIa-G4Xlpb5mUBTlfTDKMYBAA)
 
-#### 题意
+### 题意
 
 实现 `CamelCase<T>` ，将 `snake_case` 类型的表示的字符串转换为 `camelCase` 的表示方式。
 
@@ -1486,7 +1009,7 @@ type camelCase1 = CamelCase<"hello_world_with_types">
 type camelCase2 = CamelCase<"HELLO_WORLD_WITH_TYPES"> 
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type CamelCase<S extends string> = S extends Lowercase<S>
@@ -1498,13 +1021,13 @@ type CamelCase<S extends string> = S extends Lowercase<S>
 
 - `CamelCase` 是内置的工具类型，用来将字符串的首字母变为大写
 
-### KebabCase
+## KebabCase
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00612-medium-kebabcase/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBsCMBMEC0EDSBTARgQ0wYWwGd1JklyLTMBPCAKQHsALAO0IZYjyYFcIAKAAIArZmw4BjBgBN0TANYBKCAGIAtumkBLHmtUAXdGoAOAG2yGkprYYBO2U6VIqXEAIo90hfVo5OoAAYAYgwMAELYthEAXgHIAHwQAQBmoUg4tunYsf4QiQBqWugA7hAcEADiNgASPJgAXBBM+vrGhPXAwPqEEkwAdMKEfQy2AObAcPBgIMBgc6AQAPrLK6srEACaDDy2XDLoENXotgdrZ8sQM3P61MYHGDj4ROgAPADKEOgAHoYs0oQQby2LQsUaJAC8EFIH2+v3+SQAJABvEHJY4QIIAX2RqPRAFFMQFSAB+CB4z4-dB-AEAVRYEmwxhsDi00VeePipCgpICyLpDKZ+hZbJeQXi2KRD1wBGILw5hK5EEavKR-MZzOsIrFmKQyKlT1l8qJUEabwA3HNLQtzmcIAAVLz6LjPAE2taXWZaEwjJ1IskARx4DgANGSvncJE7MRBkrYGHoAOSCG53JC9BymKmjLzAHg+UyEBPXW4HBnEAGQgDapDx4fQkblgYcL31MteCZC4UiMQT8VDCdSDCymRw0V7fZrdYbeKbphbWGlzxeA9CESi2V7-cHw6yY-iE6gtYj+kbQbnraXK6HGU3ECvw-Hwcnx9PzYvsqvixvfbvg6-kUfZ96xPGcz3nR422XTskDXW97wffcn0PKcQNncDFw-ABBMI8Dg7B0jTQDkJfUC3wXA12yQOCqMQoDpzQ992zgoiwxIhjyMghNAF4NwA4Pbg3jAIAXUtMBrTddYgh2fQmHRN5DDaJZxIuK5QFIRI3iYSIDmobZdnYUw818NhGmaVp2k6bpegGIYRnGSZgGwNhimONSIEKEpAQYAyfA4domhaNoOi6Hp+kGYYxgmBBgH0wzfNcgBZEYDm4DMsy8EyAvM4KrLC2zplmMAgA)
 
-#### 题意
+### 题意
 
 将camelCase或PascalCase字符串替换为烤肉串大小写。
 
@@ -1518,7 +1041,7 @@ type DoNothing = KebabCase<"do-nothing">
 const doNothing: DoNothing = "do-nothing"
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type KebabCase<S extends string> = 
@@ -1545,13 +1068,13 @@ type A = T<'-'>;
 
 搞清楚后，拼接字符串就根据是不是大写开头来加个 `-` 就行了。
 
-### Diff
+## Diff
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/00645-medium-diff/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBsAsCsEC0EAiBLAZpyyn4NwCMBPCALQE0BlALxIGcIAKAASrsYEoIBiQWjlAkt58A9kQBWAUwDGAF1y5eSiIAyMwHduCqIHbgwGvKgEjlAVHKBS40DHyoG8fQNHq-QCFugO91APAqA9HUDkBoCAGTRAAG32Q1yySAAdJCAAxEREIAF4IAG9cKABDAC4IBlkAJ3QAOwBzAG4EiCJU7IBXAFsiSQzCqABffyCQgCFEjOi4opS0zJyCoulUogiAG0lE7NxGqCbgiAAlSQYy0dkARk6MbAAecJEAGjaMgD4IYGA44tLK6oyDiCHisYnsiBmIAPmllbWAJi2WEwO2OB32ZwuVxKEHKVRqDyeIxE40m7w83k8HjOgAp1CAAcXQsgAFmUiBBAFBygFPzQDQ7oAsf6JslkgQYyQuvmkRIAdOIGJyRBlcsA4PBgLQiUgAMIAOTAIGAYAVoAgAH1VWr1WqIIADeWsgGO5QCAHiqNcblRA5QqviFtsCAPIPG3rM4xG0VQk7G0QABkEAdDwA1pISCJMCwPQAfH3rLgnQoKsBKk3GiCAaVtAKvRgApXQDR8kbE5rzegKoF+bIrgBRACOZUSowepYAHsE5O8IJgMiIKhAAOSsS1IDnV8Z5ZbAMqydCjBidi3NMIRTrxKDZRIVSSpdJZPK4RK5Ve9De5MCNS0QY7z3BLldrvqbpI7q-73A77IAExqNzhGUPYGPErnMQXMLLru679I+kgvm+MK3DUX7fjO0iJAwyydAA2rg9aNrIOwVlWow7NaewRA8xwnA8sQQE+r4ZO+dzvCcpHoQ2MhYTh1b4UCILtA84JkRR4FUTRNR0QxUAYcx2GVmxBH7A8v4iKRVzbsB165A8lGQbCtH1PRByMZhEm4exuxydxEQKeRSn3v0an8Rp0EdNpDEALpxvGIA5rmpqANBygAAcoAptYebmZryqAuBnIAYEqANVyOqAMeRgAq3vSjLMqywDslyPJ8gKQoIMAkwMAA7jUoritKYUQDS8WJUyLJsgwHLcry-KCsKwAMMio7oCI2R+FAZyAC9mgBYmuoVXJbV9UZU1xWSjK5pgEAA)
 
-#### 题意
+### 题意
 
 获取两个接口类型中的差值属性。
 
@@ -1569,7 +1092,7 @@ type Result1 = Diff<Foo,Bar> // { b: number, c: boolean }
 type Result2 = Diff<Bar,Foo> // { b: number, c: boolean }
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Diff<O, O1> = Omit<O & O1, keyof (O | O1)>;
@@ -1590,13 +1113,13 @@ type a = keyof (string | number);
 
 > 答案参考自[解答区](https://github.com/type-challenges/type-challenges/issues/3014)，里面也有相关的解
 
-### AnyOf
+## AnyOf
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/00949-medium-anyof/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCcAs0QLQQIIDsCeB5AZpJihR+ARhhGgK4A21EAFAAIDWGaApjpcwJQQDEAW3YATAJaVBAgIYAnWdIz58-VRACKldgGcALmID2aZVACSggA7V2wtLogAFDLoAWRiNTHNREAAbTMXwguNABjfXcxNAhXdhiMCzjtDD0bADpUeMSY6W9tGJc4lHlFCACRCFl2XUpZNHzfXVktILEcMswIdmtbewN22NQS8jF8pq0M0wHCoYUR-JsLXQwAGkrq2ujfHGlqbXZfNJMIADEDWS6AD2lLawAuY98n3W18ZeyAZRurdgBGCAAvKhMLgADwAbV+awARNC1js9uw1uCALprADeAF8UQA+ADcEGAwCuiXCPl0BggJDi43YRyg7ziX1u7AATIDgdgcBCAAwwuHBXb7ZFoiBY3EEokk9hkioUqlxBH7el+J7HHEQABqYnYAHcIO4AOJiXQACUoJDuEBcul0Fm0dyJL1CLjSACttGlzgBzYBwaBgEDAMAh0AQAD6kaj0ajEAAmgZahAAMIGERxU3sKoRmO58MQIMhxmcsEAFSuunYaBE+Sq0hERmo5ACGFRGqBpfBVEE1NkKIrVZrDAA5MOIAAfCA8ieCxEz1Ez9EQcHeDBWvSyKLelFWjgANyzEExfAA-LP9hArbS8SGwGG87mIKWdPZk9J9vkHzGC8GxJZzvYS4AKIAI6ULsaxAZcpL2JiwSyAYUjDowjKIC6uzWGg3o6MAlD6Hsw5FgkcShO+OgcuC+BQTBoKgeB1CgugXIQlCEDDpWejDmstLIr8opLmgNzsFa7EvmOmIYhAvwiRxujibi3HNOwOI4isVHQTKui0WBuyMSC3KQmso7wkKSLLvx2KqTESkqWpUDUZp2n0XpzHgnybGyVx55maiGKWYpWi2epNF0bpTFgm5RleTx5l+Qp1mBapwWOaFDHhQZ7nGd5vEWfFtJBfZGnhE5YX6byUUmYiIqSYJwgyWJR55TZSWFSFOlpWVkVsV5So+fxUn1ZxjVWflLUQA5xWpS5EWZT1pnVWKFBCYNclHpJ0keQ1-kJcpY0TVpU3peV3WVcKsVittvUFeNRUHe100GfFV1JSit53iAOZfpGpy1LEFwfJW9qfV9P7vfgGofC4chxBgiYXNoBjUHhhj1FaNp2g6TraC67qej6frwMAATaLqWbg1qOr6gjSMRKj1q2vajrAM6roel6si+v6wDU8jRivFAGoALLnHEyZQ7QVbYQ69MY0zLO4+z3qBsGYBAA)
 
-#### 题意
+### 题意
 
 在类型系统中实现类似于 Python 中 `any` 函数。类型接收一个数组，如果数组中任一个元素为真，则返回 `true`，否则返回 `false`。如果数组为空，返回 `false`。
 
@@ -1607,7 +1130,7 @@ type Sample1 = AnyOf<[1, '', false, [], {}]> // expected to be true.
 type Sample2 = AnyOf<[0, '', false, [], {}]> // expected to be false.
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type AnyOf1<T extends readonly any[]> = 
@@ -1635,13 +1158,13 @@ type b = a<[1, 2, 3]>
 Record<string, never>
 ```
 
-### IsNever
+## IsNever
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/01042-medium-isnever/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAMAsAmCBaCBJAzgOQKYDdcAnSVFci0gIwE8IALASyIHsaBDCRxgLwFcA1pwAUAASasO3fkICUEAMQBbXABNGfJYr4A7Rix3aALowA2mUqQXWIART65MJg5ajolAB1O4VOoxE4jGg9cDBwCYgAaCAB3JgBjeggjdgFHLh0PPn8gkIgAAwAVfIA6UnQAM2T6UNzQliqiRxZTQkxklgKdCKJ86KajPiJDfKMiBz6IFiMaohjGTFD8ivZzXFLXCAAxFiIIXAAPdk9vAC5N-MujCyg6iABBCABeMLxCIgAebveAPihgYD7A4heJGNQdCBUWrjXCkO4AIWerx6H10qlwFUY3VUfwBQJBYNUEKhEBWazhwVCAGEkVg3sQvnxTKZcYDDgTwUZOiSyYsKXkACK08LvD4AbQAuqz8bhQZzuaFebDbpSIABRYX0z46TRQojS9mywnExWrPlQS75TZ-ABqjFwMSmhgA4owjAAJPhUU4MIxGDyYU4A66JEoAK0wJV2AHNgHAkGAQMAwCnQBAAPqZrPZrMQACaLCGECpLHREHdxFCOermYgSZTdzpKMKfxeYsKEqBYJ0qnaYu+xE7AH5kjCID6lQBuFNgNM16sQQqOfxU9iLdrznN15OMTy7fwAb3VAEc+KtomrgUaIABfUmsLQAclEdRQiVW3h00ccwGyZkwj4Nqq8RrukbakJeBIfGqp6rB8TaigO+rRGMDg-D8kQQVeoLQbBpjwSKDJIRAAA+EBOEQWLRhhpJmrg6GYVAkFGrhZ74QhDIAEScTRSoMVhUEwWxBFaqiPYYliai8XR-FMdhRisXBHHakyLLRHxGECSxQlKYRnyStJayyeq8mKexekfAeN6GYs-ESjOs4gBmm65lsQwzMQEAAMpggGzkuem26OaQfxefQ7BNBANCFnsmAtH+BiBr6-qBsGmChhGUZELG8aIMA7A6JgMTECFEB2g65Hxc4hU+vQfoBkGwAhvQ4aRjGcYIHlcWmAlhWlQAsrs1LhcyuBfo4tX1alTXpS1mUxomyZgEAA)
 
-#### 题意
+### 题意
 
 实现一个类型 `IsNever`，它接受输入类型 `T` 。如果的类型解析为 `never` ，则返回 `true` ，否则为 `false` 。
 
@@ -1655,7 +1178,7 @@ type D = IsNever<[]> // expected to be false
 type E = IsNever<number> // expected to be false
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type IsNever<T> = [T] extends [never] ? true : false;
@@ -1673,13 +1196,13 @@ type a = never extends never ? true : false | string  extends never ? true : fal
 
 上面发生分布的时确定的值是 `never | string` ，`never` 是永远不存在的值，它会丢失，为了不让 `IsNever` 发生分布的行为，就需要在 `extends` 左右两侧的类型上加上 `[]` ，让它变为一个元组类型，或者直接变成一个数组类型也可以（`T[]`）。
 
-### IsUnion
+## IsUnion
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/master/questions/01097-medium-isunion/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCMAMCcB2CBaCBJAzgVQHYEsB7XSVFci0gIwE8JcBXAGyYgAoABKgU1wGNCAJwCUEAMQBbbgBN8DCRFKkxKiAEUG3TABciJKKXQSADk25Tc2iAEMI2mse4QABljx7nAGggB3ABb4fH521gDWWja4EPi4xgxW9o4uACrOkdIQgtzaDIK4mL5+2UWCKWlZmIRMAG4R2oQ2EAwExHYO3AB0SlAAYkIQ3AAe1iZmAFykBlBQzrPamJNtSXzWmNzQEAC8GDgtuAA8OoIxAOYAfFDAwBAAZtZMa4uJTitrAExbO+7Eh9rHuCcAD6MCQ8QQXCBXOyCTRPdoQV7cADMnzce32AG0jqdgfIwQBdCFQu4PbiLWbOboQC4ANXw3B8EFaAHF8NoABIMKhjCB+bTaYyYMZXeZBDoAK0wHSEJ2AcCQYBAwDAKtAEAA+pqtdqtRAAJqEXIQADChGkTnZ3CyGp1tvVECVKueX3RyW8ACFPskLttkgNBtpeNICp6APwQDHu-H+wO4YMR5LR8MktYQHl-TRp+jcWqCADcKsLarttogyS0VmNqwiJZ1DuV+BMQisAG8IABRACODHu3nbg0cfCsAF9boJCAoAOQcZ4oIL3MwArTAeL4B6Tp3wxEFbYY0j9wfafZdntMfZovS-f7nbwp7hnM6efcD7hD4-d+7n3aX7EAiCA+g8StR9oU0B8nygA9XyPE9PwvH5J2sSd-wgScqGQgDJz4DDUOkScQIze9H2fQ931PL9vgOZpzRuGIZBQxgWBQ6pCHwDJMPw7xCPAkjoLIuDvx+NtrB5X8TggUcAOEnkQTBCSCJhIiII7F831gs94IOaSIDEhigNKYcQLvHjINUmCPw0wSDixP5Tj00ErUJW97jWEzIWuKs1gKfwrScP0KiqWoCnqRpcGIFBmj0JZOl4tSLIo9FdIA3Ac2A5zSTcqC4vIzSrzsgDmlCMKfFwIyXKU2LzJyqy8r-ADrFwGgyoy4jTNI9SEp-Wy6tQpDmtc4j8ULMBi1rXUelybQSggABlQNBRtMb7UdUBSAuGa-Gsa0aENUpKiYVdiCFXl+UFYVgFFPwJSlGU5QQRBgAazAfCtNaIDpBkdKqQ78h5PkBSFEVMDFSVpUEWV5Qe-afoWKALgAWSEJxjU2lheBOLQ-tOwGLuBq7QZlRVlTAIA)
 
-#### 题意
+### 题意
 
 实现一个类型 `IsUnion` ，它接受一个输入类型 `T` 并返回 `T` 是否解析为联合类型。
 
@@ -1691,7 +1214,7 @@ type case2 = IsUnion<string | number> // true
 type case3 = IsUnion<[string | number]> // false
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type IsUnion1<T, B = T> = T extends B
@@ -1766,13 +1289,13 @@ type T = string | never;
 Expect<Equal<IsUnion<string | never>, false>> == Expect<Equal<IsUnion<string>, false>>
 ```
 
-### ReplaceKeys
+## ReplaceKeys
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/01130-medium-replacekeys/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgsAUABFCMsGYAMUC0UBKBTADgGwEMBjLAaSwE8BnSGVeh1WqAIwqkEZYjqACgAE8AVzyE2AK0EA7LAEooAYgC2WACYBLQYqjNm8vVACKgrFQAuagPaSd0KAElF+LMsmmoBKKYo4smXIRJyagAaTwALAjcAJ39iXwBrSiooNUkoKUs0rx8qULUAMygqC2VPb18I5MkLN1MwtWTEilCJMyL4tRwoGPxiVIBzYOYAQTKfTwJE5LqY3wIo-s0sVyoAOm1bGxgAMQsoqCwADwJHPCwALi2oAANb0xpbbN8AOQsVLFGAXigAb2YYJ7nKAAcmGwP+UEkJwuRVMUQGEPyhH6QMkmhYWCizAAvlcnlBXu8AEJQb5-WwA8pA4FE8EUlIqVHozGI5FMxQYrG2XGbR7lAlvLAAYVJvwhgJBQrpMBgUOUQLM8Mk-VZBBRkOZXJgPJgeP5hJMooNowAPgLiVAzQahXrxtheiQVAbkt97QEyEkADzO0LAuVYYGWkFItXA0I-f3szmhEPqxUDbEAPigwGAvwloLDkOhUcxMbZsKV-WxQZ+GdpeUZGo5eagsYVcITpYzUtCker0brBfjypLqagAHcLMIVN1YiRs6V8lESoWBp4LB3az13V21XWZ1o0TX9qZFz3+qtbb43XEnTUAKKHBqmIIuvwOj3Ub2C3Ig-1Zn4EAi5qJJlNpmWVIgmCbY5pCWAAG61vWS5-kGBokmaQE+NSraTjC0jQVE+Zqr+fZpkOI5jo+GELhB2HMLc1xXMmABqahYAOUBWFAADiaimAAEoILBAmEpimDgVDnKm9xEGEqxiGsez9MA8DIJAIDAJAqkQKAUAAPraTpuk6VAACaw77EKgpQFxmK+Hp1naVAylqfip6BF6ACqoQACoHIcpjLCoyQHqEBnJt8kAuV5PmSH5UBhZAAD8Yr0gA2gACikaRNBYhQuQAukCqVHBFUWefFPD5d5vmNJQmWGVA8UGSl2VQKiUGYnIQIuQ1OIbO1ADcamQBpNnWVA7kmG4QoEFQhpDXpdkqRAaiOHstT8j8UAXgAjoIBB4KEV4+EQbgltOs7AnwTyoBJO1nMqJjAII5h4FQdKQPixqiuSlKoSB0oYQ2RbMLB26cpAPKvfqgokmSzDlr9ahVsDLK2EDmqgw5EPvCK0N8t9wJSsw7YHoDBaI1yYMQI546qO92NfTCmYE+BpPE3hc7KmjEDg3aVPnhatNjPTtLMPDv4s3GjbsxA5OU4+vPCh9MPAXjv3tszyPdhLKpS+j4yvM80I0wldPUmCYui7YqstWTOsvBY+vKNaCs4-T+Pq6zauykzVsc1ztvvPe71WpDCGCjaFP8k51OvqKkdy6aD7unLSEJ2e1q++aJh69CRp2wbgrx1nDuhyHxI21ARCTYa3yJcw+1YIdnqbdteCepHd4vv7vofkGwKxp+f1wT1a7i0WUBJqEsfOomiZDLYdcN03O2t1T7c+u+0L99+v5jzPGdUIXWDT7P2X9Zz6kgFpM36dsghRHUmJQAAyj5wmX1fmlzQN4C2Mmj8RDEUAKDGSKBYIQ5grAiSgAJISIkxJUAklJGSCx5KICQMAAgkgqADiRjAeijFmLFDAZkSB0DhKiWAOJSS0lViyRQcgYAhCHrEOYMmAAsnsXwQoIgiGWP0Ew-FBJkLgQg6hsklLzUgEAA)
 
-#### 题意
+### 题意
 
 实现一个类型 `ReplaceKeys` ，用于替换联合类型中的键，如果某个类型没有这个键，只需跳过替换，一个类型需要三个参数。
 
@@ -1811,7 +1334,7 @@ type ReplacedNodes = ReplaceKeys<
 type ReplacedNotExistKeys = ReplaceKeys<Nodes, "name", { aa: number }> 
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type ReplaceKeys<U, T extends string, Y> = 
@@ -1849,13 +1372,13 @@ type ReplaceKeys<U, T extends string, Y> =
 }
 ```
 
-### Remove Index Signature
+## Remove Index Signature
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/01367-medium-remove-index-signature/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgsAUABFCMDMA2A7FAtFASgUwLYHsA3bKASQDsATbADygGUBLAc3IEMAXAVwCdtIYaIcLQCoAIwCeUABaMe+SWyiNGALy4BrZQAoAAnIVLVG7QEooAYlzZKjLrihixl11ACKXbAGcOjfOTO0GS4AA4ANnjY5BxQAAY4BMQU1DRMrJy82AA8ACoAfHFQADRQtADG4VzUUBwyJIxUtFDeLOzcfFAAZgqO+OIAVtjlsRySoT4AdEEwAGL4PGU0bGGRAFwz8XFxm2MTUPP4UAC8UADeYjAA2prYkmstHDyNzAC6D2zkkgDcl934+B0ZgehHwjEov2CAF9duMSABBE5YPBEbApWjpdpZbKHfIwYDAJYTEa2c7-QHAqCg8FQGHBMTbHb04J4gBqjGwAHcoAEoABxRgcAASXHEDxkHA4oW8awJHG85RkkwG3kmC2YwAQKEgIGAkH1EFAUAA+qazeazVAAJr4XhQADC+BqQuwnQt7tNUF1Br2JESqPRaTamT4eTxpwuwSuAAUVOQoLdJPgulBclA2N4oDpY7QONFKJm4gASM6NLquqAAaShRQA-FWoA9yNhiDwzO9UzHXpA6QbIEaPe7Uz5YvaMz4TYPzV69RBGGEFqM4WSAKIARy4bHCpRXNGJsSh3V6UAA5HpfWhFVvIuRmD5gFw-OFvCefcvDkjI9dEw9fM9bx2nySGIXQAkCIJgpQPZvvsABCbCLBGYg3HcTYOOIrqAV8YjiAh4FUpB0EQJAvpQPBaifjheGUtSUHBLhai-k8LxESRy7lOOmanFcYi7vu2Trpu4TZP6yRNEGGQdDkuKlGc5L4bRtL5PkxS8XuwwcAJG5biJKJiakmIhjk8E8CpZK4TwCmQUpKlqfxgk6aJaLiYZUnZORZlyRZVngt8EhsIxjz-swNmqRA3bEZF-YgJOU6erMvB1BW9B5tKsVxTO0ViHi9AyAhJBJna3j4FUfgBDKsiStKsrAPKirKqq6qakgyDAJ83icq62VQOyXItCVj7+OQFUSlKMpygqSoqmqPAalqrXFaVQ3eN1ACyCwkPaeXhDed4jVV421ZNDUzcwOqzpAQA)
 
-#### 题意
+### 题意
 
 实现 `RemoveIndexSignature＜T＞`，从对象类型中排除索引签名。
 
@@ -1871,7 +1394,7 @@ type Foo = {
 type A = RemoveIndexSignature<Foo> 
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type RemoveIndexSignature<T> = {
@@ -1884,13 +1407,13 @@ type RemoveIndexSignature<T> = {
 
 答案参考自[解答区](https://github.com/type-challenges/type-challenges/issues/3542)，大佬也有详细的解释，并对 `case` 进行了扩展。
 
-### Percentage Parser
+## Percentage Parser
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/01978-medium-percentage-parser/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgsAUABFCMCcB2AHFAtFACgUwE4GNsA7AFwEMBzbLM3AZz0hjRdbSagCMBPKAZQEALAK5kAlgnjwoACgACAviPGT4ASigBiALbYAJmOHaoHDpvNQAisOx0SYgPZFT0KAEltABwA22XaSw8QlJKbExaBlwAHgAVKGwADxJiPTooO1wxIgoAPgA6DgBBfHwHXANsqBIHKsFqAANgAD0ZAB0AagAfVrQ1AH42vRB+toBSfoASYHqoXGwKYW9aMRJeaqhtMhJ8QSg4siI9KCoSWrnqTe26ugLXDhi69JJcYXwSYTn0wQdFo85sABcUAA2vUfMI0mUNlkIfUADRQepEIz-XDwxHCIgreoAXQ4bgAZlAVsS0kQHKd8GRPO85noESRHnpsASyItTmI0gd4l5Vk9MtlbjAOAAxKGJMheXwAjj1OUkOgcVaeaiYPjPLIUWBQAC8UAA5PqldwVVh1QKKAAmXUG9rIACsoyNrmVqvNmoAzDb9WgHU7jaa1RrsgAWb1+50wV1m4MUe3h+2Rkwuk3UABK2r1OAIxHIVHC9DwUSDFtgORgwGA8QSKre+hBhoRjYN+rxKdNaetWaCudCBcixfd2Ut5aglerteSR2BACJ2jOETOHQuoDPRjO21HU1A017uzmQvmIkWS57R+PEpP67O0Cul-a7+vN1Vt2mw-vgnmwsfoqfQ+eq0vbA62nGc72XRcnwDdN4w-Xsj0LX8hzjACJ2AqcQTAxcINXDdZTlFwYHLAA1MRsAAdygJwoAAcRWAAJYROCBQQSBITw6ABSsFR2PIACsbjKChgAQFBIBAYBICkiBQCgAB9BTFKUxSoAATR+XAoAAYQcZkoHovBqGU4yFKgCTpOjLS6nwABrTA5gJMQEliatkkONIMk1cs9TiRI3NSW19SgToDTQIK+j2KAgSIbAADc8AAbkgSzrJsvhhAJRznN8pIUg82NvMivy8sRCYAG8sgJPAdwAX1GGYIuBNMmydHEopBGIm1bJKIGjbNPz7H8okKVySs87JCpG4r3NKsqrOAuyHKcqJKuqkUchq8rVs0gBRGqGpBEUETyE75ts9LMuWnacjaoFgWbE68jOtKMqy4abp6yBZJM4y9lsU4tLIBg0h+5SzMkiAxC8MpTmjMqoB2gBHURvARHaa3QqAaqgAlcAcYx9TkV00B2MhvF8bJbGAYR7G8OhnWS7dAYYTMG31LqurbSygewLsG3admW05xnTWZ7A935wX9VgKXWxF6gxffSWm1gAAGVWpda+XtJ52C2ZVjWWrl3qmZ5gA2G17rCpspE143tapYHLY4dHJyiJGUeLHtD2-RCokNHIETFstA5djG3nd5Gya9g8v37It9QFwOdYYEdQ9cV30Mjz3+vg32B0TmXk7Fj0cnTmBM4jj3o9zn34+iQv1adYueZDMu4TDt3q+8GOBoQgu1eboPdfbzus+73u8-r-20CkIeU+wM3R4gNtpK+kB5NBlSRQ+RlqvVbAOM3re5PB9eOHLJRaGobgNPSBxvBpxwiE4qBWPYzjuLoXiBLyISRKQMgYABw6DkUYK4EiZFKJ0Afk-Jwr934cS4sAHigh+KCVwMJUSQCYGP3sPAi+UAACyZQFaCDJhTKgCC2JIK-j-DBFBxIQ0gEAA)
 
-#### 题意
+### 题意
 
 实现类型 PercentageParser。根据规则 `/^(\+|\-)?(\d*)?(\%)?$/` 匹配类型 T。
 
@@ -1912,7 +1435,7 @@ type R4 = PercentageParser<PString4> // expected ["", "85", "%"]
 type R5 = PercentageParser<PString5> // expected ["", "85", ""]
 ```
 
-#### 题解
+### 题解
 
 ```ts
 // 检查字符串前缀
@@ -1929,13 +1452,13 @@ type PercentageParser<A extends string> = A extends `${CheckPrefix<infer F>}${in
 - 首先使用 `CheckPrefix<infer F>` 将字符串的第一个字符进行处理，从而判断出是不是指定的前缀
 - 之后就是根据不同的判断结果组装数组，`CheckSuffix` 专门用来处理字符串中的数值与百分比符号
 
-### Drop Char
+## Drop Char
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02070-medium-drop-char/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMAMDssIFoIBEBOB7ADhAwgBYCGGkKylV5ARgJ4HE4AuxAlgHYDyAZgAqEAQhAAUAAXxNWnXgMEBKCAGIAtgFMAJmwCuK5czUqcAG2IHkxtgYzFjyzjzVko5JW4gBFbWoDOzNlgc5OSYuBDEED44agDGbDxsmhAxJBgQPNh6EX4YnADmAHTBUABiWGlqAB7ERsZqAFzFEAAGrcw+5Mx00RCC2szWPMYMALzo2DhEpAA8AOQQNBDaEMwrEGoQaTwQdgwAhBCzADSHhwB8EMDAhzT9g8N7s+StzU0XAGqJAO4QgRAA4lYABLaGj1CCEAY4Hz1K7tFIFABWPgK5TywDgiDAIGAYDxoAgAH1iSTSSSIABNLDaNL4LAaDZApwbMms4kQHF4ro9UKTVLTADKJ3wFzG5AF60qBg4Gh8LQAJABvBxOCAlAC+SpVaQAourmhByAB+BWKkqS6WyggQE2zebgtWaxW8qYYaY64VnfWGqDggUAbjxYAJbNZEAAKr5VpIfL4iaHSRzcWwjOVVtyNoqIDqAI7aWwnHWVaIxVbq9KZQ5iDPIFK2OocPK+YD9NjGHxPMAZ5LEWNysYAbXIVwg1Z8yCqJeYE4w2Gc2eLsWY7rztmmLv5s1uA1VQzojxOdrOh+3933szOx-IRanK-zxnXE1dc1Pu4ex1OF5Pdyce8el6Oa9F1LO81w3GYtx-LZ30Pf9vx3aC6AvK8oBvJdQIfcC3XmKAFig9IHlwojDkPc54LPf8UIXW9c3vR9cGfeZFmWdN1k2dIdggfYSM-Y8bigv9kMA1DgOXWiwKfTcFiWNZVg2LZOO4j8ty-U4ZNY+SON2CADiEoCaNXTDJIg6SWLWTTtm03TD2YVSmJkqALMUnTzivABdINgxAeME3ZEoaWYQhVQFAxoR83yky88gLgFVINjoak0h8LBjFbQIYQhKEYThHwEWRVEMHRTFYGAYgOB8L4nGiiBPjUH5ktS-x0vBSFmGhWFgHhQgkRRNEMQQEqGrS8rqoAWXKDYpmMBsmwy1r2pyvLesK7FcTAIA)
 
-#### 题意
+### 题意
 
 从字符串中剔除指定字符。
 
@@ -1945,7 +1468,7 @@ type PercentageParser<A extends string> = A extends `${CheckPrefix<infer F>}${in
 type Butterfly = DropChar<' b u t t e r f l y ! ', ' '> // 'butterfly!'
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type DropChar<S, C> = S extends `${infer F}${infer E}` 
@@ -1955,13 +1478,13 @@ type DropChar<S, C> = S extends `${infer F}${infer E}`
 
 - 遍历字符串 `S`，然后对第一个字符 `F` 进行处理，字符串 `E` 则使用 `DropChar` 进行处理
 
-### MinusOne
+## MinusOne
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02257-medium-minusone/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBM0KwHYIFoIFkCWA7ArgZwHksBTSFZCysgIwE918AXAQwDMB7CAMWYwC8IACgACrZrT6SAtgEoIAYinEAJhhxSFU5owAWZMvMMQAijmJ5GGdln1QA4hgBuxLBGYRcU6sQBOQ5gA2AO7ieBAADux4GJbOcsxh7oy04cQAdBAAmuw4fsmpEHg6OQHKED7EjLmuusQe6t5+ysQAxhUJKhB0ENbpttzsfsQAHsxS4QHEAFz9AAbzjHhk+XUAWr6cALzo2PhExAA8AIwAfBDAwBAADMspdVwYrMlcOX7bmLiEJAdwcGcXEDgABYyPNZv0zgA1DDEII9VwORgACRw1CmEB0jEY4TwUwuixaOjSACs8GlBgBzYCwRBgEDAMCM0AQAD6bPZHPZWVeEAAwuxmhAkb46pyxWyIPSmZdAA6mgB4FQDkmoB4HUAcHKAYUVACN+gH9UwBleoAPt0Akt6AELdAARmgBAdQCf2oBDGLAKwgABEMBSYgAVdgAQR8PnEEG2AG8yAAiK6B9EAbQAugAaINHUMQMM4LAAayw7CCWGjQeg8cTKbTGajECTqfTmZjUEDAGZcyWC1gi3Wy4382Ws5WgbXW4Xi92G73Sz2mxn2xBA3Au4P+8Pp32W1P5-XR4GAGyT+uL5sDjfbrczzcjitjhDrvdz3dD8-7i+zqfLgAcp8vC5vB9vO+vn77y4AnE-32eL5fkBV6gSBd5gAAvgA3NKEAAHIQIA9GaAABygBUcoANvGAEbGgBccoA6tqAGTegBMcka8qADD-gCcFoAdsaAMHagDYSoAX3robqOEIRARqaradx8u0jDEJ63q0AAQrQAAyLgUroByISMfFYMoYQWD42AUkWABKECyS4Ck3pGvoJhGZzbDJwxyTpswACR+tgrC+NwGA+BYkFWTZdlqeYjCQeCAD89mOYwmmmdpYTJsQtDsKwDpOq6HpeuIZC+byvH8XFwliRJUnuRYRZhmkeVqUWeVpAVEBFSVZWFfllXFdV5VVaV9UVQ1aSOs6jBugJ4hhg8-kRoZZDoiQzg+GA6JqbBcGANxygDePoA0epQBAXEFB8ezfC6gVmWEniNEZPHENoKWCSJ4lYJJOgHJZfoul5ZxafJYRhq5fg9dlzVPRAWWMBGYC+Z9YaBpMp26IG32DcQw0TWAzLimKEAuh5fIdGEMOcpKDIYOMgwBXafoQAAogAjjggRFnjwypC0AWQRArA+OwGgAOTCCsyCEoEgMUuYwA4JYAR4AzjJ2i0SP6WGZBkxTjAHITxMBAcK1fIcpxFlcJwnEeEutFLMuBPLuyKz8fxFsCasa+TWvS0TusK-sBxVurMCm+L5uU5bst658ttHFcqtFj+P5O1Amuuzrcs298Rze8rECRz7TvfYyUMgKyKNclwuS1H4ADKfE4inqcsmjSdkGcWc6MwFQQOFuSFOwAQ81YWC4hiWI4niwAEkSpLkj4VI0ggwDME3QS+CXEDQrCtf15Y1jN5i2K4vieCEiSZKUtS8AD3gdcN7PY9oIMdS8uXAQc+Y6Lz23S8r93lJ0gyYBAA)
 
-#### 题意
+### 题意
 
 给定一个正整数作为类型的参数，要求返回的类型是该数字减 1。
 
@@ -1972,7 +1495,7 @@ type Zero = MinusOne<1> // 0
 type FiftyFour = MinusOne<55> // 54
 ```
 
-#### 题解
+### 题解
 
 ```ts
 // 数值大小与元组长度相等的映射对象
@@ -2105,13 +1628,13 @@ type MinusOne = [<这里有 54 个 unknown>]["length"]
 
 > 参考自[解答区](https://github.com/type-challenges/type-challenges/issues/5547)，有些答案非常复杂，这个比较好理解。
 
-### PickByType
+## PickByType
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02595-medium-pickbytype/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMCsCcsIFoIAUCWBjA1gIQE8AVAgBwFNIVkbaqAjAiAKwwEMA7AcwGcALThAAUAAVadeAjgFtyAFzYBKCAGJZAEwwBXaaoD29ZuSxyqVFRYgBFLeR5yMejmagAxAE57dAAyLeANBCk2DgQbBA88hB6AGZBnhTuDnYQAO58epEQcmTkYe55bDw8GFwcbPQANnlyehDeAKreAHQuEK567hAAogAebNKk1W3eozkUPFjuGKSmUON5APIclQR4enrVggC86CGEJBQAPADeVFDlsgBcEXLT3OcQWHpaHHI3HDr05O6PGDwAJXIbHUTlWN3oGy2zigUH+3XKVXIEKhwJhEAAvoFIZs0QA+CDAYAQE4Qf5AkFgggo3GcADcZJ4CIq1Rp0IZGKoo28bQJADUMORUtEOBAAOIYOQACS09BufDkclIPCuRLkkz4zWYPGanS4wDgiDAIGAYDNoAgAH1rTbbTaIABNF5dADCenUeSlPzydt91ogJrNCx6vSwlS0HoA0uQCEciIEGoFIxByL05OQOOoeBAcDHYhAiBBdrmCPmiATdsnU+nM9nkwB+AsAbUjAF0U2mM1mIA0II3kx9yAA3H4QQcj9x0oO5Pa4A65OMJiskqhNtBk0V9MMR8jR2Pxnt41s3Ihr1tTznmkBWv12gt2OQQF1FFK3u+BjCDTqP4Ok7oARy0NhKkCPoKBMTEIBiTxdAAchEBZkCwARKmqbg7GALQHEqHhYLNDA3h+GI2CwPIAFl3XISoVwuAZkVue4uCoZ5XneCBPmkb5fjhQFgVBFZqQgHFoSoeFEVZITUU4MBL2DLAX2zXYmyoMDjDkI4AKAyojkwOdiAXCiPRAyTaQ4PFAlJck+KpNk0QZMSWXo4S0UxPFzJU3pwPUzTgJ0-Z9OOQyqMCexGPMkl2Lom5QoIrhXPcqBVJMDTAN83T8AC8gjiC4yOK48LSRYt4Pi+UcMTc-wwFbM0rxvN9-VcLQkj4UcAGV02VOr6oDU1QCoAlWoEAoIFLJqIk2LDHA4FUIAVJUVTVDUtR1PUDQQWBgE4HhUh+fqIAFIVxvDBwnBmublVVYB1WQ5bdXcfVDQ2ngJpO6a9oo4aXRQtCuDseVFQuxabu1O6mMDMAgA)
 
-#### 题意
+### 题意
 
 从 `T` 中，选择一组类型可分配给 `U` 的属性。
 
@@ -2126,7 +1649,7 @@ type OnlyBoolean = PickByType<{
 }, boolean> // { isReadonly: boolean; isEnable: boolean; }
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type ExcludeKey<T, U, K extends keyof T = keyof T> = K extends K
@@ -2171,13 +1694,13 @@ type PickByType<T, U> = {
 
 在 `TS4.1` 的版本以上，可以[通过 as 来创建一个新的键类型](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as)，所以就能直接进行过滤了。
 
-### StartsWith
+## StartsWith
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02688-medium-startswith/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?ssl=24&ssc=96&pln=24&pc=1#code/PQKgUABBBMBsAc8IFoIGUAuBDAThgzgOoCWGAFpCstTZQEYCeEAVsVgHYDm+ZHEAFAAFWHbr3YBbAKbYAlBADE0gCbEArhMUYpEgA4AbLNuT7SUnFn2VKC2xACKaqfgzEA9u2tQAknv06pdgwIAANMXAIScgAeABUAGggAVQA+EIgAdzJiAGMyCGwAa2cCjLcIKQAPLBzglxxiLgKGXRKOZQgcGTUcdnxMshlBnFDY9JcI-ozSfJCkkK8IADE3EaqsPylFkJ2MFuccht0MSj3WiCwIAF50bDwiGeiAciw6HKfEl-eUiGBgCsqrVqUg6GHKdCkEAAZpZ8FsoGdIXRrrdJlEyM9Xu9Pq8nj8-gCgdpQeDIRgcE5TvsIDkUeF7ujMW8PhAXm9lHjfv8qkSQQVSdDYfDQjtFj8AGrEKQZCAeCAAcVIAAk1HQAFwQMgYDC6fBqv4EPIAOmY+CNq04wDgiDAIGAYAdoAgAH1XW73W6IABNNw9CAAYTcykhSvMkI9EddEDtDsRqIZj1iAO07GU-XqjU4iSSycCaYgGa4PxuSaqKfzIQAJABvJIAXxrhc4dfSAH4ChTIRqYfo4QBuB1gJ2RiMQWLOYL+rBw-ojj3R+3EPSrYJx6sQACiAEc1JZEhvAVJahA69CcG5NE9BIjkHlLP4uM5gGpXL2nmAl7oVxB1weiUshUSAA5NwMG3Xd9BPM8L1Za99lvXh9AfTgnxfYg31jakcmnEobgAbUoP8jwwaJwMsaJ6UiR42WxVkajxRIezhFIUniQjD1qUid3IyiHhiGiWTZBiOycFi2KgIjOLI-QKLuKj+KxQSsQ5VjBV7KQxLAABdQchxAF0509JYenIcxbikXUDMM50Fz0ygfjQXguggBhfRGfA3H0NCPD1TVtV1fVgENMgTTNC0rQQeBgA4fAMnMeyIElaUC087y+g1LUdT1A18GNU1zRwS1rSijyvNcHyEoAWVWSF-UQ5DnAy-zsqC3KQvyi1bXtMAgA)
 
-#### 题意
+### 题意
 
 实现 `StartsWith<T, U>` ,接收两个string类型参数,然后判断 `T` 是否以 `U` 开头,根据结果返回 `true` 或 `false` 。
 
@@ -2189,7 +1712,7 @@ type b = StartsWith<'abc', 'ab'> // expected to be true
 type c = StartsWith<'abc', 'abcd'> // expected to be false
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type StartsWith<T extends string, U extends string> = T extends `${U}${string}` ? true : false;
@@ -2197,13 +1720,13 @@ type StartsWith<T extends string, U extends string> = T extends `${U}${string}` 
 
 - 这个比较简单，通过[字符串模板](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)进行条件类型判断即可。
 
-### EndsWith
+## EndsWith
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02693-medium-endswith/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMBsCcBmCBaCBRAdgEwM4HUBLAFwAtJUUrqKAjATwgCtCBDTAc11PYgAoAAi3ZcemALYBTYqwCUEAMRTshAK7jFxSeIAOAG1ZaUekpIBOrPRQoLbEAIqrJuYoQD2ma1ACSuvdslMYggAAyw8IjIAHgAVABoIAFUAPhCIAHdSQgBjUggZAGtnfPS3CEkAD1Zs4JczQk58+h1i9mwIM2lVM0xcDNJpAbNQmLTAvAySPJDEkK8IZIgANUJJdIgPCABxEgAJVVoALghSYmIdXEPgYGJcXIA6Jlx7tzMOYDgkMBBgMD-QCAAfWBINBIIgAE03N0IABhNzYSQQXbmJFg9HAiA-P7EZpI8IEKaxcoVLQ4Pp1BocBKJElkiaUziLAC8EBidPGfRCABIAN6MjgAXz5iUFaQA-PkzE4IMcAGaWXCSADcfzAAIx6LZzmCsNYSr6mrBWN+hF0r2CuJaEF5GAAjqpLAl0BUWjUIIKIHKzG4NAByARWyQoXKWfycZzAVSuPS4P1gM06C02jCuyQ1ABiiskCQAcm5iOgHZYPV6ff7A3iQzw9OGOJHo4RY-GwEGINl9cVWQBtCgut3EKJFx16IfkyKkKJ+1i0bJ+hJ+2d+5IJYjSyTJFd9tM1IfF0cEidTmdzhcn5er9ebuLbgd7kdjiJE6dLhfYC9e7PXsAAXTV6pAIEjXBDNujIcwIAAZS0C4gOAwETQAihFkgnhOggehoWGXA3D0RsPEuE4zguK4bjuUhHmeV53k+RBgHYXB0nMZDllWdYcLw1wCOOU5zkua5bgeJ4XjeD4EDojj8N6FiAFlXiRWEazrZweOI-iyKEqi3m+X4wCAA)
 
-#### 题意
+### 题意
 
 实现 `EndsWith<T, U>` , 接收两个string类型参数,然后判断 `T` 是否以 `U` 结尾,根据结果返回 `true` 或 `false` 。
 
@@ -2215,7 +1738,7 @@ type b = EndsWith<'abc', 'abc'> // expected to be true
 type c = EndsWith<'abc', 'd'> // expected to be false
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type EndsWith<T extends string, U extends string> = T extends `${string}${U}` ? true : false;
@@ -2223,13 +1746,13 @@ type EndsWith<T extends string, U extends string> = T extends `${string}${U}` ? 
 
 - 这个跟 `StartsWith` 比，就是反过来了而已，所以还是一样的套路...
 
-### PartialByKeys
+## PartialByKeys
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02757-medium-partialbykeys/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMDsCssIFoIAUCGAnALgSwwBsAhATwGkBTUgZ0hWUafoCNSIArAgOwHMaAFhm4QAFAAEuw-kO4BbSjgwBKCAGIFAEzwBXOeoD2LDpQDGOevTXWIARR2Ua+A90tQAknIAOhSgu44EBgQvJTclFh4phAABpi4BCQU1DQAPAAqADQQ5AB8MRAA7gJRAhBKANaO5YUG5aRelEFYvHphgTHpBcKaseQxAHRufQU0jaZ4AGbsOAJNNIoQBpMQXlgGjQnVy7Fd5UKBggY6hL0LgTh1LE0bztxEAxAA6nMiMf0QeDQQ3AaBawYAG54TSUTTZPCHATHU4QOQYKpBQiEVbrTb4bZeO5ETg6JwQQh4RGzJq-LDwlFxbD4IgZfJDKD0ABiBiwEEoAA8MN5fMMYvycA1HKZIlj6HgAhFJhhTE0AKoLNkAb3oUHuCgAXBAnJE+KqgqEtdw9NcsPqMJpNFhHDQtTqJbx6ABfYaCxoQBUReI0wgAOW5TQAvOhqYkyFRaKlPVhsgBydWUWO5CDAYAQJU-AMAfg19r4AG4DZQNca5KbCxarTbczhdbwIC6oPyYsNkwA1PCUQpLEQAcUhAAkdCwtQIcDgvLbUzgaKYBAMODQBqzeMA4IgwCBgGAd6AIAB9Q9H49HiAATWObIAwgZQRABxEmifn4eIFud26mt6w8lI+l2RyOBhJo3xKk62RyhAwZVKQOzpMmwb0AA8nIkKpN+tJoFEFQZBBEAAGQQDBcG5MmhEoWhWQegRRHUCR2ThICES5PmO5sXuL7PhA6SOIEV4YAs3ycSeb7bng3ishcQrphAACiACOOhENkskcuMgROhAkzrPosbiJ+yBzkQvh8I4wA6PghA0LGYDiV4kkyap6lMkQCzZL6fwKUpKKadpBi6fpQqGUIyJhKENDmZZ1k7hKQFYNKsoeoq6b0Amdq1g69AYIaPwmhEWWWtaNC2tqGV6i6tmSvFMryoqGF+gGKVqtm6V1llOWlqaBVVsVrWZRVsVSjVSVeqGRD+goACC3CaJNoRNZmCg5qVbVQNllDLZ1+VrYV1Yrf1H7SaYAnVMGADa9BOWYOCpF5mFjUkEZpNGcYJkmEF1Q9E2UKRmSXWp123Yp90JEQ4YpFGiqvQGsYQAAPhAsY6NwFS-IU3DvSNWD1d9v3-epQPeehD3g5GL2I298OI+tmPRjjAbTbNoR41AV3mITIM+qTz2Krk2T1ZDzF4wAumxYAccJp5MjouBzGyADKQGTgekuvu+oD0Mm8tCNaECwTL2oGIQFl4C4JVjhOU7ADOc4LkuK5rggsDAMINCFNtEDtp23Y0EbJtm6O46Thq06zvOi7Li0juIMAvvG3cdBQMmACyrJNFeIUmeFgeWyH1th3bkeOu+YBAA)
 
-#### 题意
+### 题意
 
 实现一个通用的 `PartialByKeys<T, K>` ，它接收两个类型参数 `T` 和 `K`。
 
@@ -2248,7 +1771,7 @@ interface User {
 type UserPartialName = PartialByKeys<User, 'name'> 
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type PartialByKeys<T extends {}, U = keyof T> = 
@@ -2348,13 +1871,13 @@ Omit<{ name?: string } & {
 }
 ```
 
-### RequiredByKeys
+## RequiredByKeys
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02759-medium-requiredbykeys/README.zh-CN.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMDsCsBOCBaCAlApgRwK4EsAnTAEwCEBPAaUwoGdJUVmXGAjCiAK3wEMA7AOZ0AFgIgAKAAI8BwsfwC2mAC68AlBADEykvlyLtAezZdMAYxWNGW2xACKuTHRX4j-a1ACSigA4AbTGV+FQheCEFMfkxCfHMIAAMsPCJSShp6AB4AFQAaKCoAPgSIAHcROJEINQBrZ2rSo2qKX0wwwkEDKNCE7JKBEkSqBIA6TyGSulbzfAAzThURNrpVCCNZiF9CI1bCV3r1xL7qsVDRI1x-QZXQlSa2NuIU4hIRiAB1Jf4JiHw6CH4RlCWyMADd8CRSPl8GcRBcrhBFLw6mF-P5Nttdvt-k8CC9uLgXBB-PgUYs2oDCEj0UkcHjSDlimMoIwAGJGQgQTAAD14fkC4wSQpULWc5livisUHwIRis145jaAFUVpyAN6MKD8PmYAD8AC4IC5YkJNWFIgaAQYHoQzbwSCRiHQ6JbjTLBIwAL7jEWtCAqmIABV4ez4-gAcjqIABeDB01Lkai0OiZAOEfIAcm1ygzhQgwGAEDVAJ1hrdQgA3Oa9Yb+NaYlX7Y7nC6yyoTYIIN6WVAhQlxnmAGr4TClNbfADiMIAErg2IaRCoVL46PqCyo6OYRCMuHQRhzBMA4EgwCBgGAL6AIAB9W93+93iAATQunIAwkZIRBpzE2g--7eEBnhevptMk9KJhkKZ5BAVAxhAdQUIcMFKly3IqFEJD-IhyHwThGzZHm0aMAA8ooMKZOBCaZIGcQ1Dk+RwQAZP6hR5ixZEUTBzGsfk0SgjEhQVheYBXgB-4QNkzihG+vArP84kPkB574H4HK3KKRYQAAongvD+Pk2nctMoSehAszbIYGZSKBKBbvpgRCM4wC4K4-h0BmYCqb46laUZJmsvpKz5OGQK6bg+lduZlkQNZtn2WiUSRHQLluR5F4yhhhDyoq-qqkWjDZjWRrtu6jC8Batb1raUBNk6rYlR2YDel5srZQqyqqlRLyRsoBVaqWjVlbVlVWooNrlQ69WuqVpotZlcodXlMTdaQvWYAAgvwJAbZE-UlsobZNSNmBVeNMSTc2zozU1LWgRA5hyfUsYANqMP5FgqJk4X6ZR8YvOkyapqqmZFbm+RpqtJDrWxuTvcZn3fXp-h-c8aRJlkaagzqGYQAAPrFuD8DUgKlPw4PLYQUMw4UcNQB9lhIxFKNQ4DmMg7FYP47FFWYBTkP-WtOpbTtkSw-DJlM79rMYymaa03GaMkMDgniwAuiJokgDeimPqyuB7EsnIAMoYSuOu69eyla4webG2IxAQEhBtGkY-iuW4-CrhAi7Lqu66btuu77h0R4IIgwACHQpQXVAQ4jmOdBux77je77K5rsAG5bjue4HmHSDAEn7uuKntsQAAshybRvmIiVOWnS4ZwHOfBwep7nmAQA)
 
-#### 题意
+### 题意
 
 实现一个通用的 `RequiredByKeys<T, K>` ，它接收两个类型参数 `T` 和 `K` 。
 
@@ -2373,7 +1896,7 @@ interface User {
 type UserRequiredName = RequiredByKeys<User, 'name'> 
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type RequiredByKeys<T, K = keyof T, U extends keyof T = keyof T> =
@@ -2386,13 +1909,13 @@ type RequiredByKeys<T, K = keyof T, U extends keyof T = keyof T> =
 - `Omit<T, K & U>` 用于从 `T` 中获取键**不为** `K` 类型的字段组成新对象
 - 最后再使用 `Omit` 将上面两个对象组合成一个完整的新对象，就达到目的了
 
-### Mutable
+## Mutable
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02793-medium-mutable/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMDsCcBmCBaCBZArgFwIYCMAbAU0lRQsrPwE8IArAS1wDsBzAZwAtWIAKAAJNWnHiwC2xPAEoIAYkkATRpnHyATsVyKA9i0J05O-PWIBjbCgDWxGhzJk5TiAEVMxDtkZ6HUAJLiAA4kkizYENhcxBBsxCzE6oxmEAAGaVh4RMQAPAAqAHxpKRAA7lxJXBDiuDYcELiEhBCB6jqBCV4eEIwsqWm5RVU4BCT8LDrhmtp6BtIAdL4QAGI66hDEAB64QSSLRdg07RxmiYHYZD3YCQBmuGbRuTq6EADeZFBTuvp0XtgkAFwQTyJdjvCCfGZ0RQeE6MM7eFiA4E9NhgiHfCBmHQ7KTERSA-A6HQkVhkAC+iwO7Qwwyyj2eAF4aZkSHknjp8hBgMBXhFGH9iEjsCC2ABuCDQ46nLx6IUi8VYnFXfEQQnErQscUUqBkIqLTkANUYxBKED0EAA4vyABKYfCArjYbCBDj-bnYY5cOb0DhzVZsYBwJBgEDAMDh0AQAD6MdjcdjEAAmjpMGsAMJPaLWhLReN5mMQUPhqnRDIjHK5dYbK4sRR1ABK5lWimyAAVWu11AcANK2AA09RYNHynKZbygKHRBggAG1W91ejYaDprhBcgBdQG5Ofrqs1utmkzmcIAfmZ5byO85W53orAFPDYEj+bza484TTuA4XRf8cLYcYIJVnCEteQAUQAR0wBoBzAjZ2gsCAyQga5WjUAByAQSxQMweEaOJYg4YAcEYQgOHQsBAMCYDwPg48lgab8BwAOQmSDoKaZDUOxCBMOw3CGhIdgPGIrwyIoyiwhuO4HnZABGV4yF+AEgWFFEyElWF4VlVSRTIRVglxFU1RJFgyEkPBAXHKB6hwLhVjldSoApB9QIAGUYTwICZGc5IHaAB0Qddi0OaIzC-LofLIOCEOwbJ2IabIyyybJG2mb42V0OSRwHekdGy-I+2iuiLHiqDEuS1k0q+Axsg8zwcogersBysBgrAUCEladQ6iiqBuQgLCOBQTZYpG9RurISqcnQ5F2HQwqyAGoaRpKywutWKbaVZAAGRb2ojEBo1-BMllTSIEggABlK4XWOk6o3-J9wCgTkrp4TQIGXVMgWJEi9FdCBHWdV13U9b1fX9QMEEQYBWA4EoEjIQ1jVNDg-plFhAeBl03WAD1cIhv11ADINYfRwh-qx5GMFWaI0zwoTCIdJ1cbBwmfWJ1EizAIA)
 
-#### 题意
+### 题意
 
 实现一个通用的类型 `Mutable<T>`，使类型 `T` 的全部属性可变（非只读）。
 
@@ -2409,7 +1932,7 @@ interface Todo {
 type MutableTodo = Mutable<Todo> 
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Mutable<T extends Record<PropertyKey, any>> = {
@@ -2435,13 +1958,13 @@ type Mutable<T extends Record<PropertyKey, any>> = {
   
   通过条件判断，可以对嵌套的对象继续进行处理，直至将 `T` 中全部的属性`readonly` 修饰符去掉。
 
-### OmitByType
+## OmitByType
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02852-medium-omitbytype/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMAcCs0IFoIHkC2BLALgIQE8AVAgBwFNIVkbaqAjAiAKywEMA7AcwGcALThAAUAAVadeAjhnI42ASggBiGQBMsAVwzKA9vWbkAxjipUl5iAEUN5Hjiw6OpqADEATju0ADH0R9eAGghSLEMAawg2CB5ZCB0AM2CPCjd7WwgAdz4dGIgcMnJIt0KOHRxInh4sLg42egAbQpwdCH8AVX8AOmcIFx03CABRAA82DFJGnv98ih5DNyxSEygZwsxcPB0dRsEAXnRsfGICgB4AbyooWpkALmicBe5LiEMdDQ4cO44tenI3Z6wPAASuQ2KpHPUCHd6Fsdk4oFBAYNag1yNDYaD4RAAL5BGHbTEAPggwGAEDOEGuaPujy4AG4Xm8Pl8fn8cVR-D1iQA1LDkDJxDgQADiuAAEhp6Hc+DgcKQeDdSTg5nxOsweJ1+lxgHBEGAQMAwEbQBAAPrmi2Wi0QACabwGAGEdKpCmK-oUrZ7zRADUbVgcNscKCciEE2sT9hcoABtAAKECwQrC5AICQgRAq6bjAF0IORhjhyBxVDwIG0IAB+SnkABubLusezdyIObpYGxRuNIDNXqt6ds5QdbBipd7fd9WHG-XK-opgwAjho2PUgiMKMYcRB4h5tAByESrZCGAT1RrcWzADT2eo8XdgSekafkobDdc4FzLmJBAByZQXS-qTdt08CB90PY9lzPLgLyvLAbzve8Pj+eI2EMQoAFlnXIQCo0pMZqTsWkqFed5PkpVl-kRYFQXBDhIXRAlOCoJEUUaBi4XbP0CheYd0n2aMqDXIwcBOf9lxOdYjhIYNMJdFcIHxOFCSCCkqTuQjE3pRlSJZDBfgGbFCWUwTX2E0TF3EyTCGk8gTlk7Cgg07hlOfEjmXIvS-gZQEQTBCEoQUjFOG8nhkTqNjAsYoVDOMqAhOMcyAIkw5rNOez5O+Ty3Bc1T8PUh5NJC3zaPoyK4RCsLUXYzEcSMgIwGzTswBNMdLV6DRUj4NkAGVC3lHtWtNH1DVAKhiW6gRiggVMOuibZYMcBUIBlOUFSVFU1Q1LUdQQaBgE4HgMj+MaIF5fk5vqBaOCWlb5UVYBlWPTbNTcbVdT2nh5vsRaTswqaHRPKDbGlWU7vWp71Rerh9UNMAgA)
 
-#### 题意
+### 题意
 
 从 `T` 中，选择一组类型不可分配给 `U` 的属性。
 
@@ -2456,7 +1979,7 @@ type OmitBoolean = OmitByType<{
 }, boolean> // { name: string; count: number }
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type OmitByType<T, U> = {
@@ -2466,13 +1989,13 @@ type OmitByType<T, U> = {
 
 - 关键点就是通过 [as](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as) 来创建一个新的键类型，由此通过条件判断来排除掉某些键
 
-### ObjectEntries
+## ObjectEntries
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/02946-medium-objectentries/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBBMCcAsA2CBaCB5ARgKwKYGMAXAUQDtCAnAS1wGdJUUnmHMBPCbKgQ1IHNaAC14QAFAAEuvAcNIBbXIW4BKCAGIFAEyoBXOeoD2OAoQYM1FiAEUddQlQOkzUAJJyADgBtcC8hEKCuP5s7kEAbrgUtA6kEAYAZhAABilYeEQAdLjk1HQpSc4QAGIGFBC4AB7cHt4QhfmEIXT41O6mUFTkkfHc+EEAsgaauJ4QAN4MUKTVuABcELSUnXwA3JMQ3HxzEKR6mJFrUFCeBvjc9o6084vU-ADaALoQAD47Op6ehxAAvgyNoRA5EMRmQlnQIABeDDGIig3K0AA8g2GngAfBBgMAIHcAOTTBQ4gA0CyW-Cer1xm1wRLecn2FHJ2JxJzOF1ItBpN2Wjxebw+Dy++UK6IAajQAO5xWIAcSohAAEjpMPNBIRCO4rpjCLR8IIMthaBlSnxgHAkGAQMAwNbQBAAPoOx1Ox0QACaBh0ZQAwsCIPLIkFnUGHRBLdb-kEvbItiLuJ5bAiACroqETKB3AAKEE6EAA1rg2AkIImHvNM8TE5mnpVCNlNLQIDpSMN4p1cJoIAB+RvN3Ct0jtiDzSsZh4PMDfOpgCPQ9IkHI0RHJyFQKPSXCx+O4BEAJVwAEcdFQKO2k6jUXd84XEiW1tawLbg0Hi3YIF7uLRwU-naGrVQPKUhDBACYwQMQh5xsSxAVKERA-BA8QUAY+g4uIEYoLqcbePwdDADo9ieByYD-u4gHjGBMEmEUcafsSAByBgkBBoyTohyEQKh6GYR82RbLQeEEURxFdBQPR9BAyIjOMDD4tsXL8AwVLzLsdKRAwLLnDEVwkrcfA8q8uwfBO4ZNBJwKeHCi4rrismcqSfCMpSWw0ip9KOcypyaZcdm6fpfKeOO06mWcn4NlCdwMNBsGEAi4E6HGCJpCYll0Ei5mosSkkWQudDnoSkWUUQsXMYlMLzmCiIZtwFD2AlWV5WZKIpbQeUFdFxXxZ4pVzs1CKgVenbzE2LZth23wZUyV40sNfajQ8rVQFFJgdQlSWwjliL9QWQ29v2g7jcSuJTcSM17Zo80ZWAgU2iA9rfi6RSegEkQQAAyrWGp3fddq-g+4BQOir3CCeECFp6CwGPGbLaaq6qasA2q6vqhrGqaCCIMAvC0OKakAxAYq4JKtCQ-hWkqmqGqzFqOp6gaRoUCaZoY8TUNaQw6KDCDa48ThMMU-DiO0yjDMWlaYBAA)
 
-#### 题意
+### 题意
 
 实现类型版本 `Object.entries` 。
 
@@ -2489,7 +2012,7 @@ interface Model {
 type modelEntries = ObjectEntries<Model> 
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type ChangeValue<T> = {
@@ -2516,13 +2039,13 @@ type T2 = T[keyof T];
 
 所以，根据上面代码的思路，那么我们只要将类型 `T` 的值变为 `[键, 值]` 的形式既可，最后通过索引类型就可以返回 `T` 中所有值组成的联合类型了。
 
-### Shift
+## Shift
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/03062-medium-shift/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDMAMBsAmCBaCBlAFgSwGYBdJUUTSiAjATwgCtsBDAOwHMBnTJiACgAE6m2HRgFsApvnoBKCAGIxAE2wBXYbPoAndfUpEiM-RACKS0a3zYA9o11QAksIAOAG1FjG+CPkyjPlBz4A3UXVWS0YIC1wIAANYgEFNbQA6djx8WOibCAAxC3UIUQAPekcXLIz8P1MAY3VsB0IoSv8IACVTJScPAF4MHAIAHgBtaAAaCERxgEYAXQA+CGBgCCHJiFmiDKyFgDVsUQB3CPCAcWx8AAklcgAuCEx8fAdWG6X8VmrMJJpWJLzmYBwJBgEDAMDg0AQAD6MNhcNhEAAmhYlPkAMIWeQ+C7BHzw-EwiCg8HNHxYNIDAAqBUK+FEjHkrAgTEoQ3mEF61KKdIZTKGLPGSSF2EYuGCEAAojMIAB+SUQO6MURBdQAbnBYEhBPxEEppg8aPorFM0O1cKJYOwjjyHlJEAA3pKAI5KehOcYSwr+aoeAC+EFw6gsqgA5DxSShPm6XCxTMAlOYnKwQ2ArQ4bQ7JV7RD7sm7jeMAHIWfASl1uiD+wPBiBhiNRpwx5hxhPYJMpsB26pGk29IZET3e-ADMuupwDcmDEbjNazObjVbTebzgfZn0j8vjyfDoYh+gh8Yh8gH2vVE8h+QhiDzBdH89nw+X5ejMAzDWakCms2E7Korzi9A6WeL9vwtD8iAWLANB8SgUXyVgLCcVsrBee5HmeV5gHeT5vl+f5AQQRBgCYVgDmCCCID2Q4IAQpDzBQu4HieF43g+L4fj+dQASBIjaOQxhWAogBZPIfDRDhG3pZtUKYjDWJwjj-hBMEwCAA)
 
-#### 题意
+### 题意
 
 实现类型版本 `Array.shift`。
 
@@ -2532,7 +2055,7 @@ type T2 = T[keyof T];
 type Result = Shift<[3, 2, 1]> // [2, 1]
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Shift<T extends any[]> = T extends [any, ...infer E] ? E : never;
@@ -2540,13 +2063,13 @@ type Shift<T extends any[]> = T extends [any, ...infer E] ? E : never;
 
 - 这个就比较简单啦，通过元组的 [rest](https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types) 元素，就可以获取到我们想要的值啦。
 
-### Tuple to Nested Object
+## Tuple to Nested Object
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/03188-medium-tuple-to-nested-object/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?ssl=24&ssc=88&pln=22&pc=1#code/PQKgUABBDMCMAc8IFoIBUCuAHANgUwgBcB7CAOTwGdC8ATCAeQCMArPAY0MhWV7+6YBPCCwCWAQwB2Ac0oALKRAAUAATFTZCyQFs8hcQEoIAYl21RGbSeKsOXKN2NOIARQxVCo4pO7cA4qIAbniSEOJE2PhEglgEAAYJaAlxRAqEEN44wuze+qKSlBDUAE750tGxADRhkvThhDHxCQCqydVMGKI4daE2bJwQxRwYxZRBeFkAdL5QyQ2xlOylWPYVBOEAvOiReGjEFNR0zP2EADwA2gDk4pcAutUlZQB8EMDAEADe4gBcRYSlMgAvtx5gQmBAtphcLt9h4jrZOBdrpdqpcmHdqpJLEw8MUXm9Pj9PkxfljtDjioDgVBQRB2BDttC9gcaLRjnYLvcIExiMR8FJ8e8eXy8FJJhBRAAzVIEQg7CWFPDaFaCaosDDUQZ6EahQhyAjNNbcZIzCAvABqojwAHcMqEAoQABIYEkQOSEQhYSjfN6ERZySYsSiTYjFaTAOCIMAgYBgOOgCAAfWTKdTKYgAE1iCMIABhYi0AiO3EENNl5MQGNx2ksuinABi1QAotVmi8tvWIHgAB40WqFR4yCAAfk+EHOAAUJaF67dflD8My4WyEWcWxA2xBARBSXhgsVq41GYvYYcVydTmhW+30F3eyFaIVzvlJbiII2IJMvy+303biPyGXBtm2vHcNwAbjjeMQCTcs03QDw83ESgqFguD0yrURlVDdJaQ+CAmwARwwcQcGbbtYgGbdJWKYgrEuFRQWQdgFBwfAZCoYAME8HBKEuQ9YjpZDUK2c5uCbCiOSIkicEvHYlzPdlESuG4uUHaQnmqfCiXUrcnk08TJMRaTSLkplT1ZJSzhUlEIDRDEIDJClNLHIl8NdJy323QF9MqQzKLXYjTIXGFa3PDkbNRdFUXYBzhX5SQXO0353JSulfni0VQm8vSDKgCSAtOEzZJChTLNXTl2l5BKXMygUDNuON8hoYpJXEdgCHzHBQ0lDAcE+bgcm64pfnUyCoGQ2hfkudSUTAYFmtxNqOrzURinYKIPm4YpxHMDVSWxXFxrCSgpr+AFpHmyAwFpLqer63M1o2ggtju1q+ogAAyVb1vwSCcgKdJNk+bdkLzPl7pwR7frwSDxGmaC0PQxN3xGPU3wAZRoL0kfQytY1AbgXgxhQhggQRs2KIo+W4rwCl+d1PW9X1-UDYNQ3DSN4GAKRKGtXEiYgS0bWpnBae8b03Q9L0fWAP0WLZkMwwjBBucoGnPAlwWAFlQ061j2OkKgGel5m5dZoMlcuqswCAA)
 
-#### 题意
+### 题意
 
 给定一个 `T` 仅包含 string 类型和 type 的元组类型 `U` ，递归地构建一个对象。
 
@@ -2558,7 +2081,7 @@ type b = TupleToNestedObject<['a', 'b'], number> // {a: {b: number}}
 type c = TupleToNestedObject<[], boolean> // boolean. if the tuple is empty, just return the U type
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Nested<F, E, U> = F extends string ? { [P in F]: TupleToNestedObject<E, U> } : never
@@ -2591,13 +2114,13 @@ type T = 'a' & string;
 type T1 = string & number;
 ```
 
-### Reverse
+## Reverse
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/03192-medium-reverse/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDMCMCcAmCBaCAlApgN0wJwGdNJUUzySAjATwgCsBLAQwDsBzAgC1YgAoABRqw7cWAW0wAXJgEoIAYgkATBgFcxCyaoAOAG2JQS84xACKqzAUkMA9ixIkAkmL2YJLSREmdMX6tt9cQlsWCBsAMwgAAxiAQTw8JmoAOjwcfCIYqIcoADEbPAhMAA8mF30ALhzomMl-SwBjPAZtSRI6gIgmCABeDHTCTAAeAG0AciYxgBoIMcoxgF0APghgYAhx+ZmJxfb6iEpe-qCiUZ3trdmGxZW1jbHri+nZyYWSLOqVgDUGTAB3MKhADiDEkAAlVJQKhBOJJJNoCBU1pICA1OMk6ARkgU2MA4EgwCBgGASaAIAB9SlU6lUiAATRsqkKAGEbEpfGD8L4aTzKRAiSSOr4sCdhgAVFZ9MVFYqSTAsJQEDbJFUMFjhfAQXIzNUawoAUQWEAA-Bt9TMVckRRlhrklkboWKANwksBk3k8iBiyyeZlMIhKj00-nEhguAqeIUQADeEH1AEdVExdDN9cUAg1PABfCDhPA2DRjfhClBo5P6diWYCqay6AhjQX7Br+yxHEYkNMZyRDBNJ3RDa2DUbLGYjZZLKYd9OYTM9xPJgcDU7jSZPEf3S47ceTqCdmfd3sLwfL86zTfXdfjR5n55bpYTsBvV3uoO03JM7yagDKcoRFNffICqAJArF+3BpBA1CMoUBA2LoNYhIiMJwgiSLACiaIYliOJ4ggiDAKwBB-PgIEQD8-wQLB8HWHYSGwvCiLIqi6KYtieC4vi+FUQhtGkQAsgUvjMtwugVmwljQvRqFMZhrE4oSxJgEAA)
 
-#### 题意
+### 题意
 
 实现类型版本的数组反转  `Array.reverse`。
 
@@ -2608,7 +2131,7 @@ type a = Reverse<['a', 'b']> // ['b', 'a']
 type b = Reverse<['a', 'b', 'c']> // ['c', 'b', 'a']
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Reverse<T> = T extends [...infer F, infer E] ? [E, ...Reverse<F>] : T;
@@ -2617,13 +2140,13 @@ type Reverse<T> = T extends [...infer F, infer E] ? [E, ...Reverse<F>] : T;
 - 首先利用元组的 `rest` 元素，可以很轻易得拿到最后一个元素，并把它放在数组的第一个位置。
 - 之后对 `rest` 元素 `F` 进行迭代，反复调用 `Reverse` ，就可以完成啦。
 
-### Flip Arguments
+## Flip Arguments
 
 > [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/03196-medium-flip-arguments/README.md)
 > 
 > [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDMCMCcA2CBaCAxANgSwA4QEEAnAcwFcBbAUwDsAXAZ0lRVbeYCMBPCAK2wCGNEgwAWQiAAoAAvyEjxNanQEBKCAGJqAE2yVNA0pVqNmzDRYgBFMlQZ1sAexpmoASQq5MVavQh1RKn8uXCCANyoiBicaCEcAMwhMR20BMQByBggAA1yAfQA6eJxcXOyC1wgAFRCgsqw8YnJfRgAeKoA+MogiKgBHMmxerPiyGgBjB2dg0Jzcqu6hbR6qOjIiGiyBCBoqAHcIUYmp2LpaiD3RbHHRCHEsgKCGAWoVtY2ZoITqiA4yOhWESiVGWuEML1WkQYFSgzHQjiIECoAA8Xl4qAAuSplM6hBjjIh4OjMXFBBq4ULLAC8GBKTWM9AYrUkhhIAAYMRB7IThAAaCCs2CcmiUDiRfmsgBMnI4jkc3iE6ipHQgYUc2G0KuYwGAUlZHN+coVNAlpCFO1F4oFpGlXLoPJISpVao1zDKlRVADVsPs4rEAOLYOgACTIHE5ojodFwDAxOsYNwKvGhCJIwDgSDAIGAYFzoAgeULReLRYgAE1HOsIABhFJBYORIIl5uFiDZ3OkiAAJSoQIYVHaKppVSRyLotG0WQA2gVZ9gaPFIhh+fPF4iAKIAXQgAH4IFP1-zZwUe32B+gOtvOVUANwd87k+ktJmdCDD0fjmiTqTH1mxiCrkuAAKToAQuS5druP6zn+nKnlCA5AR0oGQded65mA+Yts21R2AC1ZpHYBbYcWbY5tgngIgCnYAN4QOuAwCJg-LrsioSTBAAC+hxEI4FAQOk0ikigNxMd4wh2MA-zYJgDDpPeszjIRWQ0lOzCsexdCtAxZBMa0j5GM+zKgbK8pUEIHT8pIJlGuZNAdJZ6lsVQkzaYxmD6XShkmEykjxHKnLcvOjpviqIoUGKRCWVI-mOIF9rBaB4WRQ5vJOZpbm6R5BnND5zL6vFDqmiQ5rJVaUoyrZiqhaq6qalZBWGmZQjFaVlpEMVtpBcIoEupqjmbhhmEgMRJGtug6yPIiADK44xqNY1kcNzAqtN4i9BAXCVoiDDytJzj-pG0axvG+KiEmKakOmCCIMAQgMHskQrRA3q+rtmD7ZsEZRjGcbAAm53JgUqbXUgwDvZ9TBQCqACyCJBNW4iYOJJB2N9x1-QDF3A6QWY5mAQA)
 
-#### 题意
+### 题意
 
 实现 lodash 的类型版本 `_.flip`。
 
@@ -2636,7 +2159,7 @@ type Flipped = FlipArguments<(arg0: string, arg1: number, arg2: boolean) => void
 // (arg0: boolean, arg1: number, arg2: string) => void
 ```
 
-#### 题解
+### 题解
 
 ```ts
 type Reverse<T> = T extends [...infer F, infer E] ? [E, ...Reverse<F>] : T;
@@ -2648,3 +2171,222 @@ type FlipArguments<T> = T extends (...args: infer P) => infer R ? (...args: Reve
 - 目的是将函数参数反转，那么通过扩展运算符，可以收集到所有的函数参数，这时它已经是个数组，只要使用 `Reverse<T>` 进行转换即可
 
 > `TypeScript` 是结构类型，不是名义类型，所以这个函数参数的名称是无关紧要的
+
+## FlattenDepth（数组扁平）
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/03243-medium-flattendepth/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDMBMAs0IFoIDEA2BDALjgpgHYAi+ADjgBaQrJ300BGAnhAFYCWWhA5gM6VuEABQABTt36DCAW3w4sASggBiOQBMOAVxmqsAJ31ZmNGivMQAilvx8cHAPaFTUAEr4Axlv18OAN3wMVgAzbDwiCAMjVi0yCBwHCHVyKniOOT4AOhd0B30IfAAPLBkyDHwALhyAA1qcZjJbD30OChp6xsiIAF50MIISFMoAHgBtAEYAGghYadHoafgAXTnR0YBWJa2VmYA+CGBgCAnp2ZhFuc2lzIhQ3AJ9Qhm0jPaG-AhGHr77olIKEYnGZzBYQZarDbbJb7Q7HKbA85g1ZXa4Qf6pZLBLBaDA4PjxRKMD7jGi1ao5ACSwXilA+yQBEA4+LI+gcfg4yXU0w4OAA5PieFoDNwCPh1ATPh8yA5fPYAozCAQePh9NkoDR9gA1Dj4ADuECcEAA4jyABJaRgVCCUPBkPgVQ54jyUTJsLJ5HjAOCIMAgYBgAOgCAAfVDYfDYYgAE0HN4IABhBzJCCmlUfCMZ0MQP0BjofTC-QYA4YAFQKhQG6nx3GYox28fLlfxhB0RPyvXhAFVG0Qq5FCLWlt86-tujQy0Um8cOIRgir0NNMkuZ3P8q4ljQAPw0KBoHuEPs1us7iDbqDniCd0a88q8Ki8oeT3v4hsnqBni-HNCLpcF8JFqhhlcaZ42mTtdg3T8ICtUYl0yP8BnREZvwTOYAAYf0yTtoUwhC-iGICQLAiCTxglC4LwgCRmA1DLxIqArRLABuANAxAENMwjCAS1sHAEywPhbA4zjIxzdJpX0Pi8wgABvCAAFEAEchQwaZ5MKRoPD4gBfW5WV0XlRDzZBnSwDBb2VPhgC0ewMD4Xlc3eCAPAEoTelGGh1M0nBhiUlThkopCxhw45oV2SZPI0zwfL8syAv6fDiyBM5QWWcK4VOaZUrCiKoC86LfOUuLAoIoFRlgLZ0uSnLIu8wr-JKpL4TOeZFh2NZIW2U4quarKLmOK5dnC2qCtijB4sLILkpBNqIRRELpsReBkW2IbcoUqKtPq4qEqosZ4XKmbjmWgaoR2aAesypbLkq4a8s2mKivGxrALKlrQVGE7Oq6iBxgATlgAA2NCAA5xgAdkuhFUumTY1rADdWKDETw3QbwqHnABlAg7WElHs39UANQgTHBH0D5mFjfI+AcDAbMcQh7WtW17UdPhnVdd19E9b1oGAbg+F1FVie1PUIBpun7CcJmbRwO0HWAJ0XTdTIPS9BA+Yl+npeJgBZPIPnjQRzKISyrVl+W2Y5lWPV9f0wCAA)
+
+### 题意
+
+递归地将数组展平至深度倍。
+
+例如：
+
+```ts
+type a = FlattenDepth<[1, 2, [3, 4], [[[5]]]], 2> // [1, 2, 3, 4, [5]]. flattern 2 times
+type b = FlattenDepth<[1, 2, [3, 4], [[[5]]]]> // [1, 2, 3, 4, [[5]]]. Depth defaults to be 1
+```
+
+ 如果提供了深度，则保证其为正整数。
+
+### 题解
+
+```ts
+type FlattenDepth<T extends any[], C extends number = 1, U extends any[] = []> =
+  T extends [infer F, ...infer R]
+    ? F extends any[]
+      ? U['length'] extends C 
+        ? [F, ...FlattenDepth<R, C, U>]
+        : [...FlattenDepth<F, C, [0, ...U]>, ...FlattenDepth<R, C, U>]
+      : [F, ...FlattenDepth<R, C, U>]
+    : T
+
+// 使用示例：
+// [1, 2, 3, 4, [5]] 扁平层级为 2
+type a = FlattenDepth<[1, 2, [3, 4], [[[5]]]], 2>
+// [1, 2, 3, 4, [[5]]] 扁平层级为 1 
+type b = FlattenDepth<[1, 2, [3, 4], [[[5]]]]> 
+```
+
+> 答案参考自[解答区](https://github.com/type-challenges/type-challenges/issues/3307)👍最多的
+
+下面通过实际的 case 来进行分析，首先标注说明一下：
+
+```ts
+/*
+第一个参数 T：需要处理的数组
+第二个参数 C：进行扁平处理的层级，默认值为 1
+第三个参数 U：辅助参数，是个数组，该数组的长度等于 C 时，就代表当前迭代值扁平处理完成
+*/
+type FlattenDepth<T extends any[], C extends number = 1, U extends any[] = []> =
+  // 条件 1
+  T extends [infer F, ...infer R]        
+    // 条件 2
+    ? F extends any[]        
+        // 条件 3
+        ? U['length'] extends C     
+            ? [F, ...FlattenDepth<R, C, U>]
+            : [...FlattenDepth<F, C, [0, ...U]>, ...FlattenDepth<R, C, U>]
+        : [F, ...FlattenDepth<R, C, U>]
+    : T
+```
+
+#### 第一个 case：
+
+```ts
+// 没有传入第二个参数，所以默认扁平层级为 1
+Expect<Equal<
+  FlattenDepth<[1, [2]]>,
+  [1, 2]
+>>
+```
+
+**1.** 代入到工具类型当中：
+
+```ts
+type FlattenDepth<[1, [2]], 1, []> =
+  // 条件 1 成立
+  [1, [2]] extends [infer F, ...infer R]     
+    // 条件 2 不成立
+    ? 1 extends any[]        
+      ? U['length'] extends C
+        ? [F, ...FlattenDepth<R, C, U>]
+        : [...FlattenDepth<F, C, [0, ...U]>, ...FlattenDepth<R, C, U>]
+      // 会走到这里
+      : [1, ...FlattenDepth<[[2]], 1, []>]
+    : T
+```
+
+**2.** 处理数组第二个元素 `[2]` ，根据上一步的结果，代入到工具类型当中：
+
+```ts
+type FlattenDepth<[[2]], 1, []> =
+  // 条件 1 成立
+  [[2]] extends [infer F, ...infer R] 
+    // 条件 2 成立    
+    ? [2] extends any[]    
+      // 条件 3 不成立    
+      ? 0 extends 1     
+        ? [F, ...FlattenDepth<R, C, U>]
+        // 会走到这里，第二个元素可以忽略了，因为返回值是空数组 []
+        // 所以结果为 [...FlattenDepth<[2], 1, [0]>]
+        : [...FlattenDepth<[2], 1, [0]>, ...FlattenDepth<[], 1, []>]
+      : [1, ...FlattenDepth<[[2]], 1, U>]
+    : T
+```
+
+**2.1** 根据上一步的结果，代入到工具类型当中：
+
+```ts
+type FlattenDepth<[2], 1, [0]> =
+  // 条件 1 成立
+  [2] extends [infer F, ...infer R]     
+    // 条件 2 不成立
+    ? 2 extends any[]        
+      ? U['length'] extends C
+        ? [F, ...FlattenDepth<R, C, U>]
+        : [...FlattenDepth<[2], 1, [0]>, ...FlattenDepth<[], 1, []>]
+
+      // 会走到这里，第二个元素可以忽略了，因为返回值是空数组 []，所以结果为 [2]
+      : [2, ...FlattenDepth<[], 1, [0]>]
+    : T
+```
+
+第 **2** 步的最终结果为 `[...[2]]` ，代入到第一步的结果当中：
+
+```ts
+[1, ...[...[2]]] => [1, 2]
+```
+
+#### 现在来看看第二个 case：
+
+```ts
+// 这里有传入第二个参数，值为 2
+Expect<Equal<
+  FlattenDepth<[1, 2, [3, 4], [[[5]]]], 2>,
+  [1, 2, 3, 4, [5]]
+>>,
+```
+
+**1.** 代入到工具类型当中，这里就忽略掉前两个元素了，直接进入到第 3 个元素的处理中：
+
+```ts
+// 初始结果为：
+[1, 2 ...FlattenDepth<[[3, 4], [[[5]]]], 1, []>]
+
+// 代入后：
+type FlattenDepth<[[3, 4], [[[5]]]], 2, []> =
+  // 条件 1 成立
+  [[3, 4], [[[5]]]] extends [infer F, ...infer R]        
+    // 条件 2 成立
+    ? [3, 4] extends any[]    
+      // 条件 3 不成立    
+      ? 0 extends 2     
+        ? [F, ...FlattenDepth<R, C, U>]
+        // 会走到这里，这里就不继续深入第一个参数的处理了
+        // 所以结果为 [3, 4, ...FlattenDepth<[[[[5]]]], 1, []]
+        : [...FlattenDepth<[3, 4], 2, [0]>, ...FlattenDepth<[[[[5]]]], 2, []>]
+      : [F, ...FlattenDepth<R, C, U>]
+    : T
+```
+
+**2.** 根据第 1 步的结果，代入类型：
+
+```ts
+type FlattenDepth<[[[[5]]]], 2, []> =
+  // 条件 1 成立
+  [[[[5]]]] extends [infer F, ...infer R]        
+    // 条件 2 成立
+    ? [[[5]]] extends any[]        
+      // 条件 3 不成立
+      ? 0 extends 2     
+        ? [F, ...FlattenDepth<R, C, U>]
+        // 会走到这里，忽略第二个元素，结果为 [...FlattenDepth<[[[5]]], 2, [0]>]
+        : [...FlattenDepth<[[[5]]], 2, [0]>, ...FlattenDepth<[], 2, []>]
+      : [F, ...FlattenDepth<R, C, U>]
+    : T
+```
+
+**2.1** 根据上一步的结果，代入类型中：
+
+```ts
+type FlattenDepth<[[[5]]], 2, [0]> =
+  // 条件 1 成立
+  [[[5]]] extends [infer F, ...infer R]    
+    // 条件 2 成立    
+    ? [[5]] extends any[]        
+    // 条件 3 不成立
+      ? 1 extends 2     
+        ? [F, ...FlattenDepth<R, C, U>]
+        // 会走到这里，忽略第二个元素，结果为 [...FlattenDepth<[[5]], 2, [0, 0]>]
+        : [...FlattenDepth<[[5]], 2, [0, 0]>, ...FlattenDepth<[], 2, []>]
+      : [F, ...FlattenDepth<R, C, U>]
+    : T
+```
+
+**2.2** 上一步结果为 `[...FlattenDepth<[[5]], 2, [0, 0]>]` ，继续代入：
+
+```ts
+type FlattenDepth<[[5]], 2, [0, 0]> =
+  // 条件 1 成立
+  [[5]] extends [infer F, ...infer R]    
+    // 条件 2 成立    
+    ? [5] extends any[]    
+      // 条件 3 成立    
+      ? 2 extends 2     
+        // 会走到这里，忽略第二个元素，结果为 [[5]]
+        ? [F, ...FlattenDepth<R, C, U>]
+        : [...FlattenDepth<[[5]], 2, [0, 0]>, ...FlattenDepth<[], 2, []>]
+      : [F, ...FlattenDepth<R, C, U>]
+    : T
+```
+
+**2.2** 的结果为 `[[5]]` 代入到 **2.1** 就是 `[...[[5]]]` ，再代入到 **2** 就是 `[...[[5]]]`，再代入到 **1** 的结果当中：
+
+```ts
+[1, 2, 3, 4, ...[[5]]] => [1, 2, 3, 4 [5]]
+```
+
+对这两个 case 的执行步骤进行分析后，想必你也清晰很多了吧。
