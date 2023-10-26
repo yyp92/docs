@@ -81,7 +81,7 @@ type MyReadonly<T> = {
 
 实现`Readonly`的时候，没有要求进行递归处理，挑战中定义的类型，还特意在其中定义一个字面量对象类型，想必是想让挑战者自己去发现补充吧：
 
-![](D:\project\docs\imgs\ts-challenges-1.png)
+![11](../../imgs/ts-challenges/ts-challenges-1.png)
 
 为了确保`Todo1`类型下嵌套的对象类型的属性也是`readonly`的，那么可以这么进行改进：
 
@@ -388,7 +388,7 @@ type Includes<T extends readonly any[], U> =
 
 挑战里测试用例用到的 `Equal` 也是这么来判断的。
 
-![](../../\imgs\ts-challenges-2.png)
+![](../../\imgs\ts-challenges\ts-challenges-2.png)
 
 这时来看看 `Includes` 类型，应该好理解很多了。
 

@@ -2390,3 +2390,579 @@ type FlattenDepth<[[5]], 2, [0, 0]> =
 ```
 
 对这两个 case 的执行步骤进行分析后，想必你也清晰很多了吧。
+
+## BEM style string（CSS的BEM）
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/03326-medium-bem-style-string/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDM0EwDYIFoICECiBZCBnALgJ4A2ApnvgE4CWAdgOaQrIutMBGhEAygPYMALWhAAUAAVz96QuLACUEAMQBbUgBNqAV2VL8pZQAdiAQz3Ji1PZWPElm2tX67NR0kyaLPEAIqbSBR1p3KAAVAXI0Yl4AYwBrABoIDDJVWnxErF4NADNqUkoIVXwBLN4o+i4RTCwFalwIYwgDXgNNEwLaY2U6egho-gA3UjTAiGzeAuiTXFx-CDoIAGFubgA6CGCIADEJiFIADy7XROLydii4vt5DfmH8CAB3Xja1CHZySlIDT9m09Qb6gADdj4WiAxKkFJ3CDFUwQNRfYZqeouJynN4XWKPZ7EV7vCCfb7+O7-YxAkG0AD6lO+1GipHBhSy1Fy+RhAjh0Q5DDm6IIJHIvGy7LOmOxLzeHy+PxJrzJEGBoJY7Go9EBEF2iqpNJo9JYD2MlAcDEBq02AElDFC0grqgAeNCJDAZAB86oeAjpAgg9GG+VM5AINAYEHso2ylGuItm7M+5AMhq6pCsuHWAHVwp9beq6g0KMHehYrDZEoCMOrjLRXoCsBWs0Geg1KNZCPURNFK5K9oYiHIzVAmC6IAA1PIPDXCADilgAEpp2AAuCACfD4Ay4BfAYD4XBc1YAK1TE3owFgiDAIGAYGvoAg1PvD4fEAAms8CossuQZ-lyI+-9SIEva8iAMcgAFUHH4O0AGk9n2PQq3qBsGESEI4IQ5F8x6ABtABdRJFnQpEkKoHohwAXiYNCDgw+o8KYAB+JhoKYJdYJo4iIFghiIFiUhCCFCAAG8IGwgAFeZhBCbDaG0d5KFwgEFQAEiE6CAF9VMWTShLE9TAVwpcJPUiA2IAbmAwhQPQbAHSIxCsJQpJ7Mw5D6DwjIXJIgs8IoiAIMCO0Aqgx0kkSAByalwpdDIIpYaKLOvG8QDvf9HwgEJ-HuRYyTmNL0qA6gbkoe4QPIESMAAR00Eskn2UDonuEyIyjcKxDK5AuRsMgeVwYBNHwahiFwcLLOsjtZnqcjRKYDB6tIRq7SqmriAdWzwopcLEmw8LaXpcL8NE3CYogDbQWpPbSGimLZvmxblpsNasDtM7aC20Tdt1K7Dp2g0jR6d7wtwTRonpGYDpO16Lq+-VDWNehwogAAfU6KWhulSBYYHQf8EaXRuqA5oa-Aluqx77Ve96PI+3BlG6wHVA0bRAfaX0IYiiksbp4hiERlHXpYRmtGUPnUaVcxDTZ-H4jAXCkrAW98qfLZNBKzMeD0ddUqVylAKvUBBx4DkswE1W8DKAbAg3ZdV3XTdt13AQDyPSgTzPBBgErXAHnyQ3R1IcdJGIS3+Gtlc1w3Lcdz3Q9VmPU94A9oOQ9oXBDcyLNFg5Hnhl9MPbcjh2Y5dxggLAIA)
+
+### 题意
+
+块、元素、修饰符方法 (BEM) 是 CSS 中类的流行命名约定。
+
+例如，块组件将表示为 `btn`，依赖于该块的元素将表示为 `btn__price` ，更改块样式的修饰符将表示为 `btn--big` 或 `btn__price--warning`。
+
+实现 `BEM<B, E, M>` 从这三个参数生成字符串并集。其中 `B` 是字符串文字，`E` 是 `M` 字符串数组（可以为空）。
+
+### 题解
+
+```ts
+type Union<K extends string, T extends string[], C extends string> =
+  T extends []
+    ? K
+    : K extends K
+      ? keyof { [P in T[number] as `${K}${C}${P}`]: P }
+      : K
+
+type BEM<B extends string, E extends string[], M extends string[]> = Union<Union<B, E, '__'>, M, '--'>;
+
+// 使用示例：
+// 'btn__price--warning' | 'btn__price--success'
+BEM<'btn', ['price'], ['warning', 'success']> 
+```
+
+在类型 `Union` 中，首先要判断目标数组 `T` 是否为空，来处理空数组的情况，不为空的情况下才进一步拼接 `BEM`。
+
+为啥会有 `K extends K` 呢？因为需要借助条件类型产生[分布](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types)行为，例如这个下面这个 Case：
+
+```ts
+Expect<Equal<
+  BEM<'btn', ['price'], ['warning', 'success']>,
+  'btn__price--warning' | 'btn__price--success'
+>>
+```
+
+在执行完 `Union<B, E, '__'>` 时，这时返回的结果为 `btn__price` ，之后拼接需要跟 `M` 中的每个元素进行拼接，所以才有了 `K extends K` 。
+
+我在[解答区](https://github.com/type-challenges/type-challenges/issues/5369)看到一个简洁的答案：
+
+```ts
+type BEM<B extends string, E extends string[],M extends string[]> = 
+  `${B}${E extends [] ? '' : `__${E[number]}`}${M extends [] ? '' : `--${M[number]}`}`
+```
+
+使用 `T[number]` 获取数组的元素时，返回的是联合类型，那么这时搭配字符串拼接，它会与联合类型中的每个类型进行拼接，进行组合，最终返回还是一个联合类型。
+
+当时压根就不记得[字符串模板](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)这个特性了🙈。
+
+## InorderTraversal
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/03376-medium-inordertraversal/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDM0OwDYIFoIEkB2B7ATgEwFMcAVHAQwDciBnMgG0hWWZcYCMBPCAKwEsyMAc2oALARAAUAAT4DhYjAFsCAFzIBKCAGJleXgFdF2rG24EAxisaMttiAEV9Bait5YM1qGkUAHOgWUMFQgVEQIQjh9wqhxqNwwILAAzCDZeDDIcLhUcAnD03EIcEPIY2joAOk8IADFcCAIADzJffwAuaoADbpVI53McXh8rKHN3FxK8gEYIAF4IAG9GKAp6NogpgBpliH8klXWMfTo6bagoQcERA8WdlbWIACYz86g9m6XX19W6degXr67Aj7Q7HU53c6Xa6gk4A84AXzhF14VxuR1hO0RjHhEDI1AgYwwLmqvSiEAAgnN0Nh8ERSJQaPQADykgjJSYEKYAPggwGAEAA2lsYJsngBdRjdTrVHkANV4BAA7okEgBxXgqAAS+jY62uKh81DafJU1HMIgq3GoFVwgmAsEQYBAwDArtAEAA+l7vT7vRAAJpYfTFADCWEIEE1RHCvtjXogztd6RURCSZHM4VIeQAcuHwp8ID9QYo2ERGO91lmCLmIwAfCDohjI1GV3LVvMQeuNsDw11gVnUwp00qMuhM4gNRopjB4fFVmvhLtgnmzRgC4hiyfT2eC+d5iVQAD8a4qp8wQ5II9izOIAoA5O872KuaLb3efk-RaeKufaZeGdeY5vlCKhPlyB4QB0UACmKADcYB8hEZK-kU9JlDeW4EDOc5tgunYNmCorZhOTTbjhOYdvMuYYNmYJkGw-jjlyK4IfyUAkVOWE7t2iFHqx5wwfxUAdLxgrfihw4AeUTLEfej7PkRb4fmKX5njSqFXtJsl3iBYFwX2CEgJ6ca+hAxDOMEIZ4s4xkmX6ia8L4uDBAOCwQAAogAjvo9Ciu5jRRJYEA4kkOBYEYd5SKyyDmvQ-hCM4wD6K4dDUHerqEhMOTTFSBZFhsLwVgRGLNtCtzfA8zw7EVBYVb8IoQkVjZIhAIEwuCrxYq8bXFR1wXbDieIEuMVhgJlLlto8uWMPlWzlsCaKEYwPXNT2uL4uNGUjRy0DTfc9VzW8C3rLVhaVXCTVLd1KJlatUBda1N2LRig0bSNW1EhNeQACx7WdB2FcdvUvD1p35VVryXSVkJPe1LxYq9w2fa6A7mNZ+LzAKjD+YFKhMl5PljhJ-7oWOjYvoKz4vtjAUWHjBPMsTaGjiyfTstlnIU0Kor-OKzEvDjdP495jPqZJpOs1E7OTVzUxUwLtOWMLhNMkzmnMqy0t5NAXPPBs8s07jyuixezOAZLbIpBz32y6KjwGxKfbunZPq1MGoREBAADKKaGrZLsJi6oCMDyXtiLkEAcEGxTUFgdDJfERoQPqhrGsAprmpa1q2va8AIMAAjUIqZZQHKCrKrH8euOMeoqAaRommaFpWjaOB2g6+eVwn4whxAACyuDhCGYgnFhgjOLX9dpxnzfZ23ToumAQA)
+
+### 题意
+
+实现二叉树中序遍历的类型版本。
+
+例如：
+
+```ts
+const tree1 = {
+  val: 1,
+  left: null,
+  right: {
+    val: 2,
+    left: {
+      val: 3,
+      left: null,
+      right: null,
+    },
+    right: null,
+  },
+} as const
+
+type A = InorderTraversal<typeof tree1> // [1, 3, 2]
+```
+
+### 题解
+
+```ts
+interface TreeNode {
+  val: number
+  left: TreeNode | null
+  right: TreeNode | null
+}
+
+type InorderTraversal<T extends TreeNode | null> =
+  [T] extends [TreeNode]
+    ? [...InorderTraversal<T['left']>, T['val'], ...InorderTraversal<T['right']>]
+    : []
+```
+
+> 答案参考自[解答区](https://github.com/type-challenges/type-challenges/issues/10399)
+
+最重要的就是这段代码：`[T] extends [TreeNode]`，这里这么做是为了防止发生[分布](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types)行为。
+
+一开始我是这么做的：
+
+```ts
+type InorderTraversal<T extends TreeNode | null> =
+  T extends TreeNode
+    /*
+      这里报错：
+      // 可能无穷的。。。
+      Type instantiation is excessively deep and possibly infinite.(2589)
+      // 这句的大概意思是产生了一个复杂的联合类型
+      Expression produces a union type that is too complex to represent.(2590)
+    */
+    ? [...InorderTraversal<T['left']>, T['val'], ...InorderTraversal<T['right']>]
+    : []
+```
+
+因为 `T` 可能是个联合类型，这时使用条件类型判断会发生分布行为，然后又存在递归调用`InorderTraversal` ，每一次调用都会产生分布行为，所以就出问题了：类型处理可能是无穷尽的，还会产生复杂的联合类型。
+
+当时也没明白过来，然后就去解答区看了个👍多的答案：
+
+```ts
+type InorderTraversal<T extends TreeNode | null, NT extends TreeNode = NonNullable<T>> =
+  T extends null
+    ? []
+    : [...InorderTraversal<NT['left']>, NT['val'], ...InorderTraversal<NT['right']>]
+```
+
+由于定义了一个新的类型 `NT` ，并且将其类型确定为 `TreeNode` ，所以后面直接使用 `NT`来获取对应的属性类型是可行的，不会报错。
+
+在解答区多看了几个答案后，结合一开始我所定义类型中报的错，就明白了，所以不管是哪个答案，主要问题就是确定 `T` 的类型，然后才能进行处理使用。
+
+## Flip
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/04179-medium-flip/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAsCMDsBOCBaCAxANgSwA6VRSOIICMBPDAQwCcALKgOwgGkqAXBgdysyogAUAAQDWHbryoBKCAGIAtgFMAJtgCu8uQHtSAK0UBjdgQKyzEAIprFAZ3bYtjE1ACS83JkVLG7CJ0V+5LgBWgBmEAAGump2KKE4uCg6+kYRAHQQAKIAHlTunjYAXM6RERHsQbYGNHjGUFh4ADwA3hBUhRAARNmdADQQpB2d5H0QBkMAXp0QAL4AfADcEMDAEM3ZHQDkVJv95FukuxATWwabMwQNuC1tHbD9gxAATP3jEADMs4vLq82wWzt+k8Dkd3qdzgR4k1Wu0IKFeDZFA8OuwaNYvksVmt4ZhEQCjqjrCCLlAyhESgA5LQQRiKFR+ak2NS4XBaGi+Wl2enJQzsGxtRjKCAAN141n5XDo2AMdDGTEYWl8pBCel5EBEinI-KZMra-NoNCoWpKcwgADVsIouBBHBAAOLYdgACTUjzo7HYuCKKz5MrSuhsaTZAHNgHAkGAQMAwDHQBAAPqJpPJpMQACaWjUNAgAGEtMoAk7FDQAimy4mIFGYxVghgEo0ACoQRTZdiKQX8gBKhjZykadhqjGD-SY5DmpoAvGsCABtAAKEGwzA15DCECbVH5EQAJM0G-OALozCIHjpzsAXWMgBPllPr2y+HOb2w32+pqvYdxs3w1gKtTIAI5qLw-Q5MERj9FS7CAcBmCzHCNBaJomxCL+KAyrwnhDrYwBqPYuKbNWlRyoi-JTjOBBgbyjQwbwNywpsuDYJssz9FcNxMfiXzjr0lHZOB7CNFBtGYDcjyMcxrF1tCECcRA2wsfMPF8QJNFAXRrTvGksDQFsTGbEshKKAcWhaJgilsfWrRyVpOlLKQpmYCiaIBEpcy8VAVFGGpsE3KKmDAvJuCIbgTwGSKvB6SFFnSdc1khVs-nhcFWihYlvBhdx7lgAeMZXq+b7xhgWb+NmADKbZegVb6VtGoAEKaZUMCWECrlmEA2GZeEOIwRQQO6nresAvp0P6gYhmGCCIMATA2FwxYNealrWp1mDdY4fUDV6hQ+jYfoBkGNChuG02retvWLQAsmyAQ5gwmBYcGtgdFtQ0jWNh3BpG0ZgEAA)
+
+### 题意
+
+实现类型 `just-flip-object`. 例子：
+
+```ts
+Flip<{ a: "x", b: "y", c: "z" }>; // {x: 'a', y: 'b', z: 'c'}
+Flip<{ a: 1, b: 2, c: 3 }>; // {1: 'a', 2: 'b', 3: 'c'}
+Flip<{ a: false, b: true }>; // {false: 'a', true: 'b'}
+```
+
+无需支持嵌套对象和不能是对象键的值，例如数组。
+
+### 题解
+
+```ts
+type Flip<T extends Record<string, any>> = {
+  [P in keyof T as `${T[P]}`]: P
+}
+```
+
+> 参考自[解答区](https://github.com/type-challenges/type-challenges/issues/10420)
+
+使用 `in` 遍历对象的键时，再通过 [as](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as) 映射一个新的键，不就解决了吗？所以一开始我是这么干的：
+
+```ts
+type Flip<T> = {
+  [P in keyof T as `${T[P]}`]: P
+}
+
+  /*
+    所以报错了，在 T[P] 下面会有红色波浪线
+    报错内容如下：
+    Type 'T[P]' is not assignable to type 'string | number | bigint | boolean | null | undefined'.
+    Type 'T[keyof T]' is not assignable to type 'string | number | bigint | boolean | null | undefined'.
+    Type 'T[string] | T[number] | T[symbol]' is not assignable to type 'string | number | bigint | boolean | null | undefined'.
+        Type 'T[string]' is not assignable to type 'string | number | bigint | boolean | null | undefined'.(2322)
+ */
+```
+
+一般情况下，能作为对象键的类型为 `string`、`number`、`symbol`，所以通过 `T[P]` 去获取值类型是不对的，就报错了。
+
+所以得将 `P` 的类型给确定下来，那么可以通过限制 `T` 的类型来解决：
+
+```ts
+// 使用内置工具类型 Record 来限制 T 的类型，这样键的类型就确定了
+type Flip<T extends Record<string, any>> = {
+  [P in keyof T as `${T[P]}`]: P
+}
+```
+
+## 斐波那契序列
+
+- [ ] 待仔细思考？？
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/04182-medium-fibonacci-sequence/README.zh-CN.md)
+
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAsCMAcAmCBaCgE00Ec2hihMIqah4vUHQlSVFM8kgIwE8IB3ASwDsATAGwYEMmBzCACgACjVig7ceASggBiQLRygSW8IJEjLURAGRmA7txVQAkgFsADmwCmB00wAuEThB6XTAJwYBjCADEGlAPZNOrq4MADoAPAAqwQB8EFacANamAM62TBBMAK4GlM4Q4aksEE6mVhlOTCkMVgDkKa4+TsVJRn4szHwA2l6+-oEM6Vk5TgC6-AAWVlZGSQBcwMCWAHSM8QxGpm2ciw08wCsMwN1+AUEA+pnZzpKLunljphBJpgCOGZauD0lxTlazJLAAGgggIgiCBAGYgQBWIHwIGwSGgkHg6DQmEQeAATnh0FREEWBNuHgaEFMAA9OMYzCQAAZ0gBWSRIVmo6wgACVkhk2FZYBAALyebzHPqhcExeag5msh6cpLcqzIQVHXpBULwCXAJG0um3GKACnUIABxKpjDKUCCAKDlAKfmgGh3QBY-xMprN5r9XGNFoztk5dnAkMAAF5jFAAYQAcmAQMAwDHQBBTgnE0nExBAAbygBC3QDHcoBAD3jyfzpwgUdjIBAEEAnBaAO2NAA6mgB4FQD4roAEI0A4MaALO1AP6pgDK9dOAYUVACN+RejLLZRscTk4VlM4QyJlMoQAMqSyZPWCkLkMgflySuWGvBs4OsMBRBDzF+SRwh1qmZeFYxtUj9vLLuIIuAPx5CAzY1jidTmdmAuQIdASizhECAAMwxRAA3CWZZVoAyvqALJK1aEIAMP+AIXRgDp3oA0HKAABygCeGemtaDmAw4PCGnBsK43J-hES47nulxOKeAoXoxz4pCBBLcNQQLMAAZrkACCAlMMJTgQAAQsMJAfjxiyjkwzh-tOs6hCJnGrgMLEQB+WnfipABuzhRECoHKapk7qYB0naS+665B+9lGaYplOFEwxXjePB3g+JDfpe16WH597DHB5EykKPQnAwDFPjpTlOECWmJY5+6sUegodLA0HHiQIk+aF-mPsuXGfvJyhQFAaXlTpil8eJkkQAAokeJBQB+rXVTVbkeb134qnFETAaBYkQFRNF0ZOmlebBMZgHGBb5hAgDStoAq9GABSugDR8nmK0psWDDGA0NgURAADebWvNRQKtWS6yuDYAC+ECCU4PgGBA1SCBRKDutRvnJMAGRWAwbBJNUMbna4nBPCkOUkPdj1WKErU3WwoTDaK4pAogUTmUjD2mE9aMY1jwqqvFGp47ABMAmAcmLctB0pgRgCm1vtrNkaAJAxIAYEqANVyGaAMeRgAq3o6kzTHMwBuh6Xo7MAfqIMA3BJHQziBsG4Z8xAdri5Lzoy3LnpJN6voICrSQ+GwoMMH4TJQDEgAvZoAWJraIb0uukk7qm+bWuhhGxZgEAA)
+
+### 题意
+
+实现通用 `Fibonacci<T>` 接受数字 `T` 并返回其对应的[Fibonacci number](https://en.wikipedia.org/wiki/Fibonacci_number)。
+
+序列开始：1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, ...
+
+例如：
+
+```ts
+type Result1 = Fibonacci<3> // 2
+type Result2 = Fibonacci<8> // 21
+```
+
+### 题解
+
+```ts
+/** 根据数值生成指定长度的元组 */
+type GenerateTuple<L extends number, T extends number[] = []> =
+  T['length'] extends L
+    ? T
+    : GenerateTuple<L, [...T, 0]>
+
+/** 根据当前数列，计算下一项的值 */
+type Calculate<T extends number[]> =
+  T extends [...any, infer A, infer B]
+    ? [...GenerateTuple<A extends number ? A : never>, ...GenerateTuple<B extends number ? B : never>]['length']
+    : T['length'];
+
+type Fibonacci<T extends number, A extends number[] = [1]> = 
+  A['length'] extends T 
+    ? 
+      A extends [...any, infer E] 
+        ? E 
+        : never 
+    : Fibonacci<T, [...A, Calculate<A>]>;
+```
+
+**逻辑剖析**
+
+Case 如下：
+
+```ts
+Expect<Equal<Fibonacci<3>, 2>>
+```
+
+**1.** 代入到类型当中：
+
+```ts
+type Fibonacci<3, [1]> = 
+  // 条件不成立 
+  1 extends 3        
+    ? A extends [...any, infer E] 
+      ? E 
+      : never 
+    // 走到这，结果为 Fibonacci<3, [1, Calculate<A>]>
+    : Fibonacci<3, [1, Calculate<[1]>]>;
+```
+
+**1.1** 根据上一步的结果，代入到 `Calculate` 中，计算出数列第 2 个的值：
+
+```ts
+type Calculate<[1]> =
+  // 条件不成立
+  [1] extends [...any, infer A, infer B]    
+    ? [...GenerateTuple<A extends number ? A : never>, ...GenerateTuple<B extends number ? B : never>]['length']
+    // 走到这，结果为 1
+    : T['length'];
+
+// 最终结果为：
+Fibonacci<3, [1, 1]>
+```
+
+**2.** 根据第一步的结果，再次代入到 `Fibonacci` 中：
+
+```ts
+type Fibonacci<3, [1, 1]> =
+  // 条件不成立 
+  2 extends 3        
+    ? A extends [...any, infer E] 
+      ? E 
+      : never 
+    // 走到这，结果为 Fibonacci<3, [1, 1, Calculate<[1, 1]>]>
+    : Fibonacci<3, [1, 1, Calculate<[1, 1]>]>
+```
+
+**2.1** 使用 `Calculate` 计算第数列中第 3 个值：
+
+```ts
+type Calculate<[1, 1]> =
+  // 条件成立
+  [1, 1] extends [...any, infer A, infer B]    
+    /*
+      走到这里，GenerateTuple 就是用来生成一个指定长度的元组
+      这样子把 A 和 B 加起来，就是下一个值
+      所以最终结果：[1, 1]['length'] = 2
+    */
+    ? [
+      ...GenerateTuple<1>,
+      ...GenerateTuple<1>
+    ]['length']
+    : T['length'];
+
+// 最终结果为：
+Fibonacci<3, [1, 1, 2]>
+```
+
+**3.** 根据第 2 步的最终结果继续：
+
+```ts
+type Fibonacci<3, [1, 1, 2]> =
+  // 条件成立 
+  3 extends 3        
+    // 条件成立 
+    ? [1, 1, 2] extends [...any, infer E]     
+      // 走到这，最终结果为 2
+      ? 2
+      : never 
+    : Fibonacci<T, [...A, Calculate<A>]>
+```
+
+最终结果为 2，符合 case ，测试通过。
+
+我想出来的比较复杂，虽然做出来了，但不妨碍去看看更好更简洁的[解答](https://github.com/type-challenges/type-challenges/issues/4204)：
+
+```ts
+type Fibonacci
+<
+  T extends number,
+  // 记录数列的索引，就是计算到第几个值了
+  CurrentIndex extends any[] = [1],
+  // 数列倒数第二个值
+  Prev extends any[] = [],
+  // 数列最后面一个值
+  Current extends any[] = [1]
+> = 
+  // 当数列计算的索引与 T 一致时，就可以返回数列最后一个值的长度了
+  CurrentIndex['length'] extends T
+    ? Current['length']
+    : Fibonacci<T, [...CurrentIndex, 1], Current, [...Prev, ...Current]>
+```
+
+## AllCombinations
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/04260-medium-nomiwase/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAsBMBsAGCBaCBBANpgwgewFsAjASwDsBDAFxLzIGdJUUXWmiBPCQW7DAFbUGkdQDPKgW0UIACgAC9AK4BzPACc8Aa2koOASggBiAgFMAJiWkEITJtssQAitL30adc1ACSBAA6Y9+slQhUOdz0IAAMwrFxCUkpHBgAeAGUAPjCQ-wALaggFPSppBTIICmwIAGMo8mpaBgg8ADMIBwVyWXoIAHd0klL0iGl6YJ6KBQpSqj0FNrqlU1SE1KK-AjwHWrJSvQA6ZwgAMUUIPQAPCg8vAC4d1KpGKACgjGx8YkrY+gB9dAAhHAgAXkekReMWq9DiAHJvjhwUkANxMYDARrpPDSTAGCBEYLg8EQAA+EEhuIJ4K+xMJ0PxhO+5MhlJJX3QtJ+tJwTKp4JwZI5UNp6C5zP5zLZrJpHK5TKYqR2SQgADUSHp2msIABxEhUAAS0iI5wg6SoVHc9HOiJuPU2ACt6JtFLJgHAkGAQMAwG7QBB3l7vT7vRAAJqohQQfAGYKaibBX3Rr0QF3upGAMB1AOragDJvQBMcoBaOUAIW6AeetAFRygB4FQD+8oAKVypgBG-QAQKoAEI0AKgFVwDePoBo9TA92CCSozTIslgAFUyNVEocjuMyAY2k0WrK-kwEiOxxPQgASADe5DqExDAF81xutwAlbchJgAfhDVM73d7A6HB6STD1ZD0ADcJvC24FghFntEqnQwTnBc9HHScuxaAAaJg+2A0DGnAnt-ggK8Wn7Qc6ESJIoKgGcIAAbT7ABdWClzw583wUQiz0JcFHxoqlV3wgBpCByAgIi9RCNcmN3VcfwqEEALiciJggiAAFEjlKTBpDDOI+zEpikiSY8IG3AjCI-MAPRjaMIAAFXsPwcAoAY2l03041dEgPEUPx2wgRjxIAR2kYoxMkoIxjUiBpkIQkJHbFAhmwEDZHsYBpBoTB6Foz8HlKUz7CQvCmE8vQxjiFy3MwOJ+OBf94hxLCaOU7CJKOLyqCy1zijyp4BMKsEiRKnEeRhLC0sqjLquyur8r-N4IRpVq+WZPluQZJkyq6qqapy+qgUG0FhpZUb2o5SaKQmvl6UJRlhVFVktshFkeQFTahU2kVxTFEkJQ68r0syvrcoG14VtOnAABEYTEtqSXZBlWVpX6eROq7AbBqbDs26GKSBikTp+0HEfBb6Tu+vavom+G6QhlGeQxvkscFbHGTxn40Z+Snvup0nbuR9A8Ye8UvhZunWWJjk6cxyHCQxtGMexrGhYuwGadx7H+XZ3buahs6ofF-b+Up5nybZSmfvp-nSVF0VZdu+WkeZ47OfFXmuYOnneRt5X0cZEWqdBtlMYemaqLdbSQE9Cy-V2fIqHSLdOz0Y1fb994rO9phZQSTIcggDgg0aPAZLePUDSNE0zXoC1rVtBR7UdRBgAoBh2gmWP5UVZV6DTqLQUzw1jVNYBzXSK0bTtB0EFL+v09BauAFlFGCHBMlCnt7Gb7O247rvC9kZ1XTAIA)
+
+### 题意
+
+实现返回最多 `AllCombinations<S>`使用一次字符的所有字符串组合的类型。
+
+例如：
+
+```ts
+type AllCombinations_ABC = AllCombinations<'ABC'>;
+// should be '' | 'A' | 'B' | 'C' | 'AB' | 'AC' | 'BA' | 'BC' | 'CA' | 'CB' | 'ABC' | 'ACB' | 'BAC' | 'BCA' | 'CAB' | 'CBA'
+```
+
+### 题解
+
+```ts
+// 将字符串中的每个值使用 | 组合成联合类型
+type String2Union<S extends string> =
+  S extends `${infer C}${infer R}`
+    ? C | String2Union<R>
+    : never
+
+type AllCombinations<
+  S extends string,
+  U extends string = String2Union<S>,
+> = [U] extends [never]
+  ? ''
+  : '' | {[K in U]: `${K}${AllCombinations<never, Exclude<U, K>>}`}[U]
+
+/*
+  使用示例：
+  '' | 'A' | 'B' | 'C' | 'AB' | 'AC' | 'BA' | 'BC' | 'CA' 
+  | 'CB' | 'ABC' | 'ACB' | 'BAC' | 'BCA' | 'CAB' | 'CBA'
+*/
+type AllCombinations_ABC = AllCombinations<'ABC'>;
+```
+
+答案参考自[解答区](https://github.com/type-challenges/type-challenges/issues/5339)👍最多的。
+
+通过 case 来分析类型的执行过程，进行理解：
+
+```ts
+Expect<
+  Equal<
+    AllCombinations<'ABC'>, 
+    '' | 'A' | 'B' | 'C' | 'AB' | 'AC' | 'BA' | 'BC' | 'CA' | 'CB' |
+    'ABC' | 'ACB' | 'BAC' | 'BCA' | 'CAB' | 'CBA'
+  >
+>
+```
+
+**1.** 代入到类型中 ：
+
+```ts
+type AllCombinations<'ABC', 'A' | 'B' | 'C'> = 
+  // 条件不成立
+  ['A' | 'B' | 'C'] extends [never]        
+    ? ''
+    // 走到这
+    : '' |
+      { 
+        [K in 'A' | 'B' | 'C']: `${K}${AllCombinations<never, Exclude<U, K>>}`
+      }['A' | 'B' | 'C']
+```
+
+**2.** 以 `'A'` 为例，看看该键对应的值：
+
+```ts
+// 代入到类型当中：
+{
+  A: `A${AllCombinations<never, 'B' | 'C'>}`
+}
+```
+
+**2.1** 分析 `AllCombinations<never, 'B' | 'C'>` ：
+
+```ts
+type AllCombinations<never, 'B' | 'C'> = 
+  // 条件不成立
+  ['B' | 'C'] extends [never]        
+    ? ''
+    // 走到这
+    : '' |
+      { 
+        [K in 'B' | 'C']: `${K}${AllCombinations<never, Exclude<U, K>>}`
+      }['B' | 'C'];
+```
+
+**3.** 这次以 `'B'` 为例，则其对应的值为：
+
+```ts
+// 代入到类型当中：
+{
+  B: `B${AllCombinations<never, 'C'>}`
+}
+```
+
+**3.1** 代入类型 `AllCombinations<never, 'C'>` ：
+
+```ts
+type AllCombinations<never, 'C'> = 
+  // 条件不成立
+  ['C'] extends [never]        
+    ? ''
+    // 走到这，就到底了
+    : '' |
+      { 
+        [K in 'C']: `${K}${AllCombinations<never, nerver>}`
+      }['C']
+
+// 则结果为：
+'' | {
+  // 由于 AllCombinations 一开始对 nerver 类型进行了处理
+  // 所以返回结果为 ''
+  C: 'C'
+}['C']
+
+// 最终结果：
+'' | 'C'
+```
+
+根据 3.1 的最终结果，回到 2.1则有：
+
+```ts
+// 在字符串模板中，A 与联合类型进行拼接
+// 则 A 会与联合类型中的每个类型进行拼接
+{
+  B: `B${'' | 'C'}`
+}
+// B 的最终结果：
+{
+  B: 'B' | 'BC'
+}
+
+
+// C 的处理逻辑跟 B 是一样的
+'' | {
+  B: 'B' | 'BC',
+  C: 'C' | 'CB'
+}['B' | 'C']
+// 所以最终结果为：
+'' | 'B' | 'BC' | 'C' | 'CB'
+```
+
+根据上面的结果，再回到第 2 步：
+
+```ts
+// A 对应的值处理完毕：
+{ 
+  A: `A${'' | 'B' | 'BC' | 'C' | 'CB'}`
+}
+// 根据字符串模板的特性，A 的最终结果为：
+{ 
+  A: 'A' | 'AB' | 'ABC' | 'AC' | 'ACB'
+}
+
+
+// 最终结果：
+'' |
+{ 
+  A: 'A' | 'AB' | 'ABC' | 'AC' | 'ACB',
+  // 下面这些跟 A 的处理逻辑一样
+  B: 'B' | 'BA' | 'BAC' | 'BC' | 'BCA',
+  C: 'C' | 'CA' | 'CAB' | 'CB' | 'CBA',
+}['A' | 'B' | 'C']
+
+// 最终结果：
+'' | 
+'A' | 'AB' | 'ABC' | 'AC' | 'ACB'
+'B' | 'BA' | 'BAC' | 'BC' | 'BCA'
+'C' | 'CA' | 'CAB' | 'CB' | 'CBA'
+```
+
+**总结**
+
+- 首先将字符串 `S` 变为一个联合类型，通过 `in` 遍历，对每个字符进行处理
+- 主要是利用[模板字符串](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)的特性，来产生每个可能性的字符串拼接组合
+
+## Greater Than（大于）
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/04425-medium-greater-than/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAs0EwFYIFoIHEBOBTAhgFywwgBUALHAO0hWVruoCMBPCAY1IGZWBrCgVwA2AiAAoAAuy69BAgJQQAxAFssAEwCWfJYpwYMOJtWoKTEAIp8sAZzzqA9lSjUAkhRKl1ViAGFyQrBQA5lgANBAAmnZ8EFakUQKqEOpKAA4CWCoUeBA4EHhMKVgQAAaYuAQYZJQAPMRhAKoAfMUQAurcRcXEEI0Q9cVGUAByWIH46gBuRfxKDIReqnYQFHbZFFhqeUtzbA5W6qqEagB0gxAAYnZEWAAeOKnpZ8XPeFbUZfiEVRTVcGEAjL1gMBYvFEjs8BhLO9sJ9KuQfv8AUCQXFBOCigAzHACKxYGHlL4I6r-AAMANJpJRoPREB22Nx+KgHwq3xJ-yREA51LRCTpRUh0KgzwGTmZdjsiQAMnweABCM69ABq6iwAHcIA50Oo8AAJPgMABcEFIeDwKSshuBr3YxwAVlZjldAsBYIgwCBgGBvaAIAB9AOBoOBiJRIjeSVFXVHf3BuN+iCen3ACCAbCVAF96gAA5QBUcoB-VMAZXqALjkSBBACFugGFFQAjfmB8oUIEMtHMMHBiHw0lhamEAEoQW4ECiqLwzJsAbQAuhAALwQce9afULsjgDk6SCeFIS4nfYCg5L1AA-BAe9RjQ3ZoQW230p2Z8c712wqSx40ANze2tFFlEmrdbcDoeNoQDS9jc-a7sOQEQAAgnoU71oBzatu2tSNHOEDUDB1ygTuXgjhBGBhHexzqBQmKEBAACiE4HuhUBQBRy6roE66biBYFePUtF0YegpFNQUDGl+8I-g0YQUY0J4QAyeJvt6YC+vGcYkNY2TeDgeJeIpwaJl6yQpFc2QfhAADelEAI58DiYk3IUrDZAAvlJGB2NoS5iB+yDsDiTHWMAfC2LiS7vgURSsOp1hwSO1AUTZWB2dUFEWTi1RCWynJUmEvGoSE0WxfFiWWQIKWwqyxIIGE0CNJlUJYNluW2XgCVJUVqXEtAYQIFVUk4nidX0XljUFclrU1OSEAZd1jJ9ZRA1NYVxWEsJPxwGNK1ddJtVVfVcWDc1C1wmlY1khNG3TTFDVzcNJXfoiHIAoC1WWHVY5yfJICxlpAYXHwGDruRADKBAWh9n06W91C9P95DYBATBhjEdgCP59gUJaJpmhaVrADapD2o6zquvACDAJQVhqoQEMQCq6oI0jth7Maprmpa1pWLaDpOhgLpusTViI8jeyUwAslcRS+N5ATBGjTOY6z7P41zHpemAQA)
+
+### 题意
+
+`GreaterThan<T, U>` 在此挑战中，您应该实现类似的类型 `T > U`
+
+不需要考虑负数。
+
+例如：
+
+```ts
+GreaterThan<2, 1> //should be true
+GreaterThan<1, 1> //should be false
+GreaterThan<10, 100> //should be false
+GreaterThan<111, 11> //should be true
+```
+
+### 题解
+
+```ts
+// 创建一个长度为 T 的元组
+type Number2Tuple<T, R extends number[] = []> = 
+  R['length'] extends T 
+    ? R 
+    : Number2Tuple<T, [...R, 0]>;
+
+type GreaterThan<T extends number, U extends number, Arr = Number2Tuple<T>> = 
+  Arr extends [number, ...infer E]
+    ? E['length'] extends U 
+      ? true 
+      : GreaterThan<T, U, E>
+    : false;
+
+
+// 使用示例
+GreaterThan<2, 1> // should be true
+GreaterThan<10, 100> //should be false
+```
+
+`Number2Tuple<T>` 用于创建一个长度为 `T` 的元组：
+
+```ts
+// 相当于 type A = [0, 0, 0]
+type A = Number2Tuple<3>
+```
+
+执行流程如下：
+
+![](../../\imgs\ts-challenges\ts-challenges-3.png)
