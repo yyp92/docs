@@ -2966,3 +2966,319 @@ type A = Number2Tuple<3>
 执行流程如下：
 
 ![](../../\imgs\ts-challenges\ts-challenges-3.png)
+
+## Zip
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/04471-medium-zip/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAs0OwEYIFoIC0CWAHSLn4NwCMBPCQWoZArhkFaGQQ4YIBHDAQwDsAPDCACgAEm2nAAzQEQgJQQAxAFsApgBMMAVxnSALsqwAbOblxTDEAIrK5AZ3UYA9q31QAkqwgAVABYZzEAMJvm23VYAczkAGggATWtlCHM3aO0FCAwZHTl5VnUIZgh1Eiw5CAADTCwAHhdwgFUAPiLwl2zWJKqIGWVLCCJCopctXSLcIuH1c1w8gog5diwIAF50bDKAbQRwgCYAXXDl9QAnM3CAM39zOU2aiGBgKZm5AGN1RVzrLsLl1fD9s22IZfXjqdzpshsN7BBLgA1DByADuEFsEAA4hh1AAJZREABcEDc6nUWHMWOuo3ubgAdAArczk6x7ILAWCIMAgYBgdmgCAAfR5vL5vMi0T2PmsCkKaLke0K-JlPIgrPZE0KpQqtyezS8bBIy1+rWm6oUmtY2ou81wjX1cg1fwwrCOkogADFwuTXbb7cKAKIgqAAflwevYBq8y3dDsdawgrvJYa9CE2EF9f2Wzqd8ZdrpVnvCnoQNQTOJ1uELIPZHJA3Nl-NcFiy3mYZy8VerCpSWDpWSVEAA3hBPQxlP4c3dHhAAL4QI57axqADkvCVyDJ-kCIXMwGUVm05lnivyhXuDYs8z+uE9I-UZX7g+0ZRVOp2F0fNRqoTPF6vA-8d6WnwgWx2b4wknIEn2TSMgN+f5AW3YEXzfKBzwKR5PxvH9yj-AEIAAZig2cEFncJZ3WWcwI+SN8NInYsOI0iLlfd9kMva9v3vKDIyw3DXz+eiEL7D8WNve9MM2KCuJ2ciNl+XDeLAUty0rZs5UdZQ9nUNwHQAZSeQlFKU+U2VAXBLk0vwpQgEghViaxtE3GxWCJXF8UJYlgFJClqVpelGXgBBgDYcxYUlYyIGhOFrNsqxbEcvECSJElzDJKkaTpBkmT88wbLs6KQoAWTpQpfBXK01xxWKXISpLPNSlk2TAIA)
+
+### 题意
+
+在这个挑战中，你应该实现一个类型 `Zip<T, U>`，T 和 U 必须是 `Tuple` 。
+
+```ts
+// expected to be [[1, true], [2, false]]
+type exp = Zip<[1, 2], [true, false]> 
+```
+
+### 题解
+
+```ts
+type Zip<T extends any[], U extends any[]> =
+    T extends [infer F, ...infer E]
+    ? U extends [infer F1, ...infer E1] 
+      ? [[F, F1], ...Zip<E, E1>] 
+      : []
+    : []
+
+// 使用示例：期望值为 [[1, true], [2, false]]
+type exp = Zip<[1, 2], [true, false]>
+```
+
+我的解题思路如图：
+
+![](D:\project\docs\imgs\ts-challenges\ts-challenges-4.png)
+
+在[解答区](https://github.com/type-challenges/type-challenges/issues/5619)看到一个更简洁的答案：
+
+```ts
+type Zip<A extends any[], B extends any[], L extends any[] = []> = 
+  L['length'] extends A['length'] | B['length']
+    ? L
+    : Zip<A, B, [...L, [A[L['length']], B[L['length']]]]>
+```
+
+- 主要就是使用 `L` 来存储每次处理好的值
+- 而每次处理的时候， `L` 的长度刚好就是可以用来当 `A` 和 `B` 的索引使用
+
+## IsTuple（判断元组类型）
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/04484-medium-istuple/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAs0BzQgWggSQM4BUCuAHANgKaTJJnkkBGAnhAFYCWAhgHYDm6AFqxABQACjVh24sAtoQAuTAJQQAxBIAmDbGIWS8REiXl6IARWyF0khgHsWOqKjEFCElpIhMIk6rkIQABr4w57X28AGggAd04GAGNONyYAaxMXFggGFlxsZ3dPH19MIOSlCAAnKWxilnRwzika4tzvfN9Uqs17Nw9CADprCAAxc3rCAA8mOyIALl6g7JMo4oZcSRJZiCimdEIARggAXjQsLUIAHgBtFjVKQmKAXQA+CGBgN2LjFc61jcIAJj2DgKIx1KTCUlnwtHOl2u90ez0kr2IUFW602AGY-v4jscLmIrsVTjCnhAAGZMfCbEhBXoPABqDEIYQglggAHEGJIABLYSgTCCcSSSXDoCZPSToGJdOjoLqDNjAWAIMAgYBgVWgCAAfS12p12ogAE1zOUIABhcxKLwc65eXW2rUQZVq56AEiVALWmEBYhAAbtcIIBvH0A0epgVYYABy3uux0wD32p0wNwgI0khBYSiq5wjtwgAH4XsYILzSeTCABuJ0QN2AB1NACN+geDHwwAEFisUmNQo6EAKp-HF4mMQEiYRPDZOpqrN1vtzsPEhQXPdpMptMQTCnADkRHYkk4a4Tufh+cLZM2A6gR+LZfrOUx9ij-ZIYczd+Ho+XB68JFzRZPJF5TZbbbPouY55h+UBziSx5geBvJDsBy7AqCLDghApxdOhrDUHuoEFpBF6qmqICanauoriYzgml8VQkaRjoMHYgxZB8ADeEAAKIAI7YGSoRscMnhRM4AC+JLFOY6hrvwsxIDEZKbmwJjAJkDDkmuqrIlRfynCQfECZIxycdx+DHDegIEncoTvncFk6fxhCCQZXFkiZhy3pCuLQhZoHWcEtl6Y5RkuQCJyIWCEJbPclkIj5fn2fphnOaZJysfJ268jsQled+hAxVAulxQFiWuYCvbXOZoTZbl7F2Q5CXGUl2KZllUExTcBFgOqNE6v05Tbr6ADKyZCsRXUag6KqgCQDz9dwpQQNQRr1Og5j4MpljCnyApCiKwBihKUoysUcoKtAwCsOgYTXFNEB0gyEDLatZjrby-KCsKoripwkrSrK8rwKdD1rZU10ALKDF4JrcPg8kmC9W3vbtn3fYdbBKiqYBAA)
+
+### 题意
+
+实现一个 type `IsTuple`，它接受一个输入类型 `T` 并返回是否 `T` 是元组类型。
+
+例如：
+
+```ts
+type case1 = IsTuple<[number]> // true
+type case2 = IsTuple<readonly [number]> // true
+type case3 = IsTuple<number[]> // false
+```
+
+### 题解
+
+```ts
+// 判断 never 类型
+type IsNever<T> = [T] extends [never] ? true : false;
+
+// 判断数组类型
+type IsArray<T, U = number> = 
+  T extends Array<U> 
+    ? U extends T['length'] ? true : false 
+    : false;
+
+type IsTuple<T> = 
+  IsNever<T> extends true 
+    ? false 
+    : IsArray<T> extends true 
+      ? false 
+      : T extends readonly [...any] ? true : false;
+
+// 使用示例：
+type A = IsTuple<[]> // true
+type A = IsTuple<[number]> // true
+type A = IsTuple<{ length: 1 }> // false
+type A = IsTuple<number[]> // false
+```
+
+我的解题思路就是针对每个类型进行判断，层层过滤，然后得到答案。
+
+1. 使用 `IsNever` 判断 `never` 类型
+
+```ts
+// 为了能正确获取到 never 类型
+// 所以将 T 变为了元组类型
+type IsNever<T> = [T] extends [never] ? true : false;
+```
+
+2. 使用 `IsArray` 判断数组类型，顺便也排除了对象 `{ length: 1 }`
+
+```ts
+type IsArray<T, U = number> = 
+  T extends Array<U> 
+    ? U extends T['length'] ? true : false 
+    : false;
+```
+
+- `U` 设置默认值是为了正确判断空数组。如果没有默认值，则 `U` 会是 `never` ，最后结果也会返回 `never`
+
+元组通过 `length` 属性得到的结果是数值，而数组类型得到的会是数组元素的类型：
+
+```ts
+// 结果为 3
+type A = [1, 2, 3]['length'];
+
+// 结果为 number
+type B = number[]['length'];
+```
+
+3. 到了最后判断一下是不是元组类型就好了
+
+```ts
+// 通过 rest 元素就可以判断啦
+T extends readonly [...any] ? true : false;
+```
+
+我在[解答区](https://github.com/type-challenges/type-challenges/issues/4491)看到了一个非常简洁的答案：
+
+```ts
+type IsTuple<T> = 
+  T extends readonly any[]
+    ? number extends T['length'] ? false : true
+    : false
+```
+
+## Chunk（lodash.chunk）
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/04499-medium-chunk/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAs0JxwgWggYQBYFcB2BrSySRxBARgJ4SC1DIFcMgrQyCHDBAI4CWAhtgB6sQAUAATaceABmgBGUQEoIAYgC2AUwAmrTAvkAXTAAcANkoIE5piAEVMSgM5bWAe2zGoAEXsRy9zBFzZ7AdwgAA317FXZrdCCAfmCMHFwgiFZrCHYIADclACdKTGslADNMfQhi7ABjO0dk7GStABoIP0DDLQByVNYFAyVlbC16gDoCIPi8AB4AFSaAOQA+JPYKiqVdLVStf3dspWZMVl2VCC1yXSUIXXZs9mUtHOsmrXQLoKmkhXzB0gv0oJ1ekEmpxjs9XrMPl8ID80nUgqwBkoAOY5CDzAC8EiCzmCQX+1gIp3OECUXF0Egg6LQWEmAG0JE0AExNADMAF0mfMIMBgCSyUoqqoTu4YbT6UyORBaey2YSzhdSbpGZTqQkJuKIMyIOymtAuTy+edBaCRRcxQzNay2bKoESFWSWSrxrh1RatTqIBJ9bzFQL7iboWb6ZLaYyQzLRnicVyAGqsJSBGoAcVYWgAEphSAAuCDoLRaXTWLM8jYVdBDABW1iG9mySOAsAQYBAwDAbdAEAA+t2e72exAAJpebJoMIXNM5C596fdiAtttgO2qyZTPn3bAqVKcci0yUAVTXSg3qWwGh+2SaAEFD8fYTu2Srd1yqQRV6T15upQjCqiAGJNIZAO-VEAFEHwIWJL1pdpDGwJFnnaB93yPT8DwIKAoFiWlLwAwDnQmECmj3JpaV-Nl5nAjCMJzfDCIgYipUAoYcIgMiuQIHNr2Q29dwgLCHxzbDZXbEAuxnPsICmGxBlQCIbDE8T+3nbpdFrQYlwAbwgED9nYfQmhA-kqggABfMpsnsTR2gEO0kDLPTYJRaxgEwOx9Gsdo2yXCo5NSKlaQIQyjS0AjdP0CZ8N3JovRI8j5gaQKjJCnTMD0iKaRdDV3UlGKpWDEiwxImV5nixLgtC1Lwsit0rU5EisvDa0SoSqAgr9Cq0uqplWV1SVGXivK3XDXq4pa7Sko6qqMtdbrtV6poAFYBvNWaWRG5qyvalLOumjUtGyKxZsKPSCj65a9oOpQQy1Y73Ku0awGEkSFMUztWMwbIwRHABle5CxexS51bUACC5b70GuC5PA+iBrHsfRXIcbAi1zfNC2LYBS3LKsazrBt4DgYBOGsfwclBiA4wTWH4cRxwUbzAsixLawy0rata3rRtCbhhHqmR8mAFlawuDAHKPJycwZ9HmdZnGOebVswCAA)
+
+### 题意
+
+你知道吗`lodash`？。
+
+`Chunk` 里面有一个非常有用的功能，现在我们来实现一下。 `Chunk<T, N>`接受两个必需的类型参数，`T`必须是个 `tuple`，并且 `N` 必须是 `integer >=1` 。
+
+```ts
+type exp1 = Chunk<[1, 2, 3], 2> // expected to be [[1, 2], [3]]
+type exp2 = Chunk<[1, 2, 3], 4> // expected to be [[1, 2, 3]]
+type exp3 = Chunk<[1, 2, 3], 1> // expected to be [[1], [2], [3]]
+```
+
+### 题解
+
+```ts
+type Chunk<T extends any[], U extends number, A extends any[] = []> = 
+  T extends [infer F, ...infer E] 
+    ? A['length'] extends U 
+        ? [A, ...Chunk<E, U, [F]>] 
+        : Chunk<E, U, [...A, F]>
+    : A extends [] ? [] : [A]
+
+
+// 使用示例
+// 结果为 []
+type exp1 = Chunk<[], 1> 
+// 结果为 [[1], [2], [3]]
+type exp3 = Chunk<[1, 2, 3], 1> 
+```
+
+直接通过一个 case 来了解整个过程：
+
+```ts
+Expect<
+  Equal<
+    Chunk<[1, 2, 3], 1>, 
+    [[1], [2], [3]]
+  >
+>
+```
+
+**1.** 代入到类型中：
+
+```ts
+type Chunk<[1, 2, 3], 1, []> = 
+  // 条件成立
+  [1, 2, 3] extends [infer F, ...infer E] 
+    // 条件不成立
+    ? 0 extends 1 	
+        ? [A, ...Chunk<E, U, [F]>] 
+        // 会走到这，结果如下：
+        : Chunk<[2, 3], 1, [1]>
+    : A extends [] ? [] : [A]
+```
+
+**2.** 代入结果 `Chunk<[2, 3], 1, [1]>` ：
+
+```ts
+type Chunk<[2, 3], 1, [1]> = 
+  // 条件成立
+  [2, 3] extends [infer F, ...infer E] 
+    // 条件成立
+    ? 1 extends 1 	
+        // 会走到这，结果如下：
+        ? [[1], ...Chunk<[3], 1, [2]>] 
+        : Chunk<E, U, [...A, F]>
+    : A extends [] ? [] : [A]
+```
+
+**3.** 根据第 2 步的结果代入类型 `Chunk<[3], 1, [2]>` ：
+
+```ts
+type Chunk<[3], 1, [2]> =
+  // 条件成立
+  [3] extends [infer F, ...infer E] 
+    // 条件成立
+    ? 1 extends 1 	
+        // 会走到这，结果如下：
+        ? [[2], ...Chunk<[], 1, [3]>]
+        : Chunk<E, U, [...A, F]>
+    : A extends [] ? [] : [A]
+```
+
+**4.** 根据第 3 步的结果代入类型 `Chunk<[], 1, [3]>]` ：
+
+```ts
+type Chunk<[], 1, [3]> = 
+  // 条件不成立
+  [] extends [infer F, ...infer E] 
+    ? A['length'] extends U 
+        ? [A, ...Chunk<E, U, [F]>] 
+        : Chunk<E, U, [...A, F]>
+    // 会走到这，结果为   
+    : [3] extends [] ? [] : [[3]]
+```
+
+将所有结果进行代入：
+
+```ts
+// 第 3 步结果
+[[2], ...[[3]]]
+// 等于
+[[2], [3]]
+
+// 第 2 步结果
+[[1], ...[[2], [3]]]
+// 最终结果等于
+[[1], [2], [3]]
+```
+
+我的解题思路如图：
+
+![](D:\project\docs\imgs\ts-challenges\ts-challenges-5.png)
+
+## Fill（Array.fill()）
+
+- [ ] 待仔细研究？？
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/04518-medium-fill/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAsCsCMAOCBaCAxAlgG25VKhR+ARgJ4SC1DIFcMgrQyCHDBAI6YCGAdgB6YQAUAAiw7cADNHgiAlBADEAWwCmAE0wBXObIAuqgA7YF+fDOMQAiqoUBnTZgD27Q1AAGWXE4A0EVhADGtuXL2EABSrABurADKPgBOmDqaEABmquw+Nvae7LYA7hD6iaqWEJhyegqK7ImYiTk1ABYQmmQ6VgB0+C442AA8ACqeAHKekZqsMZoA-J4AouxKkwB8Hl7FZLaqvhwQlgoK7l1uXj4+CgnFSRsxTS1WELZJEDrjrIqaCjGWng8QOfWYPkaTj6Ti88wgTkGoPGCggMQUTFUmHhSieLzeHy+YNRTlG4000PBTjmSmh8PuCTs7FY2DRMVeCnenw6UD69Vh8MRyIqCiqF1s1007N2dIZTOKMIAXBCQRA5EVEiRYd4nNpyitIaCfNslWCKM1WvdHhFsBZPLixhNCTiSaD5dYILrMFUFABzTEQV3w1hMpr1bYCiAI1Q0pq2CAiFkQTpOVWWfAG2EKTg6CAAXgw3R6AG14J4AEyeADMAF1PCJFhBgMAgymFOllGHHbDsyJy+WSzGnPgAJLse4xJQfJuWUqqbA+2FCjkKUMpNIZdieadNKyJOSsCh+KqsZ07fywkgbebjLf2FSLrE9iD1WyG9abbX93kAK1sFBqEElkkcEErADVMAUPIggAcRqAAJVQSGlepNE0HRLElatNEsQE2hfSw2gFV1gDgJAwBAYAwBI0AIAAfUoqjqKoiAAE0rggABhWwhwgCCPlhGjuMoiAiNImtAGwlQAvvUAf1TADK9QAuOQgQYIEAELdAAdTQARvzARMIAAISRbAlAAQRiekyB6WTk3eeZinYdQlRiTw+lrUylAldgyGzEt0wgFzKwzPpswAcn0dhXSFHzXJM3kHJkiBJggWzpU0nBdP0zcjM8bM2jSgYIxLRYAG4BIgQBNv0AYUUlOiiBAG-bQACpUAADlACo5QrAAJfQAYf8AWMVABX4wA9tQk1TbggHSlCUAB5dgFH6OywvMyyPk89y0raOLtL0gz+kWDtfP8wL6mCki1NcXp8Fs0KzIgVIAGtshydgXPcfBhnwPEJjGo6LLkKy3LbfASUe8Lntery1t5DbguuqAAFUvuKU7zsu1yMyu-BPP28H3OdJJhywT5NE8WaUeHAAlNdOygKL8Cge7EkO8LPpJyKZrSkGsfSwmoC-CAQf+gKgpCzh7OKMnqaJzNcB6fHrCGTw+sG4aejJysADIIB+j5ZnmFLZvpmSsv5lnduFtcxYgMnlaUVW6c8dHrE1qBpRBkiwDInjuOitdmNYXZigdmi+OI0odAFRI1IAbwgGZERpWY63SCAAF9khifwIB8-hExQQEaXWqxgFUGxsEsHztp67U3bc7MPojzQehDkNeh1q6IxW9yspW0vWnSCvQ+rrNa7bCNi3rjym6gGYy7bquehrvMIELCBS3bHu65Siep9LRYB+D4fK5pMfO8X4syznqf8z7nfp8b4G15b8uN47oXcwLXfyz77un9P5v60v9ut5v4+Z6aGILD7zQf99i-zNCAhQL9B7rw-uPO+J9lxANnvAABCDJ67xXmfIeF8R6bxgaguBYDPATyLEfeBoDAEWAgefN+2Dr69Fvngn+5DgESAfgvWBy9V6YOoVfT+dDv57yYYgisKVBEELAS-Tstt7Ye1ougVQEx2TXFGGcd2MjeL8VAPDA2-pyQPmuJYWwppLywXgohZCwBULoUwthGIuF8KIGABwSwOQPhaMAsBfcRiqRIRvKYpCKE0L1AwlhHCeEEAOIMV4+w8YoCVgALIClhExf0uAAZWBMQhfxFjAnBJsa6QixEwBAA)
+
+### 题意
+
+`Fill` ，一个常见的 JavaScript 函数，现在让我们用类型来实现它。 `Fill<T, N, Start?, End?>` 可以看到，`Fill` 接受四种类型的参数，其中 `T` 和 `N` 是必填参数， 和 `Start` 是`End` 可选参数。这些参数的要求是：`T` 必须是一个 `tuple` ，`N` 可以是任何类型的值，`Start` 并且 `End` 必须是大于或等于 0 的整数。
+
+```ts
+type exp = Fill<[1, 2, 3], 0> // expected to be [0, 0, 0]
+```
+
+### 题解
+
+```ts
+// 创建长度为 N 的数组
+type BuildArray<N extends number, T extends any[] = []> =
+  T['length'] extends N
+    ? T
+    : BuildArray<N, [...T, 0]>;
+
+// 给元组 T 添加一个元素，再返回长度
+type AddOne<T extends number> = [...BuildArray<T>, 0]['length']
+
+type Fill<
+  T extends unknown[],
+  N,
+  Start extends number = 0,
+  End extends number = T['length'],
+  U extends unknown[] = [],
+> =
+  T extends [infer First, ...infer Rest]
+    ? Start extends End 
+      ? [...U, ...T]
+      : U['length'] extends Start
+        ? Fill<Rest, N, AddOne<Start> & number, End, [...U, N]>
+        : Fill<Rest, N, Start, End, [...U, First]>
+    : U
+
+
+// 使用示例
+Fill<[], 0> // []
+Fill<[1, 2, 3], 0>	// [0, 0, 0]
+Fill<[1, 2, 3], true, 1, 3>	// [1, true, true]
+```
+
+> 答案参考于[解答区](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Ftype-challenges%2Ftype-challenges%2Fissues%2F8247 "https://github.com/type-challenges/type-challenges/issues/8247")
+
+- 其中占位类型 U 是用来存储迭代中处理的元素，`BuildArray` 与 `AddOne` 只是工具类型。
+- 当当前索引位于 `Start` 与 `End` 之间时，则使用 `N` 进行填充，并且 `Start` 要加 1，再继续进行迭代。
+- 当 `U` 的长度始终不等于 `Start` 时，说明 `Start` 大于 `T` 的长度。
+
+解题思路汇总成一张图：
+
+![](D:\project\docs\imgs\ts-challenges\ts-challenges-6.png)
