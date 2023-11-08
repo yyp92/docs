@@ -3157,7 +3157,7 @@ type Chunk<[1, 2, 3], 1, []> =
   // 条件成立
   [1, 2, 3] extends [infer F, ...infer E] 
     // 条件不成立
-    ? 0 extends 1 	
+    ? 0 extends 1     
         ? [A, ...Chunk<E, U, [F]>] 
         // 会走到这，结果如下：
         : Chunk<[2, 3], 1, [1]>
@@ -3171,7 +3171,7 @@ type Chunk<[2, 3], 1, [1]> =
   // 条件成立
   [2, 3] extends [infer F, ...infer E] 
     // 条件成立
-    ? 1 extends 1 	
+    ? 1 extends 1     
         // 会走到这，结果如下：
         ? [[1], ...Chunk<[3], 1, [2]>] 
         : Chunk<E, U, [...A, F]>
@@ -3185,7 +3185,7 @@ type Chunk<[3], 1, [2]> =
   // 条件成立
   [3] extends [infer F, ...infer E] 
     // 条件成立
-    ? 1 extends 1 	
+    ? 1 extends 1     
         // 会走到这，结果如下：
         ? [[2], ...Chunk<[], 1, [3]>]
         : Chunk<E, U, [...A, F]>
@@ -3269,8 +3269,8 @@ type Fill<
 
 // 使用示例
 Fill<[], 0> // []
-Fill<[1, 2, 3], 0>	// [0, 0, 0]
-Fill<[1, 2, 3], true, 1, 3>	// [1, true, true]
+Fill<[1, 2, 3], 0>    // [0, 0, 0]
+Fill<[1, 2, 3], true, 1, 3>    // [1, true, true]
 ```
 
 > 答案参考于[解答区](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Ftype-challenges%2Ftype-challenges%2Fissues%2F8247 "https://github.com/type-challenges/type-challenges/issues/8247")
@@ -3282,3 +3282,37 @@ Fill<[1, 2, 3], true, 1, 3>	// [1, true, true]
 解题思路汇总成一张图：
 
 ![](D:\project\docs\imgs\ts-challenges\ts-challenges-6.png)
+
+## Trim Right（删除结尾空白符）
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/04803-medium-trim-right/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAsAcAMBmCBaCAVATgSwLYQCVsBzACwBdJUUbaqAjATwgE0BXYgQwDtiIBhTgHsIACgAC6TgBtpAK04BjANYBKCAGJAtHKBJbwhUqGoxEAZGYDu3A1EB52oAbnCAAMseImXIAedAD57EQDD-gYO1AUuNANlNAOw9ALO1AELdAdW1AMm9AJjlAbx9AaPVANz1AFfjAPbVAADlAKjlABtMYhN9AN0UtfKyi+MACJUATNMAwuUB85Tj4wGW-QD4dSMAvL0BfNxbAIAZLCEBo+UAgzSH7SfIAZypyRgAHAFMMHFwlgBMIAF5VvAAZJYAzdwByKAAJJdkRAHUhTGktiFPPCGBgCEAUvUAK40Af7UAX4ovS7XaR3B5PU5USb2IZvQAU6hAAOLYcikNj0CCAKDlAKfmgGh3QBY-xRyAtpgAuD4zRSkAB0cmmNIexGAcCQwAAXqQUPwAHJgEDAMBC0AQAD64olkolEEABvKRQDHcoBADzFUtVoogAqF82WEAAygslCtdudzgAfF4AHW4Zst5FOAG4tYsVk5cC4KG5dRAlgAPchLbgbaYQabkHC8N67L2+-2B4P2AAkAG9sNwjktMIQAL7J-WGrM+AD8ezdJA9BDeZL1jqFYBFatVEEA0raAVejABSuwxVDelmrwCwe5Ag2pWSYgAFEAI5sGQAGnHPuWikHWYgR0wQnwp3Ew5Q1Jk0gDxCW02AbHI2Gk0yhYGHEEUnGmx52EAA2lQxwulku3JPp9IPGs7pnKGmCvHOpwga8ngzu+n7fr+MgAc4ZbAWGLzQS8kGeNBsGLu4CH-q6QFuBBaFQFAYGYWGUEwVAH54T+U6IURKEkeRUAgex6HgVxWE4XRcH4UxhGAax5xQEcQgiPQnCZhAVoWoOlHiauUkQDJoHYbR84MQRSGlq4JHKTRuFfkJf76cRpwKUpGGnCZAC6tZ1iAXbduqgDQctkgCm1m53YaoKoBUG8gBgSoA1XJyoAx5GACreRLkCS5KUtM1J0gyTIsggiDADw0wAO4ZhyXK8sFED4jFcUJRSwBUrS9KMpgzKsll0xCNIZ7YEI3CzFAbyAC9mgBYmuYFWklVNWpfVzKctyfKamAQA)
+
+### 题意
+
+实现 `TrimRight<T>` ，它接收确定的字符串类型并返回一个新的字符串，其中新返回的字符串删除了原字符串结尾的空白字符串。
+
+例如：
+
+```ts
+// 应推导出 '  Hello World'
+type Trimed = TrimRight<'  Hello World  '>
+```
+
+### 题解
+
+```ts
+type Space = ' ' | '\n' | '\t';
+
+type TrimRight<S extends string> = S extends `${infer R}${Space}` ? TrimRight<R> : S;
+
+
+// 使用示例
+// 应推导出 '  Hello World'
+type Trimed = TrimLeft<'  Hello World  '> 
+```
+
+> 跟 [Trim Left](https://www.yuque.com/liaojie3/lxxhgu/yzugax#gyztQ) 的逻辑是一样的
+
+使用[模板字符串](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)来匹配 `S` ，从而将尾部符合 `Space` 类型的字符串一个个地干掉。
