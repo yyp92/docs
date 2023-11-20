@@ -2998,7 +2998,7 @@ type exp = Zip<[1, 2], [true, false]>
 
 我的解题思路如图：
 
-![](D:\project\docs\imgs\ts-challenges\ts-challenges-4.png)
+![](../../\imgs\ts-challenges\ts-challenges-4.png)
 
 在[解答区](https://github.com/type-challenges/type-challenges/issues/5619)看到一个更简洁的答案：
 
@@ -3221,7 +3221,7 @@ type Chunk<[], 1, [3]> =
 
 我的解题思路如图：
 
-![](D:\project\docs\imgs\ts-challenges\ts-challenges-5.png)
+![](../../\imgs\ts-challenges\ts-challenges-5.png)
 
 ## Fill（Array.fill()）
 
@@ -3281,7 +3281,7 @@ Fill<[1, 2, 3], true, 1, 3>    // [1, true, true]
 
 解题思路汇总成一张图：
 
-![](D:\project\docs\imgs\ts-challenges\ts-challenges-6.png)
+![](../../\imgs\ts-challenges\ts-challenges-6.png)
 
 ## Trim Right（删除结尾空白符）
 
@@ -3316,3 +3316,129 @@ type Trimed = TrimLeft<'  Hello World  '>
 > 跟 [Trim Left](https://www.yuque.com/liaojie3/lxxhgu/yzugax#gyztQ) 的逻辑是一样的
 
 使用[模板字符串](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)来匹配 `S` ，从而将尾部符合 `Space` 类型的字符串一个个地干掉。
+
+## 去除数组指定元素（lodash.without()）
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/05117-medium-without/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCsCMsHYIFoKG7lQJmmAdTQI36HBjQLO1BhRUAJfSFZSq8gIwE8IAFASwDsBTAQwAduAbdhAAUAARYce-dgAYAnLFkBKCAGJAtHKBJb1WAVAMAQKoG8fQNHqq3OXIqLEQBkZgO7czUQHnagBudAAHKAqOUDzChAAyAewAmnADOABYAdADuzAAuIb4ArtEQgL+KWC6A7BaAIW6A2zbGAOoxcYkAPAAqADQQAKoAfIAw-4DB2oClxoBsprhGmRClEIAxKliA6tqAaEbthp1VEIBccoBDylh1gFjygCvxgHtq7pjVEGqkmbhdgEAM9hCA0fKAQZqAWP8HAAZX0UHk0XTcggBK7EEQALwQBbEJ0cUA2rBKgAmAC6lVgNQA3BBgMAIOwAB6PADG0XY-gg0V8EBogn+YLuD2er1gHy+hV+AKBEGBlQALBDKtBwRBASDQdDYfCkaj0Zjsbj8YyYKCiY8IC8gsDyd8in8CZUAMwg5WqiAq2nK1mKjWcmFwhHI9hojFYnF4tliqBXC4HGoQQAU6hAAOKFeI0CCAKDlAKfmgGh3U4haLRbhBABccJuKPCACsgmFfAAnADmwDgiGAAC8QsgAMIAOTAIGAYFLoAgAH0q9Wa9WIIADeUygGO5QCAHpXax2KxBi6X7hKAGqcPjxdgAeQAZmUHZ9ukj0ax-G9-mEV5xWHRQRAAPxdf6seIAWzxic3Ya6UN7xIpPxKFXWc-YC7e+6P7ET-03AB8IC-j9OIOQs6IvOi5smw45vhAABilQrmE4GQQAotaUDbtBRogW8g7DmOk61OQqFocuK5ylSiGVLUKGEWe-wwRAcGkSU5HVDUKFnqUF5liA7adjWECANK2gCr0YAFK6HDxvFVt2JbMAe3BJkkfaCAA3hAiEAI7xEOlSIcaaIQAAvhA46Jr4B4QAA5CIinINGQ4CKwyavMAiTMHwQTmZeEoosErzkv85A6XyxTqZpfDFIxCo0mCEI1JUBKcrFAW6X8IVDuFlIlOyWoQCKNIsnFUWcnFIosjUiVQIFJopRpaURQCdIauqmoNc12pxS1RVWmV5RgGKpZgOWEl8YA0HIuIAptbiRJUkDeAUAOoAYEqANVyjaAMeRgAq3oGwahhGwBRrG8ZJqm6YIMAa5BBEb5ZjmBbkA6-rrZtIbhpGQTRmEcYJimabwCdQS+MO0TML4rC3HNECAC9mgBYmrYj3bS9b0fYdV15oWPZgEAA)
+
+### 题意
+
+实现一个像 Lodash.without 函数一样的泛型 Without<T, U>，它接收数组类型的 T 和数字或数组类型的 U 为参数，会返回一个去除 U 中元素的数组 T。
+
+例如：
+
+```ts
+// expected to be [2]
+type Res = Without<[1, 2], 1>;
+// expected to be [4, 5] 
+type Res1 = Without<[1, 2, 4, 1, 5], [1, 2]>;
+// expected to be [] 
+type Res2 = Without<[2, 3, 2, 3, 2, 3, 2, 3], [2, 3]>; 
+```
+
+### 题解
+
+```ts
+type ValueOf<T> = T extends [...any] ? T[number] : T;
+
+type Without<T, U extends number[] | number> = 
+    T extends [infer F, ...infer E]
+        ? F extends ValueOf<U>
+            ? [...Without<E, U>]
+            : [F, ...Without<E, U>]
+        : T
+
+
+// 使用示例
+// expected to be [2]
+type Res = Without<[1, 2], 1>; 
+// expected to be [4, 5]
+type Res1 = Without<[1, 2, 4, 1, 5], [1, 2]>; 
+```
+
+- 迭代数组 `T` ，对元素 `F` 进行处理，符合条件就保留，否则丢弃
+
+- 然后调用 `Without` 继续处理下一个元素，知道迭代完毕
+
+解答思路如图：
+
+![](../../\imgs\ts-challenges\ts-challenges-7.png)
+
+## Trunc （Math.trunc()）
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/05140-medium-trunc/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?ssl=36&ssc=16&pln=36&pc=30#code/PQKgUABBCsCMAsAGCBaCAVATgVwHYGNJUUTSiAjATwgCsBLAQ1wHMBnACyYgAoABepm064AtgFMALgwCUEAMTiAJnWwj5EsSIAOAGwYaUOuhswMdRInKsQAitjGsJdAPa4LUAJLadmsbgkQEuxigZRaIQBuYpisLrgQzgBmEAAGaQCy+uwAdBI4BGkpADQQAO7sdPjsgQwA1g4Qjph0LAmYELiq5NEQTIoQmJLYmLisgcEQLRrMPVoMmAFJvR1dPVQDms4RLcy9uNSJpvhOrmYQyszGrNnuEABizu1iAB4M3mIAXLeFEmEO+M0tBIiL9whAAIIQAC8GHy+AAPLAAEzZADM8AAfBBgMAIMiiIVbliAGp0MSlBLxADixgAEthyB8IOwJBItKwPjiJKwqtkaNdHsxgHAkGAQMAwJLQBAAPpy+UK+UQACazmGEAAws5FCFadEQorDXKIOLJaCQlg8AiAMoQF4aXCKMZNHYQAA+KxE3UwWJhBIAJABva0AXxSdueDqdqSDLUSPTuIeyQZdLDDRAA-PciEyUkHQykANySsDSo2GjAOAIahisBrlxUmiV0bSPALmiCBiAAUQAjtgzCVu89wscICGIIdnGoAOS8c0oKpmHwsBzAbBOHSsGdmv4QfC1howgDaRGHo4k8L7A508MtBHhiGysAxJRniBnGNfZ5HYmOV-7Mw7zhRFsiRdFXwgGdYE-b8oHPP9L2vID7wRZE0XgaBIOgpFYKKH8LwAm9gKteEUGgZ9sPIvCCMQoiUJA6CwPRT83xgr98Pg39-2Q29UPhGcUFgJ9wPgVioKEj8ONonjAL4kDhOw4SaIAXRLUsQFlBslTuYYgh6a0NHZLTtJlJsNKILFrU4QYIEoNV2lYZwdA3OIOWZVl2U5YBuV5flskFYUEEQYAmFYUpoksiBSXJRpnNc1x3JZNkOS5Hkcn8wKRRCpyXJOUYovSR4Qg1TgdBXGYks81KfPSvkBUwZgxQlMAgA)
+
+### 题意
+
+实现Math.trunc的类型版本，它采用字符串或数字，并通过删除任何小数位数来返回数字的整数部分。
+
+例如：
+
+```ts
+type A = Trunc<12.34> // 12
+```
+
+### 题解
+
+```ts
+type Trunc<S extends string | number> = 
+    `${S}` extends `${infer F}.${string}`
+        ? F
+        : `${S}`
+
+
+// 使用示例
+type A = Trunc<12.34> // '12'
+type B = Trunc<'1.234'> // '1'
+```
+
+- 先将 `S` 转为字符串类型
+
+- 利用 [模板字符串](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html) 的特性完成小数匹配
+
+- 根据判断条件返回对应的字符串即可
+
+## IndexOf （Array.indexOf()）
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/05153-medium-indexof/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCsCM0GYIFoIEkB2ATApgDwHkAzSFZci0gIwE8IAFASwxwEMAHdgGxwgAoAAkxYduOAAwBOWJICUEAMQBbHFkYBXJYtYAnHaxqlSCkxACK6nAGcALowD2GI1DRKxKjDYg2AFrxs07LwAbjg6Vg4YEPZEEACCegYAdMy4hEQANBCp+MQAPAAqWQCqAHzerADW1hCsUQn6dEW1GHTFLVgQOjg26joYVt5+2dj40bG+vESM4V7tzPGJTUnOEAAGGzZWpAFBEABKNQC86KPpeQDasFkATFkIALq3pQDcEMDAEPhBAMY2qt57BAqLxYDtArxDlZYBATpg0vkLncAGz3DIADgyABYMtcAOxoyRPCAIV7vT7fHB-AE2IEgiA3cF7KE3WGnBFES7iLLciDiYk3MkfL54X7-Tq04G8ZBgqAbNarcoANUYOAA7tEogBxRg2AAS6ioAC4ID4bDZ2FYjR8tj8fEkAFZWJL2HQAc2AcEQYBAwDA-tAEAA+iHQ2HQxAAJr2PoQADC9lwED1YV44fTIYgvv9u148NynOaxSy+xF-2wgzqNAuDzZNfKJ1IBTLOArEAuzCIYQgADEskkB53uwBRB6kKAAfggw4AjupWFw8n2IGUW22bDpLOOoBAp-sLgByHgYN2+A9jnc7k3587DkpZC4DpL7HkPUqkE0yl7+sCBjPpiACmsLw41YKwan-cMsz9Rg3FdLxcwgABvac5wXLJh1FKkvAAXwgIgdHsLQDwEXNkDtBdjzdaxgHUOwuCsA8cwhCAfjA4521ITCxTyWd50XG9EWuBl7gFUoslgUpxK4rC-l4tCBLORE7ggVESSyTEIBxCBhIJdSICJe5xIZKSMhkni+IXPJBM5C5eXssSshlUzzOw+T+OspTbNsHRmDdCSsgwTQQR0LID1Yc9AuCsJjMFaSoG4tzLMUjlLh8vyAogIKlBCsKIqyKtiSrYysRcscfz-SCIx7PpJh0CAAGV-ktYMqszbNQFIcoGp8XReBoGN6qsewuDoyIrVNc1LWtYBbXtJ0XXdT14AQYA6isNUwi6iAVXVCBhtGuxHAms0LStG0rDtR1nVdD0vVWg6xuO7aAFlXV4ONeq4KjrBNU7pouq6Ftun0-TAIA)
+
+### 题意
+
+实现 `Array.indexOf` 的类型版本，`indexOf<T, U>` 获取数组 `T`，任意 `U`，并返回数组 `T` 中第一个 `U` 的索引。
+
+```ts
+// expected to be 1
+type Res = IndexOf<[1, 2, 3], 2>; 
+// expected to be 2
+type Res1 = IndexOf<[2, 6, 3, 8, 4, 1, 7, 3, 9], 3>;
+// expected to be -1 
+type Res2 = IndexOf<[0, 0, 0], 2>; 
+```
+
+### 题解
+
+```ts
+type IndexOf<T, U, R extends any[] = []> = 
+  T extends [infer F, ...infer E]
+    ? Equal<F, U> extends true
+      ? R['length']
+      : IndexOf<E, U, [...R, 0]>
+    : -1
+
+
+
+// 使用示例
+type Res = IndexOf<[1, 2, 3], 2>; // 1
+type Res2 = IndexOf<[0, 0, 0], 2>; // -1
+type Res3 = IndexOf<[string, 1, number, 'a', any], any> // 4
+```
+
+- 我使用了 `R` 来存储当前数组迭代的索引
+- `Equal` 就是使用挑战中 `@type-challenges/utils` 导入的，用它来进行类型的严格比较，从而判断是否为同一类型
+- `T` 没有值或者迭代完毕，则直接返回 `-1`
