@@ -3442,3 +3442,40 @@ type Res3 = IndexOf<[string, 1, number, 'a', any], any> // 4
 - 我使用了 `R` 来存储当前数组迭代的索引
 - `Equal` 就是使用挑战中 `@type-challenges/utils` 导入的，用它来进行类型的严格比较，从而判断是否为同一类型
 - `T` 没有值或者迭代完毕，则直接返回 `-1`
+
+## Join（Array.join）
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/05310-medium-join/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCsDMCMAGCBaCApA9gSwHaVRSOIICMBPCABTwFMBDAB0YBtaIAKAARtwebaIAnPCEBKCAGIAtrQAm2AK7Sp9AE5r65AgUl6IARUW0AzgBdsmfFAIBJaa1qzcZiGYAW7M+UbsAbrRqJpa4EJgAZhAAghpaAHQAVji4ADQYyQA8ACppAKoAfG70ANamEPShMZqUORDmangA5mFqELjKpIEQueW4chBqtGaKargmbp7RsTUQAO7YHt11FmYAxu5NEIqMcTpQAAaHZiYE3r4QAEplALzpeBkA2gBE9E9pT4xvEB9fTyy-tCeAF13ignvkANwQYDACC0AAevlWZnkbkwEE6EAA5PQUIw8SgWChaFjTj52FcTPAILcsPdngAJWgsFiYX4AdUwahYcmB72+kOhsIRSJR-TM6MxWKZLPRnO5clJUDOFNMACYaXdcI8nmrfnr3nqQRB4IKYXDEbRkaiJRj2Fi1fBHWqlW5yZdTLBNXTtc82canopwVDzSKrWK0XbsZhXYd9nsIIUAGrYWizMKhADiCwZilIAC4IO4zGZGCZ8zDjutEiY4lzGsA4EgwCBgGB26AIAB9Hu9vu9iAATUwIwgAGFMHJ2EzBt3+-OuxBW+2VVrsnkLSi+uN6psAD5tDqBNIXTe0bfLBq4Zq3LFYwq3AhZM8Xh54cJdABiaTiv-fXQAUSBAgoAAfjXAC8hPF85HGO8IHAz8IELfYABIAG8LgAXww3IcPQpCADJLyaLD9nyAhCwuCF2zATsF3nCAslMVwx3oEwygY-slzbbAHC5VxV3QiAAIAR0UegWDSADLWRCAsIgcI1EwFQsS4FUUHWSS2GvUxgEUCwWBMUkwFXVZ2JuCAHgIGTRQyMSJJYDIfUeHEsTSLFGHc7EvI8lhvKxEljSxFB7w83F8XxIkSXyfIUhs2SzHs8TJOczIHmlZlWQC+UeSxYLsTi7EZVZCBcsVWL4qgWzw2Sxy0vpB0ApdDyXWNU1WqdJ17zihK7Ic1KXIymNgsUMLox6+LgNo+iuIHT8Rg8LoAGUUTLOc5sXZdQAIQplvcdR2HIEdWhMTAWAMkJyyLEsywrYAq3cGs6zUBsm0QYAKhMWZAl2iAUzTOpzsuqxruLUty0rExqwSWt60bBAPrOi6LFBv6AFkuXYMcDpZc9GlMQtwbuqGYbh16WzbMAgA)
+
+### 题意
+
+实现 `Array.join` 的类型版本，`join＜T，U＞` 获取数组 `T`、字符串或数字 `U`，并返回 `U` 缝合的数组 `T`。
+
+```ts
+type Res = Join<["a", "p", "p", "l", "e"], "-">; // expected to be 'a-p-p-l-e'
+type Res1 = Join<["Hello", "World"], " ">; // expected to be 'Hello World'
+type Res2 = Join<["2", "2", "2"], 1>; // expected to be '21212'
+type Res3 = Join<["o"], "u">; // expected to be 'o'
+```
+
+### 题解
+
+```ts
+type Join<T, U extends string | number, R extends string = ''> = 
+  T extends [infer F, ...infer E]
+    ? Join<E, U, R extends '' ? F : `${R}${U}${F & string}`>
+  : R;
+
+
+// 使用示例
+type Res = Join<['Hello', 'World'], ' '>; // 'Hello World'
+type Res1 = Join<['2', '2', '2'], 1>; // '21212'
+type Res2 = Join<['o'], 'u'>; // 'o'
+```
+
+- 定义类型 `R`，用来保存拼接好的字符串
+- 然后迭代 `T`，只要有值，就调用 `Join` 继续处理下一个元素
+
+核心处理就是对 `R` 的处理，其实就是对第一个元素进行判断，因为第一次是不用进行拼接的，直接传递下去即可。
