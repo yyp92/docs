@@ -3466,7 +3466,7 @@ type Res3 = Join<["o"], "u">; // expected to be 'o'
 type Join<T, U extends string | number, R extends string = ''> = 
   T extends [infer F, ...infer E]
     ? Join<E, U, R extends '' ? F : `${R}${U}${F & string}`>
-  : R;
+    : R;
 
 
 // 使用示例
@@ -3479,3 +3479,170 @@ type Res2 = Join<['o'], 'u'>; // 'o'
 - 然后迭代 `T`，只要有值，就调用 `Join` 继续处理下一个元素
 
 核心处理就是对 `R` 的处理，其实就是对第一个元素进行判断，因为第一次是不用进行拼接的，直接传递下去即可。
+
+## LastIndexOf（Array.lastIndexOf）
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/05317-medium-lastindexof/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCsDMCMB2CBaCAZAhgZwC4EkA7AEwFMAPAeQDNJUUHG6AjATwgCsBLTQgc2wALXhAAUAAW68BwwgFtSuTAEoIAYgXEuAVznrMAJwOZWdOmosQAittJ4uAe0Jmo+OQAcANqQWFcEXEFSANZ3YIA3UgNsR0IIB2oIAAMUgEEjEwA6TxwCEgoaFKSAGmSUrDwiMipqAB4AFVKAVQA+IqglAGs7CBF043Yi+qLS3kGUpvbeYggDRW0DQmwAoIgufPJ4xMDgnLwypMmUtbj+kwPhlJcIADEHAwgKTA9vAC5rotxQuwBjAy53Lg6F8whAAEp2eAQAC8GFyVQKdQA2vBSgAmUqwdGleAAXXRLQgwGAEFgwO+4LsaJhcMqGxotSRAAZSiyIEz8RA0YTiah4HQitdCQA1LikADu8TiAHEuLgABLaZivCCCXC4dzYV7E3DYH6CTIcbCZe58YBwJBgEDAMC20AQAD6TudLudEAAmg4FhAAMIOMgQeVRYKu0NOiDW20g4IVPLVBmNCCtGl0eqPci4UgkZZIzJ59bUKK3UoFosAUVxEDoUAA-BAywBHbSYTy1JqlMuEiiZ7MBAy2atQCB1m5IgDk3n4gTHlcHUBVsYRNVqN2ahLoKpQ8AA3LawPaw6GIPU7P4fTgeofXRGbVwPPd-NGIABvetNlsd8hhH7+AC+EGoAwHD0MdxGjFB9RbSc+DsYBtFwLhPGwMcowpH4L2WWEkToMsv1IH9akbZtW0XelkVRLlMWxCA8QJTEWhaYocLwgiiJbWpSPjZEMQgAA2KiIAADlKAAWHFSkQASAE5OVgRiIEQBimKgXDv1wQj3xI+EyMZNk9M5blSi3JTmLUjTiI47SuMZPB-n4ajCF0ZgolKMdMDHUpHLkZyDBxTkvJ8+SRJMlSWPUtitLpaykVs9Y+FGQhWHEiAApciA3I83pEr8hLWHk6ATNxPd9xAR0rzdG4Fh2B4AGVM01MryodG8SroQkauEOYIFYL0HmwBxPHg2ItVVdVNW1YBdX1Q1jVNc0EEQYBeGwcUojaiBRQlCB+sGhCnBGtUNS1HU9QNI0TQMM0LUWnahv29aAFl7mCH1hE8aC7BVQ7xpO6bztNK0bTAIA)
+
+### 题意
+
+实现类型版本的 `Array.lastIndexOf`, `LastIndexOf<T, U>` 接受数组 `T`, any 类型 `U`, 如果 `U` 存在于 `T` 中, 返回 `U` 在数组 `T` 中最后一个位置的索引, 不存在则返回 `-1`。
+
+例如：
+
+```ts
+type Res1 = LastIndexOf<[1, 2, 3, 2, 1], 2> // 3
+type Res2 = LastIndexOf<[0, 0, 0], 2> // -1
+```
+
+### 题解
+
+```ts
+type LastIndexOf<T, U> = 
+  T extends [...infer F, infer E] 
+    ? Equal<U, E> extends true
+      ? F['length'] 
+      : LastIndexOf<F, U> 
+    : -1;
+
+
+// 使用示例
+type Res1 = LastIndexOf<[1, 2, 3, 2, 1], 2> // 3
+type Res2 = LastIndexOf<[0, 0, 0], 2> // -1
+type Res3 = LastIndexOf<[string, any, 1, number, 'a', any, 1], any>	// 5
+```
+
+- 使用 [rest 元素](https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types) 就可以轻松地获取到元组最后一个元素。
+- 使用挑战中的 `Equal` 来严格判断类型是否相等，为 `true` 直接返回数组 `F` 的长度（此时 `F` 的长度相当于 `T['length'] - 1` ，刚好对应上当前处理元素的索引）即可，否则继续迭代数组。
+
+## Unique（lodash.uniq）
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/05360-medium-unique/README.zh-CN.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCsDMBsAGCBaCBVAdgSwI4FcBTSVFM8kgIwE8IAFbTQgQwAdWAbQiACgAEGTNp0KIAnAEYxASggBiALaEAJtnwL5zAE5bm1EiTlGIARSIBnAC7YA9pgNQAkgpFLMliJYAW3S9VbcAG6EWua2mBA2AGYQADI2yszmXgB0+Di4ADQYGUQAPAAqAHyezADWhOYQzBEAgjp6EAXZWoSW+FqYVd7c9bq0BRAA7tjeNvgerQHMlioQgcwcFikOEAAGG5bmJH4BEABKlRAAvDl4+QDaEtnXEABM2Q8QsNmwALpFANwQwMAQhAAPAIAY1myk8NgglG4V0erzeO383EO5gkJzOBEIeVh91e2QALATstBsvBsgB2D7fX7-IGEUFzSyQ6EQHFPF4QQkwUkUhFQXbIyp3dFYc5YnEAImYErhEAllBluLl0qpPz+gJBYIhUJhtyliqe8olfM8SIOlVgIty4qsWkYAHNsph1NCtDdsvr3RBbQ7ZUbZc6FK7VTSNfStUydayfZhHRBA66vZ6lUaTQLzeZ8Vaxdj0mVMDYhphsnmC0XsjVqBXMFX44Rgm66w2Q+q6QzwZGWRdS4Xi9Ua076yETRs1qsSgA1bCEIaRCIAcVGAAl8JQAFwQLyWSyscxr35bYGpABW5hSNi09uAcCQYBAwDAj9AEAA+m-3x-3xAAJrjLQQABhBJuCXEJuE-CC3wge8nz+QAHU0AEb8mggQBaOUAejNADIVQBQZUAahVAGFFQACXwwMB00cTBgSWZQsWaDASlOEhBkBWZMGUKoLkYKIQggAAxbIUn4jiuIAUTeCASCgAB+CAhIIRY8l42jaWY1jPC0IgICkyw1O4DcyIo-AqLyITsnQEoSA3KJFnMQhPkfdNRUxQpsn2JTCBYqpKwuUTTi8uixKgRiAWUtjBP-BT+JSULpNE8SNIxfJjIgPTKKxfZsm4komLclStPUqSXI3C4IrSniPn8iAN32WynxAV9IM-JpKg8ACkiOeqGpg7AXAvDx0wAb2k2SOGyIS2w8ABfCAoi0GwNAAcj4AUUCPRYuFjSpgAmbAOHMOa7LNYFWqqHySFGzUjKGvIHMuW5biedl4SKbI2Uep7TrGi78Dk67xTuvFOSJbkIDJCBKSe1k-ueQGSWB3kijeqAzvDT7vutbFbjm5g5tlObKGxpVMbmj5noxrGcbxj4Eekj6ZK+jgrrRi4YzjBMQi9QmvWZ8n8aeVmtGJ6MtN9eMXTZiBSZ57JcaJ+HMne87adRnNu0wfNexLVWyz7Stq1rJgG0HZtwZVtXy37PWh352WwARR8wGfdqPx4joen-ABlWZdzqx2X2gh9QBIEo3a8bRuGoP9vRsJZrDsPdN23Xd92AQ8TzPC8rxvRBgBqcwhhCQOICnGdI+j8I463Hc9wPcwjxSU9z0va8ECz8wo622OC4AWQvbgAJDjg1vtSoNwrxPq9r+v07vB8wCAA)
+
+### 题意
+
+实现类型版本的 Lodash.uniq 方法, Unique 接收数组类型 T, 返回去重后的数组类型.
+
+```ts
+// expected to be [1, 2, 3]
+type Res = Unique<[1, 1, 2, 2, 3, 3]>; 
+// expected to be [1, 2, 3, 4, 5, 6, 7]
+type Res1 = Unique<[1, 2, 3, 4, 4, 5, 6, 7]>; 
+// expected to be [1, "a", 2, "b"]
+type Res2 = Unique<[1, "a", 2, "b", 2, "a"]>; 
+// expected to be [string, number, 1, "a", 2, "b"]
+type Res3 = Unique<[string, number, 1, "a", 1, string, 2, "b", 2, number]>;
+// expected to be [unknown, any, never] 
+type Res4 = Unique<[unknown, unknown, any, any, never, never]>; 
+```
+
+### 题解
+
+```ts
+// 数组 T 中是否包含元素 U
+type Include<T, U> = 
+  T extends [infer F, ...infer E] 
+    ? Equal<F, U> extends true ? true : Include<E, U> 
+    : false;
+
+type Unique<T, R extends any[] = []> = 
+  T extends [infer F, ...infer E] 
+    ? Unique<E, Include<R, F> extends true ? R : [...R, F]> 
+    : R;
+
+
+// 使用示例
+// [1, 2, 3]
+type Res = Unique<[1, 1, 2, 2, 3, 3]>; 
+// [unknown, any, never]
+type Res4 = Unique<[unknown, unknown, any, any, never, never]>; 
+```
+
+- `Include` 主要就是用来判断数组 `T` 中是否包含元素 `U`，包含返回 `true` ，否则返回`false` 。
+
+我的解题思路：
+
+![](../../\imgs\ts-challenges\ts-challenges-8.png)
+
+## MapTypes
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/05821-medium-maptypes/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBCsAcBMBGCBaCBZAhgBwCoE9sBTAZ0lRUqvICN8IBpAJwC98SWAXAewDMIARAHVuAa0z4BEQIKAYzACsIACgACAdzn4AtkQCUEAMQ6AJgEsArlsNach7jXlEAxp0PnOpgDZko5A-4gARXNSD24AO3JyAEktbE8iHXDXAAMsPEJSAB5cABoIACUAPhSINQALUydysq9PCE4mTHCSXm4mK05MkghTcIh7RxcIXAbuCDNeXiImImSG7omiXj6iYwg6BeJCssrqiHLMHs5yogg2z09uNT6AcwgSRvMXc1moqBTPzh8ts4BlRp3XDcABylhoMwgAF4IABvchQGzYABiTG4WgAXA9AeFbgBuCDAYAQABumE8IQG-FERHoFSqNTJFLOph6jyYdwRECRwKx4XBMwJRNqlw2Z0azVa7RM53aEH5WghTHIAF9yJ8Uu9DAYIABRAAemDiCRIGK1Gu+5C62wBHNxwLBishMNh3JwqPRWPZdwJPO4fIFTDxaqg6QIxBIWVhpiEdQAQkQAIKOpUAeXCRAAIhIvTjbir8ragaDA0VCcTbqYSaQ4b1Y5cE8nA+mszn5YGCSGIBqtQmIJg1JhZg1Dq5zCRIU5mhBsGiSaZjGdMBBzOFTBEqb9Teqvj9rf88w7A9Da0iPZjsXb8W68P7206g139xAi-buNnOGcXTfz7mr76cF5CAPyIYNyDDbooxjeMiBTGZUyYEC-zuAsX0Pd9ME-CAAB80KvI8HzLYVK2rHpXWghtYObRDMKIAMHxw4DaM7HdNV8KBon4E5xUyCZuFIcIAHJXCIfVWVcPoBleG98gSTBq16VwjkUsojjND5dytXjX1uAilRPV0zzRC9vVxADb3opUwNDQDIOjetPEbOCmBbbN8GQ3F8gozwAQkXBTj+I06IgZFVxcddwlQnS9JmIjiWIqsa3IhynObDM3MsmYvIc3z8H8ohAp0LFQvCcKNy7Ht2IgMsADVTCINQBn6ABxUxOAACXMGgsXKThOGwU0iW+aoADp5BIEb2luYA4CQMAQGAMAltACAAH11o2zaNogABNbhpIAYW4RcIHamYzi2y71ogBalr6T8mF4TAnDOCDtnhRF3WMrFmnwPFyD9H7wj+sA1TAZ9mqITgavJEIcggUTP3CYwejeoh8gAVTLGFyFGRG5hRkYIC5AB+CAMYR-UkcJ3AAG1BKM9FBIAXQgMm6YZwDuBZiA+SIasmGJqA+YF-7wd4tHIzyHZ8eR1HbOIbG4XIWmAAVen6Gl8D4EZmaxWnIeh2GiCyAp8jp1XmaKVnZcJ2mMwF1muSgF3XbdqB2bVp33Z9t2sUNmHmVN82vaKUGluWkA1quraRlCCADqOGsY9j27TDidpXGfV1dQAR3Mcl8gNYhhhVc5jIgQSVH3FBqnJBJcVIYB3C8EhBKW58pwnHoYVp8hi+cTgsjzgvPCySWo0vYtEyYJp3Kn3EIFQwyvs9Bfr0BiBadZlUinyV1TN07gZ7n-Wd6KPf+-1Euh5H8lx4V7ID-Q5yPPuZef2+9fzKAhV9N3-e68YpMEyoLXel8oADxcMPfO98J7P3wiWB8b8CQkFEKYbAqshwkDuOgYKNBuDcDkv0D+jMTJ5h-neP+kIAG1kPsA0BqD0GYOwbg-BhDiFLwvrkK+N8YGjwfhkCMk9jC0TfkvQBZCUE3iAiBJejEV4oi-ofShAZRS0NdKIz8aj6i4TkeAnhkDr6D34XAx+kZNFiPXhI08q9yH-hkXeORuF+TqL3rWLRwVXG6KYlhAxvCTF3zHvA849VPAoyxAUZw7RjBZEPvkAhRCiDNDLKQuxkTolMFifEjYHDknhCKKo9e28uGAJWEQcJppinnwgXqYx0CgmCPDE-eUQVxFpKUWvRJxCikOxoe4104Q2nWP8UYvhjSQlDKKt-CYVj9GSPSTMze3T8nyNwoo38vjQKOPaQM1p0yVnNAJJ43Zl9mYRzACtFOm0QqvG4oLAERABrR2uatG6i1QDkDLH8Q4w5tbSRIEQluEQqm9X6oNYAw1yhjQmlNGaCBEDAElGoGYXyIB1Qag8IFYQWg9T6gNDEQ0SCjXGpNJg01ZqIsBRSHFPwyzoHaGcA6hxLhzFuKQPF4LCWQuJdC0lU15qLTAEAA)
+
+### 题意
+
+实现 `MapTypes<T，R>`，它将把对象 `T` 中的类型转换为由具有以下结构的类型 `R` 定义的不同类型。
+
+```ts
+type StringToNumber = {
+  mapFrom: string; // value of key which value is string
+  mapTo: number; // will be transformed for number
+}
+```
+
+例子：
+
+```ts
+type StringToNumber = { mapFrom: string; mapTo: number;}
+// gives { iWillBeANumberOneDay: number; }
+MapTypes<{iWillBeANumberOneDay: string}, StringToNumber> 
+```
+
+请注意，用户可以提供类型的联合：
+
+```ts
+type StringToNumber = { mapFrom: string; mapTo: number;}
+// gives { iWillBeANumberOneDay: number; }
+MapTypes<{iWillBeANumberOneDay: string}, StringToNumber>  
+```
+
+如果我们的映射中不存在该类型，请保持原样：
+
+```ts
+type StringToNumber = { mapFrom: string; mapTo: number;}
+// gives { iWillBeANumberOneDay: number, iWillStayTheSame: Function }
+MapTypes<{iWillBeANumberOneDay: string, iWillStayTheSame: Function}, StringToNumber> 
+```
+
+### 题解
+
+```ts
+interface MapType {
+  mapFrom: any;
+  mapTo: any;
+}
+
+type GetValue<T extends MapType, U> = 
+  T extends T 
+    ? U extends T['mapFrom'] ? T['mapTo'] : never 
+    : never;
+
+type MapTypes<T, R extends MapType> = {
+  [P in keyof T]: [GetValue<R, T[P]>] extends [never] 
+                    ? T[P] 
+                    : GetValue<R, T[P]>
+}
+```
+
+- `GetValue` 中，`T extends T` 是为了产生分布行为，这样将 `T` 的每个类型进行比对，从而获得用来转换的类型值
+- 为了正确捕获到 `nerver` 值，所以把值变为元组来进行判断，也就是 `[GetValue<R, T[P]>] extends [never]`，之后正确设置对应的转换类型即可
+
+我在 [解答区](https://github.com/type-challenges/type-challenges/issues/5882#issuecomment-1012906395) 看到一个更好更简洁的答案，通过一个自定义泛型`Type`就让代码变得更加优雅了：
+
+```ts
+type GetMapToType<
+  T,
+  R,
+  // Type 已经正确拿到需要转换的类型值了
+  Type = R extends { mapFrom: T; mapTo: infer To } ? To : never
+> = [Type] extends [never] ? T : Type	// 根据条件返回转换的类型即可
+
+type MapTypes<T, R> = {
+  [key in keyof T]: GetMapToType<T[key], R>
+}
+```
