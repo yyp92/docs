@@ -3511,7 +3511,7 @@ type LastIndexOf<T, U> =
 // 使用示例
 type Res1 = LastIndexOf<[1, 2, 3, 2, 1], 2> // 3
 type Res2 = LastIndexOf<[0, 0, 0], 2> // -1
-type Res3 = LastIndexOf<[string, any, 1, number, 'a', any, 1], any>	// 5
+type Res3 = LastIndexOf<[string, any, 1, number, 'a', any, 1], any>    // 5
 ```
 
 - 使用 [rest 元素](https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types) 就可以轻松地获取到元组最后一个元素。
@@ -3640,9 +3640,222 @@ type GetMapToType<
   R,
   // Type 已经正确拿到需要转换的类型值了
   Type = R extends { mapFrom: T; mapTo: infer To } ? To : never
-> = [Type] extends [never] ? T : Type	// 根据条件返回转换的类型即可
+> = [Type] extends [never] ? T : Type    // 根据条件返回转换的类型即可
 
 type MapTypes<T, R> = {
   [key in keyof T]: GetMapToType<T[key], R>
 }
 ```
+
+## Construct Tuple
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/07544-medium-construct-tuple/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBDsCsAs8IFoIGED2A7AzgFwCcBXAYzwgBUiAHAGwFNIVkXWmAjATwgBkMIAFAAE+FAO4UAlBADEAW3oATAJZE5svDQZMmMvRACKRevmXYdUTLkKlyAQwia69CGOV4AFhAcBzZQDd6LAgGLB9PADoLCAAxDAIIegAPOzlnaIADLLwcJjxOahcCEyJacgBedGx8YjIqZwAeACYAPghgYESkwrJHfnYXAG0iLABrLAwxLAAaCBHR7CmAXSYsjOi2gDVlejEIbAgAcXcACSJ2AC4IDzw8ahwLjpySDwiAKxwI+J9gOEQwEDAMDA0AQAD6EMhUMhEAAmhgiAlMIoXCd6MVwdCsWCIIDgflClVrLU8PUGA0eF08EFFDgIFg1AMCLMAEpUml0+YTKaDJYQSq8trlJgswYAclC4Q8Yr5yWpWFpvCYAH4ICymFcrDVbGT6BTZsMxtyZhAImaWUsWsCwKDsVjKCZyGg7DgTJi7TC8co0vFyASXABvCAAUQAjkQ7LRZsHuvRegBfCAAMwIGHUYqE-uQL0jkpMwCIeGUtBwYvxBRcJBdboFTBjPTwDTDEdoDS1NjqWj1AAYWgbLX267GyE3w5G29UO6Su80+xBDeNJiauUuB9Mhw3Ry2J8SdTOAJyHlriyWeGWzQ-7lqDqAdCCZnDIZINp8EVMEDdxxvN8ftkm6hoAEZuxA48JSCKVzwgYDQMHFZrVtD0YRiRFPHRCAAGVqXud0kNxIFQCYNoMI8OwMU4BEEhwDBaELMxcCuG47geJ4cBed5Pm+X4EHgYA7FwMR0SIiBtl2CBqNootqkY257keYBnleD4vgIH4-l4iS6OqYSAFl4hcNBSNoPMHmuWSWIUtilM41SASBMAgA)
+
+### 题意
+
+构造一个给定长度的元组。
+
+例如：
+
+```ts
+type result = ConstructTuple<2> // 期望得到 [unknown, unkonwn]
+```
+
+### 题解
+
+```ts
+// 创建一个给定长度的元组
+type ConstructTuple<L extends number, R extends unknown[] = []> =
+  R['length'] extends L
+    ? R
+    : ConstructTuple<L, [unknown, ...R]>
+
+
+// 示例：
+// expect to be [unknown, unkonwn]
+type result = ConstructTuple<2> 
+```
+
+- 首先需要定义一个泛型 `R` 用来存储元素，默认值就是空数组
+- 逻辑就是通过判断 `R` 的长度是否符合 `L`，从而通过递归的方式创建一个符合长度的元组
+
+## Number Range
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/08640-medium-number-range/README.md)
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAcBsAsAGCBaCA5ArgWwEYFMAnCAJQEMA7Ac30lRQcbtwE8IBBMwgewoHFM3CAAoAAgAleVAB6ZKfAJQQAxNnwATAJY4IdOsoMQAipnwBnAC6beeqAGVuaq2rMQA7vneULEC0IA2mtiaPhYAFp6ElDQQ3ABmEBQ4BIRmAHQZdABi3MT40mTYAA7+5ml0AAZVdBYsRZHmmP4+ALwYyUTk1PgAPABMEAA0EACcAHwQwMBQAD4QA3MAzBBz8CsQAKzrsOsA7OvQ6yO6UFUVthATAGqa+G6xFBB8IeKYuABcEGEWFkVm71MLGYAMZhNIAK3SuSowDgSDAIGAYGRoAgAH0MZisZiIABNbiYYgAYW46k84iInmx1IxEERyNq9Q46nUAHkKL0ACoQfIWfAUdSuTAUADWFG4bgoAG0ALoQNqyiYKjJpTnDTlSgDkpWo4U1MplAG4GXVPFg8J1or0ADLDcTDEg86R8gWuJIWwiy+UQRXyuikLU6qh6uW8-mCiDW-0QAD8kadLoj4hOUFTUDj7BZ7N6JDGUvdKTl0agn3NKS6NB6mbZHJ6ucD-ODYX1duG1ezdbGYzopY6hArNtbPpVJGGHIAbkQZWNjciwKiadSIJzzD4iWQzOZ0YusXSkUEirlQqaIABvCAAUQAjnJ-MML9J6sCfABfCBxHjYCCa0SM-AoUEyH8INzGATArH8MxNTAP9SEaZoAEZvTmBYIGWVZ1i2OYdjmfY5kOOYRhgk8SHgiwBjaOZkDmJCUOIplSLMJoLGWFo6Co9ZaPmdZ0IgNY5iwiAcIgPCYCOTjEHYiAEK4hDUIQ3iEP46TBIQ4SENEhCCOk44UMk2Z5i4vpUL6Xi+mUvpBL6YS+lEvptL6XS0P0niuMWVDFl4xZlMWQTFmExZRMWbTFic+EDPgLj4FQ+BePgZT4EE+BhPgUT4G0+AnI2FyBK4jZUI2XiNmUjZBI2YSNlEjZtI2JzYByoSuNgVDYF4hBtkE2BhNgUTYG02AnN2Brdi43ZUN2XjdmU3ZBN2YTdlE3ZtN2JzoAa6AuOgVDoF46BlOgQS4AOUToG06AnJGBqRi4kZUJGXiRmUkZBJGYSRlEkZtJGJyEMQBrftkxB5MQRTEGU37VMQdTEE0xBtN+n7fqkmTZLkziFPR8GENUtT0c0rT0Z+vp-r6WTjM40yKfByyKfU2yKfhxzOMWf7Flk9zmcU7zmdU-zmc04LmZ++FYOBDctwVOgHyfCwemvW8ejLS1un6YZxgdMiEK7QYpcffBnzlm8gMVvsBx6RBhj6MYNaY5oret3WZcNhWlf7K1zeGJTEGtuDbZY7WwBlOd5xAbcd1pLJCXCIgIDsPk-jD8O9xDugJjsMIuE8FgCWIMxuH8cDrAof4vh+P4AWAIFQQhKFCBhOFEGASgzA8QhU4gG47ggPOC6sXgS++X5-kBEEwUhNJoVhBBG57wv+-bgBZXJPCJDPgMbcxPkH8uR+r8foQRJEwCAA)
+
+### 题意
+
+有时我们想限制数字的范围。
+
+例如：
+
+```ts
+//  | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 
+type result = NumberRange<2 , 9> 
+```
+
+### 题解
+
+```ts
+type AddOne<T extends unknown[] = []> = [...T, T['length']];
+
+type NumberRange<L, H, R extends number[] = []> =
+  R['length'] extends L
+    ? L extends H 
+        ? AddOne<R>[number] 
+        : NumberRange<AddOne<R>['length'], H, AddOne<R>>
+    : NumberRange<L, H, [...R, never]>;
+
+
+// 示例：
+// 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 
+type result = NumberRange<2 , 9> 
+```
+
+- 定义一个泛型 `R` 用来存储每个数值
+
+- 首先判断 `R` 的长度
+  
+  - **等于** `L`，则判断 `L` 是否等于 `H`
+    
+    - 是的话表示结束了，所以将 `R` 再处理一下，通过 [索引访问类型](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html) 就可以返回所有元素组成的联合类型了。如果不等于
+    - 不是的话，就将开始索引 `L` 加 1，`R` 也新增一个元素
+  
+  - **不等于** `L`，说明还没到开始索引的范围，所以要先往 `R` 中填充元素 `never`，通过索引类型返回 `R` 的值时，索引类型会被忽略掉
+
+画个图：
+
+![](../../\imgs\ts-challenges\ts-challenges-9.png)
+
+在 [解答区](https://github.com/type-challenges/type-challenges/issues/9220) 看到一个解决方案，发现我的代码可以 [这样优化](https://www.typescriptlang.org/play?#code/PQKgUABBAcBsAsAGCBaCA5ArgWwEYFMAnCAJQEMA7Ac30lRQcbtwE8IBBMwgewoHFM3CAAoAAgAleVAB6ZKfAJQQAxNnwATAJY4IdOsoMQAipnwBnAC6beeqAGVuaq2rMQA7vneULEC0IA2mtiaPhYAFp6ElDQQ3ABmEBQ4BIRmAHQZdABi3MT40mTYAA7+5ml0AAZVdBYsRZHmmP4+ALwYyUTk1PgAPABMEAA0EACcAHwQwMBQAD4QA3MAzBBz8CsQAKzrsOsA7OvQ6yO6UFUVthATAGqa+G6xFBB8IeKYuABcEGEWFkVm71MLGYAMZhNIAK3SuSowDgSDAIGAYGRoAgAH0MZisZiIABNbiYYgAYW46k84iInmx1IxEERyNq9QgJIolkImGBFgAKpgSr0ADLDEgQfIWfAUdSuSgsADaAF0IG15RMWnQSDKAOSlajhDUK0XiyUQfl0AD8pDonxZbI53N5pR6gogMoo+AAbkRhhk0iQ5WMGXVPOx1OoAPKunpckXSMUS1yYCgAawo3DcFHliudfszMu9XOGXM12qourlcoA3AGmVg8J1ogLhuIhdHY0bpRm2taLOzOTy+Y6xiq1UXxSWwnqW4bXOIzRwQ+HeiQxi6OoQ5Zb2rXCF0aD1g2GI0uRzrx3LG8N9wuekv-ciwKiadSIFzzD4iWQzOZ0Y+sXSkUEilyUJAwgABvCAAFEAEc5H8YYIOkepOQgABfCA4h4bAIA1URGXwFBQTIfxi3MYBMCsfwzA1MA8NIRpmgARkzOYFggZZVnWLY5h2OZ9jmQ45hGGiQJIeiLAGNo5mQOYmJY4SmVEswmgsZZVVmCBpIgWT5nWdiIDWOYuIgHiID4mAjnWBjEDoGTtIY1iGL0hiDK0oyGJMhizIYgStOOFjrPUvptL6Vi+j0voXL6Iy+hMvozL6Hy+j8tiAt07TFlYxY9MWFzFiMxYTMWMzFh8xZkvhdT4G0+BWPgPT4Bc+AjPgEz4DM+AfPgZKNlSwztI2ViNj0jYXI2IyNhMjYzI2HyNmS2BeuM7TYFY2A9IQbYjNgEzYDM2AfNgZLdkW3ZtN2Vjdj03YXN2IzdhM3YzN2HzdmS6BFugbToFY6A9OgFzoCMuADjM6AfOgZKRkWkZtJGViRj0kYXJGIyRhMkYzJGHyRmSqzFqsuzEAcxAnMQFyrLcxAPMQLzEB8qzcasmytIYuz7MsxyOfJhi3PcjmvO8jncb6fGgsskLxaciLxbcmLxa8hLxdxxZ8cWOyMssrLNfJvLNY8orNfpsrLPhWjgQ-L8lToBCkIsHpoNgnoaxSHdej6YZxiFMSGMHQZrcQ-BOXtmCiKd1dXZ6RBhj6MYvaU5oY9j-3beDx3nbrbpI+GZzEFjuj45U32wHXO8Hx-HEskJcIiAgOwxT+b9y7RP973AKAJjsMIuE8FgCWIMxuH8cjrFZT5vl+f5ARBMFITSaFYQQRBgEoMwPEIOhrlue4B6HqxeH+L4fj+AFgCBUEIShQgYThJed+H-eN4gABZXJPCJLviNHcwx6PyfT+ni+c8r4IiRGAIAA) 一下：
+
+```ts
+type ConstructTuple<L, R extends any[] = []> =
+  R['length'] extends L
+    ? R
+    : ConstructTuple<L, [never, ...R]>
+
+type AddOne<T extends unknown[] = []> = [...T, T['length']];
+
+type NumberRange<L, H, R extends any[] = ConstructTuple<L>> =
+  R['length'] extends H
+    ? AddOne<R>[number]
+    : NumberRange<AddOne<R>['length'], H, AddOne<R>>
+```
+
+- 主要就是改变了 `R` 的初始值，这样就可以直接跳到开始索引 `L` 了，从这里开始进行处理
+
+## Combination
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/08767-medium-combination/README.md) 
+> 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAcDsBssIFoIGED2BbARgSwDsBDAFzwwMhWRtqpwE8IAJbBgU3YgGlCBzCAAoAAqywd2vAnwCUEAMRZ2AEzwBXLAqIAnbUSbyiAByMAbPAGNS5AgoDOJbfypV5biAEU17BzZdQAcTwAN3ZbInDdfQgMADMIBydpOwAaCGUMCAAFdm0sNRJrCggAMnRsfGIyCgA6KgBJEgByOwgiUztMtTt2WLVTCFiMbQgSAAsuI20MI1GGIx8IcwBrLmC8ZXZMgG0LCkcMDoAZPAcAXUExkhIjOwAuYGBN0NMZ3JqsDAAvPFNTIhqwz4wDCyAAqgBlJ4YCx2YAAdXYOGAAEEsvVgMwACoAWSOOJUeCIAFFTOwlAQSMA9pTpsdTiQZP4IAADNkkOxUR4QdgADwWFhIKlGmRwXBZACIhhgJRAAD4QCU4HSyhVKohfVWK6UQZXaLVSjCinS6jUGnXKzXy7VG01fU3663qkbSg16wa2y1uk1ep3uy0emV+jWB732i0q4P2vVhh2hllUEjzLjcdgMVoAXnKuEIRQIAB5tk1pU00k09aWIOWNU0zgA+KhshNQKh1iAANTw7AA7jFbEESMw1Dg7hArjd7o8ORYxjUAFZ2QHaYFwRBgEDAMBb0AQAD6+4Ph4PEAAmhg1CNMJsWLkuEf7-uIBut2Akwts5U8-msTzeUKCMorSJPw2xnGkKJ-BAWZYtsBAaGK2hgRAjTklBEAQaYbZZg0QqaHy-6AUIhCxLkyG4b+BFAY4-BMlAAD8ZGoQqLIACQAN4oVgAC+EDsZgOZVDYhZIcSvIWKYaibPmGFpJxdZ1lxzYQKOBDsKE2jbiAe4PkeEBYj4JDoEQPStDpunPngWBGMMhlvlwbEQMSACOajtGkokCoZPGxNMmhNMIdnIDO7RktIPjAAUvx2E0W52RAVgmWh2xUB57CCvmzmuaY+b8Z+1QFkWJZlhWxU1vWKRUFAxZGk01rVtotUKtWXyNVWEYNXV7V2q11XGi1nWeiGFZ1e6JYjSaEb9U1-o1uNIwBmN00hotVYLYNHVLdGOg9QGo01fJFVnC+YA7mZh4QAAYhe4ykRCQq3NpZ27k+m6gK2EAQmMOhcAw54jJ0En5fcY7XLcDzANOs4LkuK4ILAwARHY3a5O9nY9gkhyRRQwPjmDU52DO86LkCwCrvDANYwQnJQG2OLDFwaBfX8YR8D4o645OEME1DxPLuum5gEAA)
+
+### 题意
+
+给定一个字符串数组，执行置换和组合。它也适用于道具类型，如 [视频控件列表](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/controlsList)。
+
+例如：
+
+```ts
+// expected to be `"foo" | "bar" | "baz" | "foo bar" | "foo bar baz" | "foo baz" | "foo baz bar" | "bar foo" | "bar foo baz" | "bar baz" | "bar baz foo" | "baz foo" | "baz foo bar" | "baz bar" | "baz bar foo"`
+type Keys = Combination<['foo', 'bar', 'baz']>
+```
+
+### 题解
+
+```ts
+type Combination<T extends string[], All = T[number], Item = All> = 
+  Item extends (infer Item extends string)
+    ? Item | `${Item} ${Combination<[], Exclude<All, Item>>}`
+    : never
+
+
+/* 
+expected to be `
+  "foo" | "bar" | "baz" | "foo bar" | "foo bar baz" |
+  "foo baz" | "foo baz bar" | "bar foo" | "bar foo baz" | "bar baz" | 
+  "bar baz foo" | "baz foo" | "baz foo bar" | "baz bar" | "baz bar foo"
+`
+*/
+type Keys = Combination<['foo', 'bar', 'baz']>
+```
+
+> 答案参考自 [解答区](https://github.com/type-challenges/type-challenges/issues/11027)
+
+`infer Item extends string` 是一个整体，用于推断 `Item` 的类型，并限制类型为 `string`。假如不这么写，就得这样：
+
+```ts
+type Combination<T extends string[], All = T[number], Item = All> = 
+  Item extends Item
+    // 需要转换类型
+    ? Item | `${Item & string} ${Combination<[], Exclude<All, Item>> & string}`
+    : never
+```
+
+所以说，就是使用 `infer` 将 `Item` 的类型给推断出来了。
+
+下面通过一个 case 进行剖析，了解其运行原理。
+
+**1.** 代入`Combination<['foo', 'bar', 'baz']>`
+
+```ts
+type Combination<['foo', 'bar', 'baz'], All = 'foo' | 'bar' | 'baz', Item = 'foo' | 'bar' | 'baz'> = 
+  Item extends (infer Item extends string)
+    ? Item | `${Item} ${Combination<[], Exclude<All, Item>>}`
+    : never
+```
+
+`Item` 的值为联合类型，那么用在添加类型中时，会发生 [分布](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types) 行为，就会对 `Item` 中每个值都进行处理。
+
+**2.** 代入第一个值`'foo'`
+
+```ts
+type Combination<['foo', 'bar', 'baz'], All = 'foo' | 'bar' | 'baz', Item = 'foo' | 'bar' | 'baz'> = 
+  'foo' extends 'foo' | 'bar' | 'baz'
+    // Exclude 的结果为 'bar' | 'baz'
+    ? 'foo' | `foo ${Combination<[], Exclude<'foo' | 'bar' | 'baz', 'foo'>>}`
+    : never
+```
+
+执行后结果为 ``'foo' | `foo ${Combination<...>}``` 。
+
+**3.** 根据上一步的结果，继续代入 `Combination`。
+
+由于 `Item` 还是联合类型，所以这里又发生了分布行为，这里代入第一个值 `'bar'`：
+
+```ts
+type Combination<[], All = 'bar' | 'baz', Item = 'bar' | 'baz'> = 
+  'bar' extends 'bar' | 'baz'
+    // Exclude 的结果为 'baz'
+    ? 'bar' | `bar ${Combination<[], Exclude<'bar' | 'baz', 'bar'>>}`
+    : never
+```
+
+执行后结果为 ``'foo' | `foo ${'bar' | Combination<...>}``` 。
+
+**4.** 根据上一步的结果，继续代入 `Combination`：
+
+```ts
+type Combination<[], All = 'baz', Item = 'baz'> = 
+  'baz' extends 'baz'
+    // Exclude 的结果为 never
+    ? 'baz' | `baz ${Combination<[], Exclude<'baz', 'baz'>>}`
+    : never
+```
+
+到这里就结束了，执行后结果为 ``'foo' | `foo ${'bar' | bar `${'baz'}`}``` 。
+
+由于 [模板字符串](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html) 的特性，也就变成了：
+
+```ts
+'foo' | 'foo bar' | 'foo bar baz'
+// 要是把 foo 后面的结果完整代入：
+'foo' | 'foo bar' | 'foo bar baz' | 'foo baz' | 'foo baz bar'
+```
+
+数组中每个元素都能组成 5 个类型，最终结果就是 15 个类型，跟最上面调用示例中展示的一样。
