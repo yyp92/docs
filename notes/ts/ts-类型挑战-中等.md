@@ -3859,3 +3859,66 @@ type Combination<[], All = 'baz', Item = 'baz'> =
 ```
 
 数组中每个元素都能组成 5 个类型，最终结果就是 15 个类型，跟最上面调用示例中展示的一样。
+
+## Subsequence
+
+> [挑战要求](https://github.com/type-challenges/type-challenges/blob/main/questions/08987-medium-subsequence/README.md) 
+> [在线示例](https://www.typescriptlang.org/play?#code/PQKgUABBAcCc0HYIFoIGUCuAjAzgUwEcM8A7AYz0hWRtqqwE8IArASwEMSBzHAC04gAKAAJtOPfiQC2eAC7sAlBADEMgCasMUlRhKsA9iSpVlpiAEViOWQaNQqAcVYA3UhAHsATp-ZN9AMwhdViI8CDwAGzwZElkcABoITzkMTxJ3CIiIAAd9HBxWLCiIHGx8UPI8HAA6YygAQRKywmJKiFYcdxKW0goIWX5ZCDIBLDC1PE8XPDUIf099bQ9vXwhGCAmom24SxbD9TwgSfXComLiIAHdWAf0MIbJJLlYdgf3PCcOA-t4w5Kl2C8XlxTtFSHFavYoAAxA7hAAe7Ck2SiAC4IHUIAADHGyBjZKpkKbZWRUPEEiCNAC86GaFQoAB4ANoARkSACYALoAPggwGAECZnIgAB9BSzhWKmVzReKOZyqDisZjeQA1Vh4S4QQwQJyyAAS2HRvFksmyOFR-Lij2qzBqBy4wDgiDAIGAYA9oAgAH1fX7-X6IABNO6HADC+gmEH1kzCAfjvogbo95LCAFkZpopAyACqJACqiQASgjZKQ1J1OAwhRAaUymfnOTzaxioDnS+XOkyXv5JhBoYlqkOe32AKLCqhQAD8EAzGi0DNHBcSTKH1SLK8L-c5m8HQ5zTd5VHRRYA3Cn8WFMLgepVcx2SBX3CRqzuICW8PCy4-Ky+a3WhWbGkqHbT9vyfbsSF7Q4BwgNcR0OcdWygCAZ2vcpWkZJdBTXDc4KHOcs0XRJoW5Ztj3fJkSC0MZPE5c8wC9BN4wgHMqiGMN2HwTpmIDJN3VYZEDiGVMIAAbwgUciHYCJElHeECTIIYAF85gWbQAHJhFTZBHhkqJuCqYB7lYCIcA0i8KRGbiWyZKh5MU2RF2kiIGXQ29GVZeVuRXSVxT86UArZCAuW5Hz7IUvAlOcjAZLculMLwZlgvZRIAGYeV82VWQCmUpRSgKMuy4KiqlVKIFKuUQvSnlwoVD1GJAH1eMDaFUjeQ40DLc1mpa71+MaqheTQfhkggBhQ12CITMMC0IBNM0LStHAbTtaoHSdeAEGATgcEuSYhogdVNSmmaSDmhbzUtYBrV4W17U8R1nW2nB9GmmxZsOtMDjCMN+EyUguCqY1TSu5bVoerhXXdMAgA)
+
+### 题意
+
+给定一个唯一元素数组，返回所有可能的子序列。
+
+子序列是一个序列，可以通过删除一些元素或不删除任何元素而不更改其余元素的顺序来从数组中派生。
+
+例如：
+
+```ts
+type A = Subsequence<[1, 2]> // [] | [1] | [2] | [1, 2]
+```
+
+### 题解
+
+```ts
+type Medium<T, U, R extends any[] = [[U]]> =
+  T extends [infer F, ...infer E] 
+    ? Medium<E, U, [...R, [U, F], [U, ...T]]> 
+    : R;
+
+type Subsequence<T extends any[], R extends any[] = [[]]> =
+  T extends [infer F, ...infer E] 
+    ? Subsequence<E, [...R, ...Medium<E, F>]> 
+    : R[number];
+
+
+// 示例：
+type A = Subsequence<[1, 2]> // [] | [1] | [2] | [1, 2]
+```
+
+画图解释：
+
+![](../../\imgs\ts-challenges\ts-challenges-10.png)
+
+在 [解答区](https://github.com/type-challenges/type-challenges/issues/8995) 看到一个优雅简洁的解答，没想到联合类型还能这么用：
+
+```ts
+type Subsequence<T extends any[], Prefix extends any[] = []> = 
+  T extends [infer F, ...infer R] 
+    ? Subsequence<R, Prefix | [...Prefix, F]> 
+    : Prefix
+```
+
+主要关注下 `Prefix | [...Prefix, F]`，来看个例子就明白了：
+
+```ts
+type A<Prefix extends any[] = [] | [1]> = [...Prefix, 2];
+// 代入一下，得到结果：[2] | [1, 2]
+type A = [...([] | [1]), 2];
+```
+
+由于`Prefix`是个联合类型，所以拆成两步：
+
+1. `[...[], 2]`得到 `[2]`
+2. `[...[1], 2]`得到 `[1, 2]`
+
+因为是联合类型，所以会有两个结果，最后也就得到了 `[2] | [1, 2]`。
