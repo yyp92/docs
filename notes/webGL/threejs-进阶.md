@@ -537,7 +537,6 @@ const line = new Line2(lineGeometry, matLine);
 line.computeLineDistances();
 line.scale.set(1, 1, 1);
 scene.add(line);
-
 ```
 
 > `💡` **THREE.CatmullRomCurve3**：是 Three.js 中表示三维空间中的 Catmull-Rom 曲线的一个类，它通过给定的一组点来创建曲线。可以通过 getPoints() 方法获取曲线上的一系列点，该方法返回一个包含指定数目点的数组，这些点均匀的分布在曲线上。
@@ -566,7 +565,6 @@ class SpiralCurve extends THREE.Curve {
     return new THREE.Vector3(x, y, z);
   }
 } 
-
 ```
 
 > `💡` **THREE.Curve**：可以创建自定义曲线，除了可以自定义 getPoint() 方法创建不同的曲线效果之外，还可以自定义 getTangent() 等方法来获取每个点的切线向量等来控制曲线的外观和行为。
@@ -616,7 +614,6 @@ void main() {
   gl_FragColor += vec4(108.0)*result*(y*0.02);
   gl_FragColor *= vec4(gradopacity);
 }
-
 ```
 
 ## AI生成塞尔达风格全景HDR ✨
