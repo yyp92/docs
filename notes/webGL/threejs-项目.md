@@ -58,14 +58,10 @@
 
 - [threejs学习](https://github.com/yyp92/threejs-demo)
 
-- [threejs-3d 各种3d炫酷案例](https://github.com/yyp92/threejs-3d)
+- [threejs-3d-example 各种3d炫酷案例](https://github.com/yyp92/threejs-3d-example)
 
 - [threejs-example 各种炫酷样例](https://github.com/yyp92/threejs-example)
-
-
 
 ## 源码学习
 
 - [Threejs底层GLSL源码详细解析](https://github.com/yyp92/threejs-glsl-principle)
-
-

@@ -26,6 +26,7 @@
   - [web-worker与service-worker区别](notes/js/web-worker与service-worker区别.md)
   - [js工具函数助力高效开发](notes/js/js工具函数助力高效开发.md)
   - [ES2023~ES2013-JavaScript新特性](notes/js/ES2023~ES2013-JavaScript新特性.md)
+  - [前端接口防止重复请求实现方案](notes/js/前端接口防止重复请求实现方案.md)
 
 - ts
   
