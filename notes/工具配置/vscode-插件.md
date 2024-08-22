@@ -336,3 +336,7 @@ threejs代码片段。
 ## prisma
 
 处理.prisma文件语法高亮。
+
+## Tailwind CSS IntelliSense
+
+提供自动功能、语法校验、悬停预览等功能。
