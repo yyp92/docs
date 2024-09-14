@@ -340,3 +340,7 @@ threejs代码片段。
 ## Tailwind CSS IntelliSense
 
 提供自动功能、语法校验、悬停预览等功能。
+
+## **Jupyter**
+
+这是在 VSCode 中使用 Jupyter Notebook 和 JupyterLab 相关功能的基础。
