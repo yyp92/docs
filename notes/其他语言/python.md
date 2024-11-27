@@ -9,7 +9,6 @@
 conda --version
 
 # 开始编写代码
-
 ```
 
 ## 资料
@@ -24,6 +23,10 @@ conda --version
 
 ## 其他
 
-mnist - 数据集
+- mnist - 数据集
 
-softmax - 框架
+- softmax - 框架
+
+- [pypandas](https://www.pypandas.cn/)
+
+- [numpy](https://www.numpy.org.cn/)
